@@ -1,0 +1,160 @@
+/* ===== Layout Structure ===== */
+.main-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #f5f6fa;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* ===== Topbar ===== */
+.topbar {
+  height: 60px;
+  /* background: #6495ED; */
+  background: rgba(100, 149, 237, 0.5);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+}
+
+.menu-btn {
+  background: none;
+  border: none;
+  color:  #1a73e8;;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.logo img {
+  height: 45px;
+  padding-inline: 12px;
+  border-radius: 12px;
+  background: white;
+}
+
+.logout-btn {
+  background:  #1a73e8;
+  border: none;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.logout-btn:hover {
+  background:  #1a73e8;
+}
+
+/* ===== Body Section ===== */
+.layout-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ===== Sidebar ===== */
+.sidebar {
+  width: 230px; 
+  background: rgba(100, 149, 237, 0.5);
+
+  color: white;
+  transition: all 0.3s ease;
+  padding-top: 20px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* Collapsed Sidebar: only icons visible */
+.sidebar.closed {
+  width: 70px;
+}
+
+/* Sidebar List */
+.sidebar nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar nav ul li {
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: background 0.3s, padding 0.3s;
+}
+
+.sidebar nav ul li:hover,
+.sidebar nav ul li.active {
+  background: #1a73e8;
+}
+
+/* Sidebar Icons */
+.sidebar nav ul li i {
+  width: 20px;
+  font-size: 18px;
+  text-align: center;
+}
+
+/* Sidebar Text */
+.sidebar nav ul li span {
+  opacity: 1;
+  visibility: visible;
+  transition: all 0.3s ease;
+}
+
+/* Hide text when sidebar collapsed */
+.sidebar.closed nav ul li span {
+  opacity: 0;
+  visibility: hidden;
+  width: 0;
+  overflow: hidden;
+}
+
+/* Center icons when collapsed */
+.sidebar.closed nav ul li {
+  justify-content: center;
+  padding: 12px 0;
+}
+
+/* ===== Main Content ===== */
+.main-content {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  transition: margin-left 0.3s ease;
+}
+
+/* Adjust main content when sidebar collapses */
+.main-layout.sidebar-collapsed .main-content {
+  margin-left: 70px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .layout-body {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    height: calc(100% - 60px);
+    z-index: 999;
+  }
+
+  /* In mobile, sidebar slides fully out */
+  .sidebar.closed {
+    transform: translateX(-100%);
+    width: 230px;
+  }
+
+  .main-layout.sidebar-collapsed .main-content {
+    margin-left: 0;
+  }
+}

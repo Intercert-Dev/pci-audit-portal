@@ -1,0 +1,22 @@
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+
+@Component({
+  imports : [CommonModule,RouterOutlet,RouterLink,RouterLinkActive],
+  selector: 'app-main-layout',
+  templateUrl: './main-layout.html',
+  styleUrls: ['./main-layout.css']
+})
+export class MainLayout {
+  isSidebarOpen = true;
+
+  toggleSidebar() {
+    this.isSidebarOpen = !this.isSidebarOpen;
+  }
+
+  onLogout() {
+    console.log('Logout clicked');
+    // TODO: Add logout logic (e.g., clear token, navigate to login)
+  }
+}

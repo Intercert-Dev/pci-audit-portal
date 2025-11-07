@@ -1,0 +1,273 @@
+<div class="add-client-container">
+  <!-- Header -->
+  <div class="header">
+    <h2>Add Client</h2>
+  </div>
+
+  <!-- Form Card -->
+  <div class="form-card">
+    <form #addClientForm="ngForm" (ngSubmit)="onSubmit(addClientForm)">
+      <!-- Row 1 -->
+      <h4>Client Profile</h4>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Legal Entity Name*</label>
+          <input type="text" name="legalEntityName" [(ngModel)]="client.legalEntityName" placeholder="Legal Entity Name" required #legalEntityName="ngModel">
+          <div class="error" *ngIf="legalEntityName.invalid && legalEntityName.touched">Legal Entity Name is required</div>
+        </div>
+        <div class="form-group">
+          <label>Trading / Brand Name</label>
+          <input type="text" name="tradingName" [(ngModel)]="client.tradingName" placeholder="Trading / Brand Name" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Country*</label>
+          <select name="country" [(ngModel)]="client.country" required #country="ngModel">
+            <option value="">Choose...</option>
+            <option>India</option>
+            <option>USA</option>
+          </select>
+          <div class="error" *ngIf="country.invalid && country.touched">Country is required</div>
+        </div>
+        <div class="form-group">
+          <label>State*</label>
+          <select name="state" [(ngModel)]="client.state" required #state="ngModel">
+            <option value="">Choose...</option>
+            <option>Delhi</option>
+            <option>Maharashtra</option>
+          </select>
+          <div class="error" *ngIf="state.invalid && state.touched">State is required</div>
+        </div>
+        <div class="form-group">
+          <label>City*</label>
+          <select name="city" [(ngModel)]="client.city" required #city="ngModel">
+            <option value="">Choose...</option>
+            <option>Jodhpur</option>
+            <option>Ajmer</option>
+          </select>
+          <div class="error" *ngIf="city.invalid && city.touched">City is required</div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Street*</label>
+          <textarea rows="2" name="street" [(ngModel)]="client.street" required #street="ngModel"></textarea>
+          <div class="error" *ngIf="street.invalid && street.touched">Street is required</div>
+        </div>
+      </div>
+
+      <!-- Row 3 -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>Zip Code*</label>
+          <input type="number" name="zipCode" [(ngModel)]="client.zipCode" required #zipCode="ngModel" />
+          <div class="error" *ngIf="zipCode.invalid && zipCode.touched">Zip Code is required</div>
+        </div>
+        <div class="form-group">
+          <label>Website / Domain URL</label>
+          <input type="text" name="website" [(ngModel)]="client.website" placeholder="">
+        </div>
+        <div class="form-group">
+          <label>Type of Business*</label>
+          <input type="text" name="typeOfBusiness" [(ngModel)]="client.typeOfBusiness" required #typeOfBusiness="ngModel" />
+          <div class="error" *ngIf="typeOfBusiness.invalid && typeOfBusiness.touched">Type of Business is required</div>
+        </div>
+        <div class="form-group">
+          <label>Nature of Business</label>
+          <input type="text" name="natureOfBusiness" [(ngModel)]="client.natureOfBusiness" placeholder="" />
+        </div>
+      </div>
+
+      <h4>Primary Contacts</h4>
+
+      <!-- Row 4 -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>Name*</label>
+          <input type="text" name="primaryName" [(ngModel)]="client.primaryName" placeholder="Enter full name" required #primaryName="ngModel" />
+          <div class="error" *ngIf="primaryName.invalid && primaryName.touched">Name is required</div>
+        </div>
+
+        <div class="form-group">
+          <label>Designation*</label>
+          <input type="text" name="designation" [(ngModel)]="client.designation" placeholder="Enter designation" required #designation="ngModel" />
+          <div class="error" *ngIf="designation.invalid && designation.touched">Designation is required</div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Email*</label>
+          <input type="email" name="email" [(ngModel)]="client.email" placeholder="Enter email address" required email #email="ngModel" />
+          <div class="error" *ngIf="email.errors?.['required'] && email.touched">Email is required</div>
+          <div class="error" *ngIf="email.errors?.['email'] && email.touched">Enter a valid email</div>
+        </div>
+
+        <div class="form-group">
+          <label>Phone*</label>
+          <input type="tel" name="phone" [(ngModel)]="client.phone" placeholder="Enter phone number" required #phone="ngModel" />
+          <div class="error" *ngIf="phone.invalid && phone.touched">Phone is required</div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Technical Contact(s)</label>
+          <input type="text" name="technicalContact" [(ngModel)]="client.technicalContact" placeholder="">
+        </div>
+        <div class="form-group">
+          <label>Information Security Officer / CISO</label>
+          <input type="text" name="ciso" [(ngModel)]="client.ciso" placeholder="">
+        </div>
+        <div class="form-group">
+          <label>Client Sign-off Authority</label>
+          <input type="text" name="signOff" [(ngModel)]="client.signOff" placeholder="">
+        </div>
+      </div>
+
+      <h4>Assessment Summary</h4>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Assessment / Project Name</label>
+          <input type="text" name="projectName" [(ngModel)]="client.projectName" placeholder="Enter Assessment / Project Name">
+        </div>
+        <div class="form-group">
+          <label>Assessment Type</label>
+          <input type="text" name="assessmentType" [(ngModel)]="client.assessmentType" placeholder="Enter Assessment Type">
+        </div>
+        <div class="form-group">
+          <label>Assessment Category</label>
+          <input type="text" name="assessmentCategory" [(ngModel)]="client.assessmentCategory" placeholder="Enter Assessment Category">
+        </div>
+        <div class="form-group">
+          <label>Assessment Year</label>
+          <input type="date" name="assessmentYear" [(ngModel)]="client.assessmentYear" placeholder="">
+        </div>
+        <div class="form-group">
+          <label>PCI DSS Version Applicable</label>
+          <input type="text" name="pciVersion" [(ngModel)]="client.pciVersion" placeholder="">
+        </div>
+        <div class="form-group">
+          <label>Assessment Period Covered</label>
+          <input type="text" name="assessmentPeriod" [(ngModel)]="client.assessmentPeriod" placeholder="">
+        </div>
+        <div class="form-group">
+          <label>Audit Start Date*</label>
+          <input type="date" name="auditStart" [(ngModel)]="client.auditStart" required #auditStart="ngModel" />
+          <div class="error" *ngIf="auditStart.invalid && auditStart.touched">Audit Start Date is required</div>
+        </div>
+        <div class="form-group">
+          <label>Audit End Date*</label>
+          <input type="date" name="auditEnd" [(ngModel)]="client.auditEnd" required #auditEnd="ngModel" />
+          <div class="error" *ngIf="auditEnd.invalid && auditEnd.touched">Audit End Date is required</div>
+        </div>
+        <div class="form-group">
+          <label>Date of Report Submission</label>
+          <input type="date" name="reportDate" [(ngModel)]="client.reportDate" placeholder="" />
+        </div>
+        <div class="form-group">
+          <label>Audit Status</label>
+          <select name="auditStatus" [(ngModel)]="client.auditStatus">
+            <option>Choose</option>
+            <option>In To Do</option>
+            <option>In Progress</option>
+            <option>Report in Review</option>
+            <option>Closed</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Certificate Issue Date</label>
+          <input type="date" name="certificateIssue" [(ngModel)]="client.certificateIssue" placeholder="" />
+        </div>
+        <div class="form-group">
+          <label>Certificate Expiry Date</label>
+          <input type="date" name="certificateExpiry" [(ngModel)]="client.certificateExpiry" placeholder="" />
+        </div>
+        <div class="form-group">
+          <label>Certificate Number/Unique ID</label>
+          <input type="text" name="certificateNumber" [(ngModel)]="client.certificateNumber" placeholder="" />
+        </div>
+        <div class="form-group">
+          <label>Next Audit Due Date</label>
+          <input type="date" name="nextAudit" [(ngModel)]="client.nextAudit" placeholder="" />
+        </div>
+      </div>
+
+      <h4>Assessor Information</h4>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Name of QSA</label>
+          <input type="text" name="qsaName" [(ngModel)]="client.qsaName" placeholder="Enter Name of QSA" />
+        </div>
+        <div class="form-group">
+          <label>QSA License / Certificate Number</label>
+          <input type="text" name="qsaLicense" [(ngModel)]="client.qsaLicense" placeholder="Enter QSA License / Certificate Number" />
+        </div>
+        <div class="form-group">
+          <label>Audit Manager / Reviewer Name</label>
+          <input type="text" name="reviewerName" [(ngModel)]="client.reviewerName" placeholder="Enter Audit Manager / Reviewer Name" />
+        </div>
+      </div>
+
+      <h4>Scope and Environment</h4>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Scope of Assessment</label>
+          <textarea rows="1" name="scope" [(ngModel)]="client.scope"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Location in Scope</label>
+          <input type="text" name="locationScope" [(ngModel)]="client.locationScope" placeholder="Enter QSA License / Certificate Number" />
+        </div>
+      </div>
+
+      <h4>Compliance Results</h4>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Overall Compliance Status</label>
+          <input type="text" name="complianceStatus" [(ngModel)]="client.complianceStatus" placeholder="Enter Scope of Assessment" />
+        </div>
+        <div class="form-group">
+          <label>Compensating Controls Used</label>
+          <select name="compensatingControls" [(ngModel)]="client.compensatingControls">
+            <option>Choose</option>
+            <option>Yes</option>
+            <option>No</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Customized Approach Used</label>
+          <select name="customApproach" [(ngModel)]="client.customApproach">
+            <option>Choose</option>
+            <option>Yes</option>
+            <option>No</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Non-Conformities / Gaps</label>
+          <input type="text" name="nonConformities" [(ngModel)]="client.nonConformities" placeholder="" />
+        </div>
+        <div class="form-group">
+          <label>Identified</label>
+          <input type="text" name="identified" [(ngModel)]="client.identified" placeholder="" />
+        </div>
+        <div class="form-group">
+          <label>Remediation Target Date</label>
+          <input type="date" name="remediationDate" [(ngModel)]="client.remediationDate" placeholder="" />
+        </div>
+        <div class="form-group">
+          <label>Revalidation Date</label>
+          <input type="date" name="revalidationDate" [(ngModel)]="client.revalidationDate" placeholder="" />
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn" [disabled]="addClientForm.invalid">Submit</button>
+    </form>
+  </div>
+</div>

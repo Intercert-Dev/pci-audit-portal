@@ -1,0 +1,132 @@
+.add-client-container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.error {
+  color: red;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.header h2 {
+  color: #1e40af; /* blue */
+  font-weight: 600;
+  margin: 0;
+}
+
+.form-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* 🔹 Grid layout for rows */
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+/* 🔹 Form fields */
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #333;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #1e40af;
+  outline: none;
+  box-shadow: 0 0 4px rgba(30,64,175,0.3);
+}
+
+/* 🔹 Headings inside form */
+h4 {
+  color: #1e40af;
+  margin-top: 20px;
+  font-size: 18px;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 5px;
+}
+
+.submit-btn{
+  width: 12%;
+}
+
+button[type="submit"] {
+  background-color: #007bff; /* Blue tone */
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  display: inline-block;
+}
+
+/* Hover effect */
+button[type="submit"]:hover {
+  background-color: #0056b3; /* Darker blue */
+  transform: translateY(-2px);
+}
+
+
+
+/* 🔹 Responsive Behavior */
+@media (max-width: 1024px) {
+  .add-client-container {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  h4 {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .add-client-container {
+    box-shadow: none;
+  }
+}

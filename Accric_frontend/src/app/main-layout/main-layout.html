@@ -1,12 +1,14 @@
 <div class="main-layout" [class.sidebar-collapsed]="!isSidebarOpen">
   <!-- TOPBAR -->
   <header class="topbar">
+    <div class="topbar-left-items">
     <button class="menu-btn" (click)="toggleSidebar()">
       <i class="fas fa-bars"></i>
     </button>
 
     <div class="logo">
-      <img src="https://accric.com/wp-content/themes/acrric/Assets/images/logo/main-logo%20.svg" alt="Intercert Logo" />
+      <img src="assets/Accric main-logo 1.png" alt="Intercert Logo" />
+    </div>
     </div>
 
     <button class="logout-btn" (click)="onLogout()">Logout</button>
@@ -19,19 +21,22 @@
       <nav>
         <ul>
           <li routerLink="/dashboard" routerLinkActive="active">
-            <i class="fas fa-home"></i> <span>Dashboard</span>
+            <img src="assets/icons/home.png" alt="icon"><span>Dashboard</span>
           </li>
           <li routerLink="/add-client" routerLinkActive="active">
-            <i class="fas fa-user-plus"></i> <span> Add Client</span>
+            <img src="assets/icons/person_add.png" alt="icon"><span> Add Client</span>
           </li>
           <li routerLink="/client-list" routerLinkActive="active">
-            <i class="fas fa-file-alt"></i> <span>Client List</span>
+            <img src="assets/icons/calendar_view_week.png" alt="icon"><span>Client List</span>
           </li>
           <li routerLink="/asv-audit" routerLinkActive="active">
-            <i class="fas fa-award"></i> <span>ASV Audit</span>
+            <img src="assets/icons/breaking_news_alt_1.png" alt="icon"><span>ASV Audit</span>
           </li>
-          <li routerLink="/asv-audit" routerLinkActive="active">
-           <i class="fas fa-file-alt"></i><span>Certificate Gen.</span>
+          <li routerLink="/certificate-gen" routerLinkActive="active">
+            <img src="assets/icons/card_membership.png" alt="icon"><span>Certificate Gen.</span>
+          </li>
+          <li routerLink="/settings" routerLinkActive="active">
+            <img src="assets/icons/settings solid 1.png" alt="icon"><span>Settings</span>
           </li>
 
         </ul>

@@ -1,24 +1,226 @@
-<div class="dashboard">
-  <h1 class="dashboard h1">PCI Audit Dashboard</h1>
-  <div class="cards">
-    <div class="card green">
-      <h3>23000</h3>
-      <p>Total Clients</p>
-      <span class="trend up">↑ 12.5%</span>
+<div class="dashboard-container">
+  <div class="dashboard-box">
+    <h1>PCI Audit Dashboard</h1>
+    <div class="cards">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-logo">
+            <img src="/assets/icons/user 3 2.png" alt="Card Logo" />
+          </div>
+          <div class="card-info">
+            <p class="text">Total Clients</p>
+            <p class="count">10,000</p>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="percentage">
+            <span class="value">12.7%</span>
+            <img src="/assets/icons/arrow_shape_up_stack_2.png" alt="">
+          </div>
+
+          <div class="chart">
+            <svg viewBox="0 0 260 140" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <!-- gradient used for area fill -->
+                <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="rgba(24, 20, 243, 1)" stop-opacity="0.38" />
+                  <stop offset="100%" stop-color="rgba(24, 20, 243, 1)" stop-opacity="0" />
+                </linearGradient>
+
+                <!-- clip to keep fill and blue-stroke only on first 70% of SVG width -->
+                <!-- 70% of 260 = 182 -->
+                <clipPath id="clip70">
+                  <rect x="0" y="0" width="210" height="140" />
+                </clipPath>
+              </defs>
+
+              <!-- AREA (gradient) - clipped to first 70% -->
+              <path class="area" d="M0,100
+         C20,50 40,30 60,70
+         C80,110 100,40 120,80
+         C140,120 160,45 180,85
+         C200,110 220,65 230,60
+         C240,50 250,35 260,10
+         L260,140 L0,140 Z" fill="url(#gradient)" clip-path="url(#clip70)" stroke="none" />
+
+              <!-- NEUTRAL stroke: full path (this shows where the line grows beyond 70%) -->
+              <path class="chart-line-neutral" d="M0,100
+         C20,50 40,30 60,70
+         C80,110 100,40 120,80
+         C140,120 160,45 180,85
+         C200,110 220,65 230,60
+         C240,50 250,35 260,10" fill="none" stroke="rgba(100,100,120,0.25)" stroke-width="4" stroke-linejoin="round"
+                stroke-linecap="round" />
+
+              <!-- BLUE stroke: same path, clipped to 70% so blue shows only on first 70% -->
+              <path class="chart-line-colored" d="M0,100
+         C20,50 40,30 60,70
+         C80,110 100,40 120,80
+         C140,120 160,45 180,85
+         C200,110 220,65 230,60
+         C240,50 250,35 260,10" fill="none" stroke="rgba(24, 20, 243, 1)" stroke-width="4" stroke-linejoin="round"
+                stroke-linecap="round" clip-path="url(#clip70)" />
+            </svg>
+          </div>
+
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div style="background-color: rgba(231, 255, 235, 1);" class="card-logo">
+            <img src="/assets/icons/sensor_occupied.png" alt="">
+          </div>
+          <div class="card-info">
+            <p class="text">Active Clients</p>
+            <p class="count">10,000</p>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <div class="percentage">
+            <span class="value">72.7%</span>
+            <img src="/assets/icons/arrow_shape_up_stack_2.jpg" alt="">
+          </div>
+
+          <div class="chart">
+            <svg viewBox="0 0 260 140" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <!-- Green gradient for fill area -->
+                <linearGradient id="gradient-green" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="-4.14%" stop-color="#34A353" stop-opacity="0.4" />
+                  <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+                </linearGradient>
+
+                <!-- Clip path for limiting the filled area to 70% width -->
+                <clipPath id="clip70">
+                  <rect x="0" y="0" width="210" height="140" />
+                </clipPath>
+              </defs>
+
+              <!-- Filled area (green) limited to 70% -->
+              <path class="area" d="M0,100
+          C20,50 40,30 60,70
+          C80,110 100,40 120,80
+          C140,120 160,45 180,85
+          C200,110 220,65 230,60
+          C240,50 250,35 260,10
+          L260,140 L0,140 Z" fill="url(#gradient-green)" clip-path="url(#clip70)" stroke="none" />
+
+              <!-- Neutral grey line for full chart -->
+              <path class="chart-line-neutral" d="M0,100
+          C20,50 40,30 60,70
+          C80,110 100,40 120,80
+          C140,120 160,45 180,85
+          C200,110 220,65 230,60
+          C240,50 250,35 260,10" fill="none" stroke="rgba(100,100,120,0.25)" stroke-width="4" stroke-linejoin="round"
+                stroke-linecap="round" />
+
+              <!-- Green line on top of gradient (first 70%) -->
+              <path class="chart-line-colored" d="M0,100
+          C20,50 40,30 60,70
+          C80,110 100,40 120,80
+          C140,120 160,45 180,85
+          C200,110 220,65 230,60
+          C240,50 250,35 260,10" fill="none" stroke="#34A353" stroke-width="4" stroke-linejoin="round"
+                stroke-linecap="round" clip-path="url(#clip70)" />
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div style="background-color: rgba(255, 231, 241, 1)" class="card-logo">
+            <img src="/assets/icons/person_off.svg" alt="">
+          </div>
+          <div class="card-info">
+            <p class="text">Suspended Clients</p>
+            <p class="count">10,000</p>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div style="background-color: rgba(255, 249, 231, 1)" class="card-logo">
+            <img src="/assets/icons/license.png" alt="" />
+          </div>
+          <div class="card-info">
+            <p class="text">Total Certification</p>
+            <p class="count">13,000</p>
+          </div>
+        </div>
+      </div>
+
     </div>
-    <div class="card purple">
-      <h3>13,435</h3>
-      <p>Active Clients</p>
-      <span class="trend up">↑ 8.2%</span>
+
+    <div class="upcoming">
+      <div class="upcoming-header">
+        <p>Upcoming Audits</p>
+        <a href="#">See All</a>
+      </div>
+
+      <div class="upcoming-box">
+        <div>
+          <p id="upcoming-box-text">Total Clients</p>
+          <p id="upcoming-box-number">10,000</p>
+        </div>
+        <div class="upcoming-box-percentage-div">
+          <p id="upcoming-box-percentage">12.7%</p>
+          <img src="/assets/icons/arrow_shape_up_stack_2.png" alt="logo">
+        </div>
+      </div>
+
+      <div class="horizontal-line"></div>
+
+
+      <div class="audit-list">
+        <div class="audit-card">
+          <div class="audit-card-box">
+            <div class="card-box-item">
+              <img src="/assets/icons/article.png" alt="">
+            </div>
+
+            <div class="audit-card-info">
+              <p class="code">IC-OS- 44782408</p>
+              <p class="client">PANECO AMBIENTE sei</p>
+              <p class="date">Nov 10, 2025</p>
+            <a class="view-details" href="#">View Details</a>
+            </div>
+          </div>
+        </div>
+        <div class="audit-card">
+          <div class="audit-card-box">
+            <div style="background-color: rgba(255, 249, 231, 1);"  class="card-box-item">
+              <img src="/assets/icons/article1.png" alt="">
+            </div>
+
+            <div class="audit-card-info">
+              <p class="code">IC-OS- 44782408</p>
+              <p class="client">PANECO AMBIENTE sei</p>
+              <p class="date">Nov 10, 2025</p>
+            <a class="view-details" href="#">View Details</a>
+            </div>
+          </div>
+        </div>
+        <div class="audit-card">
+          <div class="audit-card-box">
+            <div style="background-color: rgba(231, 255, 235, 1);" class="card-box-item">
+              <img src="/assets/icons/article2.png" alt="">
+            </div>
+
+            <div class="audit-card-info">
+              <p class="code">IC-OS- 44782408</p>
+              <p class="client">Global Tube</p>
+              <p class="date">Nov 10, 2025</p>
+            <a class="view-details" href="#">View Details</a>
+            </div>
+          </div>
+        </div>
+
+        
+
+        
+      </div>
     </div>
-    <div class="card blue">
-      <h3>1,245</h3>
-      <p>Suspended Clients</p>
-    </div>
-    <div class="card orange">
-      <h3>1470</h3>
-      <p>Total Trainging Certificates</p>
-      <span class="trend up">↑ 8.2%</span>
-    </div>
+
   </div>
 </div>

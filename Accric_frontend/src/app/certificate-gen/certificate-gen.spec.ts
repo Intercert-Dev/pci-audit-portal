@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Overview } from './overview';
+import { CertificateGen } from './certificate-gen';
 
-describe('Overview', () => {
-  let component: Overview;
-  let fixture: ComponentFixture<Overview>;
+describe('CertificateGen', () => {
+  let component: CertificateGen;
+  let fixture: ComponentFixture<CertificateGen>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Overview]
+      imports: [CertificateGen]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Overview);
+    fixture = TestBed.createComponent(CertificateGen);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

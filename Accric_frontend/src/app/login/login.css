@@ -4,7 +4,7 @@
 
 .login-container {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
   width: 100%;
   overflow: hidden;
 }
@@ -34,6 +34,7 @@
   width: 60%;
   padding-left: 10rem;
   padding-top: 10rem;
+  
 }
 
 .login-right-box {
@@ -43,8 +44,6 @@
 .mobile-logo {
   display: none;
 }
-
-
 
 
 .login-top-text h1 {
@@ -73,7 +72,6 @@
   border: 1px solid #FBFBFE;
   padding: 1.25rem;
   background: linear-gradient(160.41deg, #FBFBFE -5.15%, #F1F2F9 87.35%);
-  ;
   box-shadow: 0px 2px 2px rgba(255, 255, 255, 0.35);
   box-shadow: inset 2px -1px 2px rgba(141, 141, 141, 0.06);
   border-radius: 1rem;
@@ -239,19 +237,16 @@
 }
 
 
-/* ============================= */
-/* RESPONSIVE STYLES */
-/* ============================= */
-
 /* ---------- Tablets (≤1024px) ---------- */
 @media (max-width: 1024px) {
   .login-right {
     padding-left: 5rem;
-    padding-top: 10rem;
+    padding-top: 25rem;
+    padding-bottom: 2rem;
   }
 
   .login-right-box {
-    width: 90%;
+    width: 95%;
   }
 
 
@@ -336,7 +331,7 @@
 /* ---------- Mobile Devices (≤480px) ---------- */
 @media (max-width: 480px) {
   .login-right {
-    padding: 2rem 1.5rem;
+    padding: 3rem 2rem;
   }
 
   .mobile-logo img {
@@ -360,5 +355,4 @@
     padding: 1rem;
   }
 
-  
 }

@@ -1,85 +1,603 @@
-.dashboard {
-  width: 95%;
+.dashboard-container {
+  background-color: rgba(250, 251, 254, 1);
+  width: 100%;
 }
 
-.dashboard h1{
-  font-size: 28px;
-  font-weight: 700;
-  color: rgba(100, 149, 237, 0.5);
-  padding: 20px;
-  letter-spacing: 0.5px;
-  position: relative;
-  display: inline-block;
+.dashboard-box {
+  width: 100%;
+  padding: 3rem;
+}
+
+.dashboard-box h1 {
+  color: rgba(52, 60, 106, 1);
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1.5rem;
+  margin: 0;
 }
 
 .cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 20px;
+  justify-content: flex-start;
+  align-items: stretch;
+  margin-top: 1.5rem;
+  width: 100%;
 }
+
 
 .card {
+  width: 349px;
+  height: 285px;
   background: white;
-  border-radius: 12px;
-  padding: 20px;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 2px solid rgba(224, 224, 224, 1);
+  border-radius: 2rem;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.3s ease;
 }
 
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+
+/* ===== Header Section ===== */
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
-.card h3 {
+.card-logo {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: rgba(231, 237, 255, 1);
+  padding: 0.3rem;
+}
+
+.card-logo img {
+  width: 50%;
+  height: 50%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.card-info {
+  padding-top: 1rem;
+}
+
+
+.card-info .text {
   margin: 0;
-  font-size: 1.6rem;
-  font-weight: bold;
-  color: #2c3e50;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 1.5rem;
+  color: rgba(35, 35, 35, 1);
+
 }
 
-.card p {
-  color: gray;
-  margin: 6px 0;
+.card-info .count {
+  margin: 0;
+  font-family: 'Overpass', sans-serif;
+  font-weight: 600;
+  font-style: normal;
+  font-size: 2.25rem;
+  color: rgba(35, 35, 35, 1);
+}
+
+
+
+/* ===== Footer Section ===== */
+.card-footer {
+  margin-top: 2rem;
+}
+
+.percentage {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: Overpass;
+  font-weight: 300;
+  font-style: Light;
+  font-size: 1rem;
+}
+
+
+/* ===== Chart Styling ===== */
+.chart {
+  width: 80%;
+  height: 80px;
+}
+
+.chart svg {
+  width: 100%;
+  height: 100%;
+}
+
+.chart path {
+  transition: all 0.4s ease;
+}
+
+
+
+
+/* Upcoming Audits */
+.upcoming {
+  margin-top: 5rem;
+  padding-top: 1rem;
+}
+
+.upcoming-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.upcoming-header p {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1.5rem;
+  color: rgba(52, 60, 106, 1);
+}
+
+.upcoming-header a {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  color: rgba(52, 60, 106, 1);
+  text-decoration: none;
+}
+
+.upcoming-box {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2rem;
+}
+
+.upcoming-box-percentage-div {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+
+}
+
+
+#upcoming-box-text {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 1.5rem;
+  color: rgba(35, 35, 35, 1);
+}
+
+#upcoming-box-number {
+  margin: 0;
+  font-family: 'Overpass', sans-serif;
+  font-weight: 600;
+  font-size: 2.25rem;
+  color: rgba(35, 35, 35, 1);
+  margin-top: 0.25rem;
+}
+
+#upcoming-box-percentage {
+  margin: 0;
+  font-family: 'Overpass', sans-serif;
+  font-weight: 900;
+  font-size: 2rem;
+  color: rgba(0, 0, 0, 1);
+}
+
+.horizontal-line {
+  margin-top: 1rem;
+  height: 6px;
+  width: 100%;
+  background: linear-gradient(to right, #3498db 10%, rgba(224, 224, 224, 1) 10%);
+  border: none;
+}
+
+
+
+
+.audit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 3rem;
+}
+
+.audit-card {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 1);
+  border-radius: 1.5rem;
+  border: 3px solid rgba(164, 186, 228, 1);
+  box-shadow: 0px 9px 18.3px -3px rgba(0, 0, 0, 0.25);
+}
+
+.audit-card-box {
+  width: 100%;
+  margin: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+
+.card-box-item {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(231, 237, 255, 1);
+  border-radius: 30%;
+}
+
+.card-box-item img {
+  width: 50px;
+  height: 50px;
+}
+
+.audit-card-info{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.code, .client ,.date{
+  font-family: 'Inter', sans-serif;
   font-weight: 500;
+  font-size: 1.25rem;
+  color: rgba(35, 35, 35, 1);
 }
 
-.trend {
-  font-weight: bold;
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 0.9rem;
+.view-details{
+  text-decoration: none;
+  color: rgba(24, 20, 243, 1);
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 1.25rem;
 }
 
-.trend.up {
-  color: #28a745;
-  background: #e8f5e9;
-}
 
-.trend.down {
-  color: #dc3545;
-  background: #fdecea;
-}
 
-/* Card Colors */
-.green {
-  border-left: 5px solid #28a745;
-}
-.purple {
-  border-left: 5px solid #6f42c1;
-}
-.blue {
-  border-left: 5px solid #007bff;
-}
-.orange {
-  border-left: 5px solid #fd7e14;
-}
 
-/* Responsive */
-@media (max-width: 480px) {
+/* ---------- Desktop / Small laptop (>= 1025px and <1440px) ---------- */
+@media (min-width: 1025px) and (max-width: 1439px) {
+  .dashboard-box {
+    padding: 3rem 3.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
   .cards {
-    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .card {
+    width: 340px;
+    height: 285px;
+  }
+
+  .card-info .text {
+    font-size: 1.45rem;
+  }
+
+  .card-info .count {
+    font-size: 2.2rem;
+  }
+
+  .chart {
+    width: 80%;
+    height: 80px;
+  }
+  .audit-card-info{
+    gap: 1rem;
   }
 }
+
+/* ---------- Tablet landscape / small laptops (769px - 1024px) ---------- */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .dashboard-container{
+    margin-top: 5rem;
+  }
+
+  .dashboard-box {
+    padding: 2.2rem;
+  }
+
+  .dashboard-box h1 {
+    font-size: 1.35rem;
+  }
+
+  .cards {
+    gap: 18px;
+    justify-content: center;
+  }
+
+  .card {
+    width: 320px;
+    height: auto; /* allow height to grow based on content */
+    padding: 1.6rem;
+  }
+
+  .card-info .text {
+    font-size: 1.35rem;
+  }
+
+  .card-info .count {
+    font-size: 2rem;
+  }
+
+  .chart {
+    width: 100%;
+    height: 70px;
+  }
+
+  .upcoming {
+    margin-top: 3.5rem;
+  }
+
+  .upcoming-box {
+    gap: 1rem;
+  }
+
+  .audit-card-box {
+    margin: 1.25rem;
+    gap: 1rem;
+  }
+  .audit-card-info{
+    gap: 0.8rem;
+  }
+}
+
+/* ---------- Tablet portrait / large phones (481px - 768px) ---------- */
+@media (min-width: 481px) and (max-width: 768px) {
+   .dashboard-container{
+    margin-top: 6rem;
+    padding-inline: 0.5rem;
+  }
+  .dashboard-box {
+    padding: 1.6rem;
+  }
+
+  .dashboard-box h1 {
+    font-size: 1.25rem;
+  }
+
+  /* stack cards in two columns where space allows */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    align-items: start;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 520px;
+    height: auto;
+    padding: 1.25rem;
+    border-radius: 1.6rem;
+  }
+
+  .card-info .text {
+    font-size: 1.2rem;
+  }
+
+  .card-info .count {
+    font-size: 1.9rem;
+  }
+
+  .chart {
+    width: 100%;
+    height: 64px;
+  }
+
+  .upcoming {
+    margin-top: 2.5rem;
+  }
+
+  .upcoming-header {
+    gap: 0.25rem;
+  }
+
+  .upcoming-box {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .audit-card-box {
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  .audit-card-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
+
+/* ---------- Mobile (<= 480px) ---------- */
+@media (max-width: 480px) {
+  .dashboard-container{
+    margin-top: 5rem;
+    padding-inline: 0.5rem;
+  }
+  .dashboard-box {
+    padding: 1rem;
+  }
+
+  .dashboard-box h1 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* stack cards in single column */
+  .cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .card {
+    width: 100%;
+    height: auto;
+    padding: 1rem;
+    border-radius: 1.25rem;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.12);
+  }
+
+  /* reduce logo size in card header */
+  .card-logo {
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0.2rem;
+  }
+
+  .card-logo img {
+    width: 60%;
+    height: 60%;
+  }
+
+  .card-header {
+    gap: 10px;
+  }
+
+  .card-info .text {
+    font-size: 1rem;
+    line-height: 1.1;
+  }
+
+  .card-info .count {
+    font-size: 1.6rem;
+  }
+
+  .card-footer {
+    margin-top: 1rem;
+  }
+
+  .percentage {
+    font-size: 0.95rem;
+  }
+
+  .chart {
+    width: 100%;
+    height: 56px;
+  }
+
+  /* Upcoming area adjustments for small screens */
+  .upcoming {
+    margin-top: 2rem;
+    padding-top: 0.5rem;
+  }
+
+  .upcoming-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .upcoming-header p {
+    font-size: 1.1rem;
+  }
+
+  .upcoming-header a {
+    font-size: 0.95rem;
+  }
+
+  .upcoming-box {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+
+  #upcoming-box-text {
+    font-size: 1.05rem;
+  }
+
+  #upcoming-box-number {
+    font-size: 1.6rem;
+  }
+
+  #upcoming-box-percentage {
+    font-size: 1.25rem;
+  }
+
+  .horizontal-line {
+    height: 4px;
+  }
+
+  /* Audit list becomes stacked cards */
+  .audit-list {
+    gap: 12px;
+    margin-top: 2rem;
+  }
+
+  .audit-card {
+    padding: 0.5rem;
+  }
+
+  .audit-card-box {
+    flex-direction: row;
+    gap: 12px;
+    margin: 0.8rem;
+    align-items: center;
+  }
+
+  .card-box-item {
+    width: 60px;
+    height: 60px;
+    border-radius: 16%;
+  }
+
+  .card-box-item img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .audit-card-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    justify-content: flex-start;
+  }
+
+  .code, .client, .date, .view-details {
+    font-size: 1rem;
+  }
+
+  .view-details {
+    margin-top: 6px;
+  }
+}
+
+/* ---------- Utility tweaks to preserve layout on narrow widths ---------- */
+/* ensure SVG charts scale without overflowing */
+.chart svg {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100%;
+}
+
+/* make sure long text doesn't overflow audit items */
+.audit-card-info, .card-info {
+  word-break: break-word;
+}
+

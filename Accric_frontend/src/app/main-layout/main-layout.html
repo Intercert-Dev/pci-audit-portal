@@ -1,42 +1,52 @@
 <div class="main-layout" [class.sidebar-collapsed]="!isSidebarOpen">
-  <!-- TOPBAR -->
   <header class="topbar">
     <div class="topbar-left-items">
-    <button class="menu-btn" (click)="toggleSidebar()">
-      <i class="fas fa-bars"></i>
-    </button>
-
-    <div class="logo">
-      <img src="assets/Accric main-logo 1.png" alt="Intercert Logo" />
+      <button class="menu-btn" (click)="toggleSidebar()">
+        <img src="/assets/icons/dehaze.png" alt="icons">
+      </button>
+      <div class="logo">
+        <img src="/assets/Frame 355.png" alt="Intercert Logo" />
+      </div>
     </div>
+    <div class="header-right">
+      <p>Dashboard</p>
+      <div class="header-right-items">
+        <div class="search-box">
+          <img src="/assets/icons/magnifying-glass 1.png" alt="Search icon">
+          <input type="text" placeholder="Search for something">
+        </div>
+        <div class="notification-bell">
+          <img id="notification-icon" src="/assets/icons/002-notification-1.png" alt="Notifications">
+        </div>
+        <img id="user-icon" src="/assets/57d3d250790e98129931897251abd3915a931233.jpg" alt="User" class="user-avatar">
+      </div>
     </div>
 
-    <button class="logout-btn" (click)="onLogout()">Logout</button>
+    <!-- <button class="logout-btn" (click)="onLogout()">Logout</button> -->
+
   </header>
-
-  <!-- LAYOUT BODY -->
   <div class="layout-body">
-    <!-- SIDEBAR -->
-    <aside class="sidebar" [class.closed]="!isSidebarOpen">
+
+    <aside class="sidebar" [class.open]="isSidebarOpen" [class.closed]="!isSidebarOpen">
       <nav>
         <ul>
           <li routerLink="/dashboard" routerLinkActive="active">
-            <img src="assets/icons/home.png" alt="icon"><span>Dashboard</span>
+            <img src="assets/icons/home.png" alt="icon"><span id="sidebaar-text">Dashboard</span>
           </li>
           <li routerLink="/add-client" routerLinkActive="active">
-            <img src="assets/icons/person_add.png" alt="icon"><span> Add Client</span>
+            <img src="assets/icons/person_add.png" alt="icon"><span id="sidebaar-text"> Add Client</span>
           </li>
           <li routerLink="/client-list" routerLinkActive="active">
-            <img src="assets/icons/calendar_view_week.png" alt="icon"><span>Client List</span>
+            <img src="assets/icons/calendar_view_week.png" alt="icon"><span id="sidebaar-text">Client List</span>
           </li>
           <li routerLink="/asv-audit" routerLinkActive="active">
-            <img src="assets/icons/breaking_news_alt_1.png" alt="icon"><span>ASV Audit</span>
+            <img src="assets/icons/breaking_news_alt_1.png" alt="icon"><span id="sidebaar-text">ASV Audit</span>
           </li>
           <li routerLink="/certificate-gen" routerLinkActive="active">
-            <img src="assets/icons/card_membership.png" alt="icon"><span>Certificate Gen.</span>
+            <img src="assets/icons/card_membership.png" alt="icon"><span id="sidebaar-text">Certificate Gen.</span>
           </li>
           <li routerLink="/settings" routerLinkActive="active">
-            <img src="assets/icons/settings solid 1.png" alt="icon"><span>Settings</span>
+            <img src="assets/icons/settings solid 1.png" alt="icon"><span id="sidebaar-text">Settings</span>
           </li>
 
         </ul>

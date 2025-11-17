@@ -31,6 +31,7 @@
   gap: 1rem;
   width: 200px;
   padding-block: 1rem;
+  margin-left: 0.9rem;
 }
 
 .menu-btn {
@@ -143,18 +144,22 @@
 }
 
 .sidebar {
-  width: 230px;
+  width: 267px;
   background: white;
   color:rgba(177, 177, 177, 1);
   overflow: hidden;
   white-space: nowrap; 
   transition: width 0.6s ease-in-out; 
+  padding-inline: 36px;
 }
 
-
+.sidebaar-box{
+  width: 196px;
+}
 
 .sidebar.closed {
   width: 70px;
+  padding-inline: 0px !important;
 }
 
 .sidebar nav ul {
@@ -163,21 +168,13 @@
   padding: 0;
 }
 
-.sidebar nav ul li {
+/* .sidebar nav ul li {
   padding: 12px 20px;
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap : 1.5rem;
   cursor: pointer;
 }
-.sidebar nav ul li.active span,
-.sidebar nav ul li.active a {
-  color: rgba(66, 133, 244, 1);
-  
-}
-
-
-
 
 .sidebar nav ul li img {
   width: 20px;
@@ -189,11 +186,10 @@
   font-weight: 500;
   font-size: 18px;
   transition: opacity 0.3s ease, width 0.3s ease;
-}
+} */
 
 
-
-.sidebar.closed nav ul li span {
+/* .sidebar.closed nav ul li span {
   opacity: 0;
   visibility: hidden;
   width: 0;
@@ -203,6 +199,80 @@
 .sidebar.closed nav ul li {
   justify-content: center;
   padding: 12px 0;
+} */
+
+
+/* Remove padding when sidebar is closed */
+.sidebar {
+  width: 267px;
+  background: white;
+  color: rgba(177, 177, 177, 1);
+  overflow: hidden;
+  white-space: nowrap;
+  transition: width 0.4s ease-in-out;
+  padding-inline: 16px; /* reduce default padding */
+}
+
+/* When sidebar is closed */
+.sidebar.closed {
+  width: 70px;
+  padding-inline: 0px !important; /* IMPORTANT FIX */
+}
+
+/* Fix inside container width */
+.sidebaar-box {
+  width: 100%; /* FIXED (no fixed width) */
+}
+
+/* Icon list */
+.sidebar nav ul li {
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  cursor: pointer;
+}
+
+/* When sidebar collapsed, icons stay centered */
+.sidebar.closed nav ul li {
+  justify-content: center;
+  padding: 12px 0;
+}
+
+
+.sidebar nav ul li span {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  transition: opacity 0.3s ease, width 0.3s ease;
+}
+
+/* Hide only text when collapsed */
+.sidebar.closed nav ul li span {
+  opacity: 0;
+  width: 0;
+  visibility: hidden;
+  overflow: hidden;
+}
+
+
+
+.sidebar nav ul li.active span,
+.sidebar nav ul li.active a {
+  color: rgba(66, 133, 244, 1);
+  
+}
+
+.layout-body-box {
+  width: 267px;
+  transition: all 0.6s ease;
+}
+
+
+.main-layout.sidebar-collapsed .layout-body-box {
+  width: 100px;      
+  padding-left: 1.6rem; 
+  transition: all 0.9s ease;
 }
 
 
@@ -514,7 +584,7 @@
     top: 13rem;
     left: 0;
     height: 100%;
-    width: 70%;
+    width: 55%;
     max-width: 260px;
     background-color: white;
     z-index: 100;
@@ -528,7 +598,7 @@
 
   .sidebar nav ul li {
     padding: 12px 16px;
-    gap: 8px;
+    gap: 20px;
   }
 
   .sidebar nav ul li span {

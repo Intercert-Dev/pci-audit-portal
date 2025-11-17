@@ -26,32 +26,33 @@
 
   </header>
   <div class="layout-body">
+    <div class="layout-body-box">
+      <aside class="sidebar" [class.open]="isSidebarOpen" [class.closed]="!isSidebarOpen">
+        <nav class="sidebaar-box">
+          <ul>
+            <li routerLink="/dashboard" routerLinkActive="active">
+              <img src="assets/icons/home.png" alt="icon"><span id="sidebaar-text">Dashboard</span>
+            </li>
+            <li routerLink="/add-client" routerLinkActive="active">
+              <img src="assets/icons/person_add.png" alt="icon"><span id="sidebaar-text"> Add Client</span>
+            </li>
+            <li routerLink="/client-list" routerLinkActive="active">
+              <img src="assets/icons/calendar_view_week.png" alt="icon"><span id="sidebaar-text">Client List</span>
+            </li>
+            <li routerLink="/asv-audit" routerLinkActive="active">
+              <img src="assets/icons/breaking_news_alt_1.png" alt="icon"><span id="sidebaar-text">ASV Audit</span>
+            </li>
+            <li routerLink="/certificate-gen" routerLinkActive="active">
+              <img src="assets/icons/card_membership.png" alt="icon"><span id="sidebaar-text">Certificate Gen.</span>
+            </li>
+            <li routerLink="/settings" routerLinkActive="active">
+              <img src="assets/icons/settings solid 1.png" alt="icon"><span id="sidebaar-text">Settings</span>
+            </li>
+          </ul>
+        </nav>
+      </aside>
 
-    <aside class="sidebar" [class.open]="isSidebarOpen" [class.closed]="!isSidebarOpen">
-      <nav>
-        <ul>
-          <li routerLink="/dashboard" routerLinkActive="active">
-            <img src="assets/icons/home.png" alt="icon"><span id="sidebaar-text">Dashboard</span>
-          </li>
-          <li routerLink="/add-client" routerLinkActive="active">
-            <img src="assets/icons/person_add.png" alt="icon"><span id="sidebaar-text"> Add Client</span>
-          </li>
-          <li routerLink="/client-list" routerLinkActive="active">
-            <img src="assets/icons/calendar_view_week.png" alt="icon"><span id="sidebaar-text">Client List</span>
-          </li>
-          <li routerLink="/asv-audit" routerLinkActive="active">
-            <img src="assets/icons/breaking_news_alt_1.png" alt="icon"><span id="sidebaar-text">ASV Audit</span>
-          </li>
-          <li routerLink="/certificate-gen" routerLinkActive="active">
-            <img src="assets/icons/card_membership.png" alt="icon"><span id="sidebaar-text">Certificate Gen.</span>
-          </li>
-          <li routerLink="/settings" routerLinkActive="active">
-            <img src="assets/icons/settings solid 1.png" alt="icon"><span id="sidebaar-text">Settings</span>
-          </li>
-
-        </ul>
-      </nav>
-    </aside>
+    </div>
 
     <!-- MAIN CONTENT -->
     <main class="main-content">

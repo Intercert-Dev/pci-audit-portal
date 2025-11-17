@@ -118,7 +118,7 @@ input::placeholder {
 
 .form-actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   margin-top: 1.5rem;
   gap: 1.25rem;
 }
@@ -158,6 +158,11 @@ input::placeholder {
   font-size: 1.25rem;
   color: rgba(245, 247, 250, 1);
 }
+.btn-primary img {
+   transform: rotate(-90deg);
+}
+
+
 
 
 
@@ -207,6 +212,14 @@ input::placeholder {
     height: 60px;
     padding: 10px;
   }
+
+   .btn-primary {
+    width: 267px;
+    padding: 0.7rem 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
 
 
@@ -234,11 +247,6 @@ input::placeholder {
 
   .tab {
     width: 100%;
-    border-bottom: 3px solid transparent;
-  }
-
-  .tab.active {
-    border-bottom: 4px solid #2f5ff7;
   }
 
   .form-row {
@@ -262,15 +270,15 @@ input::placeholder {
     width: 60px;
     padding: 8px;
   }
-  .btn-primary{
-    width: 260px;
+
+  .btn-primary {
+    width: 267px;
+    padding: 0.7rem 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
-
-
-  label {
-    font-size: 0.9rem;
-  }
 }
 
 
@@ -285,7 +293,6 @@ input::placeholder {
   }
 
   .tab {
-    font-size: 0.9rem;
     padding: 0.4rem 0.3rem;
   }
 
@@ -294,12 +301,11 @@ input::placeholder {
   }
 
   .btn-primary {
-    padding: 0.7rem 1rem;
-    border-radius: 0.8rem;
-  }
-
-  .btn-primary span {
-    font-size: 1rem;
+    padding: 0.7rem 2.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 220px;
   }
 
   .form-actions{
@@ -311,9 +317,7 @@ input::placeholder {
     width: 60px;
     padding: 8px;
   }
-  .btn-primary{
-    width: 220px;
-  }
+ 
 
   input,
   select {

@@ -164,7 +164,6 @@ input::placeholder {
 }
 
 
-/* Error message styling */
 .error {
   color: red !important;
   font-size: 1rem;
@@ -173,8 +172,6 @@ input::placeholder {
 }
 
 
-
-/* Input red border on error */
 input.ng-invalid.ng-touched,
 select.ng-invalid.ng-touched {
   border: 1px solid #d9534f !important;

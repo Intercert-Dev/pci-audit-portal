@@ -124,7 +124,7 @@ input::placeholder {
 }
 
 
-.go-back-btn{
+.go-back-btn {
   width: 49px;
   height: 49px;
   border-radius: 15px;
@@ -158,10 +158,27 @@ input::placeholder {
   font-size: 1.25rem;
   color: rgba(245, 247, 250, 1);
 }
+
 .btn-primary img {
-   transform: rotate(-90deg);
+  transform: rotate(-90deg);
 }
 
+
+/* Error message styling */
+.error {
+  color: red !important;
+  font-size: 1rem;
+  margin-top: 5px;
+  display: block;
+}
+
+
+
+/* Input red border on error */
+input.ng-invalid.ng-touched,
+select.ng-invalid.ng-touched {
+  border: 1px solid #d9534f !important;
+}
 
 
 
@@ -213,7 +230,7 @@ input::placeholder {
     padding: 10px;
   }
 
-   .btn-primary {
+  .btn-primary {
     width: 267px;
     padding: 0.7rem 1rem;
     display: flex;
@@ -227,7 +244,7 @@ input::placeholder {
 @media (max-width: 768px) {
   .add-client-container {
     margin-top: 5rem;
-    
+
   }
 
   .add-client-box {
@@ -308,7 +325,7 @@ input::placeholder {
     width: 220px;
   }
 
-  .form-actions{
+  .form-actions {
     display: flex;
     flex-direction: row;
   }
@@ -317,7 +334,7 @@ input::placeholder {
     width: 60px;
     padding: 8px;
   }
- 
+
 
   input,
   select {

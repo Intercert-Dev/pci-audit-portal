@@ -10,8 +10,10 @@ import { FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
   styleUrls: ['./add-client.css']
 })
 export class AddClient {
-  // Define all form fields with sensible defaults
+
   activeTab: string = 'client-profile';
+  showErrors = false;
+
   tabs = [
     'client-profile',
     'primary-contacts',
@@ -21,109 +23,114 @@ export class AddClient {
     'compliance-results'
   ];
 
-
-  client: any = {
-    // Client Profile
+  clientData: any = {
     legalEntityName: '',
-    tradingName: '',
+    brandName: '',
     country: '',
     state: '',
     city: '',
     street: '',
     zipCode: '',
+    natureOfBusiness: '',
     website: '',
     typeOfBusiness: '',
-    natureOfBusiness: '',
 
-    // Primary Contacts
     primaryName: '',
-    designation: '',
-    email: '',
-    phone: '',
+    primaryDesignation: '',
+    primaryEmail: '',
+    primaryPhone: '',
     technicalContact: '',
-    ciso: '',
-    signOff: '',
+    iso: '',
+    clientSignoff: '',
 
-    // Assessment Summary
-    projectName: '',
+    assessmentName: '',
     assessmentType: '',
     assessmentCategory: '',
-    assessmentYear: '',
-    pciVersion: '',
-    assessmentPeriod: '',
     auditStart: '',
-    auditEnd: '',
-    reportDate: '',
-    auditStatus: 'Choose',
-    certificateIssue: '',
-    certificateExpiry: '',
-    certificateNumber: '',
-    nextAudit: '',
-
-    // Assessor Information
-    qsaName: '',
-    qsaLicense: '',
-    reviewerName: '',
-
-    // Scope and Environment
-    scope: '',
-    locationScope: '',
-
-    // Compliance Results
-    complianceStatus: '',
-    compensatingControls: 'Choose', // default dropdown
-    customApproach: 'Choose',        // default dropdown
-    nonConformities: '',
-    identified: '',
-    remediationDate: '',
-    revalidationDate: ''
+    auditEnd: ''
   };
 
+  // Required Fields for each tab
+  tabRequiredFields: { [key: string]: string[] } = {
+    "client-profile": [
+      "legalEntityName", "country", "state", "city", "street", "zipCode", "typeOfBusiness"
+    ],
+    "primary-contacts": [
+      "primaryName", "primaryDesignation", "primaryEmail", "primaryPhone", "clientSignoff"
+    ],
+    "assessment-summary": [
+      "auditStart", "auditEnd"
+    ],
+    "assessor-info": [],
+    "scope-env": [],
+    "compliance-results": []
+  };
 
-  saveAndContinue(form: NgForm) {
-    // 1️⃣ You can handle form saving here
-    if (form.valid) {
-      console.log('Form data:', form.value);
+  validateCurrentTab(form: NgForm): boolean {
+    const requiredFields: string[] = this.tabRequiredFields[this.activeTab];
+    let isValid = true;
 
-    }
+    requiredFields.forEach((fieldName: string) => {
+      const control = form.controls[fieldName];
 
+      if (control && control.invalid) {
+        control.markAsTouched();   // FIXED: No .control
+        isValid = false;
+      }
+    });
 
-    const currentIndex = this.tabs.indexOf(this.activeTab);
-    const nextIndex = currentIndex + 1;
-
-    if (nextIndex < this.tabs.length) {
-      this.activeTab = this.tabs[nextIndex];
-    } else {
-      console.log('All steps completed');
-    }
+    return isValid;
   }
 
 
-  switchTab(tabName: string) {
+  // Save and move to next tab
+  saveAndContinue(form: NgForm) {
+    if (!this.validateCurrentTab(form)) {
+      this.showErrors = true;
+      return;
+    }
+
+    this.showErrors = false;
+
+    const currentIndex = this.tabs.indexOf(this.activeTab);
+    if (currentIndex < this.tabs.length - 1) {
+      this.activeTab = this.tabs[currentIndex + 1];
+    }
+  }
+
+  // Switch tab manually (form optional)
+  switchTab(tabName: string, form?: NgForm) {
+
+    if (form && tabName !== this.activeTab) {
+      if (!this.validateCurrentTab(form)) {
+        this.showErrors = true;
+        return;
+      }
+    }
+
+    this.showErrors = false;
     this.activeTab = tabName;
   }
+
+  // Move back to previous tab
   goBack() {
     const currentIndex = this.tabs.indexOf(this.activeTab);
-    const previousIndex = currentIndex - 1;
-
-    if (previousIndex >= 0) {
-      this.activeTab = this.tabs[previousIndex];
-    } else {
-      console.log('Already on the first tab');
+    if (currentIndex > 0) {
+      this.activeTab = this.tabs[currentIndex - 1];
     }
   }
 
+  // Final submit
   onSubmit(form: NgForm) {
+    if (!this.validateCurrentTab(form)) {
+      this.showErrors = true;
+      return;
+    }
+
     if (form.valid) {
-      console.log('Client Form Submitted:', this.client);
-      alert('Form submitted successfully!');
-      form.resetForm({
-        auditStatus: 'In To Do', // reset with default value
-        compensatingControls: 'Choose',
-        customApproach: 'Choose'
-      });
-    } else {
-      alert('Please fill all required fields.');
+      console.log("Submitted Data:", this.clientData);
+      alert("Form Submitted Successfully!");
+      form.resetForm();
     }
   }
 }

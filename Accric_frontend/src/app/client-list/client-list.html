@@ -5,9 +5,10 @@
             <div class="header-right">
                 <div class="search-box">
                     <img src="/assets/icons/magnifying-glass 2.png" alt="Search Icon">
-                    <input type="text" placeholder="Search Certificates">
+                    <input type="text" placeholder="Search Certificates" [(ngModel)]="serarch_text"
+                    (input)="filter_list()">
                 </div>
-                <button class="export-btn"><span>Export to Excel</span></button>
+                <button class="export-btn" (click)="exportToExcel()"><span>Export to Excel</span></button>
             </div>
         </div>
 
@@ -27,7 +28,7 @@
 
                 <tbody>
                     <!-- Example Row -->
-                    <tr *ngFor="let row of clientList">
+                    <tr *ngFor="let row of filtered_list">
                         <td>{{ row.company }}</td>
                         <td>{{ row.certNo }}</td>
                         <td>{{ row.standard }}</td>
@@ -36,14 +37,41 @@
                         <td id="client-status">{{ row.status }}</td>
                         <td>
                             <div class="action-box">
-                                <img src="/assets/icons/edit.png" alt="Edit">
-                                <img src="/assets/icons/delete.png" alt="Delete">
+                                <img src="/assets/icons/edit.png" alt="Edit" (click)="editRow(row)">
+                                <img src="/assets/icons/delete.png" alt="Delete" (click)="deleteRow(row)">
                             </div>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
+    </div>
+</div>
 
+
+<div class="edit-popup" *ngIf="editingRow">
+    <h2>Edit Certificate</h2>
+
+    <label>Company</label>
+    <input type="text" [(ngModel)]="editingRow.company">
+
+    <label>Cert No</label>
+    <input type="text" [(ngModel)]="editingRow.certNo">
+
+    <label>Standard</label>
+    <input type="text" [(ngModel)]="editingRow.standard">
+
+    <label>Issue Date</label>
+    <input type="date" [(ngModel)]="editingRow.issueDate">
+
+    <label>Valid Date</label>
+    <input type="date" [(ngModel)]="editingRow.validDate">
+
+    <label>Status</label>
+    <input type="text" [(ngModel)]="editingRow.status">
+
+    <div class="buttons">
+        <button class="save-btn" (click)="saveEdit()">Save</button>
+        <button class="cancel-btn" (click)="cancelEdit()">Cancel</button>
     </div>
 </div>

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { AuthService } from '../service/auth-service';
 
 @Component({
   imports : [CommonModule,RouterOutlet,RouterLink,RouterLinkActive],
@@ -11,12 +12,14 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 export class MainLayout {
   isSidebarOpen = true;
 
+  constructor(private authService:AuthService){}
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;
   }
 
   onLogout() {
-    console.log('Logout clicked');
-    // TODO: Add logout logic (e.g., clear token, navigate to login)
+    console.log("Clicked main-layout Logout");
+
+    this.authService.logout();
   }
 }

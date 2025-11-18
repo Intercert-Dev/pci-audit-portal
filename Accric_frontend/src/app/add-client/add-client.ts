@@ -82,8 +82,6 @@ export class AddClient {
     return isValid;
   }
 
-
-  // Save and move to next tab
   saveAndContinue(form: NgForm) {
     if (!this.validateCurrentTab(form)) {
       this.showErrors = true;
@@ -98,7 +96,6 @@ export class AddClient {
     }
   }
 
-  // Switch tab manually (form optional)
   switchTab(tabName: string, form?: NgForm) {
 
     if (form && tabName !== this.activeTab) {
@@ -112,7 +109,6 @@ export class AddClient {
     this.activeTab = tabName;
   }
 
-  // Move back to previous tab
   goBack() {
     const currentIndex = this.tabs.indexOf(this.activeTab);
     if (currentIndex > 0) {
@@ -120,7 +116,6 @@ export class AddClient {
     }
   }
 
-  // Final submit
   onSubmit(form: NgForm) {
     if (!this.validateCurrentTab(form)) {
       this.showErrors = true;

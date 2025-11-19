@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
 
-    constructor() { }
+    constructor(private router : Router) { }
 
     // Read cookie by name
     private getCookie(name: string): string | null {
@@ -30,10 +31,10 @@ export class AuthService {
     // Logout
     logout() {
         console.log("Clicked authservice Logout");
-        
         localStorage.removeItem('jwt');
         localStorage.removeItem('token');
         localStorage.removeItem('isLoggedIn');
+        this.router.navigate(['/login']);
     }
 
     // Check Login (Google or Normal)

@@ -20,27 +20,6 @@ export class Login implements OnInit {
 
   constructor(private authService: AuthService, private router: Router) { }
 
-  // ngOnInit() {
-  //   // Read JWT after Google redirect
-  //   const urlParams = new URLSearchParams(window.location.search);
-  //   const jwt = urlParams.get('jwt') || urlParams.get('tocken');
-
-  //   console.log("URL get by us",urlParams);
-  //   console.log("JWT get by Us",jwt);
-
-
-
-  //   if (jwt) {
-  //     // Save token
-  //     localStorage.setItem('jwt', jwt);
-
-  //     // Remove token from URL
-  //     window.history.replaceState({}, document.title, '/');
-
-  //     // Navigate to dashboard
-  //     this.router.navigate(['/dashboard']);
-  //   }
-  // }
 
   ngOnInit() {
     // Move JWT from cookie → localStorage

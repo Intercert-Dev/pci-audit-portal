@@ -42,21 +42,22 @@
           <img class="arrow-icon" src="/assets/icons/arrow_forward_ios.png" [class.open]="dropdownOpen">
 
           <div class="dropdown-options" *ngIf="dropdownOpen">
-            <div class="option" (click)="selectRole('Admin')">Admin</div>
-            <div class="option" (click)="selectRole('User')">User</div>
-            <div class="option" (click)="selectRole('Manager')">Manager</div>
+            <div class="option" *ngFor="let r of roles" (click)="selectRole(r)">
+              {{ r }}
+            </div>
           </div>
         </div>
+
         <small class="error" *ngIf="userForm.submitted && !selectedRole">
           Role is required
         </small>
       </div>
       <div class="btn">
         <button class="submit-btn" type="submit">
-        <span>Create User</span> 
-      </button>
+          <span>Create User</span>
+        </button>
       </div>
-      
+
     </form>
   </div>
 </div>

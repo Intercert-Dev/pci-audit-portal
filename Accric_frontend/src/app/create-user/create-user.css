@@ -95,9 +95,8 @@ input::placeholder {
 .dropdown-options {
   position: absolute;
   top: 105%;
-  left: 80%;
-  width: 144px;
-  height: 152px;
+  left: 73%;
+  width: 154px;
   background-color: white;
   border: 1px solid rgba(223, 234, 242, 1);
   border-radius: 22px;

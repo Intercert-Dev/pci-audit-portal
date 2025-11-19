@@ -157,7 +157,6 @@ tbody tr {
 @media (max-width: 1024px) {
 
   .client-list-box {
-    margin-top: 7rem;
     margin-left: 20px;
     margin-right: 20px;
   }
@@ -195,7 +194,6 @@ tbody tr {
 
     margin-left: 15px;
     margin-right: 15px;
-    margin-top: 7rem;
     padding: 2rem;
   }
 

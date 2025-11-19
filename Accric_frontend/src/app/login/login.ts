@@ -6,8 +6,8 @@ import { AuthService } from '../service/auth-service';
 
 @Component({
   selector: 'app-login',
-  standalone : true,
-  imports : [CommonModule,FormsModule, ReactiveFormsModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './login.html',
   styleUrls: ['./login.css'],
 })
@@ -18,14 +18,48 @@ export class Login implements OnInit {
   rememberMe: boolean = false;
   showPassword: boolean = false;
 
-  constructor(private authService:AuthService, private router:Router){}
+  constructor(private authService: AuthService, private router: Router) { }
+
+  // ngOnInit() {
+  //   // Read JWT after Google redirect
+  //   const urlParams = new URLSearchParams(window.location.search);
+  //   const jwt = urlParams.get('jwt') || urlParams.get('tocken');
+
+  //   console.log("URL get by us",urlParams);
+  //   console.log("JWT get by Us",jwt);
+
+
+
+  //   if (jwt) {
+  //     // Save token
+  //     localStorage.setItem('jwt', jwt);
+
+  //     // Remove token from URL
+  //     window.history.replaceState({}, document.title, '/');
+
+  //     // Navigate to dashboard
+  //     this.router.navigate(['/dashboard']);
+  //   }
+  // }
 
   ngOnInit() {
-    
+    // Move JWT from cookie → localStorage
+    this.authService.saveJwtFromCookie();
+
+    // If JWT exists in localStorage → redirect
+    if (localStorage.getItem("jwt")) {
+      this.router.navigate(['/dashboard']);
+    }
   }
+
 
   togglePassword() {
     this.showPassword = !this.showPassword;
+  }
+
+  getCookie(name: string): string | null {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? match[2] : null;
   }
 
   onLogin() {
@@ -35,7 +69,7 @@ export class Login implements OnInit {
     console.log('Password:', this.password);
     console.log('Remember Me:', this.rememberMe);
   }
-   loginWithGoogle() {
+  loginWithGoogle() {
     window.location.href = 'https://unsordid-kenya-semirarely.ngrok-free.dev/api/auth/google';
   }
 }

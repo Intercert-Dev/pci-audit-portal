@@ -184,7 +184,6 @@ select.ng-invalid.ng-touched {
 @media (max-width: 1024px) {
   .add-client-box {
     width: 100%;
-    margin-top: 5rem;
     padding: 1.5rem;
     padding-inline: 2rem;
     overflow-x: hidden;

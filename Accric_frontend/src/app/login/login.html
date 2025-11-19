@@ -15,21 +15,24 @@
         <h1>Log in</h1>
         <p>You can sign in to access with existing account</p>
       </div>
-      <button class="google-btn" (click)="loginWithGoogle()">
+      <button class="google-btn">
         <img src="assets/icons/Icon.png" alt="Google" />
         <span class="google-btn-text">Google</span>
       </button>
-     
+      <!-- Divider -->
       <div class="divider-container">
         <div class="divider-line"></div>
         <span class="divider-container-text">Or continue with email address</span>
       </div>
 
       <form>
+        <!-- Email -->
         <div class="input-box">
           <img src="assets/icons/Email.png" alt="">
           <input type="email" [(ngModel)]="email" name="email" placeholder="Email" required />
-        </div>  
+        </div>
+
+        <!-- Password -->
         <div class="input-box-password">
           <div class="input-password">
             <img src="assets/icons/Password.png" alt="">
@@ -41,6 +44,7 @@
           </button>
         </div>
 
+        <!-- Remember Me -->
         <div class="remember-forget">
           <label class="remember">
             <input type="checkbox" [(ngModel)]="rememberMe" name="rememberMe" />
@@ -48,11 +52,14 @@
           </label>
           <button type="button" class="forget-btn">Forget Password?</button>
         </div>
+        <!-- Login Button -->
         <button type="submit" class="login-btn">Get started</button>
+
         <div class="signup-text">
           <span>Don't have an account yet?</span>
           <a href="#">Sign up</a>
         </div>
+
       </form>
     </div>
 

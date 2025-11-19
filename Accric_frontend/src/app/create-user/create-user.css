@@ -2,7 +2,6 @@
   display: flex;
   background-color: rgba(250, 251, 254, 1);
   width: 100%;
-  /* max-width: 1440px; */
   padding-left: 55px;
   padding-top: 38px;
   min-height: 88vh;
@@ -39,7 +38,6 @@
 .form-group input {
   width: 50%;
   border-radius: 15px;
-  background-color: rgba(255, 255, 255, 1);
   border: 1px solid rgba(223, 234, 242, 1);
   padding-block: 16px;
   padding-inline: 17px;
@@ -52,6 +50,13 @@ input::placeholder {
   font-size: 14px;
   color: rgba(113, 142, 191, 1);
 }
+
+.form-group input:focus {
+  outline: none;
+  border-color: rgba(223, 234, 242, 1);
+  box-shadow: none; 
+}
+
 
 .custom-select {
   width: 50%;
@@ -169,6 +174,7 @@ input::placeholder {
 
   .btn {
     padding-right: 5rem;
+    justify-content: flex-start;
   }
 }
 
@@ -184,6 +190,7 @@ input::placeholder {
   .form-box {
     padding-left: 1.5rem;
     padding-top: 1.5rem;
+    padding-right: 1.5rem;
   }
 
   .form-group input,
@@ -198,16 +205,18 @@ input::placeholder {
 
   .btn {
     padding-right: 0;
-    justify-content: center;
+    justify-content: flex-start;
   }
 
-  .submit-btn {
-    width: 100%;
-  }
+ 
 }
 
 /* For screens ≤ 480px (Mobile) */
 @media (max-width: 480px) {
+
+  .form-box{
+    margin-top: 1rem;
+  }
 
   .form-group {
     margin-bottom: 25px;

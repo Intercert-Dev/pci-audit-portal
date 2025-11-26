@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-add-client',
@@ -14,11 +15,13 @@ export class AddClient {
   activeTab: string = 'client-profile';
   showErrors = false;
 
-   previousReportFile: File | null = null;
+  previousReportFile: File | null = null;
   currentReportFile: File | null = null;
 
   previousReportUrl: string | null = null;
   currentReportUrl: string | null = null;
+
+  constructor(private http: HttpClient) { }
 
   tabs = [
     'client-profile',
@@ -57,22 +60,36 @@ export class AddClient {
     auditEnd: ''
   };
 
-  // Required Fields for each tab
+  // Required Fields for each tab (file uploads are optional)
   tabRequiredFields: { [key: string]: string[] } = {
-    "client-profile": [
-      "legalEntityName", "country", "state", "city", "street", "zipCode", "typeOfBusiness"
-    ],
-    "primary-contacts": [
-      "primaryName", "primaryDesignation", "primaryEmail", "primaryPhone", "clientSignoff"
-    ],
-    "assessment-summary": [
-      "auditStart", "auditEnd"
-    ],
+    "client-profile": ["legalEntityName", "country", "state", "city", "street", "zipCode", "typeOfBusiness"],
+    "primary-contacts": ["primaryName", "primaryDesignation", "primaryEmail", "primaryPhone", "clientSignoff"],
+    "assessment-summary": ["auditStart", "auditEnd"],
     "assessor-info": [],
     "scope-env": [],
-    "compliance-results": []
+    "compliance-results": [],
+    "report-verification": [] // No required fields
   };
 
+  private sendClientDataToAPI(data: any) {
+    const url = 'http://pci.accric.com/api/auth/create-client';
+    const token = localStorage.getItem("jwt");
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+
+    this.http.post(url, data, { headers }).subscribe({
+      next: (res) => {
+        console.log('API Response:', res);
+        alert('Client created successfully!');
+      },
+      error: (err) => {
+        console.error('API Error:', err);
+        alert('Failed to create client. Please check console.');
+      }
+    });
+  }
 
   onUpload(type: 'previous' | 'current') {
     const input = document.createElement('input');
@@ -97,23 +114,13 @@ export class AddClient {
 
   onPreview(type: 'previous' | 'current') {
     const url = type === 'previous' ? this.previousReportUrl : this.currentReportUrl;
-
-    if (!url) {
-      alert('No file uploaded to preview.');
-      return;
-    }
-
+    if (!url) return;
     window.open(url, '_blank');
   }
 
-   onDownload(type: 'previous' | 'current') {
+  onDownload(type: 'previous' | 'current') {
     const file = type === 'previous' ? this.previousReportFile : this.currentReportFile;
-
-    if (!file) {
-      alert('No file uploaded to download.');
-      return;
-    }
-
+    if (!file) return;
     const link = document.createElement('a');
     link.href = URL.createObjectURL(file);
     link.download = file.name;
@@ -121,14 +128,13 @@ export class AddClient {
   }
 
   validateCurrentTab(form: NgForm): boolean {
-    const requiredFields: string[] = this.tabRequiredFields[this.activeTab];
+    const requiredFields: string[] = this.tabRequiredFields[this.activeTab] || [];
     let isValid = true;
 
     requiredFields.forEach((fieldName: string) => {
       const control = form.controls[fieldName];
-
       if (control && control.invalid) {
-        control.markAsTouched();   // FIXED: No .control
+        control.markAsTouched();
         isValid = false;
       }
     });
@@ -141,9 +147,7 @@ export class AddClient {
       this.showErrors = true;
       return;
     }
-
     this.showErrors = false;
-
     const currentIndex = this.tabs.indexOf(this.activeTab);
     if (currentIndex < this.tabs.length - 1) {
       this.activeTab = this.tabs[currentIndex + 1];
@@ -151,23 +155,19 @@ export class AddClient {
   }
 
   switchTab(tabName: string, form?: NgForm) {
-
     if (form && tabName !== this.activeTab) {
       if (!this.validateCurrentTab(form)) {
         this.showErrors = true;
         return;
       }
     }
-
     this.showErrors = false;
     this.activeTab = tabName;
   }
 
   goBack() {
     const currentIndex = this.tabs.indexOf(this.activeTab);
-    if (currentIndex > 0) {
-      this.activeTab = this.tabs[currentIndex - 1];
-    }
+    if (currentIndex > 0) this.activeTab = this.tabs[currentIndex - 1];
   }
 
   onSubmit(form: NgForm) {
@@ -175,11 +175,11 @@ export class AddClient {
       this.showErrors = true;
       return;
     }
-
     if (form.valid) {
-      console.log("Submitted Data:", this.clientData);
-      alert("Form Submitted Successfully!");
-      form.resetForm();
+      console.log("Form Data:", this.clientData);
+      console.log("Previous Report File:", this.previousReportFile);
+      console.log("Current Report File:", this.currentReportFile);
+      this.sendClientDataToAPI(this.clientData);
     }
   }
 }

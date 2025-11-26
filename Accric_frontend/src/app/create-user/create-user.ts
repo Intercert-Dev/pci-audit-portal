@@ -1,9 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatOptionModule } from '@angular/material/core';
+import { FormsModule, NgForm } from '@angular/forms';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 export enum Role {
   SUPER_ADMIN = 'SUPER_ADMIN',
@@ -18,26 +17,24 @@ export enum Role {
   CLIENT_REVIEWER = 'CLIENT_REVIEWER',
 }
 
-
 @Component({
   selector: 'app-create-user',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatFormFieldModule,
-    MatSelectModule,
-    MatOptionModule,],
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './create-user.html',
-  styleUrl: './create-user.css',
+  styleUrls: ['./create-user.css']
 })
-
 export class CreateUser {
-
   dropdownOpen = false;
   selectedRole: string | null = null;
-
   roles = Object.values(Role);
-  
-  constructor() { }
+  isLoading = false;
+  message = '';
+  messageType: 'success' | 'error' = 'success';
 
-   toggleDropdown() {
+  constructor(private http: HttpClient, private router : Router) { }
+
+  toggleDropdown() {
     this.dropdownOpen = !this.dropdownOpen;
   }
 
@@ -46,18 +43,70 @@ export class CreateUser {
     this.dropdownOpen = false;
   }
 
-  // Close dropdown if clicked outside (optional)
-  onClickOutside() {
-    this.dropdownOpen = false;
+  // Close dropdown when clicking outside (you can implement this if needed)
+  onClickOutside(event: Event) {
+    if (!(event.target as Element).closest('.custom-select')) {
+      this.dropdownOpen = false;
+    }
   }
 
   onSubmit(form: NgForm) {
-    if (form.invalid) {
+    if (form.invalid || !this.selectedRole) {
+      // Mark all fields as touched to show validation errors
+      Object.keys(form.controls).forEach(key => {
+        form.controls[key].markAsTouched();
+      });
       return;
     }
-    const formData = form.value;
-    console.log("User Created:", formData);
-    form.reset();
+
+    this.isLoading = true;
+    this.message = '';
+
+    const formData = {
+      name: form.value.name,
+      email: form.value.email,
+      password: form.value.password,
+      role: this.selectedRole
+    };
+
+    // Get JWT token from localStorage
+    const token = localStorage.getItem('jwt');
+    if (!token) {
+      this.message = 'Authentication token not found. Please login again.';
+      this.messageType = 'error';
+      this.isLoading = false;
+      return;
+    }
+
+    // Set headers
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+
+    // Make API call
+    this.http.post(
+      'http://pci.accric.com/api/auth/create-user',
+      formData,
+      { headers }
+    ).subscribe({
+      next: (response: any) => {
+        console.log('User created successfully:', response);
+        this.message = 'User created successfully!';
+        this.messageType = 'success';
+        this.isLoading = false;
+
+        // Properly reset form + validation + submitted state
+        form.resetForm();
+        this.selectedRole = null;
+        this.router.navigate(['/user-list']);
+      },
+      error: (error) => {
+        console.error('Error creating user:', error);
+        this.message = error.error?.message || 'Failed to create user. Please try again.';
+        this.messageType = 'error';
+        this.isLoading = false;
+      }
+    });
   }
 }
-

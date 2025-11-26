@@ -18,7 +18,7 @@ export class CertificateGen {
   generateCertificate(form: NgForm) {
     const certNo = form.value.certificateNo;
 
-    this.http.get(`https://your-backend-url.com/api/certificate/${certNo}`)
+    this.http.get(`http://pci.accric.com/api/auth/generate-certificate-from-template`)
       .subscribe({
         next: (res: any) => {
           console.log("Certificate fetched:", res);

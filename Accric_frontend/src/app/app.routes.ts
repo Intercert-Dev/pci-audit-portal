@@ -9,6 +9,7 @@ import { CertificateGen } from './certificate-gen/certificate-gen';
 import { AuthGuard } from './service/Guard/auth.Guard';
 import { CreateUser } from './create-user/create-user';
 import { AsvClientList } from './asv-client-list/asv-client-list';
+import { UserList } from './user-list/user-list';
 
 
 export const routes: Routes = [
@@ -16,7 +17,7 @@ export const routes: Routes = [
   {
     path: '',
     component: MainLayout,
-    // canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: Dashboard },
@@ -26,6 +27,7 @@ export const routes: Routes = [
       { path: 'certificate-gen', component: CertificateGen },
       { path: 'create-user', component: CreateUser },
       { path: 'asv-client-list', component: AsvClientList},
+      { path: 'user-list', component: UserList},
 
     ],
   },

@@ -162,12 +162,12 @@
           </div>
           <div class="form-group">
             <label>Phone*</label>
-            <input type="text" placeholder="Enter Phone Number" name="primaryPhone" required pattern="^[0-9()+-\s]*$"
+            <input type="text" placeholder="Enter Phone Number" name="primaryPhone" required
               [(ngModel)]="clientData.primaryPhone" #primaryPhone="ngModel" />
             <div class="error" *ngIf="primaryPhone.invalid && (primaryPhone.touched || showErrors)">
-              <small *ngIf="primaryPhone.errors?.['required']">Please enter Phone.</small>
-              <small *ngIf="primaryPhone.errors?.['pattern']">Invalid phone format.</small>
+              <small>Please enter Phone.</small>
             </div>
+
 
           </div>
         </div>
@@ -426,7 +426,7 @@
             <label>Previous Report</label>
 
             <div class="report-file-box">
-             
+
               <input type="text" [value]="previousReportFile ? previousReportFile.name : 'No file selected'" disabled />
 
               <div class="report-buttons">
@@ -455,7 +455,7 @@
             <label>Current Audit Report</label>
 
             <div class="report-file-box">
-             
+
               <input type="text" [value]="currentReportFile ? currentReportFile.name : 'No file selected'" disabled />
 
               <div class="report-buttons">

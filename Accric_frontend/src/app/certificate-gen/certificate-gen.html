@@ -3,12 +3,16 @@
     <p>Generate Certificate</p>
 
     <form #certForm="ngForm" (ngSubmit)="generateCertificate(certForm)" class="input-row">
-
       <input type="text" name="certificateNo" ngModel required placeholder="Enter certificate number" />
 
       <button class="certificate-btn" type="submit" [disabled]="certForm.invalid">
         <span>Generate</span>
       </button>
     </form>
+
+    <div *ngIf="certificateData" class="certificate-result">
+      <h3>Certificate Details:</h3>
+      <pre>{{ certificateData | json }}</pre>
+    </div>
   </div>
 </div>

@@ -10,14 +10,23 @@ export class AuthGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router) { }
 
   canActivate(): boolean {
-    console.log("it is in guard ");
+    if (this.authService.isOAuthCallback()) {
+      console.log("AuthGuard: Processing OAuth callback");
+      const success = this.authService.processJwtToken();
+      
+      if (success) {
+        return true;
+      } else {
+      }
+    }
 
+    // Check if user is already logged in
     if (this.authService.isLoggedIn()) {
-      console.log("Successfully Login : ");
+      console.log("AuthGuard: User is authenticated");
       return true;
     } else {
-      console.log("We got any error like");
-      this.router.navigate(['/login']); // redirect to login
+      console.log("AuthGuard: User not authenticated, redirecting to login");
+      this.router.navigate(['/login']);
       return false;
     }
   }

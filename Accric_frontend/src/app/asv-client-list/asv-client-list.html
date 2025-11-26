@@ -1,12 +1,12 @@
 <div class="client-list-container">
     <div class="client-list-box">
         <div class="header-row">
-            <p>Client Certificates</p>
+            <p>ASV Client List</p>
             <div class="header-right">
                 <div class="search-box">
                     <img src="/assets/icons/magnifying-glass 2.png" alt="Search Icon">
                     <input type="text" placeholder="Search Certificates" [(ngModel)]="serarch_text"
-                    (input)="filter_list()">
+                        (input)="filter_list()">
                 </div>
                 <button class="export-btn" (click)="exportToExcel()"><span>Export to Excel</span></button>
             </div>
@@ -17,11 +17,10 @@
                 <thead>
                     <tr>
                         <th>Company</th>
-                        <th>Cert No.</th>
-                        <th>Standard</th>
-                        <th>Issue</th>
-                        <th>Valid</th>
-                        <th>Status</th>
+                        <th>Q1</th>
+                        <th>Q2</th>
+                        <th>Q3</th>
+                        <th>Q4</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -30,11 +29,10 @@
                     <!-- Example Row -->
                     <tr *ngFor="let row of filtered_list">
                         <td>{{ row.company }}</td>
-                        <td>{{ row.certNo }}</td>
-                        <td>{{ row.standard }}</td>
-                        <td>{{ row.issueDate }}</td>
-                        <td>{{ row.validDate }}</td>
-                        <td id="client-status">{{ row.status }}</td>
+                        <td>{{ row.Q1 }}</td>
+                        <td>{{ row.Q2 }}</td>
+                        <td>{{ row.Q3 }}</td>
+                        <td>{{ row.Q4 }}</td>
                         <td>
                             <div class="action-box">
                                 <img src="/assets/icons/edit.png" alt="Edit" (click)="editRow(row)">
@@ -50,7 +48,7 @@
 
 
 <div class="edit-popup" *ngIf="editingRow">
-    <h2>Edit Certificate</h2>
+    <h2>Edit Client</h2>
 
     <!-- Row 1 -->
     <div class="form-row">
@@ -60,34 +58,29 @@
         </div>
 
         <div class="form-group">
-            <label>Cert No</label>
-            <input type="text" [(ngModel)]="editingRow.certNo">
+            <label>Q1</label>
+            <input type="text" [(ngModel)]="editingRow.Q1">
         </div>
     </div>
 
     <!-- Row 2 -->
     <div class="form-row">
         <div class="form-group">
-            <label>Standard</label>
-            <input type="text" [(ngModel)]="editingRow.standard">
+            <label>Q2</label>
+            <input type="text" [(ngModel)]="editingRow.Q2">
         </div>
 
         <div class="form-group">
-            <label>Issue Date</label>
-            <input type="date" [(ngModel)]="editingRow.issueDate">
+            <label>Q3</label>
+            <input type="text" [(ngModel)]="editingRow.Q3">
         </div>
     </div>
 
     <!-- Row 3 -->
     <div class="form-row">
         <div class="form-group">
-            <label>Valid Date</label>
-            <input type="date" [(ngModel)]="editingRow.validDate">
-        </div>
-
-        <div class="form-group">
-            <label>Status</label>
-            <input type="text" [(ngModel)]="editingRow.status">
+            <label>Q4</label>
+            <input type="text" [(ngModel)]="editingRow.Q4">
         </div>
     </div>
 
@@ -96,4 +89,3 @@
         <button class="cancel-btn" (click)="cancelEdit()">Cancel</button>
     </div>
 </div>
-

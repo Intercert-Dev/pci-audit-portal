@@ -8,6 +8,7 @@ import { AsvAudit } from './asv-audit/asv-audit';
 import { CertificateGen } from './certificate-gen/certificate-gen';
 import { AuthGuard } from './service/Guard/auth.Guard';
 import { CreateUser } from './create-user/create-user';
+import { AsvClientList } from './asv-client-list/asv-client-list';
 
 
 export const routes: Routes = [
@@ -24,6 +25,7 @@ export const routes: Routes = [
       { path: 'asv-audit', component: AsvAudit },
       { path: 'certificate-gen', component: CertificateGen },
       { path: 'create-user', component: CreateUser },
+      { path: 'asv-client-list', component: AsvClientList},
 
     ],
   },

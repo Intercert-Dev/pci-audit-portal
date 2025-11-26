@@ -14,13 +14,20 @@ export class AddClient {
   activeTab: string = 'client-profile';
   showErrors = false;
 
+   previousReportFile: File | null = null;
+  currentReportFile: File | null = null;
+
+  previousReportUrl: string | null = null;
+  currentReportUrl: string | null = null;
+
   tabs = [
     'client-profile',
     'primary-contacts',
     'assessment-summary',
     'assessor-info',
     'scope-env',
-    'compliance-results'
+    'compliance-results',
+    'report-verification'
   ];
 
   clientData: any = {
@@ -65,6 +72,53 @@ export class AddClient {
     "scope-env": [],
     "compliance-results": []
   };
+
+
+  onUpload(type: 'previous' | 'current') {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'application/pdf';
+
+    input.onchange = () => {
+      const file = input.files?.[0];
+      if (!file) return;
+
+      if (type === 'previous') {
+        this.previousReportFile = file;
+        this.previousReportUrl = URL.createObjectURL(file);
+      } else {
+        this.currentReportFile = file;
+        this.currentReportUrl = URL.createObjectURL(file);
+      }
+    };
+
+    input.click();
+  }
+
+  onPreview(type: 'previous' | 'current') {
+    const url = type === 'previous' ? this.previousReportUrl : this.currentReportUrl;
+
+    if (!url) {
+      alert('No file uploaded to preview.');
+      return;
+    }
+
+    window.open(url, '_blank');
+  }
+
+   onDownload(type: 'previous' | 'current') {
+    const file = type === 'previous' ? this.previousReportFile : this.currentReportFile;
+
+    if (!file) {
+      alert('No file uploaded to download.');
+      return;
+    }
+
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(file);
+    link.download = file.name;
+    link.click();
+  }
 
   validateCurrentTab(form: NgForm): boolean {
     const requiredFields: string[] = this.tabRequiredFields[this.activeTab];

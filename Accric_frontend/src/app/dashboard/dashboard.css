@@ -221,8 +221,13 @@
   align-items: center;
   background-color: rgba(255, 255, 255, 1);
   border-radius: 1.5rem;
-  border: 3px solid rgba(164, 186, 228, 1);
-  box-shadow: 0px 9px 18.3px -3px rgba(0, 0, 0, 0.25);
+  border: 3px solid rgba(224, 224, 224, 1);
+  
+}
+
+.audit-card:hover{
+  box-shadow: 0px 0px 12.7px 2px rgba(100, 149, 237, 1) inset;
+
 }
 
 .audit-card-box {

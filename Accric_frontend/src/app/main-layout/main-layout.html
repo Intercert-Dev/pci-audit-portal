@@ -22,6 +22,20 @@
       </div>
     </div>
 
+    <div class="header-logout" (click)="toggleDropdown()">
+      <div class="user-box">
+        <!-- <span class="user-name">My Account</span> -->
+        <img src="/assets/icons/arrow_drop_down.png" class="arrow-icon" [class.rotate]="dropdownOpen" />
+      </div>
+
+      <!-- DROPDOWN MENU -->
+      <div class="dropdown-menu" *ngIf="dropdownOpen">
+        <div class="dropdown-item" (click)="goToProfile($event)">Profile</div>
+        <div class="dropdown-item" (click)="logout($event)">Logout</div>
+      </div>
+    </div>
+
+
 
   </header>
   <div class="layout-body">
@@ -29,7 +43,7 @@
       <aside class="sidebar" [class.open]="isSidebarOpen" [class.closed]="!isSidebarOpen">
         <nav class="sidebaar-box">
           <ul>
-            <li routerLink="/dashboard" routerLinkActive="active">
+            <li style="gap: 1.9rem;" routerLink="/dashboard" routerLinkActive="active">
               <img src="assets/icons/home.png" alt="icon"><span id="sidebaar-text">Dashboard</span>
             </li>
             <li routerLink="/add-client" routerLinkActive="active">
@@ -53,12 +67,6 @@
           </ul>
         </nav>
       </aside>
-
-      <div class="bottom-line"></div>
-        <div class="logout-btn" (click)="onLogout()">
-          <img src="/assets/icons/logout.png" alt="logout">
-          <span>LogOut</span>
-        </div>
     </div>
 
     <!-- MAIN CONTENT -->

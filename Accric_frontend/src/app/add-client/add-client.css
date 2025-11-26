@@ -178,6 +178,81 @@ select.ng-invalid.ng-touched {
 }
 
 
+/* Report Verification – File Section */
+.report-file-box {
+  background: #fff;
+  border: 1px solid rgba(223, 234, 242, 1);
+  border-radius: 1rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.report-file-box input {
+  width: 100%;
+  height: 2.5rem;
+  padding: 0 12px;
+  border: 1px solid rgba(223, 234, 242, 1);
+  border-radius: 1rem;
+  background: #f5f6f8;
+  color: rgba(113, 142, 191, 1);
+  cursor: not-allowed;
+}
+
+.report-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+
+
+.btn-upload,
+.btn-preview,
+.btn-download {
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 1rem;
+  opacity: 1;
+  padding: 0.8rem 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-upload,
+.btn-preview,
+.btn-download span {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1.25rem;
+  font-size: 20px;
+
+}
+
+/* Button colors */
+.btn-upload {
+  background-color: rgba(57, 106, 255, 1);
+  color: rgba(245, 247, 250, 1);
+}
+
+.btn-preview {
+  background-color: rgba(12, 50, 166, 1);
+  color: rgba(245, 247, 250, 1);
+}
+
+.btn-download {
+  background-color: rgba(198, 215, 246, 1);
+  color :rgba(52, 60, 106, 1);
+}
+
+.file-info {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
 
 
 /* Tablet (max-width: 1024px) */

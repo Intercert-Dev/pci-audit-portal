@@ -1,19 +1,23 @@
 <div class="add-client-container">
   <div class="add-client-box">
     <div class="tabs">
-      <button class="tab" [class.active]="activeTab === 'client-profile'" (click)="switchTab('client-profile', clientForm)">
+      <button class="tab" [class.active]="activeTab === 'client-profile'"
+        (click)="switchTab('client-profile', clientForm)">
         Client Profile
       </button>
 
-      <button class="tab" [class.active]="activeTab === 'primary-contacts'" (click)="switchTab('primary-contacts', clientForm)">
+      <button class="tab" [class.active]="activeTab === 'primary-contacts'"
+        (click)="switchTab('primary-contacts', clientForm)">
         Primary Contacts
       </button>
 
-      <button class="tab" [class.active]="activeTab === 'assessment-summary'" (click)="switchTab('assessment-summary', clientForm)">
+      <button class="tab" [class.active]="activeTab === 'assessment-summary'"
+        (click)="switchTab('assessment-summary', clientForm)">
         Assessment Summary
       </button>
 
-      <button class="tab" [class.active]="activeTab === 'assessor-info'" (click)="switchTab('assessor-info', clientForm)">
+      <button class="tab" [class.active]="activeTab === 'assessor-info'"
+        (click)="switchTab('assessor-info', clientForm)">
         Assessor Information
       </button>
 
@@ -21,8 +25,13 @@
         Scope and Environment
       </button>
 
-      <button class="tab" [class.active]="activeTab === 'compliance-results'" (click)="switchTab('compliance-results', clientForm)">
+      <button class="tab" [class.active]="activeTab === 'compliance-results'"
+        (click)="switchTab('compliance-results', clientForm)">
         Compliance Results
+      </button>
+      <button class="tab" [class.active]="activeTab === 'report-verification'"
+        (click)="switchTab('report-verification', clientForm)">
+        Report Verification
       </button>
     </div>
 
@@ -401,11 +410,88 @@
           <button type="button" class="go-back-btn" (click)="goBack()">
             <img src="/assets/icons/arrow_left_alt.png" alt="add_icon">
           </button>
+          <button type="button" class="btn-primary" (click)="saveAndContinue(clientForm)">
+            <img src="/assets/icons/arrow_circle_down.png" alt="arrow_down">
+            <span>Save and Continue</span>
+          </button>
+        </div>
+      </div>
+
+
+      <div class="tab-content" *ngIf="activeTab === 'report-verification'">
+        <div class="form-row">
+
+          <!-- Previous Report -->
+          <div class="form-group">
+            <label>Previous Report</label>
+
+            <div class="report-file-box">
+             
+              <input type="text" [value]="previousReportFile ? previousReportFile.name : 'No file selected'" disabled />
+
+              <div class="report-buttons">
+                <button type="button" class="btn-upload" (click)="onUpload('previous')"><span>Upload</span></button>
+
+                <!-- Correct file info -->
+                <!-- <div class="file-info" *ngIf="previousReportFile">
+                  Selected File: {{ previousReportFile.name }}
+                </div> -->
+
+                <button type="button" class="btn-preview" (click)="onPreview('previous')"
+                  [disabled]="!previousReportFile">
+                  <span>Preview</span>
+                </button>
+
+                <button type="button" class="btn-download" (click)="onDownload('previous')"
+                  [disabled]="!previousReportFile">
+                  <span>Download</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Current Audit Report -->
+          <div class="form-group">
+            <label>Current Audit Report</label>
+
+            <div class="report-file-box">
+             
+              <input type="text" [value]="currentReportFile ? currentReportFile.name : 'No file selected'" disabled />
+
+              <div class="report-buttons">
+                <button type="button" class="btn-upload" (click)="onUpload('current')"><span>Upload</span></button>
+
+                <!-- Correct file info -->
+                <!-- <div class="file-info" *ngIf="currentReportFile">
+                  Selected File: {{ currentReportFile.name }}
+                </div> -->
+
+                <button type="button" class="btn-preview" (click)="onPreview('current')"
+                  [disabled]="!currentReportFile">
+                  <span>Preview</span>
+                </button>
+
+                <button type="button" class="btn-download" (click)="onDownload('current')"
+                  [disabled]="!currentReportFile">
+                  <span>Download</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="go-back-btn" (click)="goBack()">
+            <img src="/assets/icons/arrow_left_alt.png" alt="add_icon">
+          </button>
           <button type="submit" class="btn-primary">
             <span>Submit</span>
           </button>
         </div>
+
       </div>
+
 
     </form>
   </div>

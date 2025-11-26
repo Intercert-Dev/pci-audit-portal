@@ -1,0 +1,102 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+.dashboard-container {
+    padding: 48px 42px;
+    background: #f5f7fc;
+    min-height: 89vh;
+}
+
+.asv-dashboard-heading {
+    display: flex;
+    gap: 3.2rem;
+}
+
+.asv-heading {
+    color: rgba(52, 60, 106, 1);
+    font-family: 'Inter' sans-serif;
+    font-weight: 500;
+    font-size: 24px;
+}
+
+.heading-bottom-line {
+    width: 190px;
+    height: 5px;
+    margin-top: 15px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border: 1px solid rgba(244, 245, 247, 1);
+    background: rgba(57, 106, 255, 1);
+}
+
+
+.cards-row {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+    padding-top: 3rem;
+}
+
+.card {
+    width: 360px;
+    display: flex;
+    align-items: center;
+    gap: 19px;
+    border-radius: 15px;
+    padding: 30px;
+    border: 4px solid rgba(177, 177, 177, 0.45);
+    background-color: rgba(255, 255, 255, 1);
+
+}
+
+.card:hover{
+    box-shadow: 0px 0px 9.9px 0px rgba(100, 149, 237, 1) inset;
+    border: 1px solid rgba(100, 149, 237, 1);
+    background-color: rgba(255, 255, 255, 1);
+    transition: 0.3s;
+    cursor: pointer;
+
+}
+
+.icon-circle {
+    width: 63px;
+    height: 63px;
+    border-radius: 50%;
+    background: rgba(231, 237, 255, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-circle img {
+    width: 27px;
+    height: 27px;
+}
+
+
+.card-text {
+    font-family: 'Inter' sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    color: rgba(57, 106, 255, 1);
+    width: 218px;
+}
+
+.card-number {
+    margin-top: 16px;
+    font-family: "Overpass", sans-serif;
+    font-weight: 600;
+    font-size: 36px;
+    color: rgba(35, 35, 35, 1);
+}
+
+.upcoming-audit {
+    margin-top: 66px;
+}
+
+.card-text{
+    width: 218px;
+}

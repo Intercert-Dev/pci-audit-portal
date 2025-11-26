@@ -1,0 +1,79 @@
+/* Center the container in the page */
+.certificate-box {
+  display: flex;
+  justify-content: center;
+
+}
+
+.certificate-container {
+  width: 50%;
+  margin-top: 32px;
+  padding: 30px 35px;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(10px);
+  border-radius: 18px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+/* Heading */
+.certificate-container p {
+  color: black;
+  font-family: 'Inter' sans-serif;
+  font-weight: 500;
+  font-size: 24px;
+}
+
+/* Input + Button in one row */
+.input-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+/* Input field styling */
+.input-row input {
+  font-family: 'Inter' sans-serif;
+  flex: 1;
+  padding: 12px 16px;
+  font-weight: 400;
+  font-size: 0.8rem;
+  border: 1.5px solid #dcdcdc;
+  background: #f8f8f8;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+input::placeholder {
+  font-family: 'Inter', sans-serif;
+  
+
+}
+
+/* Input focus */
+.input-row input:focus {
+  border-color: #4a80f5;
+  background: #ffffff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(74, 128, 245, 0.2);
+}
+
+.certificate-btn {
+  background-color: rgba(57, 106, 255, 1);
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 1rem;
+  padding: 0.8rem 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+}
+
+.certificate-btn span {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: rgba(245, 247, 250, 1);
+}

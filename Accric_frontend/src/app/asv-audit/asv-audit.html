@@ -1,1 +1,72 @@
-<p>asv-audit works!</p>
+<div class="dashboard-container">
+    <div class="asv-dashboard-heading">
+        <p class="asv-heading">ASV Dashboard</p>
+        <p class="asv-heading">Client List</p>
+    </div>
+
+    <div class="heading-bottom-line">
+    </div>
+
+    <div class="cards-row">
+        <!-- Total Clients -->
+        <div class="card">
+            <div class="icon-circle">
+                <img src="/assets/icons/user 3 2.png" alt="user icon">
+            </div>
+            <div class="card-item">
+                <p class="card-text">Total Clients</p>
+                <p class="card-number"> {{ totalClients }}</p>
+            </div>
+        </div>
+
+        <!-- Assessment Completed -->
+        <div class="card">
+            <div class="icon-circle">
+                <img src="/assets/icons/fact_check.png" alt="completed icon">
+            </div>
+            <div class="card-text">
+                <p class="card-text">Assessment Completed</p>
+                <p class="card-number">{{ assessmentCompleted }}</p>
+            </div>
+        </div>
+
+        <!-- Assessment Pending -->
+        <div class="card">
+            <div class="icon-circle">
+                <img src="/assets/icons/clock_loader_80.png" alt="pending icon">
+            </div>
+            <div class="card-text">
+                <p class="card-text">Assessment Pending</p>
+                <p class="card-number">{{ assessmentPending }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="upcoming-audit">
+         <p class="asv-heading">Up Coming Assessment</p>
+    </div>
+
+    <div class="cards-row">
+        <!-- Current Pending Client -->
+        <div class="card">
+            <div class="icon-circle light">
+                <img src="/assets/icons/other_admission.png" alt="pending icon">
+            </div>
+            <div class="card-item">
+                <p class="card-text">Current Pending Client</p>
+                <p class="card-number">{{ currentPending }}</p>
+            </div>
+        </div>
+
+        <!-- Next Month Pending -->
+        <div class="card" id="card-next-Month">
+            <div class="icon-circle light">
+                <img src="/assets/icons/text_select_move_forward_word.png" alt="calendar icon">
+            </div>
+            <div class="card-text">
+                <p class="card-text">Assessment pending for Next month</p>
+                <p class="card-number">{{ nextMonthPending }}</p>
+            </div>
+        </div>
+    </div>
+</div>

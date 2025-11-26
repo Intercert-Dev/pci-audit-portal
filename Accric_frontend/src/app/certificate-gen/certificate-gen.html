@@ -1,1 +1,14 @@
-<p>certificate-gen works!</p>
+<div class="certificate-box">
+  <div class="certificate-container">
+    <p>Generate Certificate</p>
+
+    <form #certForm="ngForm" (ngSubmit)="generateCertificate(certForm)" class="input-row">
+
+      <input type="text" name="certificateNo" ngModel required placeholder="Enter certificate number" />
+
+      <button class="certificate-btn" type="submit" [disabled]="certForm.invalid">
+        <span>Generate</span>
+      </button>
+    </form>
+  </div>
+</div>

@@ -56,6 +56,7 @@ export class AddClient {
     assessmentName: '',
     assessmentType: '',
     assessmentCategory: '',
+    assessmentClassification: '',
     assessmentYear: '',
     pciVersion: '',
     periodCovered: '',
@@ -96,7 +97,7 @@ export class AddClient {
     "report-verification": []
   };
 
-  
+
   formatDate(date: any): string | null {
     if (!date) return null;
     const d = new Date(date);
@@ -128,6 +129,7 @@ export class AddClient {
       assessment_project_name: this.clientData.assessmentName,
       assessment_type: this.clientData.assessmentType,
       assessment_category: this.clientData.assessmentCategory,
+      assessment_classification: this.clientData.assessmentClassification,
       assessment_year: this.clientData.assessmentYear,
       pci_dss_version_application: this.clientData.pciVersion,
       assessment_period_covered: this.clientData.periodCovered,
@@ -187,6 +189,11 @@ export class AddClient {
     input.onchange = () => {
       const file = input.files?.[0];
       if (!file) return;
+
+      if (file.type !== 'application/pdf') {
+        alert("Only PDF file is allowed!");
+        return;
+      }
 
       if (type === 'previous') {
         this.previousReportFile = file;

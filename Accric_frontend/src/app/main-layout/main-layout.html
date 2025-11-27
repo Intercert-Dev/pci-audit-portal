@@ -11,32 +11,31 @@
     <div class="header-right">
       <p>Dashboard</p>
       <div class="header-right-items">
+
         <div class="search-box">
           <img src="/assets/icons/magnifying-glass 1.png" alt="Search icon">
           <input type="text" placeholder="Search for something">
         </div>
+
         <div class="notification-bell">
           <img id="notification-icon" src="/assets/icons/002-notification-1.png" alt="Notifications">
         </div>
-        <img id="user-icon" src="/assets/57d3d250790e98129931897251abd3915a931233.jpg" alt="User" class="user-avatar">
+
+        <!-- USER IMAGE (Now this opens dropdown) -->
+        <div class="user-dropdown" (click)="toggleDropdown()" (mouseleave)="closeDropdown()">
+
+          <img id="user-icon" src="/assets/57d3d250790e98129931897251abd3915a931233.jpg" alt="User"
+            class="user-avatar" />
+
+          <div class="dropdown-menu" *ngIf="dropdownOpen">
+            <div class="dropdown-item" (click)="goToProfile($event)">Profile</div>
+            <div class="dropdown-item" (click)="logout($event)">Logout</div>
+          </div>
+
+        </div>
+
       </div>
     </div>
-
-    <div class="header-logout" (click)="toggleDropdown()">
-      <div class="user-box">
-        <!-- <span class="user-name">My Account</span> -->
-        <img src="/assets/icons/arrow_drop_down.png" class="arrow-icon" [class.rotate]="dropdownOpen" />
-      </div>
-
-      <!-- DROPDOWN MENU -->
-      <div class="dropdown-menu" *ngIf="dropdownOpen">
-        <div class="dropdown-item" (click)="goToProfile($event)">Profile</div>
-        <div class="dropdown-item" (click)="logout($event)">Logout</div>
-      </div>
-    </div>
-
-
-
   </header>
   <div class="layout-body">
     <div class="layout-body-box">

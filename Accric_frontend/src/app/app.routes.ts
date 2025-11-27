@@ -10,6 +10,7 @@ import { AuthGuard } from './service/Guard/auth.Guard';
 import { CreateUser } from './create-user/create-user';
 import { AsvClientList } from './asv-client-list/asv-client-list';
 import { UserList } from './user-list/user-list';
+import { Profile } from './profile/profile';
 
 
 export const routes: Routes = [
@@ -28,6 +29,7 @@ export const routes: Routes = [
       { path: 'create-user', component: CreateUser },
       { path: 'asv-client-list', component: AsvClientList},
       { path: 'user-list', component: UserList},
+      { path: 'user-profile', component: Profile},
 
     ],
   },

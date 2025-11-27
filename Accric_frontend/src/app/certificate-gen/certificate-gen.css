@@ -1,12 +1,21 @@
 /* Center the container in the page */
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
 .certificate-box {
+  padding: 48px 42px;
   display: flex;
   justify-content: center;
+  background: #f5f7fc;
+  min-height: 89vh;
 
 }
 
 .certificate-container {
   width: 50%;
+  height: 170px;
   margin-top: 32px;
   padding: 30px 35px;
   background: rgba(255, 255, 255, 0.75);
@@ -22,6 +31,7 @@
   font-family: 'Inter' sans-serif;
   font-weight: 500;
   font-size: 24px;
+  padding-bottom: 2rem;
 }
 
 /* Input + Button in one row */
@@ -76,4 +86,103 @@ input::placeholder {
   font-weight: 600;
   font-size: 1.25rem;
   color: rgba(245, 247, 250, 1);
+}
+
+/* ================================
+   RESPONSIVE — 1024px
+   ================================ */
+@media (max-width: 1024px) {
+  .certificate-container {
+    width: 65%;
+  }
+
+  .certificate-container p {
+    font-size: 22px;
+  }
+}
+
+
+/* ================================
+   RESPONSIVE — 768px (Tablets)
+   ================================ */
+@media (max-width: 768px) {
+  .certificate-container {
+    width: 85%;
+    padding: 25px 25px;
+    height: 225px;
+  }
+
+  .input-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .input-row input {
+    width: 100%;
+    font-size: 0.9rem;
+  }
+
+  .certificate-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .certificate-container p {
+    font-size: 20px;
+  }
+}
+
+
+/* ================================
+   RESPONSIVE — 480px (Mobile)
+   ================================ */
+@media (max-width: 480px) {
+  .certificate-box {
+    padding: 20px 15px;
+  }
+
+  .certificate-container {
+    width: 100%;
+    padding: 22px 18px;
+  }
+
+  .certificate-container p {
+    font-size: 18px;
+    padding-bottom: 1.5rem;
+  }
+
+  .input-row input {
+    padding: 10px 14px;
+    font-size: 0.85rem;
+  }
+
+  .certificate-btn {
+    padding: 0.7rem 1.2rem;
+  }
+
+  .certificate-btn span {
+    font-size: 1rem;
+  }
+}
+
+
+/* ================================
+   RESPONSIVE — 360px (Small Phones)
+   ================================ */
+@media (max-width: 360px) {
+  .certificate-container {
+    padding: 18px 15px;
+  }
+
+  .certificate-container p {
+    font-size: 17px;
+  }
+
+  .certificate-btn {
+    padding: 0.65rem 1rem;
+  }
+
+  .input-row input {
+    font-size: 0.8rem;
+  }
 }

@@ -10,32 +10,36 @@ import { AuthService } from '../service/auth-service';
   styleUrls: ['./main-layout.css']
 })
 export class MainLayout {
+  
   isSidebarOpen = true;
   dropdownOpen = false;
 
-  constructor(private authService: AuthService,private router : Router) { }
+  constructor(private authService: AuthService, private router: Router) {}
+
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;
   }
 
-
+  // OPEN DROPDOWN ON CLICK
   toggleDropdown() {
     this.dropdownOpen = !this.dropdownOpen;
   }
 
-  goToProfile(event: Event) {
-    event.stopPropagation();
-    alert("Go to profile page");
+  // CLOSE DROPDOWN WHEN MOUSE LEAVES PROFILE IMAGE + DROPDOWN AREA
+  closeDropdown() {
+    this.dropdownOpen = false;
   }
 
+  // NAVIGATE TO PROFILE
+  goToProfile(event: Event) {
+    event.stopPropagation();
+    this.router.navigate(['/user-profile']);
+  }
+
+  // LOGOUT
   logout(event?: Event) {
-  event?.stopPropagation();
-
-  // Remove JWT token
-  localStorage.removeItem("jwt");
-
-  // Redirect to login page
-  this.router.navigate(['/login']);
-}
-
+    event?.stopPropagation();
+    localStorage.removeItem('jwt');
+    this.router.navigate(['/login']);
+  }
 }

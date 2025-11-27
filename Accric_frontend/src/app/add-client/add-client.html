@@ -9,8 +9,8 @@
         (click)="switchTab('assessment-summary', clientForm)">Assessment Summary</button>
       <button class="tab" [class.active]="activeTab === 'assessor-info'"
         (click)="switchTab('assessor-info', clientForm)">Assessor Information</button>
-      <button class="tab" [class.active]="activeTab === 'scope-env'"
-        (click)="switchTab('scope-env', clientForm)">Scope and Environment</button>
+      <button class="tab" [class.active]="activeTab === 'scope-env'" (click)="switchTab('scope-env', clientForm)">Scope
+        and Environment</button>
       <button class="tab" [class.active]="activeTab === 'compliance-results'"
         (click)="switchTab('compliance-results', clientForm)">Compliance Results</button>
       <button class="tab" [class.active]="activeTab === 'report-verification'"
@@ -24,7 +24,8 @@
         <div class="form-row">
           <div class="form-group">
             <label>Legal Entity Name*</label>
-            <input type="text" name="legalEntityName" required [(ngModel)]="clientData.legalEntityName" #legalEntityName="ngModel" placeholder="Legal Entity Name" />
+            <input type="text" name="legalEntityName" required [(ngModel)]="clientData.legalEntityName"
+              #legalEntityName="ngModel" placeholder="Legal Entity Name" />
             <div class="error" *ngIf="legalEntityName.invalid && (legalEntityName.touched || showErrors)">
               <small>Please enter Legal Entity Name.</small>
             </div>
@@ -38,14 +39,16 @@
         <div class="form-row">
           <div class="form-group">
             <label>Country*</label>
-            <input type="text" name="country" required [(ngModel)]="clientData.country" #country="ngModel" placeholder="Country" />
+            <input type="text" name="country" required [(ngModel)]="clientData.country" #country="ngModel"
+              placeholder="Country" />
             <div class="error" *ngIf="country.invalid && (country.touched || showErrors)">
               <small>Please enter Country.</small>
             </div>
           </div>
           <div class="form-group">
             <label>State*</label>
-            <input type="text" name="state" required [(ngModel)]="clientData.state" #state="ngModel" placeholder="State" />
+            <input type="text" name="state" required [(ngModel)]="clientData.state" #state="ngModel"
+              placeholder="State" />
             <div class="error" *ngIf="state.invalid && (state.touched || showErrors)">
               <small>Please enter State.</small>
             </div>
@@ -62,14 +65,16 @@
         <div class="form-row">
           <div class="form-group">
             <label>Street*</label>
-            <input type="text" name="street" required [(ngModel)]="clientData.street" #street="ngModel" placeholder="Street" />
+            <input type="text" name="street" required [(ngModel)]="clientData.street" #street="ngModel"
+              placeholder="Street" />
             <div class="error" *ngIf="street.invalid && (street.touched || showErrors)">
               <small>Please enter Street.</small>
             </div>
           </div>
           <div class="form-group">
             <label>Zip Code*</label>
-            <input type="text" name="zipCode" required [(ngModel)]="clientData.zipCode" #zipCode="ngModel" placeholder="Zip Code" />
+            <input type="text" name="zipCode" required [(ngModel)]="clientData.zipCode" #zipCode="ngModel"
+              placeholder="Zip Code" />
             <div class="error" *ngIf="zipCode.invalid && (zipCode.touched || showErrors)">
               <small>Please enter Zip Code.</small>
             </div>
@@ -79,7 +84,8 @@
         <div class="form-row">
           <div class="form-group">
             <label>Nature of Business</label>
-            <input type="text" name="natureOfBusiness" [(ngModel)]="clientData.natureOfBusiness" placeholder="Nature of Business" />
+            <input type="text" name="natureOfBusiness" [(ngModel)]="clientData.natureOfBusiness"
+              placeholder="Nature of Business" />
           </div>
           <div class="form-group">
             <label>Website / Domain URL</label>
@@ -87,7 +93,8 @@
           </div>
           <div class="form-group">
             <label>Type of Business*</label>
-            <input type="text" name="typeOfBusiness" required [(ngModel)]="clientData.typeOfBusiness" #typeOfBusiness="ngModel" placeholder="Type of Business" />
+            <input type="text" name="typeOfBusiness" required [(ngModel)]="clientData.typeOfBusiness"
+              #typeOfBusiness="ngModel" placeholder="Type of Business" />
             <div class="error" *ngIf="typeOfBusiness.invalid && (typeOfBusiness.touched || showErrors)">
               <small>Please enter Type of Business.</small>
             </div>
@@ -107,14 +114,16 @@
         <div class="form-row">
           <div class="form-group">
             <label>Name*</label>
-            <input type="text" name="primaryName" required [(ngModel)]="clientData.primaryName" #primaryName="ngModel" placeholder="Enter Name" />
+            <input type="text" name="primaryName" required [(ngModel)]="clientData.primaryName" #primaryName="ngModel"
+              placeholder="Enter Name" />
             <div class="error" *ngIf="primaryName.invalid && (primaryName.touched || showErrors)">
               <small>Please enter Name.</small>
             </div>
           </div>
           <div class="form-group">
             <label>Designation*</label>
-            <input type="text" name="primaryDesignation" required [(ngModel)]="clientData.primaryDesignation" #primaryDesignation="ngModel" placeholder="Enter Designation" />
+            <input type="text" name="primaryDesignation" required [(ngModel)]="clientData.primaryDesignation"
+              #primaryDesignation="ngModel" placeholder="Enter Designation" />
             <div class="error" *ngIf="primaryDesignation.invalid && (primaryDesignation.touched || showErrors)">
               <small>Please enter Designation.</small>
             </div>
@@ -124,7 +133,8 @@
         <div class="form-row">
           <div class="form-group">
             <label>Email*</label>
-            <input type="email" name="primaryEmail" required [(ngModel)]="clientData.primaryEmail" #primaryEmail="ngModel" placeholder="Enter Email" />
+            <input type="email" name="primaryEmail" required [(ngModel)]="clientData.primaryEmail"
+              #primaryEmail="ngModel" placeholder="Enter Email" />
             <div class="error" *ngIf="primaryEmail.invalid && (primaryEmail.touched || showErrors)">
               <small *ngIf="primaryEmail.errors?.['required']">Please enter Email.</small>
               <small *ngIf="primaryEmail.errors?.['email']">Enter a valid email.</small>
@@ -132,7 +142,8 @@
           </div>
           <div class="form-group">
             <label>Phone*</label>
-            <input type="text" name="primaryPhone" required [(ngModel)]="clientData.primaryPhone" #primaryPhone="ngModel" placeholder="Enter Phone" />
+            <input type="text" name="primaryPhone" required [(ngModel)]="clientData.primaryPhone"
+              #primaryPhone="ngModel" placeholder="Enter Phone" />
             <div class="error" *ngIf="primaryPhone.invalid && (primaryPhone.touched || showErrors)">
               <small>Please enter Phone.</small>
             </div>
@@ -142,7 +153,8 @@
         <div class="form-row">
           <div class="form-group">
             <label>Technical Contacts</label>
-            <input type="text" name="technicalContact" [(ngModel)]="clientData.technicalContact" placeholder="Enter Technical Contacts" />
+            <input type="text" name="technicalContact" [(ngModel)]="clientData.technicalContact"
+              placeholder="Enter Technical Contacts" />
           </div>
           <div class="form-group">
             <label>Information Security Officer</label>
@@ -153,7 +165,8 @@
         <div class="form-row">
           <div class="form-group wide">
             <label>Client Signoff Authority*</label>
-            <input type="text" name="clientSignoff" required [(ngModel)]="clientData.clientSignoff" #clientSignoff="ngModel" placeholder="Enter Client Signoff Authority" />
+            <input type="text" name="clientSignoff" required [(ngModel)]="clientData.clientSignoff"
+              #clientSignoff="ngModel" placeholder="Enter Client Signoff Authority" />
             <div class="error" *ngIf="clientSignoff.invalid && (clientSignoff.touched || showErrors)">
               <small>Please enter Client Signoff Authority.</small>
             </div>
@@ -176,30 +189,36 @@
         <div class="form-row">
           <div class="form-group">
             <label>Assessment / Project Name</label>
-            <input type="text" name="assessmentName" [(ngModel)]="clientData.assessmentName" placeholder="Assessment / Project Name" />
+            <input type="text" name="assessmentName" [(ngModel)]="clientData.assessmentName"
+              placeholder="Assessment / Project Name" />
           </div>
           <div class="form-group">
             <label>Assessment Type</label>
-            <input type="text" name="assessmentType" [(ngModel)]="clientData.assessmentType" placeholder="Assessment Type" />
+            <input type="text" name="assessmentType" [(ngModel)]="clientData.assessmentType"
+              placeholder="Assessment Type" />
           </div>
           <div class="form-group">
             <label>Assessment Category</label>
-            <input type="text" name="assessmentCategory" [(ngModel)]="clientData.assessmentCategory" placeholder="Assessment Category" />
+            <input type="text" name="assessmentCategory" [(ngModel)]="clientData.assessmentCategory"
+              placeholder="Assessment Category" />
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label>Assessment Year</label>
-            <input type="text" name="assessmentYear" [(ngModel)]="clientData.assessmentYear" placeholder="Assessment Year" />
+            <input type="text" name="assessmentYear" [(ngModel)]="clientData.assessmentYear"
+              placeholder="Assessment Year" />
           </div>
           <div class="form-group">
             <label>PCI DSS Version Applicable</label>
-            <input type="text" name="pciVersion" [(ngModel)]="clientData.pciVersion" placeholder="PCI DSS Version Applicable" />
+            <input type="text" name="pciVersion" [(ngModel)]="clientData.pciVersion"
+              placeholder="PCI DSS Version Applicable" />
           </div>
           <div class="form-group">
             <label>Assessment Period Covered</label>
-            <input type="text" name="periodCovered" [(ngModel)]="clientData.periodCovered" placeholder="Assessment Period Covered" />
+            <input type="text" name="periodCovered" [(ngModel)]="clientData.periodCovered"
+              placeholder="Assessment Period Covered" />
           </div>
         </div>
 
@@ -250,6 +269,11 @@
           <div class="form-group">
             <label>Certificate Number / Unique ID</label>
             <input type="text" name="certificateNumberUniqueId" [(ngModel)]="clientData.certificateNumberUniqueId" />
+          </div>
+          <div class="form-group">
+            <label>Classification</label>
+            <input type="text" name="assessmentClassification" [(ngModel)]="clientData.assessmentClassification"
+              placeholder="Assessment Classification" />
           </div>
           <div class="form-group">
             <label>Next Audit Due Date</label>
@@ -380,7 +404,7 @@
         <div class="form-row">
 
           <!-- Previous Report -->
-          <!-- <div class="form-group">
+          <div class="form-group">
             <label>Previous Report</label>
 
             <div class="report-file-box">
@@ -401,10 +425,10 @@
                 </button>
               </div>
             </div>
-          </div> -->
+          </div>
 
           <!-- Current Audit Report -->
-          <!-- <div class="form-group">
+          <div class="form-group">
             <label>Current Audit Report</label>
 
             <div class="report-file-box">
@@ -425,7 +449,7 @@
                 </button>
               </div>
             </div>
-          </div> -->
+          </div>
 
         </div>
 

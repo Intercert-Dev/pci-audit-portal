@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../service/auth-service';
 
 @Component({
@@ -13,7 +13,7 @@ export class MainLayout {
   isSidebarOpen = true;
   dropdownOpen = false;
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService,private router : Router) { }
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;
   }
@@ -29,7 +29,13 @@ export class MainLayout {
   }
 
   logout(event?: Event) {
-  event?.stopPropagation(); // safe optional chaining
-  alert("Logout clicked");
+  event?.stopPropagation();
+
+  // Remove JWT token
+  localStorage.removeItem("jwt");
+
+  // Redirect to login page
+  this.router.navigate(['/login']);
 }
+
 }

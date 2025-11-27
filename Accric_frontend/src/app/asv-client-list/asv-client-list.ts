@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import * as XLSX from 'xlsx';
 import  saveAs  from 'file-saver';
 import { CommonModule } from '@angular/common';
@@ -11,8 +11,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   styleUrl: './asv-client-list.css',
 })
 export class AsvClientList {
-
-
 
   serarch_text: string = "";
   filtered_list: any[] = []
@@ -76,6 +74,44 @@ export class AsvClientList {
     Q4: "Pending"
   }
 ];
+
+@ViewChild('Q1Input') Q1Input!: any;
+@ViewChild('Q2Input') Q2Input!: any;
+@ViewChild('Q3Input') Q3Input!: any;
+@ViewChild('Q4Input') Q4Input!: any;
+
+triggerInput(q: string) {
+  if (q === 'Q1') this.Q1Input.nativeElement.click();
+  if (q === 'Q2') this.Q2Input.nativeElement.click();
+  if (q === 'Q3') this.Q3Input.nativeElement.click();
+  if (q === 'Q4') this.Q4Input.nativeElement.click();
+}
+
+onFileSelect(event: any, q: string) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  this.editingRow[q + 'File'] = file; // Q1File, Q2File, etc.
+}
+
+onPreview(q: string) {
+  const file = this.editingRow[q + 'File'];
+  if (!file) return;
+
+  const fileURL = URL.createObjectURL(file);
+  window.open(fileURL, '_blank');
+}
+
+onDownload(q: string) {
+  const file = this.editingRow[q + 'File'];
+  if (!file) return;
+
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(file);
+  link.download = file.name;
+  link.click();
+}
+
 
 
   constructor() {

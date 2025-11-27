@@ -1,30 +1,60 @@
 <div class="user-list-container">
-    <div class="user-list-box">
-        <div class="header-row">
-            <p>User List</p>
-        </div>
-        <div class="table-wrapper">
+  <div class="user-list-box">
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Created_at</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    <tr *ngFor="let user of users">
-                        <td>{{ user.name }}</td>
-                        <td>{{ user.email }}</td>
-                        <td>{{ user.role }}</td>
-                        <td>{{ user.created_at}}</td>
-                    </tr>
-                </tbody>
-            </table>
-
-        </div>
+    <div class="header-row">
+      <p>User List</p>
     </div>
+
+    <div class="table-wrapper">
+
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Created At</th>
+            <th>Created By</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <!-- SHOW LOADER -->
+          <tr *ngIf="isLoading">
+            <td colspan="6" style="text-align:center;">Loading...</td>
+          </tr>
+
+          <!-- SHOW USERS -->
+          <tr *ngFor="let user of users">
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.role }}</td>
+
+            <!-- Format created Date -->
+            <td>{{ user.created_at | date: 'medium' }}</td>
+
+            <!-- Created By (safe access) -->
+            <td>{{ user.createdBy?.name || '—' }}</td>
+
+            <!-- Active / Inactive -->
+            <td>
+              <span [ngClass]="user.isActive ? 'active' : 'inactive'">
+                {{ user.isActive ? 'Active' : 'Inactive' }}
+              </span>
+            </td>
+          </tr>
+
+          <!-- NO USERS -->
+          <tr *ngIf="!isLoading && users.length === 0">
+            <td colspan="6" style="text-align:center;">No users found</td>
+          </tr>
+
+        </tbody>
+      </table>
+
+    </div>
+
+  </div>
 </div>

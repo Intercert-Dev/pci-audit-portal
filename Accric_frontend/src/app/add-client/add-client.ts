@@ -49,29 +49,117 @@ export class AddClient {
     primaryDesignation: '',
     primaryEmail: '',
     primaryPhone: '',
-    technicalContact: '',
-    iso: '',
-    clientSignoff: '',
+    technicalContacts: '',
+    informationSecurityOfficer: '',
+    clientSignoffAuthority: '',
 
     assessmentName: '',
     assessmentType: '',
     assessmentCategory: '',
+    assessmentYear: '',
+    pciVersion: '',
+    periodCovered: '',
+
     auditStart: '',
-    auditEnd: ''
+    auditEnd: '',
+    reportSubmittedDate: '',
+    auditStatus: '',
+
+    certificateIssueDate: '',
+    certificateExpiryDate: '',
+    certificateNumber: '',
+    nextAuditDueDate: '',
+
+    nameOfQsa: '',
+    qsaLicense: '',
+    auditManagerReviewer: '',
+
+    scopeOfAssessment: '',
+    locationOfScope: '',
+    overallComplianceStatus: '',
+    compensatingControl: '',
+    customizedApproach: '',
+    nonConformitiesGap: '',
+    nonConformitiesGapIdentified: '',
+
+    remediationTargetDate: '',
+    revalidationDate: ''
   };
 
-  // Required Fields for each tab (file uploads are optional)
   tabRequiredFields: { [key: string]: string[] } = {
     "client-profile": ["legalEntityName", "country", "state", "city", "street", "zipCode", "typeOfBusiness"],
-    "primary-contacts": ["primaryName", "primaryDesignation", "primaryEmail", "primaryPhone", "clientSignoff"],
-    "assessment-summary": ["auditStart", "auditEnd"],
+    "primary-contacts": ["primaryName", "primaryDesignation", "primaryEmail", "primaryPhone", "clientSignoffAuthority"],
+    "assessment-summary": ["auditStart", "auditEnd", "auditStatus"],
     "assessor-info": [],
     "scope-env": [],
     "compliance-results": [],
-    "report-verification": [] // No required fields
+    "report-verification": []
   };
 
-  private sendClientDataToAPI(data: any) {
+  
+  formatDate(date: any): string | null {
+    if (!date) return null;
+    const d = new Date(date);
+    return isNaN(d.getTime()) ? null : d.toISOString().split('T')[0]; // YYYY-MM-DD
+  }
+
+
+  private buildPayload() {
+    return {
+      legal_entity_name: this.clientData.legalEntityName,
+      trading_name: this.clientData.brandName,
+      county_name: this.clientData.country,
+      state_name: this.clientData.state,
+      city_name: this.clientData.city,
+      street_name: this.clientData.street,
+      zip_name: this.clientData.zipCode,
+      nature_of_business: this.clientData.natureOfBusiness,
+      website_domain_url: this.clientData.website,
+      type_of_business: this.clientData.typeOfBusiness,
+
+      contact_name: this.clientData.primaryName,
+      designation: this.clientData.primaryDesignation,
+      contact_email: this.clientData.primaryEmail,
+      phone: this.clientData.primaryPhone,
+      technical_contacts: this.clientData.technicalContacts,
+      information_security_officer: this.clientData.informationSecurityOfficer,
+      client_signoff_authority: this.clientData.clientSignoffAuthority,
+
+      assessment_project_name: this.clientData.assessmentName,
+      assessment_type: this.clientData.assessmentType,
+      assessment_category: this.clientData.assessmentCategory,
+      assessment_year: this.clientData.assessmentYear,
+      pci_dss_version_application: this.clientData.pciVersion,
+      assessment_period_covered: this.clientData.periodCovered,
+
+      audit_start_date: this.formatDate(this.clientData.auditStart),
+      audit_end_date: this.formatDate(this.clientData.auditEnd),
+      date_of_report_submission: this.formatDate(this.clientData.reportSubmittedDate),
+      audit_status: this.clientData.auditStatus,
+
+      certificate_issue_date: this.formatDate(this.clientData.certificateIssueDate),
+      certificate_expiry_date: this.formatDate(this.clientData.certificateExpiryDate),
+      certificate_number_unique_id: this.clientData.certificateNumber,
+      next_audit_due_date: this.formatDate(this.clientData.nextAuditDueDate),
+
+      name_of_qsa: this.clientData.nameOfQsa,
+      qsa_license_certificate_number: this.clientData.qsaLicense,
+      audit_manager_reviewer_name: this.clientData.auditManagerReviewer,
+
+      scope_of_assessment: this.clientData.scopeOfAssessment,
+      location_of_scope: this.clientData.locationOfScope,
+      overall_compliance_status: this.clientData.overallComplianceStatus,
+      compensating_controls_used: this.clientData.compensatingControl,
+      customized_approach_used: this.clientData.customizedApproach,
+      non_conformities_gap: this.clientData.nonConformitiesGap,
+      non_conformities_gap_identified: this.clientData.nonConformitiesGapIdentified,
+
+      remediation_target_date: this.formatDate(this.clientData.remediationTargetDate),
+      revalidation_date: this.formatDate(this.clientData.revalidationDate)
+    };
+  }
+
+  private sendClientDataToAPI(formData: any) {
     const url = 'http://pci.accric.com/api/auth/create-client';
     const token = localStorage.getItem("jwt");
     const headers = new HttpHeaders({
@@ -79,14 +167,14 @@ export class AddClient {
       'Content-Type': 'application/json'
     });
 
-    this.http.post(url, data, { headers }).subscribe({
+    this.http.post(url, formData, { headers }).subscribe({
       next: (res) => {
         console.log('API Response:', res);
         alert('Client created successfully!');
       },
       error: (err) => {
         console.error('API Error:', err);
-        alert('Failed to create client. Please check console.');
+        alert('Failed to create client. Check console for details.');
       }
     });
   }
@@ -175,11 +263,15 @@ export class AddClient {
       this.showErrors = true;
       return;
     }
+
     if (form.valid) {
       console.log("Form Data:", this.clientData);
       console.log("Previous Report File:", this.previousReportFile);
       console.log("Current Report File:", this.currentReportFile);
-      this.sendClientDataToAPI(this.clientData);
+
+      const payload = this.buildPayload();
+      this.sendClientDataToAPI(payload);
     }
   }
+
 }

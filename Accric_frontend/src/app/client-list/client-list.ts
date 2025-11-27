@@ -1,9 +1,20 @@
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import * as XLSX from 'xlsx';
 import saveAs from 'file-saver';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+
+interface Client {
+  company: string;
+  certNo: string;
+  standard: string;
+  issueDate: string;
+  validDate: string;
+  status: string;
+}
+
+
 
 @Component({
   selector: 'app-client-list',
@@ -14,12 +25,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 })
 export class ClientList implements OnInit {
 
-  serarch_text: string = "";
-  filtered_list: any[] = [];
+  search_text: string = "";
   editingRow: any = null;
-  clientList: any[] = [];
+  clientList: Client[] = [];
+  filtered_list: Client[] = [];
 
-  constructor(private http: HttpClient) {}
+
+  constructor(private http: HttpClient,private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.getClientList();
@@ -32,33 +44,72 @@ export class ClientList implements OnInit {
       'Authorization': `Bearer ${token}`
     });
 
-    this.http.get<any[]>(url, { headers }).subscribe({
+    this.http.get<any>(url, { headers }).subscribe({
       next: (res) => {
-        this.clientList = res;
-        console.log("client list data",this.clientList);
-        
+        this.clientList = res.data.map((item: any) => ({
+          company: item.legal_entity_name,
+          certNo: item.certificate_number_unique_id,
+          standard: item.pci_dss_version_application,
+          issueDate: item.certificate_issue_date,
+          validDate: item.certificate_expiry_date,
+          status: item.audit_status
+        }));
+
         this.filtered_list = [...this.clientList];
-        
+
+        // 3. FORCE THE VIEW TO UPDATE
+        this.cdr.detectChanges();
+
+        console.log("Client List:", this.clientList);
       },
       error: (err) => {
         console.error('Failed to fetch client list:', err);
-        alert('Failed to load client list. Check console for details.');
       }
     });
   }
 
+  // getClientList() {
+  //   const url = 'http://pci.accric.com/api/auth/client-list';
+  //   const token = localStorage.getItem("jwt");
+  //   const headers = new HttpHeaders({
+  //     'Authorization': `Bearer ${token}`
+  //   });
+
+  //   this.http.get<any>(url, { headers }).subscribe({
+  //     next: (res) => {
+  //       // Map backend fields to frontend table fields
+  //       this.clientList = res.data.map((item: any) => ({
+  //         company: item.legal_entity_name,
+  //         certNo: item.certificate_number_unique_id,
+  //         standard: item.pci_dss_version_application,
+  //         issueDate: item.certificate_issue_date,
+  //         validDate: item.certificate_expiry_date,
+  //         status: item.audit_status
+  //       }));
+
+  //       this.filtered_list = [...this.clientList];
+
+  //       console.log("Client List:", this.clientList);
+  //       console.log("filtered List:", this.filtered_list);
+  //     },
+  //     error: (err) => {
+  //       console.error('Failed to fetch client list:', err);
+  //     }
+  //   });
+  // }
+
   filter_list() {
-    const search = this.serarch_text.toLowerCase();
-    this.filtered_list = this.clientList.filter(
-      item =>
-        item.company?.toLowerCase().includes(search) ||
-        item.certNo?.toLowerCase().includes(search) ||
-        item.standard?.toLowerCase().includes(search) ||
-        item.issueDate?.toLowerCase().includes(search) ||
-        item.validDate?.toLowerCase().includes(search) ||
-        item.status?.toLowerCase().includes(search)
+    const search = this.search_text.toLowerCase();
+    this.filtered_list = this.clientList.filter((item: Client) =>
+      item.company?.toLowerCase().includes(search) ||
+      item.certNo?.toLowerCase().includes(search) ||
+      item.standard?.toLowerCase().includes(search) ||
+      item.issueDate?.toLowerCase().includes(search) ||
+      item.validDate?.toLowerCase().includes(search) ||
+      item.status?.toLowerCase().includes(search)
     );
   }
+
 
   exportToExcel() {
     const fileName = 'Client-Certificates.xlsx';

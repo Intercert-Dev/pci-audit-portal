@@ -2,79 +2,57 @@
   <div class="add-client-box">
     <div class="tabs">
       <button class="tab" [class.active]="activeTab === 'client-profile'"
-        (click)="switchTab('client-profile', clientForm)">
-        Client Profile
-      </button>
-
+        (click)="switchTab('client-profile', clientForm)">Client Profile</button>
       <button class="tab" [class.active]="activeTab === 'primary-contacts'"
-        (click)="switchTab('primary-contacts', clientForm)">
-        Primary Contacts
-      </button>
-
+        (click)="switchTab('primary-contacts', clientForm)">Primary Contacts</button>
       <button class="tab" [class.active]="activeTab === 'assessment-summary'"
-        (click)="switchTab('assessment-summary', clientForm)">
-        Assessment Summary
-      </button>
-
+        (click)="switchTab('assessment-summary', clientForm)">Assessment Summary</button>
       <button class="tab" [class.active]="activeTab === 'assessor-info'"
-        (click)="switchTab('assessor-info', clientForm)">
-        Assessor Information
-      </button>
-
-      <button class="tab" [class.active]="activeTab === 'scope-env'" (click)="switchTab('scope-env', clientForm)">
-        Scope and Environment
-      </button>
-
+        (click)="switchTab('assessor-info', clientForm)">Assessor Information</button>
+      <button class="tab" [class.active]="activeTab === 'scope-env'"
+        (click)="switchTab('scope-env', clientForm)">Scope and Environment</button>
       <button class="tab" [class.active]="activeTab === 'compliance-results'"
-        (click)="switchTab('compliance-results', clientForm)">
-        Compliance Results
-      </button>
+        (click)="switchTab('compliance-results', clientForm)">Compliance Results</button>
       <button class="tab" [class.active]="activeTab === 'report-verification'"
-        (click)="switchTab('report-verification', clientForm)">
-        Report Verification
-      </button>
+        (click)="switchTab('report-verification', clientForm)">Report Verification</button>
     </div>
 
-
     <form #clientForm="ngForm" (ngSubmit)="onSubmit(clientForm)" class="client-form">
+
+      <!-- CLIENT PROFILE TAB -->
       <div class="tab-content" *ngIf="activeTab === 'client-profile'">
         <div class="form-row">
           <div class="form-group">
             <label>Legal Entity Name*</label>
-            <input type="text" placeholder="Legal Entity Name" name="legalEntityName" required
-              [(ngModel)]="clientData.legalEntityName" #legalEntityName="ngModel" />
+            <input type="text" name="legalEntityName" required [(ngModel)]="clientData.legalEntityName" #legalEntityName="ngModel" placeholder="Legal Entity Name" />
             <div class="error" *ngIf="legalEntityName.invalid && (legalEntityName.touched || showErrors)">
               <small>Please enter Legal Entity Name.</small>
             </div>
           </div>
           <div class="form-group">
-            <label>Trading/ Brand Name</label>
-            <input type="text" placeholder="Trading/ Brand Name" name="brandName" [(ngModel)]="clientData.brandName" />
+            <label>Trading / Brand Name</label>
+            <input type="text" name="brandName" [(ngModel)]="clientData.brandName" placeholder="Trading / Brand Name" />
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label>Country*</label>
-            <input type="text" placeholder="Country" name="country" required [(ngModel)]="clientData.country"
-              #country="ngModel" />
+            <input type="text" name="country" required [(ngModel)]="clientData.country" #country="ngModel" placeholder="Country" />
             <div class="error" *ngIf="country.invalid && (country.touched || showErrors)">
               <small>Please enter Country.</small>
             </div>
           </div>
-
           <div class="form-group">
             <label>State*</label>
-            <input type="text" placeholder="State" name="state" required [(ngModel)]="clientData.state"
-              #state="ngModel" />
+            <input type="text" name="state" required [(ngModel)]="clientData.state" #state="ngModel" placeholder="State" />
             <div class="error" *ngIf="state.invalid && (state.touched || showErrors)">
               <small>Please enter State.</small>
             </div>
           </div>
-
           <div class="form-group">
             <label>City*</label>
-            <input type="text" placeholder="City" name="city" required [(ngModel)]="clientData.city" #city="ngModel" />
+            <input type="text" name="city" required [(ngModel)]="clientData.city" #city="ngModel" placeholder="City" />
             <div class="error" *ngIf="city.invalid && (city.touched || showErrors)">
               <small>Please enter City.</small>
             </div>
@@ -84,17 +62,14 @@
         <div class="form-row">
           <div class="form-group">
             <label>Street*</label>
-            <input type="text" placeholder="Street" name="street" required [(ngModel)]="clientData.street"
-              #street="ngModel" />
+            <input type="text" name="street" required [(ngModel)]="clientData.street" #street="ngModel" placeholder="Street" />
             <div class="error" *ngIf="street.invalid && (street.touched || showErrors)">
-              <small>Please enter street.</small>
+              <small>Please enter Street.</small>
             </div>
           </div>
-
           <div class="form-group">
             <label>Zip Code*</label>
-            <input type="text" placeholder="Zip Code" name="zipCode" required [(ngModel)]="clientData.zipCode"
-              #zipCode="ngModel" />
+            <input type="text" name="zipCode" required [(ngModel)]="clientData.zipCode" #zipCode="ngModel" placeholder="Zip Code" />
             <div class="error" *ngIf="zipCode.invalid && (zipCode.touched || showErrors)">
               <small>Please enter Zip Code.</small>
             </div>
@@ -104,211 +79,194 @@
         <div class="form-row">
           <div class="form-group">
             <label>Nature of Business</label>
-            <input type="text" placeholder="Nature of Business" name="natureOfBusiness"
-              [(ngModel)]="clientData.natureOfBusiness" />
+            <input type="text" name="natureOfBusiness" [(ngModel)]="clientData.natureOfBusiness" placeholder="Nature of Business" />
           </div>
           <div class="form-group">
             <label>Website / Domain URL</label>
-            <input type="text" placeholder="Website / Domain URL" name="website" [(ngModel)]="clientData.website" />
+            <input type="text" name="website" [(ngModel)]="clientData.website" placeholder="Website / Domain URL" />
           </div>
           <div class="form-group">
             <label>Type of Business*</label>
-            <input type="text" placeholder="Type of Business" name="typeOfBusiness" required
-              [(ngModel)]="clientData.typeOfBusiness" #typeOfBusiness="ngModel" />
+            <input type="text" name="typeOfBusiness" required [(ngModel)]="clientData.typeOfBusiness" #typeOfBusiness="ngModel" placeholder="Type of Business" />
             <div class="error" *ngIf="typeOfBusiness.invalid && (typeOfBusiness.touched || showErrors)">
               <small>Please enter Type of Business.</small>
             </div>
           </div>
         </div>
+
         <div class="form-actions">
           <button type="button" class="btn-primary" (click)="saveAndContinue(clientForm)">
-            <img src="/assets/icons/arrow_circle_down.png" alt="arrow_down">
+            <img src="/assets/icons/arrow_circle_down.png" alt="arrow_down" />
             <span>Save and Continue</span>
           </button>
         </div>
-
       </div>
+
+      <!-- PRIMARY CONTACTS TAB -->
       <div class="tab-content" *ngIf="activeTab === 'primary-contacts'">
         <div class="form-row">
           <div class="form-group">
             <label>Name*</label>
-            <input type="text" placeholder="Enter Name" name="primaryName" required [(ngModel)]="clientData.primaryName"
-              #primaryName="ngModel" />
+            <input type="text" name="primaryName" required [(ngModel)]="clientData.primaryName" #primaryName="ngModel" placeholder="Enter Name" />
             <div class="error" *ngIf="primaryName.invalid && (primaryName.touched || showErrors)">
               <small>Please enter Name.</small>
             </div>
           </div>
           <div class="form-group">
             <label>Designation*</label>
-            <input type="text" placeholder="Enter Designation" name="primaryDesignation" required
-              [(ngModel)]="clientData.primaryDesignation" #primaryDesignation="ngModel" />
+            <input type="text" name="primaryDesignation" required [(ngModel)]="clientData.primaryDesignation" #primaryDesignation="ngModel" placeholder="Enter Designation" />
             <div class="error" *ngIf="primaryDesignation.invalid && (primaryDesignation.touched || showErrors)">
               <small>Please enter Designation.</small>
             </div>
           </div>
         </div>
 
-
         <div class="form-row">
           <div class="form-group">
             <label>Email*</label>
-            <input type="email" placeholder="Enter Email" name="primaryEmail" required email
-              [(ngModel)]="clientData.primaryEmail" #primaryEmail="ngModel" />
+            <input type="email" name="primaryEmail" required [(ngModel)]="clientData.primaryEmail" #primaryEmail="ngModel" placeholder="Enter Email" />
             <div class="error" *ngIf="primaryEmail.invalid && (primaryEmail.touched || showErrors)">
               <small *ngIf="primaryEmail.errors?.['required']">Please enter Email.</small>
               <small *ngIf="primaryEmail.errors?.['email']">Enter a valid email.</small>
             </div>
-
           </div>
           <div class="form-group">
             <label>Phone*</label>
-            <input type="text" placeholder="Enter Phone Number" name="primaryPhone" required
-              [(ngModel)]="clientData.primaryPhone" #primaryPhone="ngModel" />
+            <input type="text" name="primaryPhone" required [(ngModel)]="clientData.primaryPhone" #primaryPhone="ngModel" placeholder="Enter Phone" />
             <div class="error" *ngIf="primaryPhone.invalid && (primaryPhone.touched || showErrors)">
               <small>Please enter Phone.</small>
             </div>
-
-
           </div>
         </div>
-
 
         <div class="form-row">
           <div class="form-group">
             <label>Technical Contacts</label>
-            <input type="text" placeholder="Enter Technical Contact Name" name="technicalContact"
-              [(ngModel)]="clientData.technicalContact" />
+            <input type="text" name="technicalContact" [(ngModel)]="clientData.technicalContact" placeholder="Enter Technical Contacts" />
           </div>
           <div class="form-group">
             <label>Information Security Officer</label>
-            <input type="text" placeholder="Enter Information Security Officer Name" name="iso"
-              [(ngModel)]="clientData.iso" />
+            <input type="text" name="iso" [(ngModel)]="clientData.iso" placeholder="Enter ISO" />
           </div>
         </div>
-
 
         <div class="form-row">
           <div class="form-group wide">
             <label>Client Signoff Authority*</label>
-            <input type="text" placeholder="Enter Client Signoff Authority Name" name="clientSignoff" required
-              [(ngModel)]="clientData.clientSignoff" #clientSignoff="ngModel" />
+            <input type="text" name="clientSignoff" required [(ngModel)]="clientData.clientSignoff" #clientSignoff="ngModel" placeholder="Enter Client Signoff Authority" />
             <div class="error" *ngIf="clientSignoff.invalid && (clientSignoff.touched || showErrors)">
               <small>Please enter Client Signoff Authority.</small>
             </div>
           </div>
         </div>
+
         <div class="form-actions">
           <button type="button" class="go-back-btn" (click)="goBack()">
-            <img src="/assets/icons/arrow_left_alt.png" alt="add_icon">
+            <img src="/assets/icons/arrow_left_alt.png" alt="add_icon" />
           </button>
           <button type="button" class="btn-primary" (click)="saveAndContinue(clientForm)">
-            <img src="/assets/icons/arrow_circle_down.png" alt="arrow_down">
+            <img src="/assets/icons/arrow_circle_down.png" alt="arrow_down" />
             <span>Save and Continue</span>
           </button>
         </div>
       </div>
 
+      <!-- ASSESSMENT SUMMARY TAB -->
       <div class="tab-content" *ngIf="activeTab === 'assessment-summary'">
         <div class="form-row">
           <div class="form-group">
-            <label>Assessment/Project Name</label>
-            <input type="text" placeholder="Assessment/Project Name" name="assessmentName"
-              [(ngModel)]="clientData.assessmentName" />
+            <label>Assessment / Project Name</label>
+            <input type="text" name="assessmentName" [(ngModel)]="clientData.assessmentName" placeholder="Assessment / Project Name" />
           </div>
           <div class="form-group">
             <label>Assessment Type</label>
-            <input type="text" placeholder="Assessment Type" name="assessmentType"
-              [(ngModel)]="clientData.assessmentType" />
+            <input type="text" name="assessmentType" [(ngModel)]="clientData.assessmentType" placeholder="Assessment Type" />
           </div>
           <div class="form-group">
             <label>Assessment Category</label>
-            <input type="text" placeholder="Assessment Category" name="assessmentCategory"
-              [(ngModel)]="clientData.assessmentCategory" />
+            <input type="text" name="assessmentCategory" [(ngModel)]="clientData.assessmentCategory" placeholder="Assessment Category" />
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label>Assessment Year</label>
-            <input type="date" placeholder="" />
+            <input type="text" name="assessmentYear" [(ngModel)]="clientData.assessmentYear" placeholder="Assessment Year" />
           </div>
           <div class="form-group">
             <label>PCI DSS Version Applicable</label>
-            <input type="text" placeholder="" />
+            <input type="text" name="pciVersion" [(ngModel)]="clientData.pciVersion" placeholder="PCI DSS Version Applicable" />
           </div>
           <div class="form-group">
             <label>Assessment Period Covered</label>
-            <input type="text" placeholder="" />
+            <input type="text" name="periodCovered" [(ngModel)]="clientData.periodCovered" placeholder="Assessment Period Covered" />
           </div>
         </div>
 
         <div class="form-row">
-
           <div class="form-group">
             <label>Audit Start Date*</label>
-            <input type="date" name="auditStart" [(ngModel)]="clientData.auditStart" #auditStart="ngModel" required />
-            <p class="error" *ngIf="auditStart.invalid && (auditStart.touched || showErrors)">
-              Audit Start Date is required
-            </p>
+            <input type="date" name="auditStart" required [(ngModel)]="clientData.auditStart" #auditStart="ngModel" />
+            <div class="error" *ngIf="auditStart.invalid && (auditStart.touched || showErrors)">
+              <small>Audit Start Date is required</small>
+            </div>
           </div>
-
           <div class="form-group">
             <label>Audit End Date*</label>
-            <input type="date" name="auditEnd" [(ngModel)]="clientData.auditEnd" #auditEnd="ngModel" required />
-            <p class="error" *ngIf="auditEnd.invalid && (auditEnd.touched || showErrors)">
-              Audit End Date is required
-            </p>
+            <input type="date" name="auditEnd" required [(ngModel)]="clientData.auditEnd" #auditEnd="ngModel" />
+            <div class="error" *ngIf="auditEnd.invalid && (auditEnd.touched || showErrors)">
+              <small>Audit End Date is required</small>
+            </div>
           </div>
-
           <div class="form-group">
             <label>Date of Report Submission</label>
-            <input type="date" placeholder="" />
+            <input type="date" name="reportSubmittedDate" [(ngModel)]="clientData.reportSubmittedDate" />
           </div>
         </div>
+
         <div class="form-row">
           <div class="form-group">
             <label>Audit Status</label>
-            <select>
+            <select name="auditStatus" [(ngModel)]="clientData.auditStatus">
               <option value="" disabled selected>Select Status</option>
-              <option value="completed">Completed</option>
-              <option value="in-progress">In Progress</option>
-              <option value="not-started">Not Started</option>
+              <option value="REPORT_IN_REVIEW">Report In Review</option>
+              <option value="COMPLETED">Completed</option>
+              <option value="IN_PROGRESS">In Progress</option>
+              <option value="NOT_STARTED">Not Started</option>
             </select>
           </div>
+
           <div class="form-group">
             <label>Certificate Issue Date</label>
-            <input type="date" placeholder="" />
+            <input type="date" name="certificateIssueDate" [(ngModel)]="clientData.certificateIssueDate" />
           </div>
           <div class="form-group">
             <label>Certificate Expiry Date</label>
-            <input type="date" placeholder="" />
+            <input type="date" name="certificateExpiryDate" [(ngModel)]="clientData.certificateExpiryDate" />
           </div>
         </div>
+
         <div class="form-row">
           <div class="form-group">
-            <label>Certificate Number/Unique ID</label>
-            <input type="text" placeholder="" />
+            <label>Certificate Number / Unique ID</label>
+            <input type="text" name="certificateNumberUniqueId" [(ngModel)]="clientData.certificateNumberUniqueId" />
           </div>
           <div class="form-group">
             <label>Next Audit Due Date</label>
-            <input type="date" placeholder="" />
-          </div>
-          <div class="form-group">
-
+            <input type="date" name="nextAuditDueDate" [(ngModel)]="clientData.nextAuditDueDate" />
           </div>
         </div>
+
         <div class="form-actions">
           <button type="button" class="go-back-btn" (click)="goBack()">
-            <img src="/assets/icons/arrow_left_alt.png" alt="add_icon">
+            <img src="/assets/icons/arrow_left_alt.png" alt="add_icon" />
           </button>
           <button type="button" class="btn-primary" (click)="saveAndContinue(clientForm)">
-            <img src="/assets/icons/arrow_circle_down.png" alt="arrow_down">
+            <img src="/assets/icons/arrow_circle_down.png" alt="arrow_down" />
             <span>Save and Continue</span>
           </button>
         </div>
       </div>
-
-
       <div class="tab-content" *ngIf="activeTab === 'assessor-info'">
         <div class="form-row">
           <div class="form-group">
@@ -422,7 +380,7 @@
         <div class="form-row">
 
           <!-- Previous Report -->
-          <div class="form-group">
+          <!-- <div class="form-group">
             <label>Previous Report</label>
 
             <div class="report-file-box">
@@ -431,11 +389,6 @@
 
               <div class="report-buttons">
                 <button type="button" class="btn-upload" (click)="onUpload('previous')"><span>Upload</span></button>
-
-                <!-- Correct file info -->
-                <!-- <div class="file-info" *ngIf="previousReportFile">
-                  Selected File: {{ previousReportFile.name }}
-                </div> -->
 
                 <button type="button" class="btn-preview" (click)="onPreview('previous')"
                   [disabled]="!previousReportFile">
@@ -448,10 +401,10 @@
                 </button>
               </div>
             </div>
-          </div>
+          </div> -->
 
           <!-- Current Audit Report -->
-          <div class="form-group">
+          <!-- <div class="form-group">
             <label>Current Audit Report</label>
 
             <div class="report-file-box">
@@ -460,11 +413,6 @@
 
               <div class="report-buttons">
                 <button type="button" class="btn-upload" (click)="onUpload('current')"><span>Upload</span></button>
-
-                <!-- Correct file info -->
-                <!-- <div class="file-info" *ngIf="currentReportFile">
-                  Selected File: {{ currentReportFile.name }}
-                </div> -->
 
                 <button type="button" class="btn-preview" (click)="onPreview('current')"
                   [disabled]="!currentReportFile">
@@ -477,7 +425,7 @@
                 </button>
               </div>
             </div>
-          </div>
+          </div> -->
 
         </div>
 

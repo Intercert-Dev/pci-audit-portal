@@ -1,99 +1,90 @@
 <div class="client-list-container">
-    <div class="client-list-box">
-        <div class="header-row">
-            <p>Client Certificates</p>
-            <div class="header-right">
-                <div class="search-box">
-                    <img src="/assets/icons/magnifying-glass 2.png" alt="Search Icon">
-                    <input type="text" placeholder="Search Certificates" [(ngModel)]="serarch_text"
-                    (input)="filter_list()">
-                </div>
-                <button class="export-btn" (click)="exportToExcel()"><span>Export to Excel</span></button>
-            </div>
+  <div class="client-list-box">
+    <div class="header-row">
+      <p>Client Certificates</p>
+      <div class="header-right">
+        <div class="search-box">
+          <img src="/assets/icons/magnifying-glass 2.png" alt="Search Icon">
+          <input type="text" placeholder="Search Certificates" [(ngModel)]="search_text" (input)="filter_list()">
         </div>
-
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Company</th>
-                        <th>Cert No.</th>
-                        <th>Standard</th>
-                        <th>Issue</th>
-                        <th>Valid</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    <!-- Example Row -->
-                    <tr *ngFor="let row of filtered_list">
-                        <td>{{ row.company }}</td>
-                        <td>{{ row.certNo }}</td>
-                        <td>{{ row.standard }}</td>
-                        <td>{{ row.issueDate }}</td>
-                        <td>{{ row.validDate }}</td>
-                        <td id="client-status">{{ row.status }}</td>
-                        <td>
-                            <div class="action-box">
-                                <img src="/assets/icons/edit.png" alt="Edit" (click)="editRow(row)">
-                                <img src="/assets/icons/delete.png" alt="Delete" (click)="deleteRow(row)">
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <button class="export-btn" (click)="exportToExcel()"><span>Export to Excel</span></button>
+      </div>
     </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Company</th>
+            <th>Cert No.</th>
+            <th>Standard</th>
+            <th>Issue</th>
+            <th>Valid</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let row of filtered_list">
+            <td>{{ row.company }}</td>
+            <td>{{ row.certNo }}</td>
+            <td>{{ row.standard }}</td>
+            <td>{{ row.issueDate }}</td>
+            <td>{{ row.validDate }}</td>
+            <td id="client-status">{{ row.status }}</td>
+            <td>
+              <div class="action-box">
+                <img src="/assets/icons/edit.png" alt="Edit" (click)="editRow(row)">
+                <img src="/assets/icons/delete.png" alt="Delete" (click)="deleteRow(row)">
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
-
+<!-- Edit Popup -->
 <div class="edit-popup" *ngIf="editingRow">
-    <h2>Edit Certificate</h2>
+  <h2>Edit Certificate</h2>
 
-    <!-- Row 1 -->
-    <div class="form-row">
-        <div class="form-group">
-            <label>Company</label>
-            <input type="text" [(ngModel)]="editingRow.company">
-        </div>
-
-        <div class="form-group">
-            <label>Cert No</label>
-            <input type="text" [(ngModel)]="editingRow.certNo">
-        </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label>Company</label>
+      <input type="text" [(ngModel)]="editingRow.company">
     </div>
-
-    <!-- Row 2 -->
-    <div class="form-row">
-        <div class="form-group">
-            <label>Standard</label>
-            <input type="text" [(ngModel)]="editingRow.standard">
-        </div>
-
-        <div class="form-group">
-            <label>Issue Date</label>
-            <input type="date" [(ngModel)]="editingRow.issueDate">
-        </div>
+    <div class="form-group">
+      <label>Cert No</label>
+      <input type="text" [(ngModel)]="editingRow.certNo">
     </div>
+  </div>
 
-    <!-- Row 3 -->
-    <div class="form-row">
-        <div class="form-group">
-            <label>Valid Date</label>
-            <input type="date" [(ngModel)]="editingRow.validDate">
-        </div>
-
-        <div class="form-group">
-            <label>Status</label>
-            <input type="text" [(ngModel)]="editingRow.status">
-        </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label>Standard</label>
+      <input type="text" [(ngModel)]="editingRow.standard">
     </div>
-
-    <div class="buttons">
-        <button class="save-btn" (click)="saveEdit()">Save</button>
-        <button class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+    <div class="form-group">
+      <label>Issue Date</label>
+      <input type="date" [(ngModel)]="editingRow.issueDate">
     </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>Valid Date</label>
+      <input type="date" [(ngModel)]="editingRow.validDate">
+    </div>
+    <div class="form-group">
+      <label>Status</label>
+      <input type="text" [(ngModel)]="editingRow.status">
+    </div>
+  </div>
+
+  <div class="buttons">
+    <button class="save-btn" (click)="saveEdit()">Save</button>
+    <button class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+  </div>
 </div>
-

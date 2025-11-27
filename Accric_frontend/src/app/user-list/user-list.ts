@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -10,31 +10,77 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./user-list.css'],
 })
 export class UserList implements OnInit {
+  
   users: any[] = [];
-  isLoading: boolean = false;  // add this
+  isLoading: boolean = false;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.getAllUsers();
   }
 
+
   getAllUsers() {
-    this.isLoading = true;  // start loading
+    this.isLoading = true;
+
     const token = localStorage.getItem("jwt");
     const headers = { 'Authorization': `Bearer ${token}` };
 
-    this.http.get<{ message: string; data: any[] }>("http://pci.accric.com/api/auth/user-list", { headers })
+    this.http.get<any>("http://pci.accric.com/api/auth/user-list", { headers })
       .subscribe({
         next: (res) => {
-          this.users = res.data;
-          this.isLoading = false; // stop loading
+          const raw = res["data"];
+
+          if (Array.isArray(raw)) {
+            this.users = raw;
+          } else {
+            this.users = [];
+          }
+
+          this.isLoading = false;
+          
+          // 3. Force the view to refresh
+          this.cdr.detectChanges(); 
         },
+
         error: (err) => {
           console.error("Error fetching users", err);
-          this.isLoading = false; // stop loading even if error
+          this.isLoading = false;
         }
       });
   }
-}
 
+  // getAllUsers() {
+  //   this.isLoading = true;
+
+  //   const token = localStorage.getItem("jwt");
+  //   const headers = { 'Authorization': `Bearer ${token}` };
+
+  //   this.http.get<any>("http://pci.accric.com/api/auth/user-list", { headers })
+  //     .subscribe({
+  //       next: (res) => {
+  //         console.log("FULL RESPONSE:", res);
+  //         console.log("RESPONSE KEYS:", Object.keys(res));
+
+  //         // Always access the key safely
+  //         const raw = res["data"];
+  //         console.log("RAW DATA:", raw);
+
+  //         if (Array.isArray(raw)) {
+  //           this.users = raw;
+  //         } else {
+  //           this.users = [];
+  //         }
+
+  //         console.log("FINAL USERS ARRAY:", this.users);
+  //         this.isLoading = false;
+  //       },
+
+  //       error: (err) => {
+  //         console.error("Error fetching users", err);
+  //         this.isLoading = false;
+  //       }
+  //     });
+  // }
+}

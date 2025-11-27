@@ -374,6 +374,78 @@ tbody tr {
   background-color: rgba(200, 200, 200, 1);
 }
 
+
+/* BOX WRAPPER */
+.report-file-box {
+  background: #fff;
+  border: 1px solid rgba(223, 234, 242, 1);
+  border-radius: 1rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.report-file-box input {
+  width: 100%;
+  height: 2.5rem;
+  padding: 0 12px;
+  border: 1px solid rgba(223, 234, 242, 1);
+  border-radius: 1rem;
+  background: #f5f6f8;
+  color: rgba(113, 142, 191, 1);
+  cursor: not-allowed;
+}
+
+/* BUTTON WRAPPER */
+.report-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+/* BUTTON BASE DESIGN */
+.btn-upload,
+.btn-preview,
+.btn-download {
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 1rem;
+  opacity: 1;
+  padding: 0.8rem 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+}
+
+/* INDIVIDUAL BUTTON COLORS */
+.btn-upload {
+  background-color: rgba(57, 106, 255, 1);
+  color: rgba(245, 247, 250, 1);
+  /* background-color: red; */
+}
+
+.btn-preview {
+  background-color: rgba(12, 50, 166, 1);
+  color: rgba(245, 247, 250, 1);
+}
+
+.btn-download {
+  background-color: rgba(198, 215, 246, 1);
+  color: rgba(52, 60, 106, 1);
+}
+
+/* DISABLED BUTTON STYLE */
+.btn-preview:disabled,
+.btn-download:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
 /* Responsive (Mobile) */
 @media (max-width: 600px) {
   .edit-popup {

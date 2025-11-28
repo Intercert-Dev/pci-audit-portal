@@ -31,41 +31,10 @@ export class ClientList implements OnInit {
   filtered_list: Client[] = [];
 
 
-  constructor(private http: HttpClient,private cdr: ChangeDetectorRef) { }
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.getClientList();
-  }
-
-  getClientList() {
-    const url = 'http://pci.accric.com/api/auth/client-list';
-    const token = localStorage.getItem("jwt");
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-
-    this.http.get<any>(url, { headers }).subscribe({
-      next: (res) => {
-        this.clientList = res.data.map((item: any) => ({
-          company: item.legal_entity_name,
-          certNo: item.certificate_number_unique_id,
-          standard: item.pci_dss_version_application,
-          issueDate: item.certificate_issue_date,
-          validDate: item.certificate_expiry_date,
-          status: item.audit_status
-        }));
-
-        this.filtered_list = [...this.clientList];
-
-        // 3. FORCE THE VIEW TO UPDATE
-        this.cdr.detectChanges();
-
-        console.log("Client List:", this.clientList);
-      },
-      error: (err) => {
-        console.error('Failed to fetch client list:', err);
-      }
-    });
   }
 
   // getClientList() {
@@ -77,7 +46,6 @@ export class ClientList implements OnInit {
 
   //   this.http.get<any>(url, { headers }).subscribe({
   //     next: (res) => {
-  //       // Map backend fields to frontend table fields
   //       this.clientList = res.data.map((item: any) => ({
   //         company: item.legal_entity_name,
   //         certNo: item.certificate_number_unique_id,
@@ -89,14 +57,58 @@ export class ClientList implements OnInit {
 
   //       this.filtered_list = [...this.clientList];
 
+  //       // 3. FORCE THE VIEW TO UPDATE
+  //       this.cdr.detectChanges();
+
   //       console.log("Client List:", this.clientList);
-  //       console.log("filtered List:", this.filtered_list);
   //     },
   //     error: (err) => {
   //       console.error('Failed to fetch client list:', err);
   //     }
   //   });
   // }
+
+  getClientList() {
+    const url = 'http://pci.accric.com/api/auth/client-list';
+    const token = localStorage.getItem("jwt");
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    this.http.get<any>(url, { headers }).subscribe({
+      next: (res) => {
+
+        // 👉 LOG FULL RAW RESPONSE DATA
+        console.log("Raw API Data:", res.data);
+
+        // 👉 LOG HOW MANY FIELDS EACH OBJECT HAS
+        res.data.forEach((item: any, index: number) => {
+          console.log(`Record ${index + 1} has ${Object.keys(item).length} fields`);
+          console.log("Fields:", Object.keys(item));  // list of all field names
+        });
+
+        // 👉 MAP ONLY REQUIRED FIELDS
+        this.clientList = res.data.map((item: any) => ({
+          company: item.legal_entity_name,
+          certNo: item.certificate_number_unique_id,
+          standard: item.pci_dss_version_application,
+          issueDate: item.certificate_issue_date,
+          validDate: item.certificate_expiry_date,
+          status: item.audit_status
+        }));
+
+        this.filtered_list = [...this.clientList];
+
+        this.cdr.detectChanges();
+
+        console.log("Client List (mapped):", this.clientList);
+      },
+      error: (err) => {
+        console.error('Failed to fetch client list:', err);
+      }
+    });
+  }
+
 
   filter_list() {
     const search = this.search_text.toLowerCase();

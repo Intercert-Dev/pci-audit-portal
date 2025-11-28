@@ -291,20 +291,22 @@
           </button>
         </div>
       </div>
+      <!-- Assessor Info Tab -->
       <div class="tab-content" *ngIf="activeTab === 'assessor-info'">
         <div class="form-row">
           <div class="form-group">
             <label>Name of QSA</label>
-            <input type="text" placeholder="Name of QSA" />
+            <input type="text" name="nameOfQsa" [(ngModel)]="clientData.nameOfQsa" placeholder="Name of QSA" />
           </div>
           <div class="form-group">
             <label>QSA License/Certificate Number</label>
-            <input type="text" placeholder="QSA License/Certificate Number" />
+            <input type="text" name="qsaLicense" [(ngModel)]="clientData.qsaLicense"
+              placeholder="QSA License/Certificate Number" />
           </div>
           <div class="form-group">
-            <label>Audit Manager Reviewer Name
-            </label>
-            <input type="text" placeholder="Audit Manager Reviewer Name" />
+            <label>Audit Manager Reviewer Name</label>
+            <input type="text" name="auditManagerReviewer" [(ngModel)]="clientData.auditManagerReviewer"
+              placeholder="Audit Manager Reviewer Name" />
           </div>
         </div>
         <div class="form-actions">
@@ -318,22 +320,24 @@
         </div>
       </div>
 
+      <!-- Scope & Environment Tab -->
       <div class="tab-content" *ngIf="activeTab === 'scope-env'">
         <div class="form-row">
           <div class="form-group">
             <label>Scope of Assessment</label>
-            <input type="text" placeholder="Scope of Assessment" />
+            <input type="text" name="scopeOfAssessment" [(ngModel)]="clientData.scopeOfAssessment"
+              placeholder="Scope of Assessment" />
           </div>
           <div class="form-group">
             <label>Location in Scope</label>
-            <input type="text" placeholder="Location in Scope" />
+            <input type="text" name="locationOfScope" [(ngModel)]="clientData.locationOfScope"
+              placeholder="Location in Scope" />
           </div>
         </div>
         <div class="form-actions">
           <button type="button" class="go-back-btn" (click)="goBack()">
             <img src="/assets/icons/arrow_left_alt.png" alt="add_icon">
           </button>
-
           <button type="button" class="btn-primary" (click)="saveAndContinue(clientForm)">
             <img src="/assets/icons/arrow_circle_down.png" alt="arrow_down">
             <span>Save and Continue</span>
@@ -341,15 +345,17 @@
         </div>
       </div>
 
+      <!-- Compliance Results Tab -->
       <div class="tab-content" *ngIf="activeTab === 'compliance-results'">
         <div class="form-row">
           <div class="form-group">
             <label>Overall Compliance Status</label>
-            <input type="text" placeholder="Overall Compliance Status" />
+            <input type="text" name="overallComplianceStatus" [(ngModel)]="clientData.overallComplianceStatus"
+              placeholder="Overall Compliance Status" />
           </div>
           <div class="form-group">
             <label>Compensating Controls Used</label>
-            <select>
+            <select name="compensatingControl" [(ngModel)]="clientData.compensatingControl">
               <option value="" disabled selected>Select Status</option>
               <option value="completed">Completed</option>
               <option value="in-progress">In Progress</option>
@@ -360,34 +366,36 @@
         <div class="form-row">
           <div class="form-group">
             <label>Customized Approach Used</label>
-            <select>
+            <select name="customizedApproach" [(ngModel)]="clientData.customizedApproach">
               <option value="" disabled selected>Select Status</option>
               <option value="completed">Completed</option>
               <option value="in-progress">In Progress</option>
               <option value="not-started">Not Started</option>
             </select>
           </div>
-
           <div class="form-group">
             <label>Non-Conformities/Gap</label>
-            <input type="text" placeholder="Non-Conformities/Gap" />
+            <input type="text" name="nonConformitiesGap" [(ngModel)]="clientData.nonConformitiesGap"
+              placeholder="Non-Conformities/Gap" />
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label>Identified</label>
-            <input type="text" placeholder="Identified" />
+            <input type="text" name="nonConformitiesGapIdentified" [(ngModel)]="clientData.nonConformitiesGapIdentified"
+              placeholder="Identified" />
           </div>
           <div class="form-group">
             <label>Remediation Target Date</label>
-            <input type="date" placeholder="Remediation Target Date" />
+            <input type="date" name="remediationTargetDate" [(ngModel)]="clientData.remediationTargetDate"
+              placeholder="Remediation Target Date" />
           </div>
           <div class="form-group">
             <label>Revalidation Date</label>
-            <input type="date" placeholder="Revalidation Date" />
+            <input type="date" name="revalidationDate" [(ngModel)]="clientData.revalidationDate"
+              placeholder="Revalidation Date" />
           </div>
         </div>
-
         <div class="form-actions">
           <button type="button" class="go-back-btn" (click)="goBack()">
             <img src="/assets/icons/arrow_left_alt.png" alt="add_icon">
@@ -398,6 +406,7 @@
           </button>
         </div>
       </div>
+
 
 
       <div class="tab-content" *ngIf="activeTab === 'report-verification'">

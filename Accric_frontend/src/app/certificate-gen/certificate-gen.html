@@ -1,18 +1,66 @@
 <div class="certificate-box">
   <div class="certificate-container">
-    <p>Generate Certificate</p>
+    <h2>Generate Certificate</h2>
 
+    <!-- Certificate input form -->
     <form #certForm="ngForm" (ngSubmit)="generateCertificate(certForm)" class="input-row">
-      <input type="text" name="certificateNo" ngModel required placeholder="Enter certificate number" />
-
+      <input 
+        type="text" 
+        name="certificateNo" 
+        ngModel 
+        required 
+        placeholder="Enter certificate number" 
+      />
       <button class="certificate-btn" type="submit" [disabled]="certForm.invalid">
-        <span>Generate</span>
+       <span>Generate</span> 
       </button>
     </form>
 
-    <div *ngIf="certificateData" class="certificate-result">
+    <!-- Display certificate details in a table -->
+    <div *ngIf="certificateData" class="certificate-table-container">
       <h3>Certificate Details:</h3>
-      <pre>{{ certificateData | json }}</pre>
+      <table class="certificate-table">
+        <tr>
+          <th>Field</th>
+          <th>Value</th>
+        </tr>
+        <tr>
+          <td>Legal Entity Name</td>
+          <td>{{ certificateData.legal_entity_name }}</td>
+        </tr>
+        <tr>
+          <td>Address</td>
+          <td>{{ certificateData.street_name }},{{ certificateData.city_name }}
+            ,{{ certificateData.state_name }},{{ certificateData.county_name }},
+            {{ certificateData.zip_name }}
+          </td>
+        </tr>
+        <tr>
+          <td>Certificate Issue Date</td>
+          <td>{{ certificateData.certificate_issue_date }}</td>
+        </tr>
+        <tr>
+          <td>Certificate Expiry Date</td>
+          <td>{{ certificateData.certificate_expiry_date }}</td>
+        </tr>
+        <tr>
+          <td>Certificate Number</td>
+          <td>{{ certificateData.certificate_number_unique_id }}</td>
+        </tr>
+        <tr>
+          <td>Assessment Classification</td>
+          <td>{{ certificateData.assessment_classification || 'SAQ D' }}</td>
+        </tr>
+      </table>
+
+       <div class="btn-certificate">
+        <button class="certificate-edit-btn">
+         <span>Preview</span> 
+      </button>
+        <button class="certificate-edit-btn">
+         <span>Download</span> 
+      </button>
+       </div>
     </div>
   </div>
 </div>

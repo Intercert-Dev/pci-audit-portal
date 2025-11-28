@@ -124,7 +124,7 @@ export class AddClient {
       phone: this.clientData.primaryPhone,
       technical_contacts: this.clientData.technicalContacts,
       information_security_officer: this.clientData.informationSecurityOfficer,
-      client_signoff_authority: this.clientData.clientSignoffAuthority,
+      client_signoff_authority: this.clientData.clientSignoff,
 
       assessment_project_name: this.clientData.assessmentName,
       assessment_type: this.clientData.assessmentType,
@@ -141,7 +141,7 @@ export class AddClient {
 
       certificate_issue_date: this.formatDate(this.clientData.certificateIssueDate),
       certificate_expiry_date: this.formatDate(this.clientData.certificateExpiryDate),
-      certificate_number_unique_id: this.clientData.certificateNumber,
+      certificate_number_unique_id: this.clientData.certificateNumberUniqueId,
       next_audit_due_date: this.formatDate(this.clientData.nextAuditDueDate),
 
       name_of_qsa: this.clientData.nameOfQsa,
@@ -166,7 +166,6 @@ export class AddClient {
     const token = localStorage.getItem("jwt");
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
     });
 
     this.http.post(url, formData, { headers }).subscribe({
@@ -266,19 +265,34 @@ export class AddClient {
   }
 
   onSubmit(form: NgForm) {
-    if (!this.validateCurrentTab(form)) {
+    if (form.invalid) {
       this.showErrors = true;
       return;
     }
 
-    if (form.valid) {
-      console.log("Form Data:", this.clientData);
-      console.log("Previous Report File:", this.previousReportFile);
-      console.log("Current Report File:", this.currentReportFile);
+    const formData = new FormData();
 
-      const payload = this.buildPayload();
-      this.sendClientDataToAPI(payload);
+    // Add all client data fields safely
+    const payload: { [key: string]: any } = this.buildPayload();
+    Object.keys(payload).forEach(key => {
+      const value = payload[key];
+      if (value !== null && value !== undefined) {
+        formData.append(key, value.toString());
+      }
+    });
+
+
+    // Add files if uploaded
+    if (this.previousReportFile) {
+      formData.append('previous_report', this.previousReportFile, this.previousReportFile.name);
     }
+    if (this.currentReportFile) {
+      formData.append('current_report', this.currentReportFile, this.currentReportFile.name);
+    }
+
+
+    // Send to API
+    this.sendClientDataToAPI(formData);
   }
 
 }

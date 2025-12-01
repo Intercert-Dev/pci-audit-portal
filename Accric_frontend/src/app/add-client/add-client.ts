@@ -52,6 +52,7 @@ export class AddClient {
     technicalContact: '',
     informationSecurityOfficer: '',
     clientSignoffAuthority: '',
+    clientStatus : '',
 
     assessmentName: '',
     assessmentType: '',
@@ -125,6 +126,7 @@ export class AddClient {
       technical_contacts: this.clientData.technicalContact,
       information_security_officer: this.clientData.informationSecurityOfficer,
       client_signoff_authority: this.clientData.clientSignoff,
+      client_status : this.clientData.clientStatus,
 
       assessment_project_name: this.clientData.assessmentName,
       assessment_type: this.clientData.assessmentType,

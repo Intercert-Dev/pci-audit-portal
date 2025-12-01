@@ -12,7 +12,6 @@
   min-height: 88vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
   padding: 2rem;
   gap: 1.5rem;
 }
@@ -20,36 +19,30 @@
 /* Tabs */
 .tab-header {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  gap: 5rem;  
 }
 
-.tab-header button {
-  padding: 0.8rem 1.5rem;
-  border-radius: 1rem;
-  border: none;
-  background-color: #eee;
-  font-weight: 600;
-  font-size: 1rem;
+.tab {
   cursor: pointer;
-  transition: all 0.3s ease;
+  border-bottom: 4px solid transparent;
+  transition: all 0.2s ease;
+  
+}
+.tab.active{
+  padding-bottom: 8px;
+  border-bottom: 4px solid #2f5ff7;
+
+}
+/* .tab-header button:hover {
+  color: #396aff;
 }
 
 .tab-header button.active {
-  background-color: rgba(57, 106, 255, 1);
-  color: #fff;
-}
-
-/* QSA Box (for Add QSA / QSA List) */
-.qsa-box {
-  width: 100%;
-  max-width: 800px;
-  background-color: #fff;
-  border-radius: 1rem;
-  padding: 2rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
-}
+  color: #2f5ff7;
+  font-weight: 600;
+  width: 30px;
+  
+} */
 
 /* Responsive */
 @media (max-width: 1024px) {
@@ -66,10 +59,18 @@
     flex-direction: column;
     gap: 0.5rem;
   }
+  .tab-header button {
+    flex: 1 1 100%;
+    text-align: center;
+  }
 }
 
 @media (max-width: 480px) {
   .qsa-box {
     padding: 1rem;
+  }
+  .tab-header button {
+    font-size: 0.9rem;
+    padding: 0.6rem 0.8rem;
   }
 }

@@ -158,8 +158,18 @@
           </div>
           <div class="form-group">
             <label>Information Security Officer</label>
-            <input type="text" name="informationSecurityOfficer" [(ngModel)]="clientData.informationSecurityOfficer" placeholder="Enter ISO" />
+            <input type="text" name="informationSecurityOfficer" [(ngModel)]="clientData.informationSecurityOfficer"
+              placeholder="Enter ISO" />
           </div>
+          <div class="form-group">
+            <label>Client Status</label>
+            <select name="clientStatus" [(ngModel)]="clientData.clientStatus">
+              <option value="" disabled selected>Select Status</option>
+              <option value="ACTIVE">Active</option>
+              <option value="SUSPENDED">Suspended</option>
+            </select>
+          </div>
+
         </div>
 
         <div class="form-row">

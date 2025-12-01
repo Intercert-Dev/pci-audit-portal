@@ -1,206 +1,19 @@
-/* RESET */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-}
-
-/* ============================
-      QSA CONTAINER
-   ============================ */
-.qsa-container {
-  width: 100%;
-  min-height: 89vh;
-  padding: 20px 50px;
-  background-color: rgba(250, 251, 254, 1);
-  display: flex;
-  justify-content: center;
+  font-family: "Inter", sans-serif;
 }
 
 .qsa-box {
   width: 100%;
-  max-width: 700px;
-  background: white;
-  border-radius: 18px;
-  padding: 25px 30px;
-  box-shadow: 0 6px 35px rgba(0, 0, 0, 0.08);
-}
-
-/* ============================
-      FORM ELEMENTS
-   ============================ */
-.form-group {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 18px;
-}
-
-.form-group label {
-  font-family: "Inter", sans-serif;
-  font-size: 14px;
-  margin-bottom: 6px;
-  color: #6b7c93;
-  font-weight: 500;
-}
-
-.form-group input[type="text"],
-.form-group input[type="email"],
-.form-group input[type="file"] {
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: 1px solid rgba(139, 163, 203, 1);
-  font-size: 15px;
-  font-family: "Inter", sans-serif;
-  outline: none;
-}
-
-.form-group input:focus {
-  border-color: #396aff;
-}
-
-/* Error messages */
-.error {
-  font-family: "Inter", sans-serif;
-  font-size: 12px;
-  color: #d00000;
-  margin-top: 5px;
-}
-
-/* ============================
-      SIGNATURE PREVIEW
-   ============================ */
-.preview-box {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-top: 10px;
-  border-radius: 10px;
-  background: #f9f9f9;
-}
-
-.preview-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.preview-top strong {
-  font-family: "Inter", sans-serif;
-  font-size: 14px;
-  color: #3949ff;
-}
-
-.remove-btn {
-  background: #f1f1f1;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 10px;
-  font-size: 12px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.remove-btn:hover {
-  background: #e2e2e2;
-}
-
-.preview-img {
-  max-width: 150px;
-  max-height: 100px;
-  border-radius: 8px;
-}
-
-.pdf-box {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.pdf-icon {
-  width: 24px;
-  height: 24px;
-}
-
-/* ============================
-      SUBMIT BUTTON
-   ============================ */
-.submit-btn {
-  padding: 10px 20px;
-  background: #396aff;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.submit-btn:disabled {
-  background: #a5b1d1;
-  cursor: not-allowed;
-}
-
-.submit-btn:hover:not(:disabled) {
-  background: #2f55d4;
-}
-
-/* ============================
-      RESPONSIVE DESIGN
-   ============================ */
-@media (max-width: 768px) {
-  .qsa-container {
-    padding: 20px 20px;
-  }
-}
-
-@media (max-width: 600px) {
-  .qsa-box {
-    padding: 20px;
-  }
-
-  .preview-img {
-    max-width: 120px;
-    max-height: 80px;
-  }
-}
-
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-/* Container */
-.qsa-container {
-  background-color: rgba(250, 251, 254, 1);
-  width: 100%;
-  min-height: 88vh;
-  padding-top: 1px;
-  display: flex;
-  justify-content: center;
-  margin-top: 1rem;
-}
-
-
-.qsa-container form {
-  width: 100%;
-}
-
-.qsa-container {
-  padding: 0 2rem;
-}
-
-/* Box */
-.qsa-box {
   background-color: white;
-  border-radius: 6px;
+  border-radius: 1rem;
+  min-height: 100vh;
+  overflow-y: auto; /* allows vertical scrolling */
   padding: 2rem;
-  width: 100%;
-  margin-left: 54px;
-  margin-right: 79px;
-  margin-top: 27px;
-  font-family: "Inter", sans-serif;
+  margin: 1rem 0;
+  box-shadow: 0 6px 35px rgba(0, 0, 0, 0.08);
 }
 
 /* Titles */
@@ -211,61 +24,56 @@
   margin-bottom: 1rem;
 }
 
-/* Success & Error Messages */
-.success {
-  color: green;
-  font-size: 12px;
-  margin-bottom: 10px;
-}
-
-.error {
-  color: red;
-  margin-top: 5px;
-  display: block;
-  font-size: 12px;
-}
-
-/* Form Group */
+/* ============================
+      FORM ELEMENTS
+   ============================ */
 .form-group {
   display: flex;
   flex-direction: column;
   margin-bottom: 1.25rem;
 }
 
-/* Labels */
-label {
+.form-group label {
   font-family: 'Inter', sans-serif;
   font-weight: 400;
   font-size: 1rem;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.5rem;
   color: rgba(35, 35, 35, 1);
+
 }
 
-/* Inputs */
-input {
-  font-family: 'Inter', sans-serif;
-  font-size: 0.8rem;
-  font-weight: 400;
-  padding: 12px 12px;
-  height: 2.5rem;
-  border: 1px solid rgba(223, 234, 242, 1);
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="file"] {
+  padding: 12px;
   border-radius: 1rem;
-  color: rgba(113, 142, 191, 1);
+  border: 1px solid rgba(223, 234, 242, 1);
+  font-size: 0.9rem;
   outline: none;
   transition: border-color 0.3s;
 }
 
-input::placeholder {
+.form-group input::placeholder {
   color: rgba(113, 142, 191, 1);
 }
 
-/* Input Error Border */
-input.ng-invalid.ng-touched {
-  border-color: red !important;
+input:focus {
+  border-color: #396aff;
 }
 
 
-/* Preview Wrapper */
+/* Error messages */
+.error {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+}
+
+/* ============================
+      SIGNATURE PREVIEW
+   ============================ */
 .preview-box {
   border: 1px solid rgba(223, 234, 242, 1);
   border-radius: 1rem;
@@ -277,7 +85,6 @@ input.ng-invalid.ng-touched {
   gap: 1rem;
 }
 
-/* Top bar */
 .preview-top {
   display: flex;
   justify-content: space-between;
@@ -287,31 +94,30 @@ input.ng-invalid.ng-touched {
 .preview-top strong {
   font-size: 1rem;
   font-weight: 600;
-  color: #333;
+  color: #3949ff;
 }
 
-/* Remove Button */
 .remove-btn {
-  color: white;
-  padding: 0.4rem 1rem;
-  border: none;
-  border-radius: 0.8rem;
-  cursor: pointer;
-  font-size: 0.85rem;
-  transition: 0.3s;
   background-color: rgba(57, 106, 255, 1);
+  color: white;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 0.8rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
+.remove-btn:hover {
+  background-color: #2f55d4;
+}
 
-
-/* Preview Content */
 .preview-content {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* Image Preview */
 .preview-img {
   width: 180px;
   height: auto;
@@ -320,7 +126,6 @@ input.ng-invalid.ng-touched {
   object-fit: contain;
 }
 
-/* PDF Preview */
 .pdf-box {
   display: flex;
   align-items: center;
@@ -332,45 +137,47 @@ input.ng-invalid.ng-touched {
   height: auto;
 }
 
-
-/* Submit Button */
-button[type="submit"] {
+/* ============================
+      SUBMIT BUTTON
+   ============================ */
+button[type="submit"],
+.submit-btn {
   background-color: rgba(57, 106, 255, 1);
   border: none;
   padding: 0.8rem 1.5rem;
   border-radius: 1rem;
-  font-family: "Inter", sans-serif;
   font-weight: 600;
   font-size: 1.2rem;
   color: white;
   cursor: pointer;
-  transition: 0.3s;
+  transition: background-color 0.3s;
 }
 
-button[type="submit"]:disabled {
-  opacity: 0.6;
+button[type="submit"]:disabled,
+.submit-btn:disabled {
+  background: #a5b1d1;
   cursor: not-allowed;
 }
 
-button[type="submit"]:hover:not(:disabled) {
-  background-color: rgba(57, 106, 255, 1);
+button[type="submit"]:hover:not(:disabled),
+.submit-btn:hover:not(:disabled) {
+  background-color: #2f55d4;
 }
 
-/* Tablet */
+/* ============================
+      RESPONSIVE DESIGN
+   ============================ */
 @media (max-width: 1024px) {
   .qsa-box {
-    margin: 0;
-    width: 100%;
     padding: 1.5rem;
   }
 }
 
-/* Mobile */
 @media (max-width: 768px) {
   .qsa-container {
-    margin-top: 4rem;
+    padding: 1rem;
   }
-  
+
   .qsa-box {
     padding: 1.2rem;
     margin: 0;
@@ -382,7 +189,6 @@ button[type="submit"]:hover:not(:disabled) {
   }
 }
 
-/* Small Mobile */
 @media (max-width: 480px) {
   .qsa-box {
     padding: 1rem 1.2rem;
@@ -390,6 +196,11 @@ button[type="submit"]:hover:not(:disabled) {
 
   input {
     padding: 0 10px;
+  }
+
+  .preview-img {
+    max-width: 120px;
+    max-height: 80px;
   }
 
   button[type="submit"] {

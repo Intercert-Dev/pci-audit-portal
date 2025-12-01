@@ -2,21 +2,22 @@
 
   <!-- Tabs -->
   <div class="tab-header">
-    <button [class.active]="activeTab === 'add'" (click)="activeTab = 'add'">
+    <div class="tab" [class.active]="activeTab === 'add'" (click)="activeTab = 'add'">
       Add QSA
-    </button>
-    <button [class.active]="activeTab === 'list'" (click)="activeTab = 'list'">
+    </div>
+    <div class="tab" [class.active]="activeTab === 'list'" (click)="activeTab = 'list'">
       QSA List
-    </button>
+    </div>
   </div>
 
+
   <!-- Add QSA Form -->
-  <div *ngIf="activeTab === 'add'" class="qsa-box">
+  <div *ngIf="activeTab === 'add'">
     <app-qsa-add></app-qsa-add>
   </div>
 
   <!-- QSA List -->
-  <div *ngIf="activeTab === 'list'" class="qsa-box">
+  <div *ngIf="activeTab === 'list'">
     <app-qsa-list></app-qsa-list>
   </div>
 

@@ -21,7 +21,10 @@
             <th>Issue</th>
             <th>Valid</th>
             <th>Status</th>
-            <th>Action</th>
+            <th>Previous Report</th>
+            <th>Current Report</th>
+            <!-- Sticky Action Column -->
+            <th class="sticky-action">Action</th>
           </tr>
         </thead>
 
@@ -34,6 +37,16 @@
             <td>{{ row.validDate }}</td>
             <td id="client-status">{{ row.status }}</td>
             <td>
+              <button class="view-btn" (click)="viewPDF(row.previous_report)">
+               <span>View</span> 
+              </button>
+            </td>
+            <td>
+              <button class="view-btn" (click)="viewPDF(row.current_report)">
+                <span>View</span>
+              </button>
+            </td>
+            <td class="sticky-action">
               <div class="action-box">
                 <img src="/assets/icons/edit.png" alt="Edit" (click)="editRow(row)">
                 <img src="/assets/icons/delete.png" alt="Delete" (click)="deleteRow(row)">

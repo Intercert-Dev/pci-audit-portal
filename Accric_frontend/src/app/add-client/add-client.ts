@@ -49,7 +49,7 @@ export class AddClient {
     primaryDesignation: '',
     primaryEmail: '',
     primaryPhone: '',
-    technicalContacts: '',
+    technicalContact: '',
     informationSecurityOfficer: '',
     clientSignoffAuthority: '',
 
@@ -122,7 +122,7 @@ export class AddClient {
       designation: this.clientData.primaryDesignation,
       contact_email: this.clientData.primaryEmail,
       phone: this.clientData.primaryPhone,
-      technical_contacts: this.clientData.technicalContacts,
+      technical_contacts: this.clientData.technicalContact,
       information_security_officer: this.clientData.informationSecurityOfficer,
       client_signoff_authority: this.clientData.clientSignoff,
 
@@ -155,7 +155,7 @@ export class AddClient {
       customized_approach_used: this.clientData.customizedApproach,
       non_conformities_gap: this.clientData.nonConformitiesGap,
       non_conformities_gap_identified: this.clientData.nonConformitiesGapIdentified,
-
+      
       remediation_target_date: this.formatDate(this.clientData.remediationTargetDate),
       revalidation_date: this.formatDate(this.clientData.revalidationDate)
     };

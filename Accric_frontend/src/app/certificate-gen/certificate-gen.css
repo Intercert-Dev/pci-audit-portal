@@ -1,40 +1,34 @@
-/* Reset and box sizing */
+/* Reset & box sizing */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
 }
 
-/* ================================
-   Main container
-   ================================ */
 .certificate-box {
   padding: 48px 42px;
   display: flex;
   justify-content: center;
   background: #f5f7fc;
   min-height: 89vh;
+}
+
+.certificate-sub-heading{
+  color: rgba(52, 60, 106, 1);
   font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1.5rem;
 }
 
 .certificate-container {
-  width: 50%;
+  width: 60%;
   margin-top: 32px;
   padding: 30px 35px;
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 1);
   border-radius: 18px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-  text-align: center;
-}
-
-/* Heading */
-.certificate-container h2,
-.certificate-container p {
-  color: black;
-  font-weight: 500;
-  font-size: 24px;
-  padding-bottom: 2rem;
+  
 }
 
 /* Input + Button row */
@@ -42,7 +36,7 @@
   display: flex;
   gap: 12px;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .input-row input {
@@ -57,19 +51,218 @@
 }
 
 .input-row input:focus {
-  border-color: #4a80f5;
+  border-color: #396aff;
   background: #ffffff;
   outline: none;
-  box-shadow: 0 0 0 3px rgba(74, 128, 245, 0.2);
+  box-shadow: 0 0 0 3px rgba(57, 106, 255, 0.2);
 }
 
 .input-row input::placeholder {
-  font-family: 'Inter', sans-serif;
+  color: #9ca3af;
 }
 
-/* Button styling */
+/* Edit Options Section */
+.edit-options {
+  width: 100%;
+  margin: 25px 0;
+  padding: 20px;
+  background: #f5f7fc;
+  opacity: 0.8;
+  border-radius: 12px;
+  border: 1px solid rgba(217, 221, 233, 0.8);
+}
+
+.edit-options p {
+  font-size: 16px;
+  font-weight: 600;
+  color: #152238;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.fields-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 30px 1fr 2fr;
+  gap: 15px;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.field-row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.field-row label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  text-align: left;
+}
+
+.field-row input[type="text"],
+.field-row input[type="date"] {
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #ffffff;
+  transition: all 0.3s ease;
+}
+
+.field-row input[type="text"]:focus,
+.field-row input[type="date"]:focus {
+  border-color: #396aff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(57, 106, 255, 0.1);
+}
+
+.certification-options {
+  width: 100%;
+  margin: 25px 0;
+  padding: 20px;
+  background: rgba(249, 250, 255, 0.8);
+  border-radius: 12px;
+  border: 1px solid rgba(217, 221, 233, 0.8);
+}
+
+.certification-options p {
+  font-size: 16px;
+  font-weight: 600;
+  color: #152238;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Flex container for options */
+.options-flex-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* Regular option rows - take approx 1/3 of width for 3 columns */
+.option-row {
+  flex: 1 1 calc(33.333% - 14px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 250px;
+}
+
+.option-row label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 4px;
+}
+
+.option-row select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.option-row checkbox{
+
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+
+}
+
+.option-row select:focus {
+  border-color: #396aff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(57, 106, 255, 0.1);
+}
+
+/* Checkbox rows - full width */
+.option-row.checkbox-row {
+  flex: 1 1 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+  min-width: 100%;
+  
+}
+
+.option-row.checkbox-row label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  margin: 0;
+}
+
+.option-row.checkbox-row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .option-row {
+    flex: 1 1 calc(50% - 10px);
+    min-width: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .certification-options {
+    padding: 15px;
+  }
+  
+  .options-flex-container {
+    gap: 15px;
+  }
+  
+  .option-row {
+    flex: 1 1 100%;
+    min-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .certification-options {
+    padding: 12px;
+  }
+  
+  .certification-options p {
+    font-size: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .option-row label {
+    font-size: 13px;
+  }
+  
+  .option-row select {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+}
+
+
+
+/* Buttons */
 .certificate-btn {
-  background-color: rgba(57, 106, 255, 1);
   border: none;
   display: flex;
   align-items: center;
@@ -79,100 +272,115 @@
   padding: 0.8rem 1.5rem;
   cursor: pointer;
   transition: background-color 0.3s;
+  background-color: rgba(57, 106, 255, 1);
+  color: rgba(245, 247, 250, 1);
 }
 
-.certificate-btn span {
+.certificate-btn span{
+  font-family: 'Inter', sans-serif;
   font-weight: 600;
   font-size: 1.25rem;
-  color: white;
+  font-size: 20px;
 }
 
-.certificate-edit-btn{
-  margin-top: 25px;
-  background-color: rgba(57, 106, 255, 1);
-  width: 120px;
-  border: none;
+
+
+
+
+
+/* Button container */
+.btn-certificate {
   display: flex;
   align-items: center;
+  gap: 1.5rem;
   justify-content: center;
-  gap: 0.5rem;
-  border-radius: 1rem;
-  opacity: 1;
-  padding: 0.8rem 1.5rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.certificate-edit-btn span {
-  font-weight: 600;
-  font-size: 1.25rem;
-  color: white;
-}
-
-.btn-certificate{
-
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-
-}
-
-/* ================================
-   Table styling for certificate data
-   ================================ */
-.certificate-table-container {
+  flex-wrap: wrap;
   margin-top: 25px;
-  overflow-x: auto;
+}
+
+/* Certificate Table */
+.certificate-table-container {
+  width: 50%;
+  margin: 30px auto 0;
+  padding: 25px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 18px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.certificate-table-container h3 {
+  color: #1f2937;
+  font-weight: 600;
+  font-size: 20px;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 .certificate-table {
-  margin-top: 25px;
   width: 100%;
   border-collapse: collapse;
   text-align: left;
   font-size: 0.95rem;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .certificate-table th,
 .certificate-table td {
-  border: 1px solid #ccc;
-  padding: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .certificate-table th {
   background-color: rgba(57, 106, 255, 0.1);
-  color: #3946ff;
+  color: #396aff;
   font-weight: 600;
+  font-size: 14px;
 }
 
-.certificate-table tr:nth-child(even) {
-  background-color: rgba(57, 106, 255, 0.05);
+.certificate-table tr:last-child td {
+  border-bottom: none;
 }
 
 .certificate-table tr:hover {
-  background-color: rgba(57, 106, 255, 0.1);
+  background-color: rgba(57, 106, 255, 0.03);
+}
+
+.certificate-table td:first-child {
+  font-weight: 500;
+  color: #374151;
+}
+
+.certificate-table td:last-child {
+  color: #1f2937;
 }
 
 /* ================================
-   Responsive — 1024px
+   Responsive Design
    ================================ */
-@media (max-width: 1024px) {
-  .certificate-container {
-    width: 65%;
-  }
 
+/* 1024px */
+@media (max-width: 1024px) {
+  .certificate-container,
+  .certificate-table-container {
+    width: 70%;
+  }
+  
   .certificate-container h2 {
     font-size: 22px;
   }
 }
 
-/* ================================
-   Responsive — 768px (Tablets)
-   ================================ */
+/* 768px (Tablet) */
 @media (max-width: 768px) {
-  .certificate-container {
-    width: 85%;
-    padding: 25px 25px;
+  .certificate-box {
+    padding: 30px 25px;
+  }
+
+  .certificate-container,
+  .certificate-table-container {
+    width: 90%;
+    padding: 25px;
   }
 
   .input-row {
@@ -180,65 +388,154 @@
     gap: 10px;
   }
 
-  .certificate-btn {
-    width: 100%;
-    justify-content: center;
+  .field-row {
+    grid-template-columns: 25px 1fr;
+    gap: 12px;
   }
 
-  .certificate-container h2 {
-    font-size: 20px;
+  .field-row input[type="text"],
+  .field-row input[type="date"] {
+    grid-column: 1 / -1;
+    margin-left: 35px;
+  }
+
+  .option-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .btn-certificate {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .certificate-btn {
+    width: 100%;
   }
 }
 
-/* ================================
-   Responsive — 480px (Mobile)
-   ================================ */
+/* 480px (Mobile) */
 @media (max-width: 480px) {
   .certificate-box {
     padding: 20px 15px;
   }
 
-  .certificate-container {
+  .certificate-container,
+  .certificate-table-container {
     width: 100%;
-    padding: 22px 18px;
+    padding: 20px;
+    margin-top: 20px;
   }
 
   .certificate-container h2 {
-    font-size: 18px;
+    font-size: 20px;
     padding-bottom: 1.5rem;
   }
 
-  .input-row input {
-    padding: 10px 14px;
+  .edit-options,
+  .certification-options {
+    padding: 15px;
+  }
+
+  .field-row {
+    grid-template-columns: 20px 1fr;
+    gap: 10px;
+  }
+
+  .field-row input[type="text"],
+  .field-row input[type="date"] {
+    margin-left: 30px;
+    padding: 8px 10px;
+  }
+
+  .certificate-table {
     font-size: 0.85rem;
   }
 
-  .certificate-btn {
-    padding: 0.7rem 1.2rem;
-  }
-
-  .certificate-btn span {
-    font-size: 1rem;
+  .certificate-table th,
+  .certificate-table td {
+    padding: 10px 12px;
   }
 }
 
-/* ================================
-   Responsive — 360px (Small Phones)
-   ================================ */
+/* 360px (Small Phones) */
 @media (max-width: 360px) {
-  .certificate-container {
+  .certificate-container,
+  .certificate-table-container {
     padding: 18px 15px;
   }
 
   .certificate-container h2 {
-    font-size: 17px;
+    font-size: 18px;
   }
 
-  .input-row input {
-    font-size: 0.8rem;
+  .edit-options,
+  .certification-options {
+    padding: 12px;
+  }
+
+  .field-row {
+    grid-template-columns: 18px 1fr;
+    gap: 8px;
+  }
+
+  .field-row label {
+    font-size: 13px;
+  }
+
+  .field-row input[type="text"],
+  .field-row input[type="date"] {
+    margin-left: 26px;
+    padding: 6px 8px;
+    font-size: 13px;
   }
 
   .certificate-btn {
-    padding: 0.65rem 1rem;
+    padding: 10px 16px;
+    font-size: 14px;
   }
+}
+
+/* Animation for better UX */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.certificate-container,
+.certificate-table-container {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Focus states for accessibility */
+input:focus-visible,
+select:focus-visible,
+button:focus-visible {
+  outline: 2px solid #396aff;
+  outline-offset: 2px;
+}
+
+/* Custom scrollbar for webkit browsers */
+.certificate-table-container::-webkit-scrollbar {
+  height: 6px;
+}
+
+.certificate-table-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.certificate-table-container::-webkit-scrollbar-thumb {
+  background: #396aff;
+  border-radius: 3px;
+}
+
+.certificate-table-container::-webkit-scrollbar-thumb:hover {
+  background: #2e55d1;
 }

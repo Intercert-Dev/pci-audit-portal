@@ -49,13 +49,15 @@
   display: flex;
   align-items: center;
   color: rgba(100, 149, 237, 1);
+  width: 200px;
+  height: 80px;
 }
 
-.logo-img {
+/* .logo-img {
   width: 125px;
   height: 40px;
 
-}
+} */
 
 
 .header-right {
@@ -139,7 +141,7 @@
 .layout-body {
   display: flex;
   flex: 1;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .sidebar {
@@ -396,6 +398,7 @@
   .logo img {
     width: 120px;
     height: auto;
+    border: 1px solid red;
   }
 
   .header-right {

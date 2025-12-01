@@ -1,66 +1,165 @@
 <div class="certificate-box">
   <div class="certificate-container">
-    <h2>Generate Certificate</h2>
-
     <!-- Certificate input form -->
-    <form #certForm="ngForm" (ngSubmit)="generateCertificate(certForm)" class="input-row">
-      <input 
-        type="text" 
-        name="certificateNo" 
-        ngModel 
-        required 
-        placeholder="Enter certificate number" 
-      />
-      <button class="certificate-btn" type="submit" [disabled]="certForm.invalid">
-       <span>Generate</span> 
-      </button>
+    <form #certForm="ngForm" (ngSubmit)="generateCertificate(certForm)">
+      <div class="input-row">
+        <input type="text" name="certificateNo" ngModel required placeholder="Enter certificate number" />
+        <button class="certificate-btn" type="submit">
+          <span>Generate</span>
+        </button>
+      </div>
+      <div *ngIf="showCertificateForm && certificateData">
+        <p class="certificate-sub-heading">Select and Edit Certificate Fields</p>
+        <div class="edit-options">
+
+          <div class="fields-container">
+
+            <!-- Certificate No -->
+            <div class="field-row">
+              <input type="checkbox" [(ngModel)]="editFields.certificateNo" name="certificateNoCheck" />
+              <label>Certificate No</label>
+              <input type="text" [(ngModel)]="certificateData.certificateNo" name="certificateNo" />
+            </div>
+
+            <!-- Company Name -->
+            <div class="field-row">
+              <input type="checkbox" [(ngModel)]="editFields.companyName" name="companyNameCheck" />
+              <label>Company Name</label>
+              <input type="text" [(ngModel)]="certificateData.companyName" name="companyName" />
+            </div>
+
+            <!-- Street -->
+            <div class="field-row">
+              <input type="checkbox" [(ngModel)]="editFields.street_name" name="street_name" />
+              <label>Street</label>
+              <input type="text" [(ngModel)]="certificateData.street_name" name="street_name" />
+            </div>
+
+            <!-- City -->
+            <div class="field-row">
+              <input type="checkbox" [(ngModel)]="editFields.city_name" name="city_name" />
+              <label>City</label>
+              <input type="text" [(ngModel)]="certificateData.city_name" name="city_name" />
+            </div>
+
+            <!-- State -->
+            <div class="field-row">
+              <input type="checkbox" [(ngModel)]="editFields.state_name" name="state_name" />
+              <label>State</label>
+              <input type="text" [(ngModel)]="certificateData.state_name" name="state_name" />
+            </div>
+
+            <!-- Country -->
+            <div class="field-row">
+              <input type="checkbox" [(ngModel)]="editFields.county_name" name="county_name" />
+              <label>Country</label>
+              <input type="text" [(ngModel)]="certificateData.county_name" name="county_name" />
+            </div>
+
+            <!-- Zip -->
+            <div class="field-row">
+              <input type="checkbox" [(ngModel)]="editFields.zip_name" name="zip_name" />
+              <label>Zip Code</label>
+              <input type="text" [(ngModel)]="certificateData.zip_name" name="zip_name" />
+            </div>
+
+            <!-- Date Issue -->
+            <div class="field-row">
+              <input type="checkbox" [(ngModel)]="editFields.dateIssue" name="dateIssueCheck" />
+              <label>Date Issue</label>
+              <input type="text" [(ngModel)]="certificateData.dateIssue" name="dateIssue" />
+            </div>
+
+            <!-- Date Valid -->
+            <div class="field-row">
+              <input type="checkbox" [(ngModel)]="editFields.dateValid" name="dateValidCheck" />
+              <label>Date Valid</label>
+              <input type="text" [(ngModel)]="certificateData.dateValid" name="dateValid" />
+            </div>
+            <!-- Classification -->
+            <div class="field-row">
+              <input type="checkbox" [(ngModel)]="editFields.assessment_classification"
+                name="assessment_classification" />
+              <label>Assessment Classification</label>
+              <input type="text" [(ngModel)]="certificateData.assessment_classification"
+                name="assessment_classification" />
+            </div>
+
+
+          </div>
+        </div>
+
+        <p class="certificate-sub-heading">Certification Option</p>
+        <div class="certification-options">
+          <div class="options-flex-container">
+            <div class="option-row">
+              <label>Scope Font Size</label>
+              <select [(ngModel)]="certificateOptions.scopeFontSize" name="scopeFontSize">
+                <option *ngFor="let size of fontSizes" [value]="size">{{size}}</option>
+              </select>
+            </div>
+
+            <div class="option-row">
+              <label>Table Font Size</label>
+              <select [(ngModel)]="certificateOptions.tableFontSize" name="tableFontSize">
+                <option *ngFor="let size of tableFontSizes" [value]="size">{{size}}</option>
+              </select>
+            </div>
+
+            <div class="option-row">
+              <label>Page Size</label>
+              <select [(ngModel)]="certificateOptions.pageSize" name="pageSize">
+                <option *ngFor="let size of pageSizes" [value]="size">{{size}}</option>
+              </select>
+            </div>
+
+
+
+            <div class="option-row">
+              <label>Type</label>
+              <select [(ngModel)]="certificateOptions.type" name="type">
+                <option value="">-- Select Type --</option>
+                <option *ngFor="let t of certificateTypes" [value]="t">{{t}}</option>
+              </select>
+            </div>
+
+            <div class="option-row">
+              <label>Certificate Format</label>
+              <select [(ngModel)]="certificateOptions.formatType" name="formatType">
+                <option value="Softcopy">Softcopy</option>
+                <option value="Hardcopy">Hardcopy</option>
+              </select>
+            </div>
+
+            <div class="option-row checkbox">
+              <div class="option-row checkbox-row">
+                <label>
+                  <input type="checkbox" [(ngModel)]="certificateOptions.includeLineBreak" name="includeLineBreak">
+                  Include line break before version
+                </label>
+              </div>
+
+              <div class="option-row checkbox-row">
+                <label>
+                  <input type="checkbox" [(ngModel)]="certificateOptions.showValidityLine" name="showValidityLine">
+                  Show validity line
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="btn-certificate">
+          <button class="certificate-btn" type="submit">
+            <span>Generate Certificate</span>
+          </button>
+
+          <button class="certificate-btn" type="button" (click)="downloadPDF()">
+            <span>Download PDF</span>
+          </button>
+        </div>
+      </div>
     </form>
-
-    <!-- Display certificate details in a table -->
-    <div *ngIf="certificateData" class="certificate-table-container">
-      <h3>Certificate Details:</h3>
-      <table class="certificate-table">
-        <tr>
-          <th>Field</th>
-          <th>Value</th>
-        </tr>
-        <tr>
-          <td>Legal Entity Name</td>
-          <td>{{ certificateData.legal_entity_name }}</td>
-        </tr>
-        <tr>
-          <td>Address</td>
-          <td>{{ certificateData.street_name }},{{ certificateData.city_name }}
-            ,{{ certificateData.state_name }},{{ certificateData.county_name }},
-            {{ certificateData.zip_name }}
-          </td>
-        </tr>
-        <tr>
-          <td>Certificate Issue Date</td>
-          <td>{{ certificateData.certificate_issue_date }}</td>
-        </tr>
-        <tr>
-          <td>Certificate Expiry Date</td>
-          <td>{{ certificateData.certificate_expiry_date }}</td>
-        </tr>
-        <tr>
-          <td>Certificate Number</td>
-          <td>{{ certificateData.certificate_number_unique_id }}</td>
-        </tr>
-        <tr>
-          <td>Assessment Classification</td>
-          <td>{{ certificateData.assessment_classification || 'SAQ D' }}</td>
-        </tr>
-      </table>
-
-       <div class="btn-certificate">
-        <button class="certificate-edit-btn">
-         <span>Preview</span> 
-      </button>
-        <button class="certificate-edit-btn">
-         <span>Download</span> 
-      </button>
-       </div>
-    </div>
   </div>
 </div>

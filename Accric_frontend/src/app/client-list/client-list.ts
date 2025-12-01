@@ -12,6 +12,8 @@ interface Client {
   issueDate: string;
   validDate: string;
   status: string;
+  current_report : string,
+   previous_report :string,
 }
 
 
@@ -37,36 +39,6 @@ export class ClientList implements OnInit {
     this.getClientList();
   }
 
-  // getClientList() {
-  //   const url = 'http://pci.accric.com/api/auth/client-list';
-  //   const token = localStorage.getItem("jwt");
-  //   const headers = new HttpHeaders({
-  //     'Authorization': `Bearer ${token}`
-  //   });
-
-  //   this.http.get<any>(url, { headers }).subscribe({
-  //     next: (res) => {
-  //       this.clientList = res.data.map((item: any) => ({
-  //         company: item.legal_entity_name,
-  //         certNo: item.certificate_number_unique_id,
-  //         standard: item.pci_dss_version_application,
-  //         issueDate: item.certificate_issue_date,
-  //         validDate: item.certificate_expiry_date,
-  //         status: item.audit_status
-  //       }));
-
-  //       this.filtered_list = [...this.clientList];
-
-  //       // 3. FORCE THE VIEW TO UPDATE
-  //       this.cdr.detectChanges();
-
-  //       console.log("Client List:", this.clientList);
-  //     },
-  //     error: (err) => {
-  //       console.error('Failed to fetch client list:', err);
-  //     }
-  //   });
-  // }
 
   getClientList() {
     const url = 'http://pci.accric.com/api/auth/client-list';
@@ -94,7 +66,9 @@ export class ClientList implements OnInit {
           standard: item.pci_dss_version_application,
           issueDate: item.certificate_issue_date,
           validDate: item.certificate_expiry_date,
-          status: item.audit_status
+          status: item.audit_status,
+          previous_report: item.previous_report,
+          current_report: item.current_report,
         }));
 
         this.filtered_list = [...this.clientList];
@@ -134,6 +108,14 @@ export class ClientList implements OnInit {
 
   editRow(row: any) {
     this.editingRow = { ...row };
+  }
+
+  viewPDF(url: string) {
+    if (!url) {
+      alert("PDF not available!");
+      return;
+    }
+    window.open(url, "_blank");
   }
 
   saveEdit() {

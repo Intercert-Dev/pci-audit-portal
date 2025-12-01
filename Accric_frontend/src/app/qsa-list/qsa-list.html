@@ -1,0 +1,100 @@
+<div class="qsa-list-container">
+  <div class="qsa-list-box">
+
+    <div class="qsa-header-row">
+      <p>QSA List</p>
+    </div>
+
+    <div class="qsa-table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>QSA Name</th>
+            <th>Email ID</th>
+            <th>Signature</th>
+            <th>Certificate Number</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <!-- LOADING -->
+          <tr *ngIf="isLoading">
+            <td colspan="5" class="center-text">Loading...</td>
+          </tr>
+
+          <!-- QSA ROWS -->
+          <tr *ngFor="let qsa of qsaList">
+            <td>{{ qsa.qsa_name }}</td>
+            <td>{{ qsa.email }}</td>
+
+            <!-- Signature Image -->
+            <td>
+              <img *ngIf="qsa.signature" 
+                   [src]="qsa.signature" 
+                   alt="Signature" 
+                   class="qsa-signature-img">
+              <span *ngIf="!qsa.signature">—</span>
+            </td>
+
+            <td>{{ qsa.qsa_certificate_number || '—' }}</td>
+
+            <td>
+              <div class="qsa-action-box">
+                <img src="/assets/icons/edit.png" alt="edit" (click)="editQsa(qsa)">
+                <img src="/assets/icons/delete.png" alt="delete" (click)="deleteQsa(qsa)">
+              </div>
+            </td>
+          </tr>
+
+          <!-- NO DATA -->
+          <tr *ngIf="!isLoading && qsaList.length === 0">
+            <td colspan="5" class="center-text">No QSA records found</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- EDIT POPUP -->
+<div class="qsa-edit-popup" *ngIf="showEditPopup">
+  <div class="qsa-popup-overlay" (click)="cancelEdit()"></div>
+
+  <div class="qsa-popup-content">
+    <h2>Edit QSA</h2>
+
+    <div class="qsa-form-row">
+      <div class="qsa-form-group">
+        <label>QSA Name</label>
+        <input type="text" [(ngModel)]="editModel.qsa_name">
+      </div>
+
+      <div class="qsa-form-group">
+        <label>Email</label>
+        <input type="email" [(ngModel)]="editModel.email">
+      </div>
+    </div>
+
+    <div class="qsa-form-row">
+      <div class="qsa-form-group">
+        <label>Certificate Number</label>
+        <input type="text" [(ngModel)]="editModel.qsa_certificate_number">
+      </div>
+
+      <div class="qsa-form-group">
+        <label>Signature</label>
+        <input type="file" (change)="onSignatureUpload($event)">
+      </div>
+    </div>
+
+    <div class="qsa-popup-buttons">
+      <button class="qsa-save-btn" (click)="saveEdit()">Save</button>
+      <button class="qsa-cancel-btn" (click)="cancelEdit()">Cancel</button>
+    </div>
+
+  </div>
+</div>

@@ -11,6 +11,7 @@ import { CreateUser } from './create-user/create-user';
 import { AsvClientList } from './asv-client-list/asv-client-list';
 import { UserList } from './user-list/user-list';
 import { Profile } from './profile/profile';
+import { Settings } from './settings/settings';
 
 
 export const routes: Routes = [
@@ -18,7 +19,7 @@ export const routes: Routes = [
   {
     path: '',
     component: MainLayout,
-    canActivate: [AuthGuard],
+    // canActivate: [AuthGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: Dashboard },
@@ -30,6 +31,7 @@ export const routes: Routes = [
       { path: 'asv-client-list', component: AsvClientList},
       { path: 'user-list', component: UserList},
       { path: 'user-profile', component: Profile},
+      { path: 'user-settings', component: Settings},
 
     ],
   },

@@ -1,5 +1,5 @@
 <div class="certificate-box">
-  <div class="certificate-container">
+  <div class="certificate-container" [class.expanded]="showCertificateForm">
     <!-- Certificate input form -->
     <form #certForm="ngForm" (ngSubmit)="generateCertificate(certForm)">
       <div class="input-row">

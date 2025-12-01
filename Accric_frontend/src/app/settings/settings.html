@@ -1,0 +1,63 @@
+<div class="settings-container">
+  <div class="settings-header">
+    <p>Administration Panel</p>
+  </div>
+
+  <div class="settings-content">
+
+    <!-- Sidebar -->
+    <div class="settings-sidebar">
+      <nav class="settings-nav">
+        <button 
+          class="nav-item"
+          [class.active]="activeSection === 'manageUsers'"
+          (click)="setActiveSection('manageUsers')">
+          Manage Users
+        </button>
+
+        <button 
+          class="nav-item"
+          [class.active]="activeSection === 'manageQsa'"
+          (click)="setActiveSection('manageQsa')">
+          Manage QSA
+        </button>
+
+        <button 
+          class="nav-item"
+          [class.active]="activeSection === 'rolesPermissions'"
+          (click)="setActiveSection('rolesPermissions')">
+          Role & Permission
+        </button>
+      </nav>
+    </div>
+
+    <!-- Main Content Panels -->
+    <div class="settings-panels">
+
+      <!-- MANAGE USER SECTION -->
+      <div class="manage-heading" *ngIf="activeSection === 'manageUsers'">
+        <p>Manage Users</p>
+
+        <!-- Show your user-list page here -->
+        <app-user-list></app-user-list>
+
+      </div>
+
+      <!-- MANAGE QSA SECTION -->
+      <div class="manage-heading" *ngIf="activeSection === 'manageQsa'" >
+        <p>Manage QSA</p>
+
+      <app-manage-qsa></app-manage-qsa>
+
+      </div>
+
+      <!-- ROLE & PERMISSION SECTION -->
+      <div class="manage-heading" *ngIf="activeSection === 'rolesPermissions'">
+        <p>Role & Permission</p>
+        <!-- <app-role-permission></app-role-permission> -->
+      </div>
+
+    </div>
+
+  </div>
+</div>

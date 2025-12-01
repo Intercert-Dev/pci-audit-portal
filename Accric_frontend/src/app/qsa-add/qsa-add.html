@@ -1,0 +1,56 @@
+<div class="qsa-container">
+    <div class="qsa-box">
+        <form [formGroup]="qsaForm" (ngSubmit)="onSubmit()">
+
+            <!-- QSA Name -->
+            <div class="form-group">
+                <label>QSA Name *</label>
+                <input type="text" formControlName="qsaName" placeholder="Enter QSA name">
+                <small *ngIf="f['qsaName'].touched && f['qsaName'].invalid" class="error">
+                    Name is required
+                </small>
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <label>Email *</label>
+                <input type="email" formControlName="email" placeholder="Enter email">
+                <small *ngIf="f['email'].touched && f['email'].invalid" class="error">
+                    Valid email required
+                </small>
+            </div>
+
+            <!-- Certification Number -->
+            <div class="form-group">
+                <label>Certification Number *</label>
+                <input type="text" formControlName="certificationNumber" placeholder="Enter certification number">
+                <small *ngIf="f['certificationNumber'].touched && f['certificationNumber'].invalid" class="error">
+                    Certification number is required
+                </small>
+            </div>
+
+            <!-- Signature Upload -->
+            <div class="form-group">
+                <label>Signature *</label>
+                <input type="file" accept="image/*,.pdf" (change)="onFileSelected($event)">
+
+                <!-- Preview -->
+                <div *ngIf="selectedSignatureFile" class="preview-box">
+                    <div class="preview-top">
+                        <strong>Signature Preview</strong>
+                        <button type="button" class="remove-btn" (click)="removeFile()">Remove</button>
+                    </div>
+                    <div class="preview-content">
+                        <img *ngIf="isImage" [src]="signaturePreview" class="preview-img">
+                        <div *ngIf="!isImage" class="pdf-box">
+                            <img src="assets/icons/pdf-icon.png" class="pdf-icon" alt="pdf">
+                            <span>{{ signatureFileName }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" [disabled]="qsaForm.invalid" class="submit-btn">Add QSA</button>
+        </form>
+    </div>
+</div>

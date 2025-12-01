@@ -10,11 +10,12 @@
   padding: 48px 42px;
   display: flex;
   justify-content: center;
+  align-items: flex-start;
   background: #f5f7fc;
   min-height: 89vh;
 }
 
-.certificate-sub-heading{
+.certificate-sub-heading {
   color: rgba(52, 60, 106, 1);
   font-family: 'Inter', sans-serif;
   font-weight: 600;
@@ -24,12 +25,23 @@
 .certificate-container {
   width: 60%;
   margin-top: 32px;
-  padding: 30px 35px;
-  background: rgba(255, 255, 255, 1);
+  padding: 20px 25px;
+  /* smaller when collapsed */
+  background: #fff;
   border-radius: 18px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-  
+  height: auto;
+  /* keeps growing based on content */
+  min-height: auto;
+  transition: all 0.3s ease;
+  /* ADD THIS */
 }
+
+
+.certificate-container.expanded {
+  padding: 30px 35px;
+}
+
 
 /* Input + Button row */
 .input-row {
@@ -175,7 +187,7 @@
   transition: all 0.3s ease;
 }
 
-.option-row checkbox{
+.option-row checkbox {
 
   display: flex;
   align-items: center;
@@ -198,7 +210,7 @@
   gap: 10px;
   margin: 10px 0;
   min-width: 100%;
-  
+
 }
 
 .option-row.checkbox-row label {
@@ -228,11 +240,11 @@
   .certification-options {
     padding: 15px;
   }
-  
+
   .options-flex-container {
     gap: 15px;
   }
-  
+
   .option-row {
     flex: 1 1 100%;
     min-width: 100%;
@@ -243,16 +255,16 @@
   .certification-options {
     padding: 12px;
   }
-  
+
   .certification-options p {
     font-size: 15px;
     margin-bottom: 15px;
   }
-  
+
   .option-row label {
     font-size: 13px;
   }
-  
+
   .option-row select {
     padding: 8px 10px;
     font-size: 13px;
@@ -276,7 +288,7 @@
   color: rgba(245, 247, 250, 1);
 }
 
-.certificate-btn span{
+.certificate-btn span {
   font-family: 'Inter', sans-serif;
   font-weight: 600;
   font-size: 1.25rem;
@@ -361,11 +373,12 @@
 
 /* 1024px */
 @media (max-width: 1024px) {
+
   .certificate-container,
   .certificate-table-container {
     width: 70%;
   }
-  
+
   .certificate-container h2 {
     font-size: 22px;
   }
@@ -460,6 +473,7 @@
 
 /* 360px (Small Phones) */
 @media (max-width: 360px) {
+
   .certificate-container,
   .certificate-table-container {
     padding: 18px 15px;
@@ -502,6 +516,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

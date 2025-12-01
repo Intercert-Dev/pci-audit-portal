@@ -16,39 +16,40 @@
             <th>Created At</th>
             <th>Created By</th>
             <th>Status</th>
+            <th>Action</th>
           </tr>
         </thead>
 
         <tbody>
 
-          <!-- SHOW LOADER -->
+          <!-- LOADING -->
           <tr *ngIf="isLoading">
-            <td colspan="6" style="text-align:center;">Loading...</td>
+            <td colspan="7" style="text-align:center;">Loading...</td>
           </tr>
 
-          <!-- SHOW USERS -->
+          <!-- DISPLAY USERS -->
           <tr *ngFor="let user of users">
             <td>{{ user.name }}</td>
             <td>{{ user.email }}</td>
             <td>{{ user.role }}</td>
-
-            <!-- Format created Date -->
-            <td>{{ user.created_at | date: 'medium' }}</td>
-
-            <!-- Created By (safe access) -->
+            <td>{{ user.created_at | date:'dd-MM-yyyy' }}</td>
             <td>{{ user.createdBy?.name || '—' }}</td>
-
-            <!-- Active / Inactive -->
             <td>
               <span [ngClass]="user.isActive ? 'active' : 'inactive'">
                 {{ user.isActive ? 'Active' : 'Inactive' }}
               </span>
             </td>
+            <td>
+              <div class="action-box">
+                <img src="/assets/icons/edit.png" alt="Edit" (click)="editRow(user)">
+                <img src="/assets/icons/delete.png" alt="Delete" (click)="deleteRow(user)">
+              </div>
+            </td>
           </tr>
 
-          <!-- NO USERS -->
+          <!-- NO RECORDS -->
           <tr *ngIf="!isLoading && users.length === 0">
-            <td colspan="6" style="text-align:center;">No users found</td>
+            <td colspan="7" style="text-align:center;">No users found</td>
           </tr>
 
         </tbody>
@@ -56,5 +57,49 @@
 
     </div>
 
+  </div>
+</div>
+
+<!-- EDIT POPUP -->
+<div class="edit-popup" *ngIf="showEditPopup">
+  <div class="popup-overlay" (click)="cancelEdit()"></div>
+  <div class="popup-content">
+    <h2>Edit User</h2>
+
+    <!-- Row 1 -->
+    <div class="form-row">
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" [(ngModel)]="editModel.name" placeholder="Enter name">
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" [(ngModel)]="editModel.email" placeholder="Enter email">
+      </div>
+    </div>
+
+    <!-- Row 2 -->
+    <div class="form-row">
+      <div class="form-group">
+        <label>Role</label>
+        <input type="text" [(ngModel)]="editModel.role" placeholder="Enter role">
+      </div>
+      
+
+      <div class="form-group">
+        <label>Status</label>
+        <select [(ngModel)]="editModel.isActive" class="status-select">
+          <option [value]="true">Active</option>
+          <option [value]="false">Inactive</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="buttons">
+      <button class="save-btn" (click)="saveEdit()">Save</button>
+      <button class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+    </div>
   </div>
 </div>

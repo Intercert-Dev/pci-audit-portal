@@ -30,20 +30,6 @@
         </small>
       </div>
 
-      <!-- Password -->
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" name="password" ngModel #password="ngModel" required minlength="6"
-          placeholder="Enter password" />
-
-        <small class="error" *ngIf="password.touched && password.errors?.['required']">
-          Password is required
-        </small>
-
-        <small class="error" *ngIf="password.touched && password.errors?.['minlength']">
-          Password must be at least 6 characters
-        </small>
-      </div>
 
       <!-- Role -->
       <div class="form-group">

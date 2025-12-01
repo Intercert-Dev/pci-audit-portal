@@ -5,21 +5,24 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-user-list',
+  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './user-list.html',
   styleUrls: ['./user-list.css'],
 })
 export class UserList implements OnInit {
-  
+
   users: any[] = [];
   isLoading: boolean = false;
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
+  showEditPopup: boolean = false;  // Controls popup visibility
+  editModel: any = {};      // temp object for edit form
+
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.getAllUsers();
   }
-
 
   getAllUsers() {
     this.isLoading = true;
@@ -30,20 +33,10 @@ export class UserList implements OnInit {
     this.http.get<any>("http://pci.accric.com/api/auth/user-list", { headers })
       .subscribe({
         next: (res) => {
-          const raw = res["data"];
-
-          if (Array.isArray(raw)) {
-            this.users = raw;
-          } else {
-            this.users = [];
-          }
-
+          this.users = Array.isArray(res.data) ? res.data : [];
           this.isLoading = false;
-          
-          // 3. Force the view to refresh
-          this.cdr.detectChanges(); 
+          this.cdr.detectChanges();
         },
-
         error: (err) => {
           console.error("Error fetching users", err);
           this.isLoading = false;
@@ -51,36 +44,65 @@ export class UserList implements OnInit {
       });
   }
 
-  // getAllUsers() {
-  //   this.isLoading = true;
+  // --------------------------
+  // EDIT USER
+  // --------------------------
+  editRow(user: any) {
+    this.editModel = { ...user };  // copy values into popup form
+    this.showEditPopup = true;
+  }
 
-  //   const token = localStorage.getItem("jwt");
-  //   const headers = { 'Authorization': `Bearer ${token}` };
+  cancelEdit() {
+    this.showEditPopup = false;
+    this.editModel = {};
+  }
 
-  //   this.http.get<any>("http://pci.accric.com/api/auth/user-list", { headers })
-  //     .subscribe({
-  //       next: (res) => {
-  //         console.log("FULL RESPONSE:", res);
-  //         console.log("RESPONSE KEYS:", Object.keys(res));
+  saveEdit() {
+    const token = localStorage.getItem("jwt");
+    const headers = { 'Authorization': `Bearer ${token}` };
 
-  //         // Always access the key safely
-  //         const raw = res["data"];
-  //         console.log("RAW DATA:", raw);
+    this.http.put(`http://pci.accric.com/api/auth/update-user/${this.editModel.id}`, this.editModel, { headers })
+      .subscribe({
+        next: (res) => {
+          alert("User updated successfully!");
 
-  //         if (Array.isArray(raw)) {
-  //           this.users = raw;
-  //         } else {
-  //           this.users = [];
-  //         }
+          // Update table instantly
+          const index = this.users.findIndex(u => u.id === this.editModel.id);
+          if (index !== -1) {
+            this.users[index] = { ...this.editModel };
+          }
 
-  //         console.log("FINAL USERS ARRAY:", this.users);
-  //         this.isLoading = false;
-  //       },
+          this.showEditPopup = false; // close popup
+        },
+        error: err => {
+          console.error(err);
+          alert("Error updating user");
+        }
+      });
+  }
 
-  //       error: (err) => {
-  //         console.error("Error fetching users", err);
-  //         this.isLoading = false;
-  //       }
-  //     });
-  // }
+  // --------------------------
+  // DELETE USER
+  // --------------------------
+  deleteRow(user: any) {
+    if (!confirm("Are you sure you want to delete this user?")) return;
+
+    const token = localStorage.getItem("jwt");
+    const headers = { 'Authorization': `Bearer ${token}` };
+
+    this.http.delete(`http://pci.accric.com/api/auth/delete-user/${user.id}`, { headers })
+      .subscribe({
+        next: (res) => {
+          alert("User deleted!");
+
+          // remove from table instantly
+          this.users = this.users.filter(u => u.id !== user.id);
+        },
+        error: err => {
+          console.error(err);
+          alert("Error deleting user");
+        }
+      });
+  }
+
 }

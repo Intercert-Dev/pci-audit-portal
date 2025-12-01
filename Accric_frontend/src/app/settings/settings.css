@@ -1,0 +1,137 @@
+/* ===========================
+   MAIN CONTAINER
+=========================== */
+.settings-container {
+  width: 100%;
+  padding: 2rem;
+  background: #f8f9fa;
+  overflow: hidden;
+  height: 89vh;
+}
+
+/* ===========================
+   HEADER
+=========================== */
+.settings-header{
+  color: rgba(52, 60, 106, 1);
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1.5rem;
+  margin: 0;
+  text-align: center;
+}
+
+
+
+
+.settings-content {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 2rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+/* ===========================
+   SIDEBAR
+=========================== */
+.settings-sidebar {
+  background: #2c3e50;
+  padding: 1.5rem 0;
+}
+
+.settings-nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-item {
+  background: transparent;
+  border: none;
+  width: 100%;
+  color: #bdc3c7;
+  padding: 1rem 1.8rem;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1rem;
+  transition: 0.25s ease-in-out;
+}
+
+.nav-item:hover {
+  background: #34495e;
+  color: #ecf0f1;
+}
+
+.nav-item.active {
+  background: #3498db;
+  color: #fff;
+  border-right: 4px solid #2980b9;
+}
+
+/* ===========================
+   MAIN PANEL
+=========================== */
+.settings-panels {
+  padding: 2rem;
+  min-height: 600px;
+}
+
+.manage-heading{
+  color: rgba(52, 60, 106, 1);
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1.5rem;
+  margin: 0;
+
+}
+
+/* ===========================
+   COMPONENT PLACEHOLDERS
+=========================== */
+/* These handle spacing for your child components */
+app-user-list,
+app-qsa-management,
+app-role-permission {
+  display: block;
+  margin-top: 1rem;
+}
+
+/* ===========================
+   RESPONSIVE DESIGN
+=========================== */
+@media (max-width: 1024px) {
+  .settings-content {
+    grid-template-columns: 220px 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .settings-content {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-sidebar {
+    padding: 0.5rem 0.5rem;
+  }
+
+  .settings-nav {
+    flex-direction: row;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .nav-item {
+    padding: 0.75rem 1.2rem;
+    border-right: none !important;
+    flex-shrink: 0;
+  }
+
+  .settings-panels {
+    padding: 1.5rem;
+  }
+}

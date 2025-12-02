@@ -13,6 +13,10 @@ import { UserList } from './user-list/user-list';
 import { Profile } from './profile/profile';
 import { Settings } from './settings/settings';
 import { TotalUpcomingAuditList } from './total-upcoming-audit-list/total-upcoming-audit-list';
+import { TotalActiveClientList } from './total-active-client-list/total-active-client-list';
+import { TotalClientList } from './total-client-list/total-client-list';
+import { SuspendedClientList } from './suspended-client-list/suspended-client-list';
+import { TotalCertificationList } from './total-certification-list/total-certification-list';
 
 
 export const routes: Routes = [
@@ -34,6 +38,10 @@ export const routes: Routes = [
       { path: 'user-profile', component: Profile},
       { path: 'user-settings', component: Settings},
       { path: 'upcoming-audit-list', component: TotalUpcomingAuditList},
+      { path: 'total-Client-list', component: TotalClientList},
+      { path: 'total-active-client-list', component: TotalActiveClientList},
+      { path: 'total-suspended-client-list', component: SuspendedClientList},
+      { path: 'total-certificated-client-list', component: TotalCertificationList},
 
     ],
   },

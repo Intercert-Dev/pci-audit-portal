@@ -1,0 +1,450 @@
+<div class="client-list-container">
+  <div class="client-list-box">
+    <div class="header-row">
+      <p>Total Client List</p>
+      <div class="header-right">
+        <div class="search-box">
+          <img src="/assets/icons/magnifying-glass 2.png" alt="Search Icon">
+          <input type="text" placeholder="Search Certificates" [(ngModel)]="search_text" (input)="filter_list()">
+        </div>
+        <button class="export-btn" (click)="exportToExcel()"><span>Export to Excel</span></button>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Company</th>
+            <th>Cert No.</th>
+            <th>Standard</th>
+            <th>Issue</th>
+            <th>Valid</th>
+            <th>Status</th>
+            <th>Previous Report</th>
+            <th>Current Report</th>
+            <!-- Sticky Action Column -->
+            <th class="sticky-action">Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let row of filtered_list">
+            <td>{{ row.legalEntityName || row.company }}</td>
+            <td>{{ row.certificateNumberUniqueId || row.certNo }}</td>
+            <td>{{ row.assessmentType || row.standard }}</td>
+            <td>{{ row.certificateIssueDate || row.issueDate | date }}</td>
+            <td>{{ row.certificateExpiryDate || row.validDate | date }}</td>
+            <td id="client-status">{{ row.auditStatus || row.status }}</td>
+            <td>
+              <button class="view-btn" (click)="viewPDF(row.previousReport)">
+               <span>View</span> 
+              </button>
+            </td>
+            <td>
+              <button class="view-btn" (click)="viewPDF(row.currentReport)">
+                <span>View</span>
+              </button>
+            </td>
+            <td class="sticky-action">
+              <div class="action-box">
+                <img src="/assets/icons/edit.png" alt="Edit" (click)="editClient(row)">
+                <img src="/assets/icons/delete.png" alt="Delete" (click)="deleteRow(row)">
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Comprehensive Edit Client Popup -->
+<div class="edit-client-popup-overlay" *ngIf="editingClient">
+  <div class="edit-client-popup">
+    <div class="popup-header">
+      <h2>Edit Client</h2>
+      <button class="close-btn" (click)="cancelEdit()">&times;</button>
+    </div>
+
+    <div class="popup-content">
+      <form #editClientForm="ngForm">
+        
+        <!-- Client Profile Section -->
+        <div class="popup-section">
+          <h3 class="section-title">Client Profile</h3>
+          <div class="form-grid">
+            
+            <div class="form-group">
+              <label>Legal Entity Name*</label>
+              <input type="text" name="legalEntityName" required [(ngModel)]="editingClient.legalEntityName"
+                placeholder="Legal Entity Name" />
+            </div>
+
+            <div class="form-group">
+              <label>Trading / Brand Name</label>
+              <input type="text" name="brandName" [(ngModel)]="editingClient.brandName" 
+                placeholder="Trading / Brand Name" />
+            </div>
+
+            <div class="form-group">
+              <label>Country*</label>
+              <input type="text" name="country" required [(ngModel)]="editingClient.country" 
+                placeholder="Country" />
+            </div>
+
+            <div class="form-group">
+              <label>State*</label>
+              <input type="text" name="state" required [(ngModel)]="editingClient.state" 
+                placeholder="State" />
+            </div>
+
+            <div class="form-group">
+              <label>City*</label>
+              <input type="text" name="city" required [(ngModel)]="editingClient.city" 
+                placeholder="City" />
+            </div>
+
+            <div class="form-group">
+              <label>Street*</label>
+              <input type="text" name="street" required [(ngModel)]="editingClient.street" 
+                placeholder="Street" />
+            </div>
+
+            <div class="form-group">
+              <label>Zip Code*</label>
+              <input type="text" name="zipCode" required [(ngModel)]="editingClient.zipCode" 
+                placeholder="Zip Code" />
+            </div>
+
+            <div class="form-group">
+              <label>Nature of Business</label>
+              <input type="text" name="natureOfBusiness" [(ngModel)]="editingClient.natureOfBusiness" 
+                placeholder="Nature of Business" />
+            </div>
+
+            <div class="form-group">
+              <label>Website / Domain URL</label>
+              <input type="text" name="website" [(ngModel)]="editingClient.website" 
+                placeholder="Website / Domain URL" />
+            </div>
+
+            <div class="form-group">
+              <label>Type of Business*</label>
+              <input type="text" name="typeOfBusiness" required [(ngModel)]="editingClient.typeOfBusiness" 
+                placeholder="Type of Business" />
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Primary Contacts Section -->
+        <div class="popup-section">
+          <h3 class="section-title">Primary Contacts</h3>
+          <div class="form-grid">
+            
+            <div class="form-group">
+              <label>Name*</label>
+              <input type="text" name="primaryName" required [(ngModel)]="editingClient.primaryName" 
+                placeholder="Enter Name" />
+            </div>
+
+            <div class="form-group">
+              <label>Designation*</label>
+              <input type="text" name="primaryDesignation" required [(ngModel)]="editingClient.primaryDesignation" 
+                placeholder="Enter Designation" />
+            </div>
+
+            <div class="form-group">
+              <label>Email*</label>
+              <input type="email" name="primaryEmail" required [(ngModel)]="editingClient.primaryEmail" 
+                placeholder="Enter Email" />
+            </div>
+
+            <div class="form-group">
+              <label>Phone*</label>
+              <input type="text" name="primaryPhone" required [(ngModel)]="editingClient.primaryPhone" 
+                placeholder="Enter Phone" />
+            </div>
+
+            <div class="form-group">
+              <label>Technical Contacts</label>
+              <input type="text" name="technicalContact" [(ngModel)]="editingClient.technicalContact" 
+                placeholder="Enter Technical Contacts" />
+            </div>
+
+            <div class="form-group">
+              <label>Information Security Officer</label>
+              <input type="text" name="informationSecurityOfficer" [(ngModel)]="editingClient.informationSecurityOfficer" 
+                placeholder="Enter ISO" />
+            </div>
+
+            <div class="form-group">
+              <label>Client Status</label>
+              <select name="clientStatus" [(ngModel)]="editingClient.clientStatus">
+                <option value="" disabled>Select Status</option>
+                <option value="ACTIVE">Active</option>
+                <option value="SUSPENDED">Suspended</option>
+              </select>
+            </div>
+
+            <div class="form-group full-width">
+              <label>Client Signoff Authority*</label>
+              <input type="text" name="clientSignoff" required [(ngModel)]="editingClient.clientSignoff" 
+                placeholder="Enter Client Signoff Authority" />
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Assessment Summary Section -->
+        <div class="popup-section">
+          <h3 class="section-title">Assessment Summary</h3>
+          <div class="form-grid">
+            
+            <div class="form-group">
+              <label>Assessment / Project Name</label>
+              <input type="text" name="assessmentName" [(ngModel)]="editingClient.assessmentName" 
+                placeholder="Assessment / Project Name" />
+            </div>
+
+            <div class="form-group">
+              <label>Assessment Type</label>
+              <input type="text" name="assessmentType" [(ngModel)]="editingClient.assessmentType" 
+                placeholder="Assessment Type" />
+            </div>
+
+            <div class="form-group">
+              <label>Assessment Category</label>
+              <input type="text" name="assessmentCategory" [(ngModel)]="editingClient.assessmentCategory" 
+                placeholder="Assessment Category" />
+            </div>
+
+            <div class="form-group">
+              <label>Assessment Year</label>
+              <input type="text" name="assessmentYear" [(ngModel)]="editingClient.assessmentYear" 
+                placeholder="Assessment Year" />
+            </div>
+
+            <div class="form-group">
+              <label>PCI DSS Version Applicable</label>
+              <input type="text" name="pciVersion" [(ngModel)]="editingClient.pciVersion" 
+                placeholder="PCI DSS Version Applicable" />
+            </div>
+
+            <div class="form-group">
+              <label>Assessment Period Covered</label>
+              <input type="text" name="periodCovered" [(ngModel)]="editingClient.periodCovered" 
+                placeholder="Assessment Period Covered" />
+            </div>
+
+            <div class="form-group">
+              <label>Audit Start Date</label>
+              <input type="date" name="auditStart" [(ngModel)]="editingClient.auditStart" />
+            </div>
+
+            <div class="form-group">
+              <label>Audit End Date</label>
+              <input type="date" name="auditEnd" [(ngModel)]="editingClient.auditEnd" />
+            </div>
+
+            <div class="form-group">
+              <label>Date of Report Submission</label>
+              <input type="date" name="reportSubmittedDate" [(ngModel)]="editingClient.reportSubmittedDate" />
+            </div>
+
+            <div class="form-group">
+              <label>Audit Status</label>
+              <select name="auditStatus" [(ngModel)]="editingClient.auditStatus">
+                <option value="" disabled>Select Status</option>
+                <option value="REPORT_IN_REVIEW">Report In Review</option>
+                <option value="COMPLETED">Completed</option>
+                <option value="IN_PROGRESS">In Progress</option>
+                <option value="NOT_STARTED">Not Started</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Certificate Issue Date</label>
+              <input type="date" name="certificateIssueDate" [(ngModel)]="editingClient.certificateIssueDate" />
+            </div>
+
+            <div class="form-group">
+              <label>Certificate Expiry Date</label>
+              <input type="date" name="certificateExpiryDate" [(ngModel)]="editingClient.certificateExpiryDate" />
+            </div>
+
+            <div class="form-group">
+              <label>Certificate Number / Unique ID</label>
+              <input type="text" name="certificateNumberUniqueId" [(ngModel)]="editingClient.certificateNumberUniqueId" />
+            </div>
+
+            <div class="form-group">
+              <label>Classification</label>
+              <input type="text" name="assessmentClassification" [(ngModel)]="editingClient.assessmentClassification" 
+                placeholder="Assessment Classification" />
+            </div>
+
+            <div class="form-group">
+              <label>Next Audit Due Date</label>
+              <input type="date" name="nextAuditDueDate" [(ngModel)]="editingClient.nextAuditDueDate" />
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Assessor Information Section -->
+        <div class="popup-section">
+          <h3 class="section-title">Assessor Information</h3>
+          <div class="form-grid">
+            
+            <div class="form-group">
+              <label>Name of QSA</label>
+              <input type="text" name="nameOfQsa" [(ngModel)]="editingClient.nameOfQsa" 
+                placeholder="Name of QSA" />
+            </div>
+
+            <div class="form-group">
+              <label>QSA License/Certificate Number</label>
+              <input type="text" name="qsaLicense" [(ngModel)]="editingClient.qsaLicense" 
+                placeholder="QSA License/Certificate Number" />
+            </div>
+
+            <div class="form-group">
+              <label>Audit Manager Reviewer Name</label>
+              <input type="text" name="auditManagerReviewer" [(ngModel)]="editingClient.auditManagerReviewer" 
+                placeholder="Audit Manager Reviewer Name" />
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Scope and Environment Section -->
+        <div class="popup-section">
+          <h3 class="section-title">Scope and Environment</h3>
+          <div class="form-grid">
+            
+            <div class="form-group">
+              <label>Scope of Assessment</label>
+              <input type="text" name="scopeOfAssessment" [(ngModel)]="editingClient.scopeOfAssessment" 
+                placeholder="Scope of Assessment" />
+            </div>
+
+            <div class="form-group">
+              <label>Location in Scope</label>
+              <input type="text" name="locationOfScope" [(ngModel)]="editingClient.locationOfScope" 
+                placeholder="Location in Scope" />
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Compliance Results Section -->
+        <div class="popup-section">
+          <h3 class="section-title">Compliance Results</h3>
+          <div class="form-grid">
+            
+            <div class="form-group">
+              <label>Overall Compliance Status</label>
+              <input type="text" name="overallComplianceStatus" [(ngModel)]="editingClient.overallComplianceStatus" 
+                placeholder="Overall Compliance Status" />
+            </div>
+
+            <div class="form-group">
+              <label>Compensating Controls Used</label>
+              <select name="compensatingControl" [(ngModel)]="editingClient.compensatingControl">
+                <option value="" disabled>Select Status</option>
+                <option value="completed">Completed</option>
+                <option value="in-progress">In Progress</option>
+                <option value="not-started">Not Started</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Customized Approach Used</label>
+              <select name="customizedApproach" [(ngModel)]="editingClient.customizedApproach">
+                <option value="" disabled>Select Status</option>
+                <option value="completed">Completed</option>
+                <option value="in-progress">In Progress</option>
+                <option value="not-started">Not Started</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Non-Conformities/Gap</label>
+              <input type="text" name="nonConformitiesGap" [(ngModel)]="editingClient.nonConformitiesGap" 
+                placeholder="Non-Conformities/Gap" />
+            </div>
+
+            <div class="form-group">
+              <label>Nonconformities Gap Identified</label>
+              <input type="text" name="nonConformitiesGapIdentified" [(ngModel)]="editingClient.nonConformitiesGapIdentified" 
+                placeholder="Identified" />
+            </div>
+
+            <div class="form-group">
+              <label>Remediation Target Date</label>
+              <input type="date" name="remediationTargetDate" [(ngModel)]="editingClient.remediationTargetDate" />
+            </div>
+
+            <div class="form-group">
+              <label>Revalidation Date</label>
+              <input type="date" name="revalidationDate" [(ngModel)]="editingClient.revalidationDate" />
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Report Verification Section -->
+        <div class="popup-section">
+          <h3 class="section-title">Report Verification</h3>
+          <div class="form-grid">
+            
+            <div class="form-group">
+              <label>Previous Report</label>
+              <div class="report-file-box">
+                <input type="text" [value]="editingClient.previousReport ? editingClient.previousReport : 'No file selected'" disabled />
+                <div class="report-buttons">
+                  <button type="button" class="btn-upload" (click)="onUpload('previous')">
+                    <span>Upload</span>
+                  </button>
+                  <!-- <button type="button" class="btn-preview" (click)="onPreview('previous')" [disabled]="!editingClient.previousReportFile">
+                    <span>Preview</span>
+                  </button>
+                  <button type="button" class="btn-download" (click)="onDownload('previous')" [disabled]="!editingClient.previousReportFile">
+                    <span>Download</span>
+                  </button> -->
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Current Audit Report</label>
+              <div class="report-file-box">
+                <input type="text" [value]="editingClient.currentReport ? editingClient.currentReport : 'No file selected'" disabled />
+                <div class="report-buttons">
+                  <button type="button" class="btn-upload" (click)="onUpload('current')">
+                    <span>Upload</span>
+                  </button>
+                  <!-- <button type="button" class="btn-preview" (click)="onPreview('current')" [disabled]="!editingClient.currentReportFile">
+                    <span>Preview</span>
+                  </button>
+                  <button type="button" class="btn-download" (click)="onDownload('current')" [disabled]="!editingClient.currentReportFile">
+                    <span>Download</span>
+                  </button> -->
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+    <div class="popup-footer">
+      <button class="btn-cancel" (click)="cancelEdit()"><span>Cancel</span></button>
+      <button class="btn-save" (click)="saveClient()"><span>Save Changes</span></button>
+    </div>
+  </div>
+</div>

@@ -2,7 +2,7 @@
   <div class="dashboard-box">
     <h1>PCI Audit Dashboard</h1>
     <div class="cards">
-      <div class="card">
+      <div class="card" [routerLink]="['/total-Client-list']">
         <div class="card-header">
           <div class="card-logo">
             <img src="/assets/icons/user 3 2.png" alt="Card Logo" />
@@ -65,7 +65,7 @@
 
         </div>
       </div>
-      <div class="card">
+      <div class="card" [routerLink]="['/total-active-client-list']">
         <div class="card-header">
           <div style="background-color: rgba(231, 255, 235, 1);" class="card-logo">
             <img src="/assets/icons/sensor_occupied.png" alt="">
@@ -128,7 +128,7 @@
           </div>
         </div>
       </div>
-      <div class="card">
+      <div class="card" [routerLink]="['/total-suspended-client-list']">
         <div class="card-header">
           <div style="background-color: rgba(255, 231, 241, 1)" class="card-logo">
             <img src="/assets/icons/person_off.svg" alt="">
@@ -140,7 +140,7 @@
           </div>
         </div>
       </div>
-      <div class="card">
+      <div class="card" [routerLink]="['/total-certificated-client-list']">
         <div class="card-header">
           <div style="background-color: rgba(255, 249, 231, 1)" class="card-logo">
             <img src="/assets/icons/license.png" alt="" />

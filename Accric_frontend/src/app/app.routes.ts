@@ -12,6 +12,7 @@ import { AsvClientList } from './asv-client-list/asv-client-list';
 import { UserList } from './user-list/user-list';
 import { Profile } from './profile/profile';
 import { Settings } from './settings/settings';
+import { TotalUpcomingAuditList } from './total-upcoming-audit-list/total-upcoming-audit-list';
 
 
 export const routes: Routes = [
@@ -32,6 +33,7 @@ export const routes: Routes = [
       { path: 'user-list', component: UserList},
       { path: 'user-profile', component: Profile},
       { path: 'user-settings', component: Settings},
+      { path: 'upcoming-audit-list', component: TotalUpcomingAuditList},
 
     ],
   },

@@ -1,0 +1,93 @@
+<div class="upcoming-audit-list-container">
+  <div class="upcoming-audit-list-box">
+
+    <!-- Header -->
+    <div class="header-row">
+      <p>Upcoming Audit List</p>
+
+      <div class="header-right">
+        <div class="search-box">
+          <img src="/assets/icons/magnifying-glass 2.png" alt="Search Icon">
+          <input 
+            type="text" 
+            placeholder="Search Audits"
+            [(ngModel)]="search_text"
+            (input)="filter_list()"
+          >
+        </div>
+
+        <button class="export-btn" (click)="exportToExcel()">
+          <span>Export to Excel</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Company Name</th>
+            <th>Certificate Number</th>
+            <th>Date</th>
+            <th>Details</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let row of filtered_list">
+            <td>{{ row.code }}</td>
+            <td>{{ row.client }}</td>
+            <td>{{ row.date }}</td>
+
+            <td>
+              <button class="view-btn" (click)="viewDetails(row)">
+                <span>View Details</span>
+              </button>
+            </td>
+
+            <!-- Sticky Action -->
+            <td class="sticky-action">
+              <div class="action-box">
+                <img src="/assets/icons/edit.png" alt="Edit" (click)="editAudit(row)">
+                <img src="/assets/icons/delete.png" alt="Delete" (click)="deleteAudit(row)">
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- Edit Popup -->
+<div class="audit-edit-popup" *ngIf="editingAudit">
+  <h2>Edit Audit</h2>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>Code</label>
+      <input type="text" [(ngModel)]="editingAudit.code">
+    </div>
+
+    <div class="form-group">
+      <label>Client</label>
+      <input type="text" [(ngModel)]="editingAudit.client">
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>Date</label>
+      <input type="date" [(ngModel)]="editingAudit.date">
+    </div>
+  </div>
+
+  <div class="buttons">
+    <button class="save-btn" (click)="saveEdit()">Save</button>
+    <button class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+  </div>
+</div>

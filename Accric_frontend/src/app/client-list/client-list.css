@@ -148,8 +148,8 @@ tbody tr {
   padding-left: 2.5rem;
 }
 
-.view-btn{
-    border: none;
+.view-btn {
+  border: none;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -162,12 +162,12 @@ tbody tr {
   color: rgba(245, 247, 250, 1);
 }
 
-.view-btn span{
-   font-family: 'Inter', sans-serif;
+.view-btn span {
+  font-family: 'Inter', sans-serif;
   font-weight: 600;
   font-size: 1.25rem;
   font-size: 20px;
-  
+
 }
 
 
@@ -199,7 +199,8 @@ tbody tr {
     padding: 0.8rem 1rem;
     font-size: 13px;
   }
-  #client-status{
+
+  #client-status {
     padding-left: 1.5rem;
   }
 }
@@ -287,4 +288,404 @@ tbody tr {
   .action-box {
     gap: 12px;
   }
+}
+
+
+/* ============================
+      EDIT CLIENT POPUP STYLES
+   ============================ */
+
+.edit-client-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.edit-client-popup {
+  background: white;
+  width: 90%;
+  max-width: 1200px;
+  max-height: 90vh;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.popup-header {
+  padding: 24px 30px;
+  border-bottom: 1px solid rgba(230, 239, 245, 1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(250, 251, 254, 1);
+}
+
+.popup-header h2 {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  color: rgba(57, 106, 255, 1);
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: rgba(113, 142, 191, 1);
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s;
+}
+
+.close-btn:hover {
+  color: rgba(57, 106, 255, 1);
+}
+
+.popup-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 30px;
+  background: white;
+}
+
+.popup-section {
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(230, 239, 245, 1);
+}
+
+.popup-section:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.section-title {
+  margin-bottom: 24px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  color: rgba(57, 106, 255, 1);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: rgba(35, 35, 35, 1);
+}
+
+.form-group input,
+.form-group select {
+  padding: 12px 16px;
+  border: 1px solid rgba(139, 163, 203, 1);
+  border-radius: 12px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  color: rgba(139, 163, 203, 1);
+  background: white;
+  transition: all 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: rgba(57, 106, 255, 1);
+  box-shadow: 0 0 0 3px rgba(57, 106, 255, 0.1);
+  
+}
+
+.form-group input::placeholder {
+  color: rgba(139, 163, 203, 1);
+}
+
+.report-file-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.report-file-box input {
+  background: rgba(250, 251, 254, 1);
+  color: rgba(139, 163, 203, 1);
+  cursor: not-allowed;
+}
+
+.report-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-upload,
+.btn-preview,
+.btn-download {
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 1rem;
+  opacity: 1;
+  padding: 0.8rem 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-upload,
+.btn-preview,
+.btn-download span {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1.25rem;
+  font-size: 20px;
+
+}
+
+/* Button colors */
+.btn-upload {
+  background-color: rgba(57, 106, 255, 1);
+  color: rgba(245, 247, 250, 1);
+}
+
+.btn-preview {
+  background-color: rgba(12, 50, 166, 1);
+  color: rgba(245, 247, 250, 1);
+}
+
+.btn-download {
+  background-color: rgba(198, 215, 246, 1);
+  color: rgba(52, 60, 106, 1);
+}
+
+
+.popup-footer {
+  padding: 24px 30px;
+  border-top: 1px solid rgba(230, 239, 245, 1);
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  background: rgba(250, 251, 254, 1);
+}
+
+.btn-save,
+.btn-cancel {
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 1rem;
+  opacity: 1;
+  padding: 0.8rem 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-save {
+  background-color: rgba(57, 106, 255, 1);
+  color: rgba(245, 247, 250, 1);
+}
+
+
+.btn-cancel {
+  background-color: rgba(198, 215, 246, 1);
+  color: rgba(52, 60, 106, 1);
+}
+
+.popup-footer button span {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+}
+
+/* ============================
+      RESPONSIVE POPUP (TABLET)
+   ============================ */
+@media (max-width: 1024px) {
+  .edit-client-popup {
+    width: 95%;
+    max-height: 85vh;
+  }
+
+  .popup-content {
+    padding: 24px;
+  }
+
+  .form-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+  }
+
+  .popup-header,
+  .popup-footer {
+    padding: 20px 24px;
+  }
+}
+
+/* ============================
+      RESPONSIVE POPUP (MOBILE)
+   ============================ */
+@media (max-width: 768px) {
+  .edit-client-popup-overlay {
+    padding: 10px;
+  }
+
+  .edit-client-popup {
+    width: 100%;
+    max-height: 95vh;
+    border-radius: 16px;
+  }
+
+  .popup-content {
+    padding: 20px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .popup-header h2 {
+    font-size: 18px;
+  }
+
+  .section-title {
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+
+  .popup-footer {
+    flex-direction: column-reverse;
+    gap: 12px;
+  }
+
+  .btn-save,
+  .btn-cancel {
+    width: 100%;
+    padding: 14px 24px;
+  }
+
+  .report-buttons {
+    flex-direction: column;
+  }
+
+  .btn-upload,
+  .btn-preview,
+  .btn-download {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* ============================
+   RESPONSIVE POPUP (SMALL MOBILE)
+   ============================ */
+@media (max-width: 480px) {
+  .edit-client-popup-overlay {
+    padding: 5px;
+  }
+
+  .popup-content {
+    padding: 16px;
+  }
+
+  .popup-header {
+    padding: 20px 16px;
+  }
+
+  .popup-header h2 {
+    font-size: 16px;
+  }
+
+  .close-btn {
+    width: 24px;
+    height: 24px;
+    font-size: 24px;
+  }
+
+  .popup-section {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+  }
+
+  .section-title {
+    font-size: 15px;
+    margin-bottom: 16px;
+  }
+
+  .form-group input,
+  .form-group select {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .form-group label {
+    font-size: 13px;
+  }
+
+  .popup-footer {
+    padding: 20px 16px;
+  }
+
+  .btn-save,
+  .btn-cancel {
+    font-size: 14px;
+    padding: 12px 20px;
+  }
+}
+
+/* Custom scrollbar for popup content */
+.popup-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.popup-content::-webkit-scrollbar-track {
+  background: rgba(230, 239, 245, 1);
+  border-radius: 10px;
+}
+
+.popup-content::-webkit-scrollbar-thumb {
+  background: rgba(139, 163, 203, 1);
+  border-radius: 10px;
+}
+
+.popup-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(113, 142, 191, 1);
+}
+
+/* Smooth scroll behavior */
+.popup-content {
+  scroll-behavior: smooth;
 }

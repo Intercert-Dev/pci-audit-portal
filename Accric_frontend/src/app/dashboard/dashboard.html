@@ -9,7 +9,7 @@
           </div>
           <div class="card-info">
             <p class="text">Total Clients</p>
-            <p class="count">0</p>
+            <p class="count">{{ totalClients }}</p>
           </div>
         </div>
         <div class="card-footer">
@@ -72,7 +72,8 @@
           </div>
           <div class="card-info">
             <p class="text">Active Clients</p>
-            <p class="count">0</p>
+            <p class="count">{{ activeClients }}</p>
+
           </div>
         </div>
 
@@ -134,7 +135,8 @@
           </div>
           <div class="card-info">
             <p class="text">Suspended Clients</p>
-            <p class="count">0</p>
+            <p class="count">{{ suspendedClients }}</p>
+
           </div>
         </div>
       </div>
@@ -145,7 +147,7 @@
           </div>
           <div class="card-info">
             <p class="text">Total Certification</p>
-            <p class="count">0</p>
+            <p class="count">{{ totalCertificates }}</p>
           </div>
         </div>
       </div>
@@ -155,13 +157,14 @@
     <div class="upcoming">
       <div class="upcoming-header">
         <p>Upcoming Audits</p>
-        <a href="#">See All</a>
+        <a href="upcoming-audit-list">See All</a>
       </div>
 
       <div class="upcoming-box">
         <div>
-          <p id="upcoming-box-text">Total Clients</p>
-          <p id="upcoming-box-number">0</p>
+          <p id="upcoming-box-text">Total Upcoming Audits</p>
+          <p class="count">{{ totalClients }}</p>
+
         </div>
         <div class="upcoming-box-percentage-div">
           <p id="upcoming-box-percentage">12.7%</p>
@@ -183,13 +186,13 @@
               <p class="code">IC-OS- 44782408</p>
               <p class="client">PANECO AMBIENTE sei</p>
               <p class="date">Nov 10, 2025</p>
-            <a class="view-details" href="#">View Details</a>
+              <a class="view-details" href="#">View Details</a>
             </div>
           </div>
         </div>
         <div class="audit-card">
           <div class="audit-card-box">
-            <div style="background-color: rgba(255, 249, 231, 1);"  class="card-box-item">
+            <div style="background-color: rgba(255, 249, 231, 1);" class="card-box-item">
               <img src="/assets/icons/article1.png" alt="">
             </div>
 
@@ -197,7 +200,7 @@
               <p class="code">IC-OS- 44782408</p>
               <p class="client">PANECO AMBIENTE sei</p>
               <p class="date">Nov 10, 2025</p>
-            <a class="view-details" href="#">View Details</a>
+              <a class="view-details" href="#">View Details</a>
             </div>
           </div>
         </div>
@@ -211,14 +214,14 @@
               <p class="code">IC-OS- 44782408</p>
               <p class="client">Global Tube</p>
               <p class="date">Nov 10, 2025</p>
-            <a class="view-details" href="#">View Details</a>
+              <a class="view-details" href="#">View Details</a>
             </div>
           </div>
         </div>
 
-        
 
-        
+
+
       </div>
     </div>
 

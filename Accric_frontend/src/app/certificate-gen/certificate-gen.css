@@ -271,7 +271,40 @@
   }
 }
 
+/* Simple Select Dropdown Style for Auditor */
+.field-row select {
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
 
+.field-row select:focus {
+  border-color: #396aff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(57, 106, 255, 0.1);
+}
+
+/* Fix for Auditor Name field row (no checkbox) */
+.field-row:has(select) {
+  grid-template-columns: 1fr 2fr;
+  /* Remove the checkbox column */
+}
+
+/* Responsive fix for mobile */
+@media (max-width: 768px) {
+  .field-row:has(select) {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .field-row:has(select) select {
+    margin-left: 0;
+  }
+}
 
 /* Buttons */
 .certificate-btn {

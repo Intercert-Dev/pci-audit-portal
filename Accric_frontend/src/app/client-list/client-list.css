@@ -81,6 +81,7 @@
   border: 1px solid rgba(57, 106, 255, 1);
   border-radius: 50px;
   background: none;
+  cursor: pointer;
 }
 
 .export-btn span {

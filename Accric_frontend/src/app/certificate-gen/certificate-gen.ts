@@ -25,6 +25,11 @@ export class CertificateGen {
     assessment_classification: false
   };
 
+  auditorList = [
+    'Milan',
+    'Rakesh',
+  ];
+
   certificateOptions = {
     scopeFontSize: '12px',
     tableFontSize: '12px',

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core'; // ADD THIS IMPORT
 import { FormsModule, NgForm } from '@angular/forms';
 
 @Component({
@@ -15,14 +15,11 @@ export class CertificateGen {
   showCertificateForm: boolean = false;
   certificateData: any = null;
 
+  // UPDATED: Now uses one checkbox for full address
   editFields = {
     certificateNo: false,
     companyName: false,
-    street_name: false,
-    city_name: false,
-    state_name: false,
-    county_name: false,
-    zip_name: false,
+    full_address: false, // NEW
     dateIssue: false,
     dateValid: false,
     assessment_classification: false
@@ -43,7 +40,17 @@ export class CertificateGen {
   pageSizes: string[] = ['A4', 'Letter', 'Legal'];
   certificateTypes: string[] = ['Internal', 'External', 'Third Party'];
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef // ADD THIS
+  ) { }
+
+
+  private enableAllEditFields() {
+    Object.keys(this.editFields).forEach(key => {
+      this.editFields[key as keyof typeof this.editFields] = true;
+    });
+  }
 
   generateCertificate(form: NgForm) {
     const certNo = form.value.certificateNo?.trim();
@@ -79,8 +86,20 @@ export class CertificateGen {
         const apiData = res.data || res;
         this.certificateData = this.initializeCertificateData();
         this.mapApiDataToCertificate(apiData);
+
         this.certificateData.certificateNo = certNo;
+
+        // Auto create full address
+        this.setFullAddress();
+
+        // Turn ON all checkboxes automatically
+        this.enableAllEditFields();
+
         this.showCertificateForm = true;
+
+        // ADD THIS LINE - Force UI update
+        this.cdr.detectChanges();
+
       },
       error: (err) => {
         this.loading = false;
@@ -95,6 +114,9 @@ export class CertificateGen {
         } else {
           alert('Error fetching certificate! Please try again.');
         }
+
+        // ADD THIS LINE FOR ERROR TOO
+        this.cdr.detectChanges();
       },
     });
   }
@@ -103,11 +125,15 @@ export class CertificateGen {
     return {
       certificateNo: '',
       companyName: '',
+      full_address: '', // NEW
+
+      // KEEP these because we need splitting
       street_name: '',
       city_name: '',
       state_name: '',
       county_name: '',
       zip_name: '',
+
       dateIssue: '',
       dateValid: '',
       assessment_classification: '',
@@ -134,6 +160,29 @@ export class CertificateGen {
     this.certificateData.dateValid = this.formatDateForInput(apiData.certificate_expiry_date);
   }
 
+  private setFullAddress() {
+    const d = this.certificateData;
+
+    this.certificateData.full_address =
+      `${d.street_name || ''}, ${d.city_name || ''}, ${d.state_name || ''}, ${d.county_name || ''}, ${d.zip_name || ''}`
+        .replace(/,\s*,/g, ',')
+        .replace(/^,|,$/g, '')
+        .trim();
+  }
+
+  // Called when user types inside full address field
+  splitAddress() {
+    if (!this.certificateData.full_address) return;
+
+    const parts = this.certificateData.full_address.split(',');
+
+    this.certificateData.street_name = parts[0]?.trim() || '';
+    this.certificateData.city_name = parts[1]?.trim() || '';
+    this.certificateData.state_name = parts[2]?.trim() || '';
+    this.certificateData.county_name = parts[3]?.trim() || '';
+    this.certificateData.zip_name = parts[4]?.trim() || '';
+  }
+
   private formatDateForInput(dateString: string): string {
     if (!dateString) return '';
 
@@ -155,8 +204,7 @@ export class CertificateGen {
   }
 
   getFinalCertificateData() {
-    const finalData = { ...this.certificateData };
-    return finalData;
+    return { ...this.certificateData };
   }
 
   downloadPDF() {
@@ -166,7 +214,6 @@ export class CertificateGen {
     }
 
     console.log('Downloading PDF with options:', this.certificateOptions);
-    console.log('Certificate data:', this.getFinalCertificateData());
 
     const pdfData = {
       certificateData: this.getFinalCertificateData(),
@@ -174,7 +221,7 @@ export class CertificateGen {
       editedFields: this.editFields
     };
 
-    alert(`PDF generation initiated for certificate: ${this.certificateData.certificate_number_unique_id}\n\nOptions:\n- Format: ${this.certificateOptions.formatType}\n- Page Size: ${this.certificateOptions.pageSize}\n- Type: ${this.certificateOptions.type || 'Not specified'}`);
+    alert(`PDF generation initiated for certificate: ${this.certificateData.certificate_number_unique_id}`);
   }
 
   resetForm() {
@@ -194,6 +241,9 @@ export class CertificateGen {
       showValidityLine: true,
       type: '',
     };
+
+    // ADD THIS LINE
+    this.cdr.detectChanges();
   }
 
   get hasEditedFields(): boolean {

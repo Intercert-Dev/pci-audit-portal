@@ -27,41 +27,18 @@
               <label>Company Name</label>
               <input type="text" [(ngModel)]="certificateData.companyName" name="companyName" />
             </div>
-
-            <!-- Street -->
+            <!-- Full Address -->
             <div class="field-row">
-              <input type="checkbox" [(ngModel)]="editFields.street_name" name="street_name" />
-              <label>Street</label>
-              <input type="text" [(ngModel)]="certificateData.street_name" name="street_name" />
+              <input type="checkbox" [(ngModel)]="editFields.full_address" name="full_address_check" />
+
+              <label>Full Address</label>
+
+              <input type="text" [(ngModel)]="certificateData.full_address" name="full_address" (input)="splitAddress()"
+                placeholder="Street, City, State, Country, Zip" />
             </div>
 
-            <!-- City -->
-            <div class="field-row">
-              <input type="checkbox" [(ngModel)]="editFields.city_name" name="city_name" />
-              <label>City</label>
-              <input type="text" [(ngModel)]="certificateData.city_name" name="city_name" />
-            </div>
 
-            <!-- State -->
-            <div class="field-row">
-              <input type="checkbox" [(ngModel)]="editFields.state_name" name="state_name" />
-              <label>State</label>
-              <input type="text" [(ngModel)]="certificateData.state_name" name="state_name" />
-            </div>
 
-            <!-- Country -->
-            <div class="field-row">
-              <input type="checkbox" [(ngModel)]="editFields.county_name" name="county_name" />
-              <label>Country</label>
-              <input type="text" [(ngModel)]="certificateData.county_name" name="county_name" />
-            </div>
-
-            <!-- Zip -->
-            <div class="field-row">
-              <input type="checkbox" [(ngModel)]="editFields.zip_name" name="zip_name" />
-              <label>Zip Code</label>
-              <input type="text" [(ngModel)]="certificateData.zip_name" name="zip_name" />
-            </div>
 
             <!-- Date Issue -->
             <div class="field-row">

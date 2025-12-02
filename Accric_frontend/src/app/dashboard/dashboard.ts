@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core'; // ADD THIS IMPORT
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
@@ -21,7 +21,8 @@ export class Dashboard {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef // ADD THIS
   ) { }
 
   ngOnInit() {
@@ -76,9 +77,14 @@ export class Dashboard {
         this.suspendedClients = res.suspendedClientsCount;
         this.totalCertificates = res.clientsWithCertificateCount;
 
+        // ADD THIS LINE - Force UI update
+        this.cdr.detectChanges();
+
       },
       error: (err) => {
         console.error("Login Response API Failed:", err);
+        // ADD THIS LINE FOR ERROR TOO
+        this.cdr.detectChanges();
       }
     });
   }

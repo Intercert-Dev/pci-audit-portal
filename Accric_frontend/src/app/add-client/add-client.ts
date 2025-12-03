@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -11,6 +11,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   styleUrls: ['./add-client.css']
 })
 export class AddClient {
+  @ViewChild('clientForm') clientForm!: NgForm;
 
   activeTab: string = 'client-profile';
   showErrors = false;
@@ -55,7 +56,7 @@ export class AddClient {
     return isNaN(d.getTime()) ? null : d.toISOString().split('T')[0];
   }
 
-  private buildPayload() {
+  private buildPayload(): { [key: string]: any } {
     return {
       legal_entity_name: this.clientData.legalEntityName,
       trading_name: this.clientData.brandName,
@@ -79,7 +80,7 @@ export class AddClient {
     };
   }
 
-  private sendClientDataToAPI(formData: any) {
+  private sendClientDataToAPI(formData: FormData) {
     const url = 'http://pci.accric.com/api/auth/create-client';
     const token = localStorage.getItem("jwt");
     const headers = new HttpHeaders({
@@ -90,6 +91,7 @@ export class AddClient {
       next: (res) => {
         console.log('API Response:', res);
         alert('Client created successfully!');
+        // Reset form or navigate away
       },
       error: (err) => {
         console.error('API Error:', err);
@@ -100,58 +102,95 @@ export class AddClient {
 
   validateCurrentTab(form: NgForm): boolean {
     const requiredFields: string[] = this.tabRequiredFields[this.activeTab] || [];
-    let isValid = true;
-
+    
+    // First, mark all required fields as touched to show errors
     requiredFields.forEach((fieldName: string) => {
       const control = form.controls[fieldName];
-      if (control && control.invalid) {
+      if (control) {
         control.markAsTouched();
-        isValid = false;
       }
     });
 
-    return isValid;
+    // Check if all required fields are valid
+    return requiredFields.every((fieldName: string) => {
+      const control = form.controls[fieldName];
+      return control && control.valid;
+    });
   }
 
   saveAndContinue(form: NgForm) {
+    // Validate current tab before proceeding
     if (!this.validateCurrentTab(form)) {
       this.showErrors = true;
       return;
     }
+    
     this.showErrors = false;
     const currentIndex = this.tabs.indexOf(this.activeTab);
+    
+    // Check if we're on the last tab
     if (currentIndex < this.tabs.length - 1) {
+      // Move to next tab
       this.activeTab = this.tabs[currentIndex + 1];
+    } else {
+      // If on last tab, submit the form
+      this.onSubmit(form);
     }
   }
 
-  switchTab(tabName: string, form?: NgForm) {
-    if (form && tabName !== this.activeTab) {
-      if (!this.validateCurrentTab(form)) {
-        this.showErrors = true;
-        return;
+  switchTab(tabName: string) {
+    // Validate current tab before switching
+    if (tabName !== this.activeTab) {
+      const currentIndex = this.tabs.indexOf(this.activeTab);
+      const targetIndex = this.tabs.indexOf(tabName);
+      
+      // Only validate if moving forward (to next tab)
+      if (targetIndex > currentIndex) {
+        if (this.clientForm && !this.validateCurrentTab(this.clientForm)) {
+          this.showErrors = true;
+          return;
+        }
       }
+      
+      this.showErrors = false;
+      this.activeTab = tabName;
     }
-    this.showErrors = false;
-    this.activeTab = tabName;
   }
 
   goBack() {
     const currentIndex = this.tabs.indexOf(this.activeTab);
-    if (currentIndex > 0) this.activeTab = this.tabs[currentIndex - 1];
+    if (currentIndex > 0) {
+      this.activeTab = this.tabs[currentIndex - 1];
+      this.showErrors = false;
+    }
   }
 
   onSubmit(form: NgForm) {
-    if (form.invalid) {
+    // Validate all tabs before final submission
+    let allTabsValid = true;
+    
+    for (const tab of this.tabs) {
+      this.activeTab = tab; // Temporarily switch to each tab for validation
+      if (!this.validateCurrentTab(form)) {
+        allTabsValid = false;
+      }
+    }
+    
+    // Switch back to last tab if validation failed
+    if (!allTabsValid) {
+      this.activeTab = this.tabs[this.tabs.length - 1];
       this.showErrors = true;
       return;
     }
-
-    const formData = new FormData();
-    const payload: { [key: string]: any } = this.buildPayload();
     
-    Object.keys(payload).forEach(key => {
-      const value = payload[key];
+    // All validation passed, proceed with submission
+    this.showErrors = false;
+    
+    const payload: { [key: string]: any } = this.buildPayload();
+    const formData = new FormData();
+    
+    // Convert payload to FormData
+    Object.entries(payload).forEach(([key, value]) => {
       if (value !== null && value !== undefined && value !== '') {
         formData.append(key, value.toString());
       }

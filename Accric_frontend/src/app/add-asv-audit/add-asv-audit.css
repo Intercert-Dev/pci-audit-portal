@@ -10,7 +10,9 @@
   min-height: 88vh;
   padding-top: 1px;
   display: flex;
-  justify-content: center;
+  padding-left: 3rem;
+  padding-top: 2rem;
+  padding-right: 3rem;
 }
 
 .asv-audit-box {
@@ -18,10 +20,8 @@
   border-radius: 6px;
   padding: 2rem;
   width: 100%;
-  margin-left: 54px;
-  margin-right: 79px;
-  margin-top: 27px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+   animation: fadeIn 0.3s ease-in-out;
 }
 
 .asv-audit-box h2 {
@@ -193,6 +193,36 @@ input.ng-invalid.ng-touched {
   border: 1px solid #d9534f !important;
 }
 
+
+textarea {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 0.9rem;
+  color: rgba(35, 35, 35, 1);
+  padding: 12px;
+  border: 1px solid rgba(223, 234, 242, 1);
+  border-radius: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+  background-color: white;
+  resize: vertical; /* allow vertical resizing only */
+  min-height: 90px;
+}
+
+textarea:focus {
+  border-color: #4e77ff;
+}
+
+textarea::placeholder {
+  color: rgba(113, 142, 191, 1);
+  opacity: 1;
+}
+
+textarea.ng-invalid.ng-touched {
+  border: 1px solid #d9534f !important;
+}
+
+
 /* Responsive Design */
 /* Tablet (max-width: 1024px) */
 @media (max-width: 1024px) {
@@ -335,18 +365,5 @@ input.ng-invalid.ng-touched {
   
   .error small {
     font-size: 0.8rem;
-  }
-}
-
-/* Large Desktop (min-width: 1200px) */
-@media (min-width: 1200px) {
-  .asv-audit-box {
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  
-  .form-group {
-    min-width: 300px;
   }
 }

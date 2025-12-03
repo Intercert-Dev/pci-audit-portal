@@ -13,7 +13,7 @@ export class AddAsvAudit {
   
   asvData = {
     numberOfIPs: null as number | null,  // Changed to number type
-    ipDetails: '',
+    IPDetails: '',
     associatedAudit: '',  // Keep as string since input type="number" but value might be string
     associatedApplication: ''
   };
@@ -50,7 +50,7 @@ export class AddAsvAudit {
     form.resetForm();
     this.asvData = {
       numberOfIPs: null,
-      ipDetails: '',
+      IPDetails: '',
       associatedAudit: '',
       associatedApplication: ''
     };

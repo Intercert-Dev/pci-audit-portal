@@ -1,14 +1,17 @@
 <div class="add-client-container">
   <div class="add-client-box">
     <div class="tabs">
-      <button class="tab active">Client Profile</button>
-      <button class="tab">Primary Contacts</button>
+      <button class="tab" [class.active]="activeTab === 'client-profile'" (click)="switchTab('client-profile')">
+        Client Profile
+      </button>
+      <button class="tab" [class.active]="activeTab === 'primary-contacts'" (click)="switchTab('primary-contacts')">
+        Primary Contacts
+      </button>
     </div>
 
     <form #clientForm="ngForm" (ngSubmit)="onSubmit(clientForm)" class="client-form">
-
       <!-- CLIENT PROFILE TAB -->
-      <div class="tab-content">
+      <div class="tab-content" *ngIf="activeTab === 'client-profile'">
         <div class="form-row">
           <div class="form-group">
             <label>Legal Entity Name*</label>
@@ -98,7 +101,7 @@
       </div>
 
       <!-- PRIMARY CONTACTS TAB -->
-      <div class="tab-content" style="display: none;">
+      <div class="tab-content" *ngIf="activeTab === 'primary-contacts'">
         <div class="form-row">
           <div class="form-group">
             <label>Name*</label>
@@ -176,7 +179,7 @@
           </button>
           <button type="button" class="btn-primary" (click)="saveAndContinue(clientForm)">
             <img src="/assets/icons/arrow_circle_down.png" alt="arrow_down" />
-            <span>Save and Continue</span>
+            <span>Submit Client</span>
           </button>
         </div>
       </div>

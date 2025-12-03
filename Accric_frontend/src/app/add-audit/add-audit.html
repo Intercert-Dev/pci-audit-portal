@@ -1,15 +1,21 @@
 <div class="add-audit-container">
   <div class="add-audit-box">
     <div class="tabs">
-      <button class="tab active">Assessment Summary</button>
-      <button class="tab">Assessor Information</button>
-      <button class="tab">Scope and Environment</button>
+      <button class="tab" [class.active]="activeTab === 'assessment-summary'" (click)="switchTab('assessment-summary')">
+        Assessment Summary
+      </button>
+      <button class="tab" [class.active]="activeTab === 'assessor-info'" (click)="switchTab('assessor-info')">
+        Assessor Information
+      </button>
+      <button class="tab" [class.active]="activeTab === 'scope-env'" (click)="switchTab('scope-env')">
+        Scope and Environment
+      </button>
     </div>
 
     <form #auditForm="ngForm" (ngSubmit)="onSubmit(auditForm)" class="audit-form">
 
       <!-- ASSESSMENT SUMMARY TAB -->
-      <div class="tab-content">
+      <div class="tab-content" *ngIf="activeTab === 'assessment-summary'">
         <div class="form-row">
           <div class="form-group">
             <label>Assessment / Project Name</label>
@@ -91,7 +97,7 @@
         <div class="form-row">
           <div class="form-group">
             <label>Certificate Number / Unique ID</label>
-            <input type="text" name="certificateNumberUniqueId" [(ngModel)]="auditData.certificateNumberUniqueId" />
+            <input type="text" name="certificateNumberUniqueId" [(ngModel)]="auditData.certificateNumberUniqueId" placeholder="Enter Certificate Number" />
           </div>
           <div class="form-group">
             <label>Classification</label>
@@ -113,11 +119,14 @@
       </div>
 
       <!-- ASSESSOR INFO TAB -->
-      <div class="tab-content" style="display: none;">
+      <div class="tab-content" *ngIf="activeTab === 'assessor-info'">
         <div class="form-row">
           <div class="form-group">
             <label>Name of QSA</label>
-            <input type="text" name="nameOfQsa" [(ngModel)]="auditData.nameOfQsa" placeholder="Name of QSA" />
+            <select name="nameOfQsa" [(ngModel)]="auditData.nameOfQsa">
+              <option value="" disabled selected>Select QSA</option>
+              <option *ngFor="let qsa of qsaList" [value]="qsa">{{qsa}}</option>
+            </select>
           </div>
           <div class="form-group">
             <label>QSA License/Certificate Number</label>
@@ -142,7 +151,7 @@
       </div>
 
       <!-- SCOPE & ENVIRONMENT TAB -->
-      <div class="tab-content" style="display: none;">
+      <div class="tab-content" *ngIf="activeTab === 'scope-env'">
         <div class="form-row">
           <div class="form-group">
             <label>Scope of Assessment</label>
@@ -160,8 +169,7 @@
             <img src="/assets/icons/arrow_left_alt.png" alt="add_icon">
           </button>
           <button type="button" class="btn-primary" (click)="saveAndContinue(auditForm)">
-            <img src="/assets/icons/arrow_circle_down.png" alt="arrow_down">
-            <span>Save and Continue</span>
+            <span>Submit Audit</span>
           </button>
         </div>
       </div>

@@ -5,74 +5,106 @@
         <img src="/assets/icons/dehaze.png" alt="icons">
       </button>
       <div class="logo">
-        <!-- <img src="/assets/Frame 355.png" alt="Intercert Logo" /> -->
         <img src="/assets/main-logo.svg" alt="Intercert Logo" />
       </div>
     </div>
     <div class="header-right">
       <p>Dashboard</p>
       <div class="header-right-items">
-
         <div class="search-box">
           <img src="/assets/icons/magnifying-glass 1.png" alt="Search icon">
           <input type="text" placeholder="Search for something">
         </div>
-
         <div class="notification-bell">
           <img id="notification-icon" src="/assets/icons/002-notification-1.png" alt="Notifications">
         </div>
-
-        <!-- USER IMAGE (Now this opens dropdown) -->
         <div class="user-dropdown" (click)="toggleDropdown()" (mouseleave)="closeDropdown()">
-
           <img id="user-icon" src="/assets/57d3d250790e98129931897251abd3915a931233.jpg" alt="User"
             class="user-avatar" />
-
           <div class="dropdown-menu" *ngIf="dropdownOpen">
             <div class="dropdown-item" (click)="goToProfile($event)">Profile</div>
             <div class="dropdown-item" (click)="logout($event)">Logout</div>
           </div>
-
         </div>
-
       </div>
     </div>
   </header>
   <div class="layout-body">
-    <div class="layout-body-box">
-      <aside class="sidebar" [class.open]="isSidebarOpen" [class.closed]="!isSidebarOpen">
-        <nav class="sidebaar-box">
+    <div class="sidebar-wrapper" [class.collapsed]="!isSidebarOpen">
+      <aside class="sidebar">
+        <nav class="sidebar-nav">
           <ul>
-            <li style="gap: 1.9rem;" routerLink="/dashboard" routerLinkActive="active">
-              <img src="assets/icons/home.png" alt="icon"><span id="sidebaar-text">Dashboard</span>
+            <li routerLink="/dashboard" routerLinkActive="active">
+              <div style="padding-left: 4px; gap: 1.2rem;" class="nav-item">
+                <img src="assets/icons/home.png" alt="icon" class="nav-icon">
+                <span class="nav-text">Dashboard</span>
+              </div>
             </li>
-            <li routerLink="/add-client" routerLinkActive="active">
-              <img src="assets/icons/person_add.png" alt="icon"><span id="sidebaar-text"> Add Client</span>
+
+            <li class="has-submenu" [class.expanded]="isClientsExpanded">
+              <div class="submenu-header" (click)="toggleClientsMenu()">
+                <div class="nav-item">
+                  <img src="assets/icons/calendar_view_week.png" alt="icon" class="nav-icon">
+
+                  <span class="nav-text">Clients</span>
+                  <img class="arrow-icon" [class.rotate]="isClientsExpanded" src="/assets/icons8-dropdown-48.png"
+                    alt="arrow">
+
+                </div>
+              </div>
+              <ul class="submenu" *ngIf="isClientsExpanded">
+                <li routerLink="/add-client" routerLinkActive="active">
+                  <span>Add Client</span>
+                </li>
+                <li routerLink="/add-audit" routerLinkActive="active">
+                  <span>Add Audit</span>
+                </li>
+                <li routerLink="/add-asv-audit" routerLinkActive="active">
+                  <span>ASV Audit</span>
+                </li>
+                <li routerLink="/report-verification" routerLinkActive="active">
+                  <span>Report Verification</span>
+                </li>
+              </ul>
             </li>
             <li routerLink="/client-list" routerLinkActive="active">
-              <img src="assets/icons/calendar_view_week.png" alt="icon"><span id="sidebaar-text">Client List</span>
+              <div class="nav-item">
+                <img src="assets/icons/calendar_view_week.png" alt="icon" class="nav-icon">
+                <span class="nav-text">Client List</span>
+              </div>
             </li>
-            <li routerLink="/asv-audit" routerLinkActive="active">
-              <img src="assets/icons/breaking_news_alt_1.png" alt="icon"><span id="sidebaar-text">ASV Audit</span>
-            </li>
+
             <li routerLink="/asv-client-list" routerLinkActive="active">
-              <img src="assets/icons/breaking_news_alt_1.png" alt="icon"><span id="sidebaar-text">ASV Client List</span>
+              <div class="nav-item">
+                <img src="assets/icons/breaking_news_alt_1.png" alt="icon" class="nav-icon">
+                <span class="nav-text">ASV Client List</span>
+              </div>
             </li>
+
             <li routerLink="/certificate-gen" routerLinkActive="active">
-              <img src="assets/icons/card_membership.png" alt="icon"><span id="sidebaar-text">Certificate Gen.</span>
+              <div class="nav-item">
+                <img src="assets/icons/card_membership.png" alt="icon" class="nav-icon">
+                <span class="nav-text">Certificate Gen.</span>
+              </div>
             </li>
+
             <li routerLink="/create-user" routerLinkActive="active">
-              <img src="assets/icons/person_add.png" alt="icon"><span id="sidebaar-text">Create User</span>
+              <div class="nav-item">
+                <img src="assets/icons/person_add.png" alt="icon" class="nav-icon">
+                <span class="nav-text">Create User</span>
+              </div>
             </li>
             <li routerLink="/user-settings" routerLinkActive="active">
-              <img src="assets/icons/settings solid 1.png" alt="icon"><span id="sidebaar-text">Settings</span>
+              <div class="nav-item">
+                <img src="assets/icons/settings solid 1.png" alt="icon" class="nav-icon">
+                <span class="nav-text">Settings</span>
+              </div>
             </li>
           </ul>
         </nav>
       </aside>
     </div>
 
-    <!-- MAIN CONTENT -->
     <main class="main-content">
       <router-outlet></router-outlet>
     </main>

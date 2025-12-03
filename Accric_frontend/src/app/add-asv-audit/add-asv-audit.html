@@ -1,0 +1,49 @@
+<div class="asv-audit-container">
+  <div class="asv-audit-box">
+    <h2>ASV Audit</h2>
+    
+    <form #asvForm="ngForm" (ngSubmit)="onSubmit(asvForm)" class="asv-form">
+      
+      <div class="form-section">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Number of IP*</label>
+            <input type="number" name="numberOfIPs" required [(ngModel)]="asvData.numberOfIPs" 
+                   #numberOfIPs="ngModel" placeholder="Enter number of IP" min="1" />
+            <div class="error" *ngIf="numberOfIPs.invalid && (numberOfIPs.touched || showErrors)">
+              <small>Please enter number of IP.</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Associated Audit*</label>
+            <input type="text" name="associatedAudit" required [(ngModel)]="asvData.associatedAudit" 
+                   #associatedAudit="ngModel" placeholder="Enter Associated Audit"/>
+            <div class="error" *ngIf="associatedAudit.invalid && (associatedAudit.touched || showErrors)">
+              <small>Please Enter Associated Audit</small>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>Associated Application*</label>
+            <input type="text" name="associatedApplication" required [(ngModel)]="asvData.associatedApplication"
+                   #associatedApplication="ngModel" placeholder="Enter application name" />
+            <div class="error" *ngIf="associatedApplication.invalid && (associatedApplication.touched || showErrors)">
+              <small>Please enter application name.</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-primary">
+          <span>Submit ASV Audit</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

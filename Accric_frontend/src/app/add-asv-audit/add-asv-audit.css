@@ -1,0 +1,352 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.asv-audit-container {
+  background-color: rgba(250, 251, 254, 1);
+  width: 100%;
+  min-height: 88vh;
+  padding-top: 1px;
+  display: flex;
+  justify-content: center;
+}
+
+.asv-audit-box {
+  background-color: white;
+  border-radius: 6px;
+  padding: 2rem;
+  width: 100%;
+  margin-left: 54px;
+  margin-right: 79px;
+  margin-top: 27px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.asv-audit-box h2 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1.75rem;
+  color: rgba(35, 35, 35, 1);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(223, 234, 242, 1);
+}
+
+.asv-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-section {
+  margin-bottom: 1.5rem;
+}
+
+.form-section h3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 1.25rem;
+  color: rgba(35, 35, 35, 1);
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(223, 234, 242, 0.5);
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.form-row:first-child {
+  margin-top: 0;
+}
+
+.form-group {
+  flex: 1;
+  min-width: 250px;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: rgba(35, 35, 35, 1);
+  display: block;
+}
+
+input {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 0.9rem;
+  color: rgba(35, 35, 35, 1);
+  height: 2.5rem;
+  padding: 0 12px;
+  border: 1px solid rgba(223, 234, 242, 1);
+  border-radius: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+  background-color: white;
+}
+
+input:focus {
+  border-color: #4e77ff;
+}
+
+input::placeholder {
+  color: rgba(113, 142, 191, 1);
+  opacity: 1;
+}
+
+/* Number input specific styles */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 2rem;
+  gap: 1.25rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(223, 234, 242, 1);
+}
+
+.btn-primary {
+  background-color: rgba(57, 106, 255, 1);
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 1rem;
+  opacity: 1;
+  padding: 0.8rem 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+  background-color: rgba(45, 90, 230, 1);
+}
+
+.btn-primary span {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: rgba(245, 247, 250, 1);
+}
+
+.btn-primary img {
+  transform: rotate(-90deg);
+}
+
+.btn-secondary {
+  background-color: rgba(217, 217, 217, 1);
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 1rem;
+  opacity: 1;
+  padding: 0.8rem 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-secondary:hover {
+  background-color: rgba(200, 200, 200, 1);
+}
+
+.btn-secondary span {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: rgba(35, 35, 35, 1);
+}
+
+.error {
+  color: #d9534f !important;
+  font-size: 0.85rem;
+  margin-top: 5px;
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+}
+
+.error small {
+  font-size: 0.85rem;
+}
+
+input.ng-invalid.ng-touched {
+  border: 1px solid #d9534f !important;
+}
+
+/* Responsive Design */
+/* Tablet (max-width: 1024px) */
+@media (max-width: 1024px) {
+  .asv-audit-container {
+    padding: 1rem;
+  }
+  
+  .asv-audit-box {
+    margin-left: 1rem;
+    margin-right: 1rem;
+    margin-top: 1rem;
+    padding: 1.5rem;
+    width: calc(100% - 2rem);
+  }
+  
+  .asv-audit-box h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+  
+  .form-section h3 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .form-row {
+    gap: 0.75rem;
+  }
+  
+  .form-group {
+    min-width: calc(50% - 0.375rem);
+  }
+  
+  .form-actions {
+    justify-content: flex-start;
+    gap: 1rem;
+  }
+}
+
+/* Mobile (max-width: 768px) */
+@media (max-width: 768px) {
+  .asv-audit-box {
+    padding: 1.25rem;
+    margin: 0.5rem;
+    border-radius: 0.5rem;
+    width: calc(100% - 1rem);
+  }
+  
+  .asv-audit-box h2 {
+    font-size: 1.35rem;
+    margin-bottom: 1rem;
+  }
+  
+  .form-section h3 {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 0.75rem;
+  }
+  
+  .form-group {
+    min-width: 100%;
+    width: 100%;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+  }
+  
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    justify-content: center;
+    padding: 0.75rem 1.25rem;
+  }
+  
+  .btn-primary span,
+  .btn-secondary span {
+    font-size: 1.1rem;
+  }
+}
+
+/* Small Mobile (max-width: 480px) */
+@media (max-width: 480px) {
+  .asv-audit-container {
+    min-height: calc(100vh - 60px);
+    align-items: flex-start;
+  }
+  
+  .asv-audit-box {
+    padding: 1rem;
+    margin: 0;
+    border-radius: 0;
+    min-height: calc(100vh - 60px);
+    width: 100%;
+  }
+  
+  .asv-audit-box h2 {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .form-section h3 {
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .form-actions {
+    margin-top: 1.25rem;
+    padding-top: 0.75rem;
+  }
+  
+  .btn-primary,
+  .btn-secondary {
+    padding: 0.7rem 1rem;
+  }
+  
+  .btn-primary span,
+  .btn-secondary span {
+    font-size: 1rem;
+  }
+  
+  input {
+    padding: 0 0.875rem;
+    height: 2.75rem;
+    font-size: 1rem;
+  }
+  
+  label {
+    font-size: 0.95rem;
+  }
+  
+  .error small {
+    font-size: 0.8rem;
+  }
+}
+
+/* Large Desktop (min-width: 1200px) */
+@media (min-width: 1200px) {
+  .asv-audit-box {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .form-group {
+    min-width: 300px;
+  }
+}

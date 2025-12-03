@@ -17,6 +17,9 @@ import { TotalActiveClientList } from './total-active-client-list/total-active-c
 import { TotalClientList } from './total-client-list/total-client-list';
 import { SuspendedClientList } from './suspended-client-list/suspended-client-list';
 import { TotalCertificationList } from './total-certification-list/total-certification-list';
+import { AddAudit } from './add-audit/add-audit';
+import { AddAsvAudit } from './add-asv-audit/add-asv-audit';
+import { ReportVerification } from './report-verification/report-verification';
 
 
 export const routes: Routes = [
@@ -29,7 +32,9 @@ export const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: Dashboard },
       { path: 'add-client', component: AddClient },
-      { path: 'client-list', component: ClientList },
+      { path: 'add-audit', component: AddAudit },
+      { path: 'add-asv-audit', component: AddAsvAudit },
+      { path: 'report-verification', component: ReportVerification },
       { path: 'asv-audit', component: AsvAudit },
       { path: 'certificate-gen', component: CertificateGen },
       { path: 'create-user', component: CreateUser },

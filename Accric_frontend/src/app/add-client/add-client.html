@@ -1,26 +1,14 @@
 <div class="add-client-container">
   <div class="add-client-box">
     <div class="tabs">
-      <button class="tab" [class.active]="activeTab === 'client-profile'"
-        (click)="switchTab('client-profile', clientForm)">Client Profile</button>
-      <button class="tab" [class.active]="activeTab === 'primary-contacts'"
-        (click)="switchTab('primary-contacts', clientForm)">Primary Contacts</button>
-      <button class="tab" [class.active]="activeTab === 'assessment-summary'"
-        (click)="switchTab('assessment-summary', clientForm)">Assessment Summary</button>
-      <button class="tab" [class.active]="activeTab === 'assessor-info'"
-        (click)="switchTab('assessor-info', clientForm)">Assessor Information</button>
-      <button class="tab" [class.active]="activeTab === 'scope-env'" (click)="switchTab('scope-env', clientForm)">Scope
-        and Environment</button>
-      <button class="tab" [class.active]="activeTab === 'compliance-results'"
-        (click)="switchTab('compliance-results', clientForm)">Compliance Results</button>
-      <button class="tab" [class.active]="activeTab === 'report-verification'"
-        (click)="switchTab('report-verification', clientForm)">Report Verification</button>
+      <button class="tab active">Client Profile</button>
+      <button class="tab">Primary Contacts</button>
     </div>
 
     <form #clientForm="ngForm" (ngSubmit)="onSubmit(clientForm)" class="client-form">
 
       <!-- CLIENT PROFILE TAB -->
-      <div class="tab-content" *ngIf="activeTab === 'client-profile'">
+      <div class="tab-content">
         <div class="form-row">
           <div class="form-group">
             <label>Legal Entity Name*</label>
@@ -110,7 +98,7 @@
       </div>
 
       <!-- PRIMARY CONTACTS TAB -->
-      <div class="tab-content" *ngIf="activeTab === 'primary-contacts'">
+      <div class="tab-content" style="display: none;">
         <div class="form-row">
           <div class="form-group">
             <label>Name*</label>
@@ -169,7 +157,6 @@
               <option value="SUSPENDED">Suspended</option>
             </select>
           </div>
-
         </div>
 
         <div class="form-row">
@@ -193,297 +180,6 @@
           </button>
         </div>
       </div>
-
-      <!-- ASSESSMENT SUMMARY TAB -->
-      <div class="tab-content" *ngIf="activeTab === 'assessment-summary'">
-        <div class="form-row">
-          <div class="form-group">
-            <label>Assessment / Project Name</label>
-            <input type="text" name="assessmentName" [(ngModel)]="clientData.assessmentName"
-              placeholder="Assessment / Project Name" />
-          </div>
-          <div class="form-group">
-            <label>Assessment Type</label>
-            <input type="text" name="assessmentType" [(ngModel)]="clientData.assessmentType"
-              placeholder="Assessment Type" />
-          </div>
-          <div class="form-group">
-            <label>Assessment Category</label>
-            <input type="text" name="assessmentCategory" [(ngModel)]="clientData.assessmentCategory"
-              placeholder="Assessment Category" />
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Assessment Year</label>
-            <input type="text" name="assessmentYear" [(ngModel)]="clientData.assessmentYear"
-              placeholder="Assessment Year" />
-          </div>
-          <div class="form-group">
-            <label>PCI DSS Version Applicable</label>
-            <input type="text" name="pciVersion" [(ngModel)]="clientData.pciVersion"
-              placeholder="PCI DSS Version Applicable" />
-          </div>
-          <div class="form-group">
-            <label>Assessment Period Covered</label>
-            <input type="text" name="periodCovered" [(ngModel)]="clientData.periodCovered"
-              placeholder="Assessment Period Covered" />
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Audit Start Date*</label>
-            <input type="date" name="auditStart" required [(ngModel)]="clientData.auditStart" #auditStart="ngModel" />
-            <div class="error" *ngIf="auditStart.invalid && (auditStart.touched || showErrors)">
-              <small>Audit Start Date is required</small>
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Audit End Date*</label>
-            <input type="date" name="auditEnd" required [(ngModel)]="clientData.auditEnd" #auditEnd="ngModel" />
-            <div class="error" *ngIf="auditEnd.invalid && (auditEnd.touched || showErrors)">
-              <small>Audit End Date is required</small>
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Date of Report Submission</label>
-            <input type="date" name="reportSubmittedDate" [(ngModel)]="clientData.reportSubmittedDate" />
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Audit Status</label>
-            <select name="auditStatus" [(ngModel)]="clientData.auditStatus">
-              <option value="" disabled selected>Select Status</option>
-              <option value="REPORT_IN_REVIEW">Report In Review</option>
-              <option value="COMPLETED">Completed</option>
-              <option value="IN_PROGRESS">In Progress</option>
-              <option value="NOT_STARTED">Not Started</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Certificate Issue Date</label>
-            <input type="date" name="certificateIssueDate" [(ngModel)]="clientData.certificateIssueDate" />
-          </div>
-          <div class="form-group">
-            <label>Certificate Expiry Date</label>
-            <input type="date" name="certificateExpiryDate" [(ngModel)]="clientData.certificateExpiryDate" />
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Certificate Number / Unique ID</label>
-            <input type="text" name="certificateNumberUniqueId" [(ngModel)]="clientData.certificateNumberUniqueId" />
-          </div>
-          <div class="form-group">
-            <label>Classification</label>
-            <input type="text" name="assessmentClassification" [(ngModel)]="clientData.assessmentClassification"
-              placeholder="Assessment Classification" />
-          </div>
-          <div class="form-group">
-            <label>Next Audit Due Date</label>
-            <input type="date" name="nextAuditDueDate" [(ngModel)]="clientData.nextAuditDueDate" />
-          </div>
-        </div>
-
-        <div class="form-actions">
-          <button type="button" class="go-back-btn" (click)="goBack()">
-            <img src="/assets/icons/arrow_left_alt.png" alt="add_icon" />
-          </button>
-          <button type="button" class="btn-primary" (click)="saveAndContinue(clientForm)">
-            <img src="/assets/icons/arrow_circle_down.png" alt="arrow_down" />
-            <span>Save and Continue</span>
-          </button>
-        </div>
-      </div>
-      <!-- Assessor Info Tab -->
-      <div class="tab-content" *ngIf="activeTab === 'assessor-info'">
-        <div class="form-row">
-          <div class="form-group">
-            <label>Name of QSA</label>
-            <input type="text" name="nameOfQsa" [(ngModel)]="clientData.nameOfQsa" placeholder="Name of QSA" />
-          </div>
-          <div class="form-group">
-            <label>QSA License/Certificate Number</label>
-            <input type="text" name="qsaLicense" [(ngModel)]="clientData.qsaLicense"
-              placeholder="QSA License/Certificate Number" />
-          </div>
-          <div class="form-group">
-            <label>Audit Manager Reviewer Name</label>
-            <input type="text" name="auditManagerReviewer" [(ngModel)]="clientData.auditManagerReviewer"
-              placeholder="Audit Manager Reviewer Name" />
-          </div>
-        </div>
-        <div class="form-actions">
-          <button type="button" class="go-back-btn" (click)="goBack()">
-            <img src="/assets/icons/arrow_left_alt.png" alt="add_icon">
-          </button>
-          <button type="button" class="btn-primary" (click)="saveAndContinue(clientForm)">
-            <img src="/assets/icons/arrow_circle_down.png" alt="arrow_down">
-            <span>Save and Continue</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Scope & Environment Tab -->
-      <div class="tab-content" *ngIf="activeTab === 'scope-env'">
-        <div class="form-row">
-          <div class="form-group">
-            <label>Scope of Assessment</label>
-            <input type="text" name="scopeOfAssessment" [(ngModel)]="clientData.scopeOfAssessment"
-              placeholder="Scope of Assessment" />
-          </div>
-          <div class="form-group">
-            <label>Location in Scope</label>
-            <input type="text" name="locationOfScope" [(ngModel)]="clientData.locationOfScope"
-              placeholder="Location in Scope" />
-          </div>
-        </div>
-        <div class="form-actions">
-          <button type="button" class="go-back-btn" (click)="goBack()">
-            <img src="/assets/icons/arrow_left_alt.png" alt="add_icon">
-          </button>
-          <button type="button" class="btn-primary" (click)="saveAndContinue(clientForm)">
-            <img src="/assets/icons/arrow_circle_down.png" alt="arrow_down">
-            <span>Save and Continue</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Compliance Results Tab -->
-      <div class="tab-content" *ngIf="activeTab === 'compliance-results'">
-        <div class="form-row">
-          <div class="form-group">
-            <label>Overall Compliance Status</label>
-            <input type="text" name="overallComplianceStatus" [(ngModel)]="clientData.overallComplianceStatus"
-              placeholder="Overall Compliance Status" />
-          </div>
-          <div class="form-group">
-            <label>Compensating Controls Used</label>
-            <select name="compensatingControl" [(ngModel)]="clientData.compensatingControl">
-              <option value="" disabled selected>Select Status</option>
-              <option value="completed">Completed</option>
-              <option value="in-progress">In Progress</option>
-              <option value="not-started">Not Started</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Customized Approach Used</label>
-            <select name="customizedApproach" [(ngModel)]="clientData.customizedApproach">
-              <option value="" disabled selected>Select Status</option>
-              <option value="completed">Completed</option>
-              <option value="in-progress">In Progress</option>
-              <option value="not-started">Not Started</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Non-Conformities/Gap</label>
-            <input type="text" name="nonConformitiesGap" [(ngModel)]="clientData.nonConformitiesGap"
-              placeholder="Non-Conformities/Gap" />
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>NonconformitiesGapIdentified</label>
-            <input type="text" name="nonConformitiesGapIdentified" [(ngModel)]="clientData.nonConformitiesGapIdentified"
-              placeholder="Identified" />
-          </div>
-          <div class="form-group">
-            <label>Remediation Target Date</label>
-            <input type="date" name="remediationTargetDate" [(ngModel)]="clientData.remediationTargetDate"
-              placeholder="Remediation Target Date" />
-          </div>
-          <div class="form-group">
-            <label>Revalidation Date</label>
-            <input type="date" name="revalidationDate" [(ngModel)]="clientData.revalidationDate"
-              placeholder="Revalidation Date" />
-          </div>
-        </div>
-        <div class="form-actions">
-          <button type="button" class="go-back-btn" (click)="goBack()">
-            <img src="/assets/icons/arrow_left_alt.png" alt="add_icon">
-          </button>
-          <button type="button" class="btn-primary" (click)="saveAndContinue(clientForm)">
-            <img src="/assets/icons/arrow_circle_down.png" alt="arrow_down">
-            <span>Save and Continue</span>
-          </button>
-        </div>
-      </div>
-
-
-
-      <div class="tab-content" *ngIf="activeTab === 'report-verification'">
-        <div class="form-row">
-
-          <!-- Previous Report -->
-          <div class="form-group">
-            <label>Previous Report</label>
-
-            <div class="report-file-box">
-
-              <input type="text" [value]="previousReportFile ? previousReportFile.name : 'No file selected'" disabled />
-
-              <div class="report-buttons">
-                <button type="button" class="btn-upload" (click)="onUpload('previous')"><span>Upload</span></button>
-
-                <button type="button" class="btn-preview" (click)="onPreview('previous')"
-                  [disabled]="!previousReportFile">
-                  <span>Preview</span>
-                </button>
-
-                <button type="button" class="btn-download" (click)="onDownload('previous')"
-                  [disabled]="!previousReportFile">
-                  <span>Download</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Current Audit Report -->
-          <div class="form-group">
-            <label>Current Audit Report</label>
-
-            <div class="report-file-box">
-
-              <input type="text" [value]="currentReportFile ? currentReportFile.name : 'No file selected'" disabled />
-
-              <div class="report-buttons">
-                <button type="button" class="btn-upload" (click)="onUpload('current')"><span>Upload</span></button>
-
-                <button type="button" class="btn-preview" (click)="onPreview('current')"
-                  [disabled]="!currentReportFile">
-                  <span>Preview</span>
-                </button>
-
-                <button type="button" class="btn-download" (click)="onDownload('current')"
-                  [disabled]="!currentReportFile">
-                  <span>Download</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        <div class="form-actions">
-          <button type="button" class="go-back-btn" (click)="goBack()">
-            <img src="/assets/icons/arrow_left_alt.png" alt="add_icon">
-          </button>
-          <button type="submit" class="btn-primary">
-            <span>Submit</span>
-          </button>
-        </div>
-
-      </div>
-
-
     </form>
   </div>
 </div>

@@ -13,6 +13,7 @@ export class MainLayout {
   
   isSidebarOpen = true;
   dropdownOpen = false;
+  isClientsExpanded = false; // Added this property
 
   constructor(private authService: AuthService, private router: Router) {}
 
@@ -28,6 +29,11 @@ export class MainLayout {
   // CLOSE DROPDOWN WHEN MOUSE LEAVES PROFILE IMAGE + DROPDOWN AREA
   closeDropdown() {
     this.dropdownOpen = false;
+  }
+
+  // Toggle Clients submenu
+  toggleClientsMenu() {
+    this.isClientsExpanded = !this.isClientsExpanded;
   }
 
   // NAVIGATE TO PROFILE

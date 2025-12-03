@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-add-client',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './add-client.html',
   styleUrls: ['./add-client.css']
 })
@@ -15,22 +15,11 @@ export class AddClient {
   activeTab: string = 'client-profile';
   showErrors = false;
 
-  previousReportFile: File | null = null;
-  currentReportFile: File | null = null;
-
-  previousReportUrl: string | null = null;
-  currentReportUrl: string | null = null;
-
   constructor(private http: HttpClient) { }
 
   tabs = [
     'client-profile',
-    'primary-contacts',
-    'assessment-summary',
-    'assessor-info',
-    'scope-env',
-    'compliance-results',
-    'report-verification'
+    'primary-contacts'
   ];
 
   clientData: any = {
@@ -51,60 +40,20 @@ export class AddClient {
     primaryPhone: '',
     technicalContact: '',
     informationSecurityOfficer: '',
-    clientSignoffAuthority: '',
-    clientStatus : '',
-
-    assessmentName: '',
-    assessmentType: '',
-    assessmentCategory: '',
-    assessmentClassification: '',
-    assessmentYear: '',
-    pciVersion: '',
-    periodCovered: '',
-
-    auditStart: '',
-    auditEnd: '',
-    reportSubmittedDate: '',
-    auditStatus: '',
-
-    certificateIssueDate: '',
-    certificateExpiryDate: '',
-    certificateNumber: '',
-    nextAuditDueDate: '',
-
-    nameOfQsa: '',
-    qsaLicense: '',
-    auditManagerReviewer: '',
-
-    scopeOfAssessment: '',
-    locationOfScope: '',
-    overallComplianceStatus: '',
-    compensatingControl: '',
-    customizedApproach: '',
-    nonConformitiesGap: '',
-    nonConformitiesGapIdentified: '',
-
-    remediationTargetDate: '',
-    revalidationDate: ''
+    clientSignoff: '',
+    clientStatus: ''
   };
 
   tabRequiredFields: { [key: string]: string[] } = {
     "client-profile": ["legalEntityName", "country", "state", "city", "street", "zipCode", "typeOfBusiness"],
-    "primary-contacts": ["primaryName", "primaryDesignation", "primaryEmail", "primaryPhone", "clientSignoffAuthority"],
-    "assessment-summary": ["auditStart", "auditEnd", "auditStatus"],
-    "assessor-info": [],
-    "scope-env": [],
-    "compliance-results": [],
-    "report-verification": []
+    "primary-contacts": ["primaryName", "primaryDesignation", "primaryEmail", "primaryPhone", "clientSignoff"]
   };
-
 
   formatDate(date: any): string | null {
     if (!date) return null;
     const d = new Date(date);
-    return isNaN(d.getTime()) ? null : d.toISOString().split('T')[0]; // YYYY-MM-DD
+    return isNaN(d.getTime()) ? null : d.toISOString().split('T')[0];
   }
-
 
   private buildPayload() {
     return {
@@ -126,40 +75,7 @@ export class AddClient {
       technical_contacts: this.clientData.technicalContact,
       information_security_officer: this.clientData.informationSecurityOfficer,
       client_signoff_authority: this.clientData.clientSignoff,
-      client_status : this.clientData.clientStatus,
-
-      assessment_project_name: this.clientData.assessmentName,
-      assessment_type: this.clientData.assessmentType,
-      assessment_category: this.clientData.assessmentCategory,
-      assessment_classification: this.clientData.assessmentClassification,
-      assessment_year: this.clientData.assessmentYear,
-      pci_dss_version_application: this.clientData.pciVersion,
-      assessment_period_covered: this.clientData.periodCovered,
-
-      audit_start_date: this.formatDate(this.clientData.auditStart),
-      audit_end_date: this.formatDate(this.clientData.auditEnd),
-      date_of_report_submission: this.formatDate(this.clientData.reportSubmittedDate),
-      audit_status: this.clientData.auditStatus,
-
-      certificate_issue_date: this.formatDate(this.clientData.certificateIssueDate),
-      certificate_expiry_date: this.formatDate(this.clientData.certificateExpiryDate),
-      certificate_number_unique_id: this.clientData.certificateNumberUniqueId,
-      next_audit_due_date: this.formatDate(this.clientData.nextAuditDueDate),
-
-      name_of_qsa: this.clientData.nameOfQsa,
-      qsa_license_certificate_number: this.clientData.qsaLicense,
-      audit_manager_reviewer_name: this.clientData.auditManagerReviewer,
-
-      scope_of_assessment: this.clientData.scopeOfAssessment,
-      location_of_scope: this.clientData.locationOfScope,
-      overall_compliance_status: this.clientData.overallComplianceStatus,
-      compensating_controls_used: this.clientData.compensatingControl,
-      customized_approach_used: this.clientData.customizedApproach,
-      non_conformities_gap: this.clientData.nonConformitiesGap,
-      non_conformities_gap_identified: this.clientData.nonConformitiesGapIdentified,
-      
-      remediation_target_date: this.formatDate(this.clientData.remediationTargetDate),
-      revalidation_date: this.formatDate(this.clientData.revalidationDate)
+      client_status: this.clientData.clientStatus
     };
   }
 
@@ -180,47 +96,6 @@ export class AddClient {
         alert('Failed to create client. Check console for details.');
       }
     });
-  }
-
-  onUpload(type: 'previous' | 'current') {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'application/pdf';
-
-    input.onchange = () => {
-      const file = input.files?.[0];
-      if (!file) return;
-
-      if (file.type !== 'application/pdf') {
-        alert("Only PDF file is allowed!");
-        return;
-      }
-
-      if (type === 'previous') {
-        this.previousReportFile = file;
-        this.previousReportUrl = URL.createObjectURL(file);
-      } else {
-        this.currentReportFile = file;
-        this.currentReportUrl = URL.createObjectURL(file);
-      }
-    };
-
-    input.click();
-  }
-
-  onPreview(type: 'previous' | 'current') {
-    const url = type === 'previous' ? this.previousReportUrl : this.currentReportUrl;
-    if (!url) return;
-    window.open(url, '_blank');
-  }
-
-  onDownload(type: 'previous' | 'current') {
-    const file = type === 'previous' ? this.previousReportFile : this.currentReportFile;
-    if (!file) return;
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(file);
-    link.download = file.name;
-    link.click();
   }
 
   validateCurrentTab(form: NgForm): boolean {
@@ -273,28 +148,16 @@ export class AddClient {
     }
 
     const formData = new FormData();
-
-    // Add all client data fields safely
     const payload: { [key: string]: any } = this.buildPayload();
+    
     Object.keys(payload).forEach(key => {
       const value = payload[key];
-      if (value !== null && value !== undefined) {
+      if (value !== null && value !== undefined && value !== '') {
         formData.append(key, value.toString());
       }
     });
 
-
-    // Add files if uploaded
-    if (this.previousReportFile) {
-      formData.append('previous_report', this.previousReportFile, this.previousReportFile.name);
-    }
-    if (this.currentReportFile) {
-      formData.append('current_report', this.currentReportFile, this.currentReportFile.name);
-    }
-
-
     // Send to API
     this.sendClientDataToAPI(formData);
   }
-
 }

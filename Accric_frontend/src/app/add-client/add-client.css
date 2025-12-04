@@ -489,9 +489,6 @@ select.ng-invalid.ng-touched {
 
 }
 
-/* =========================================== */
-/* Phone Country Code Dropdown Styles          */
-/* =========================================== */
 
 .phone-input-container {
   display: flex;
@@ -593,7 +590,7 @@ select.ng-invalid.ng-touched {
 
 .phone-number-input {
   flex: 1;
-  min-width: 0; /* Important for flexbox shrinking */
+  min-width: 0; 
   height: 2.5rem;
   padding: 0 12px;
   border: 1px solid rgba(223, 234, 242, 1);
@@ -613,14 +610,11 @@ select.ng-invalid.ng-touched {
   border: 1px solid #d9534f !important;
 }
 
-/* Error message alignment for phone field */
+
 .form-group .error {
   margin-top: 5px;
 }
 
-/* =========================================== */
-/* Responsive Styles for Phone Input           */
-/* =========================================== */
 
 /* Tablet */
 @media (max-width: 1024px) {

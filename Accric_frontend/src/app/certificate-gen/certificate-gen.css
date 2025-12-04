@@ -1,4 +1,3 @@
-/* Reset & box sizing */
 * {
   margin: 0;
   padding: 0;
@@ -6,50 +5,45 @@
   font-family: 'Inter', sans-serif;
 }
 
+
 .certificate-box {
   padding: 48px 42px;
   background: #f5f7fc;
   min-height: 89vh;
 }
 
-.certificate-sub-heading {
-  color: rgba(52, 60, 106, 1);
-  font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  font-size: 1.5rem;
-}
-
 .certificate-container {
   width: 60%;
-  margin-top: 32px;
+  margin: 32px auto 0;
   padding: 20px 25px;
   background: #fff;
   border-radius: 18px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-  height: auto;
-  min-height: auto;
   transition: all 0.3s ease;
-  margin-left: 10rem;
 }
-
 
 .certificate-container.expanded {
   padding: 30px 35px;
 }
 
 
-/* Input + Button row */
+.certificate-sub-heading {
+  color: #343c6a;
+  font-weight: 600;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+
 .input-row {
   display: flex;
   gap: 12px;
-  justify-content: center;
   margin-bottom: 30px;
 }
 
 .input-row input {
   flex: 1;
   padding: 12px 16px;
-  font-weight: 400;
   font-size: 0.9rem;
   border: 1.5px solid #dcdcdc;
   background: #f8f8f8;
@@ -68,23 +62,15 @@
   color: #9ca3af;
 }
 
-/* Edit Options Section */
-.edit-options {
+
+.edit-options,
+.certification-options {
   width: 100%;
   margin: 25px 0;
   padding: 20px;
   background: #f5f7fc;
-  opacity: 0.8;
   border-radius: 12px;
   border: 1px solid rgba(217, 221, 233, 0.8);
-}
-
-.edit-options p {
-  font-size: 16px;
-  font-weight: 600;
-  color: #152238;
-  margin-bottom: 15px;
-  text-align: center;
 }
 
 .fields-container {
@@ -111,11 +97,11 @@
   font-size: 14px;
   font-weight: 500;
   color: #374151;
-  text-align: left;
 }
 
 .field-row input[type="text"],
-.field-row input[type="date"] {
+.field-row input[type="date"],
+.field-row select {
   padding: 10px 12px;
   border: 1px solid #d1d5db;
   border-radius: 8px;
@@ -124,38 +110,20 @@
   transition: all 0.3s ease;
 }
 
-.field-row input[type="text"]:focus,
-.field-row input[type="date"]:focus {
+.field-row input:focus,
+.field-row select:focus {
   border-color: #396aff;
   outline: none;
   box-shadow: 0 0 0 3px rgba(57, 106, 255, 0.1);
 }
 
-.certification-options {
-  width: 100%;
-  margin: 25px 0;
-  padding: 20px;
-  background: rgba(249, 250, 255, 0.8);
-  border-radius: 12px;
-  border: 1px solid rgba(217, 221, 233, 0.8);
-}
 
-.certification-options p {
-  font-size: 16px;
-  font-weight: 600;
-  color: #152238;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-/* Flex container for options */
 .options-flex-container {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
 }
 
-/* Regular option rows - take approx 1/3 of width for 3 columns */
 .option-row {
   flex: 1 1 calc(33.333% - 14px);
   display: flex;
@@ -168,7 +136,6 @@
   font-size: 14px;
   font-weight: 500;
   color: #374151;
-  margin-bottom: 4px;
 }
 
 .option-row select {
@@ -179,179 +146,8 @@
   font-size: 14px;
   background: #ffffff;
   cursor: pointer;
-  transition: all 0.3s ease;
 }
 
-.option-row checkbox {
-
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-
-}
-
-.option-row select:focus {
-  border-color: #396aff;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(57, 106, 255, 0.1);
-}
-
-/* Checkbox rows - full width */
-.option-row.checkbox-row {
-  flex: 1 1 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
-  margin: 10px 0;
-  min-width: 100%;
-
-}
-
-.option-row.checkbox-row label {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 500;
-  cursor: pointer;
-  margin: 0;
-}
-
-.option-row.checkbox-row input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-}
-
-/* Add to your certificate-gen.css file */
-.pdf-viewer-container {
-  margin-top: 30px;
-  padding: 20px;
-  background: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.pdf-viewer-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  padding-bottom: 15px;
-  border-bottom: 2px solid #e0e0e0;
-}
-
-.pdf-viewer-header h3 {
-  margin: 0;
-  color: #333;
-  font-size: 1.5rem;
-}
-
-.pdf-viewer-controls {
-  display: flex;
-  gap: 10px;
-}
-
-.pdf-viewer-controls .certificate-btn {
-  padding: 8px 16px;
-  font-size: 0.9rem;
-}
-
-.btn-close {
-  background-color: #dc3545;
-}
-
-.btn-close:hover {
-  background-color: #c82333;
-}
-
-.pdf-loading {
-  text-align: center;
-  padding: 50px;
-  background: white;
-  border-radius: 4px;
-  border: 1px solid #ddd;
-}
-
-.pdf-loading p {
-  color: #666;
-  font-size: 1.1rem;
-}
-
-/* Responsive adjustments */
-@media (max-width: 1024px) {
-  .option-row {
-    flex: 1 1 calc(50% - 10px);
-    min-width: 200px;
-  }
-}
-
-@media (max-width: 768px) {
-  .certification-options {
-    padding: 15px;
-  }
-
-  .options-flex-container {
-    gap: 15px;
-  }
-
-  .option-row {
-    flex: 1 1 100%;
-    min-width: 100%;
-  }
-}
-
-@media (max-width: 480px) {
-  .certification-options {
-    padding: 12px;
-  }
-
-  .certification-options p {
-    font-size: 15px;
-    margin-bottom: 15px;
-  }
-
-  .option-row label {
-    font-size: 13px;
-  }
-
-  .option-row select {
-    padding: 8px 10px;
-    font-size: 13px;
-  }
-}
-
-/* Simple Select Dropdown Style for Auditor */
-.field-row select {
-  padding: 10px 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 14px;
-  background: #ffffff;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.field-row select:focus {
-  border-color: #396aff;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(57, 106, 255, 0.1);
-}
-
-
-/* Responsive fix for mobile */
-@media (max-width: 768px) {
-  .field-row:has(select) {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-
-  .field-row:has(select) select {
-    margin-left: 0;
-  }
-}
-
-/* Buttons */
 .certificate-btn {
   border: none;
   display: flex;
@@ -373,122 +169,121 @@
   font-size: 20px;
 }
 
-
-
-
-
-
-/* Button container */
-.btn-certificate {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 25px;
+.btn-download {
+  background-color: rgba(57, 106, 255, 1);
+  color: rgba(245, 247, 250, 1);
 }
 
-/* Certificate Table */
-.certificate-table-container {
-  width: 50%;
-  margin: 30px auto 0;
-  padding: 25px;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 18px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+.btn-pdf {
+  background-color: rgba(12, 50, 166, 1);
+  color: rgba(245, 247, 250, 1);
 }
 
-.certificate-table-container h3 {
-  color: #1f2937;
-  font-weight: 600;
-  font-size: 20px;
-  margin-bottom: 20px;
-  text-align: center;
+.btn-close {
+  background-color: rgba(198, 215, 246, 1);
+  color: rgba(52, 60, 106, 1);
 }
 
-.certificate-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-  font-size: 0.95rem;
+
+/* ===================== */
+/* PDF VIEWER            */
+/* ===================== */
+.pdf-viewer-container {
+  margin-top: 30px;
+  padding: 20px;
+  background: #f9f9f9;
   border-radius: 8px;
-  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.certificate-table th,
-.certificate-table td {
-  padding: 12px 16px;
-  border-bottom: 1px solid #e5e7eb;
+.pdf-viewer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e0e0e0;
 }
 
-.certificate-table th {
-  background-color: rgba(57, 106, 255, 0.1);
-  color: #396aff;
-  font-weight: 600;
-  font-size: 14px;
+.pdf-viewer-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 1.5rem;
 }
 
-.certificate-table tr:last-child td {
-  border-bottom: none;
+.pdf-viewer-controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-.certificate-table tr:hover {
-  background-color: rgba(57, 106, 255, 0.03);
+.pdf-viewer {
+  width: 100%;
+  height: 600px;
 }
 
-.certificate-table td:first-child {
-  font-weight: 500;
-  color: #374151;
+.pdf-viewer iframe {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #ddd;
+  border-radius: 4px;
 }
 
-.certificate-table td:last-child {
-  color: #1f2937;
+.pdf-loading {
+  text-align: center;
+  padding: 50px;
+  background: white;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  color: #666;
+  font-size: 1.1rem;
 }
 
 
+
+/* ===================== */
+/* RESPONSIVE DESIGN     */
+/* ===================== */
+
+/* Tablet (768px - 1024px) */
 @media (max-width: 1024px) {
-
-  .certificate-container,
-  .certificate-table-container {
-    width: 70%;
+  .certificate-container {
+    width: 80%;
   }
 
-  .certificate-container h2 {
-    font-size: 22px;
+  .option-row {
+    flex: 1 1 calc(50% - 10px);
+    min-width: 200px;
   }
 }
 
-/* 768px (Tablet) */
+/* Mobile (480px - 768px) */
 @media (max-width: 768px) {
   .certificate-box {
     padding: 30px 25px;
   }
 
-  .certificate-container,
-  .certificate-table-container {
+  .certificate-container {
     width: 90%;
     padding: 25px;
   }
 
   .input-row {
     flex-direction: column;
-    gap: 10px;
   }
 
   .field-row {
-    grid-template-columns: 25px 1fr;
-    gap: 12px;
+    grid-template-columns: 1fr;
+    gap: 8px;
   }
 
-  .field-row input[type="text"],
-  .field-row input[type="date"] {
-    grid-column: 1 / -1;
-    margin-left: 35px;
+  .field-row input[type="checkbox"] {
+    justify-self: start;
   }
 
   .option-row {
-    grid-template-columns: 1fr;
-    gap: 8px;
+    flex: 1 1 100%;
+    min-width: 100%;
   }
 
   .btn-certificate {
@@ -499,24 +294,31 @@
   .certificate-btn {
     width: 100%;
   }
+
+  .pdf-viewer-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .pdf-viewer-controls {
+    justify-content: center;
+  }
 }
 
-/* 480px (Mobile) */
+/* Small Mobile (below 480px) */
 @media (max-width: 480px) {
   .certificate-box {
     padding: 20px 15px;
   }
 
-  .certificate-container,
-  .certificate-table-container {
+  .certificate-container {
     width: 100%;
     padding: 20px;
-    margin-top: 20px;
   }
 
-  .certificate-container h2 {
-    font-size: 20px;
-    padding-bottom: 1.5rem;
+  .certificate-sub-heading {
+    font-size: 1.25rem;
   }
 
   .edit-options,
@@ -524,37 +326,30 @@
     padding: 15px;
   }
 
-  .field-row {
-    grid-template-columns: 20px 1fr;
-    gap: 10px;
+  .field-row label {
+    font-size: 13px;
   }
 
   .field-row input[type="text"],
-  .field-row input[type="date"] {
-    margin-left: 30px;
+  .field-row input[type="date"],
+  .field-row select {
     padding: 8px 10px;
+    font-size: 13px;
   }
 
-  .certificate-table {
-    font-size: 0.85rem;
-  }
-
-  .certificate-table th,
-  .certificate-table td {
-    padding: 10px 12px;
+  .pdf-viewer {
+    height: 400px;
   }
 }
 
-/* 360px (Small Phones) */
+/* Extra Small Mobile (below 360px) */
 @media (max-width: 360px) {
-
-  .certificate-container,
-  .certificate-table-container {
-    padding: 18px 15px;
+  .certificate-container {
+    padding: 15px;
   }
 
-  .certificate-container h2 {
-    font-size: 18px;
+  .certificate-sub-heading {
+    font-size: 1.1rem;
   }
 
   .edit-options,
@@ -563,68 +358,12 @@
   }
 
   .field-row {
-    grid-template-columns: 18px 1fr;
-    gap: 8px;
-  }
-
-  .field-row label {
-    font-size: 13px;
-  }
-
-  .field-row input[type="text"],
-  .field-row input[type="date"] {
-    margin-left: 26px;
-    padding: 6px 8px;
-    font-size: 13px;
+    padding: 6px 0;
   }
 
   .certificate-btn {
     padding: 10px 16px;
-    font-size: 14px;
+    font-size: 0.9rem;
+    min-width: auto;
   }
-}
-
-/* Animation for better UX */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.certificate-container,
-.certificate-table-container {
-  animation: fadeIn 0.5s ease-out;
-}
-
-/* Focus states for accessibility */
-input:focus-visible,
-select:focus-visible,
-button:focus-visible {
-  outline: 2px solid #396aff;
-  outline-offset: 2px;
-}
-
-/* Custom scrollbar for webkit browsers */
-.certificate-table-container::-webkit-scrollbar {
-  height: 6px;
-}
-
-.certificate-table-container::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 3px;
-}
-
-.certificate-table-container::-webkit-scrollbar-thumb {
-  background: #396aff;
-  border-radius: 3px;
-}
-
-.certificate-table-container::-webkit-scrollbar-thumb:hover {
-  background: #2e55d1;
 }

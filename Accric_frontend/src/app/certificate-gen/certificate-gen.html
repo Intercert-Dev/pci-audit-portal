@@ -47,6 +47,7 @@
               <label>Date Valid</label>
               <input type="text" [(ngModel)]="certificateData.dateValid" name="dateValid" />
             </div>
+            
             <!-- Classification -->
             <div class="field-row">
               <input type="checkbox" [(ngModel)]="editFields.assessment_classification"
@@ -79,82 +80,77 @@
           </div>
         </div>
 
-        <p class="certificate-sub-heading">Certification Option</p>
+        <p class="certificate-sub-heading">Certification Options</p>
         <div class="certification-options">
           <div class="options-flex-container">
+            <!-- Company Name Font Size (16px-24px) -->
             <div class="option-row">
-              <label>Scope Font Size</label>
-              <select [(ngModel)]="certificateOptions.scopeFontSize" name="scopeFontSize">
-                <option *ngFor="let size of fontSizes" [value]="size">{{size}}</option>
+              <label>Company Font Size</label>
+              <select [(ngModel)]="certificateOptions.companyNameFontSize" name="companyNameFontSize" (change)="onOptionsChange()">
+                <option *ngFor="let size of companyNameFontSizes" [value]="size">{{size}}</option>
               </select>
             </div>
-
+            
+            <!-- Address Font Size (8px-16px) -->
             <div class="option-row">
-              <label>Table Font Size</label>
-              <select [(ngModel)]="certificateOptions.tableFontSize" name="tableFontSize">
-                <option *ngFor="let size of tableFontSizes" [value]="size">{{size}}</option>
+              <label>Address Font Size</label>
+              <select [(ngModel)]="certificateOptions.addressFontSize" name="addressFontSize" (change)="onOptionsChange()">
+                <option *ngFor="let size of addressFontSizes" [value]="size">{{size}}</option>
               </select>
             </div>
-
+            
+            <!-- Version/Type Font Size (10px-16px) -->
             <div class="option-row">
+              <label>Standard Font Size</label>
+              <select [(ngModel)]="certificateOptions.typeFontSize" name="typeFontSize" (change)="onOptionsChange()">
+                <option *ngFor="let size of typeFontSizes" [value]="size">{{size}}</option>
+              </select>
+            </div>
+            
+            <!-- Page Size -->
+            <!-- <div class="option-row">
               <label>Page Size</label>
-              <select [(ngModel)]="certificateOptions.pageSize" name="pageSize">
+              <select [(ngModel)]="certificateOptions.pageSize" name="pageSize" (change)="onOptionsChange()">
                 <option *ngFor="let size of pageSizes" [value]="size">{{size}}</option>
               </select>
-            </div>
+            </div> -->
 
-            <div class="option-row">
-              <label>Type</label>
-              <select [(ngModel)]="certificateOptions.type" name="type">
-                <option value="">-- Select Type --</option>
-                <option *ngFor="let t of certificateTypes" [value]="t">{{t}}</option>
-              </select>
-            </div>
 
+            <!-- Certificate Format -->
             <div class="option-row">
               <label>Certificate Format</label>
-              <select [(ngModel)]="certificateOptions.formatType" name="formatType">
+              <select [(ngModel)]="certificateOptions.formatType" name="formatType" (change)="onOptionsChange()">
                 <option value="Softcopy">Softcopy</option>
-                <option value="Hardcopy">Hardcopy</option>
+                <option value="Printable">Printable</option>
               </select>
             </div>
 
-            <div class="option-row checkbox">
-              <div class="checkbox-row">
-                <label>
-                  <input type="checkbox" [(ngModel)]="certificateOptions.includeLineBreak" name="includeLineBreak">
-                  Include line break before version
-                </label>
-              </div>
-
-              <div class="checkbox-row">
-                <label>
-                  <input type="checkbox" [(ngModel)]="certificateOptions.showValidityLine" name="showValidityLine">
-                  Show validity line
-                </label>
-              </div>
-            </div>
           </div>
         </div>
 
         <!-- Buttons -->
         <div class="btn-certificate">
-          <button class="certificate-btn" type="button" (click)="generateCertificatePdf()" >
-            <span>Generate Certificate</span>
+          <button class="certificate-btn" type="button" (click)="generateCertificatePdf()" [disabled]="pdfGenerating">
+            <span *ngIf="!pdfGenerating">Generate Certificate</span>
+            <span *ngIf="pdfGenerating">Generating PDF...</span>
           </button>
+          <!-- <button class="certificate-btn btn-reset" type="button" (click)="resetForm()">
+            <span>Reset Form</span>
+          </button> -->
         </div>
       </div>
     </form>
   </div>
+  
   <!-- PDF Viewer Section (OUTSIDE the form) -->
   <div *ngIf="showPdfViewer" #pdfViewer class="pdf-viewer-container">
     <div class="pdf-viewer-header">
       <h3>Certificate Preview</h3>
       <div class="pdf-viewer-controls">
-        <button class="certificate-btn" (click)="downloadCurrentPDF()">
+        <button class="certificate-btn btn-download" (click)="downloadCurrentPDF()">
           <span>Download PDF</span>
         </button>
-        <button class="certificate-btn" (click)="printPDF()">
+        <button class="certificate-btn btn-pdf" (click)="printPDF()">
           <span>Print PDF</span>
         </button>
         <button class="certificate-btn btn-close" (click)="closePdfViewer()">
@@ -176,4 +172,3 @@
     </div>
   </div>
 </div>
-  

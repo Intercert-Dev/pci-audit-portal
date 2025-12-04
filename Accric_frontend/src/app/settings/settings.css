@@ -6,7 +6,7 @@
   padding: 2rem;
   background: #f8f9fa;
   overflow: hidden;
-  height: 89vh;
+  max-height: 100vh;
 }
 
 /* ===========================

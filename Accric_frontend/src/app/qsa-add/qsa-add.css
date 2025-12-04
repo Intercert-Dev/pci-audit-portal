@@ -9,11 +9,15 @@
   width: 100%;
   background-color: white;
   border-radius: 1rem;
-  min-height: 100vh;
-  overflow-y: auto; /* allows vertical scrolling */
+  /* Remove min-height: 100vh and use max-height instead */
+  max-height: 90vh; /* Changed from min-height to max-height */
+  overflow-y: auto; /* Enable vertical scrolling */
   padding: 2rem;
   margin: 1rem 0;
   box-shadow: 0 6px 35px rgba(0, 0, 0, 0.08);
+  /* Add flexbox to ensure proper layout */
+  display: flex;
+  flex-direction: column;
 }
 
 /* Titles */
@@ -27,10 +31,17 @@
 /* ============================
       FORM ELEMENTS
    ============================ */
+form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .form-group {
   display: flex;
   flex-direction: column;
   margin-bottom: 1.25rem;
+  flex-shrink: 0; /* Prevent form groups from shrinking */
 }
 
 .form-group label {
@@ -39,7 +50,6 @@
   font-size: 1rem;
   margin-bottom: 0.5rem;
   color: rgba(35, 35, 35, 1);
-
 }
 
 .form-group input[type="text"],
@@ -60,7 +70,6 @@
 input:focus {
   border-color: #396aff;
 }
-
 
 /* Error messages */
 .error {
@@ -83,6 +92,7 @@ input:focus {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  flex-shrink: 0; /* Prevent preview from shrinking */
 }
 
 .preview-top {
@@ -121,6 +131,7 @@ input:focus {
 .preview-img {
   width: 180px;
   height: auto;
+  max-height: 150px; /* Limit image height */
   border-radius: 10px;
   border: 1px solid #ddd;
   object-fit: contain;
@@ -151,6 +162,9 @@ button[type="submit"],
   color: white;
   cursor: pointer;
   transition: background-color 0.3s;
+  /* Make button stick to bottom */
+  margin-top: auto;
+  align-self: flex-start; /* Align to left, or use center for center alignment */
 }
 
 button[type="submit"]:disabled,
@@ -170,6 +184,7 @@ button[type="submit"]:hover:not(:disabled),
 @media (max-width: 1024px) {
   .qsa-box {
     padding: 1.5rem;
+    max-height: 85vh;
   }
 }
 
@@ -181,6 +196,7 @@ button[type="submit"]:hover:not(:disabled),
   .qsa-box {
     padding: 1.2rem;
     margin: 0;
+    max-height: 80vh;
   }
 
   button[type="submit"] {
@@ -192,6 +208,7 @@ button[type="submit"]:hover:not(:disabled),
 @media (max-width: 480px) {
   .qsa-box {
     padding: 1rem 1.2rem;
+    max-height: 75vh;
   }
 
   input {
@@ -204,6 +221,7 @@ button[type="submit"]:hover:not(:disabled),
   }
 
   button[type="submit"] {
-    width: 220px;
+    width: 100%;
+    margin-top: 1rem;
   }
 }

@@ -19,6 +19,7 @@ export class CertificateGen {
   pdfUrl: SafeResourceUrl | null = null;
   pdfBlob: Blob | null = null;
   pdfFileName: string = 'certificate.pdf';
+  pdfGenerating: boolean = false; 
 
   @ViewChild('pdfViewer') pdfViewer!: ElementRef;
 
@@ -36,8 +37,9 @@ export class CertificateGen {
   auditorList = ['Milan John'];
 
   certificateOptions = {
-    scopeFontSize: '12px',
-    tableFontSize: '12px',
+    companyNameFontSize: '20px', // Default: 20px (range: 16px-24px)
+    addressFontSize: '12px',     // Default: 12px (range: 8px-16px)
+    typeFontSize: '16px',        // Default: 16px (range: 10px-16px)
     pageSize: 'A4',
     formatType: 'Softcopy',
     includeLineBreak: false,
@@ -45,10 +47,16 @@ export class CertificateGen {
     type: '',
   };
 
-  fontSizes: string[] = ['10px', '12px', '14px', '16px', '18px'];
-  tableFontSizes: string[] = ['10px', '12px', '14px', '16px'];
-  pageSizes: string[] = ['A4', 'Letter', 'Legal'];
-  certificateTypes: string[] = ['Internal', 'External', 'Third Party'];
+  // Font size arrays for dropdowns with specified ranges
+  companyNameFontSizes: string[] = ['16px', '18px', '20px', '22px', '24px']; // 16px-24px
+  addressFontSizes: string[] = ['8px', '10px', '12px', '14px', '16px']; // 8px-16px
+  typeFontSizes: string[] = ['10px', '12px', '14px', '16px']; // 10px-16px
+  pageSizes: string[] = ['A4', 'Letter'];
+  certificateTypes: string[] = [
+    'Internal', 
+    'External', 
+    'Third Party',
+  ];
 
   constructor(
     private http: HttpClient,
@@ -195,8 +203,13 @@ export class CertificateGen {
     }
   }
 
-  // Prepare data for PDF generation API
+  // Prepare data for PDF generation API - UPDATED with font size ranges
   preparePdfData() {
+    // Extract font size numbers within specified ranges
+    const companyNameSize = this.extractFontSizeNumber(this.certificateOptions.companyNameFontSize);
+    const addressSize = this.extractFontSizeNumber(this.certificateOptions.addressFontSize);
+    const typeSize = this.extractFontSizeNumber(this.certificateOptions.typeFontSize);
+
     return {
       companyName: this.certificateData.companyName || this.certificateData.legal_entity_name || '',
       issuanceDate: this.certificateData.dateIssue || this.certificateData.certificate_issue_date || '',
@@ -206,10 +219,16 @@ export class CertificateGen {
       certificateNumber: this.certificateData.certificateNo || this.certificateData.certificate_number_unique_id || '',
       classification: this.certificateData.assessment_classification || '',
       validTill: this.certificateData.dateValid || this.certificateData.certificate_expiry_date || '',
-      companyNameSize: 20,
-      addressSize: 12,
-      typeSize: 16,
-      name:'Milan John'
+      // Font sizes with validation to ensure they're within specified ranges
+      companyNameSize: this.clampFontSize(companyNameSize, 16, 24),      // 16px-24px range
+      addressSize: this.clampFontSize(addressSize, 8, 16),              // 8px-16px range
+      typeSize: this.clampFontSize(typeSize, 10, 16),                   // 10px-16px range
+      name: this.certificateData.auditor_name || 'Milan John',
+      // Add page size and other options
+      pageSize: this.certificateOptions.pageSize,
+      includeLineBreak: this.certificateOptions.includeLineBreak,
+      showValidityLine: this.certificateOptions.showValidityLine,
+      formatType: this.certificateOptions.formatType || 'Internal'
     };
   }
 
@@ -219,17 +238,25 @@ export class CertificateGen {
     return match ? parseInt(match[1], 10) : 12;
   }
 
+  // Clamp font size to ensure it's within the specified range
+  private clampFontSize(size: number, min: number, max: number): number {
+    return Math.max(min, Math.min(max, size));
+  }
+
   generateCertificatePdf() {
     if (!this.certificateData || !this.certificateData.certificate_number_unique_id) {
-      alert('No certificate data to download! Please generate a certificate first.');
+      alert('No certificate data to generate! Please generate a certificate first.');
       return;
     }
-
-    console.log('Downloading PDF with options:', this.certificateOptions);
 
     // Prepare the request data according to backend requirements
     const requestData = this.preparePdfData();
     console.log('PDF Request Data:', requestData);
+    console.log('Selected Font Sizes:', {
+      companyName: this.certificateOptions.companyNameFontSize,
+      address: this.certificateOptions.addressFontSize,
+      type: this.certificateOptions.typeFontSize
+    });
 
     const token = localStorage.getItem('jwt');
     if (!token) {
@@ -240,8 +267,10 @@ export class CertificateGen {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
       'Accept': 'application/pdf',
-      'Content-Type': 'application/json'
     });
+
+    this.pdfGenerating = true;
+    this.showPdfViewer = false;
 
     this.http.post(
       'http://pci.accric.com/api/auth/generate-certificate-from-template',
@@ -253,6 +282,7 @@ export class CertificateGen {
       }
     ).subscribe({
       next: (response: HttpResponse<Blob>) => {
+        this.pdfGenerating = false;
         const pdfBlob = response.body;
         if (!pdfBlob) {
           alert('No PDF received from server!');
@@ -285,9 +315,10 @@ export class CertificateGen {
           }
         }, 100);
 
-        console.log('PDF loaded successfully');
+        console.log('PDF loaded successfully with selected font sizes');
       },
       error: (err) => {
+        this.pdfGenerating = false;
         console.error('Error generating PDF:', err);
         if (err.status === 404) {
           alert('PDF generation service not found!');
@@ -298,8 +329,19 @@ export class CertificateGen {
         } else {
           alert('Error generating PDF! Please try again.');
         }
+        this.cdr.detectChanges();
       }
     });
+  }
+
+  // Add method to regenerate PDF when options change
+  onOptionsChange() {
+    console.log('Certificate options changed:', this.certificateOptions);
+    
+    // If you want to auto-regenerate PDF when options change, uncomment the following:
+    // if (this.showPdfViewer && this.pdfBlob) {
+    //   this.generateCertificatePdf();
+    // }
   }
 
   downloadCurrentPDF() {
@@ -368,14 +410,17 @@ export class CertificateGen {
     
     this.pdfUrl = null;
     this.pdfBlob = null;
+    this.pdfGenerating = false;
 
     Object.keys(this.editFields).forEach(key => {
       this.editFields[key as keyof typeof this.editFields] = false;
     });
 
+    // Reset to default font sizes
     this.certificateOptions = {
-      scopeFontSize: '12px',
-      tableFontSize: '12px',
+      companyNameFontSize: '20px',
+      addressFontSize: '12px',
+      typeFontSize: '16px',
       pageSize: 'A4',
       formatType: 'Softcopy',
       includeLineBreak: false,

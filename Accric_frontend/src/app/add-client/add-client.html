@@ -210,12 +210,44 @@
               <small *ngIf="primaryEmail.errors?.['email']">Enter a valid email.</small>
             </div>
           </div>
+          <!-- Phone Field with Country Code -->
           <div class="form-group">
             <label>Phone*</label>
-            <input type="text" name="primaryPhone" required [(ngModel)]="clientData.primaryPhone"
-              #primaryPhone="ngModel" placeholder="Enter Phone" />
+            <div class="phone-input-container">
+              <!-- Country Code Dropdown -->
+              <div class="country-code-dropdown custom-dropdown">
+                <div class="country-code-selector" (click)="openCountryCodeDropdown($event)">
+                  <span class="country-code-flag">{{ getSelectedCountryCodeFlag() }}</span>
+                  <span class="country-code-value">{{ clientData.phoneCountryCode }}</span>
+                  <span class="dropdown-icon">▼</span>
+                </div>
+
+                <div class="dropdown-list country-code-list" *ngIf="showCountryCodeDropdown">
+                  <div class="search-container" (click)="$event.stopPropagation()">
+                    <input type="text" placeholder="Search country or code..." [(ngModel)]="countryCodeSearch"
+                      (ngModelChange)="filterCountryCodes()" class="search-input" (click)="$event.stopPropagation()"
+                      autocomplete="off" name="countryCodeSearch" />
+                  </div>
+                  <div class="dropdown-items">
+                    <div *ngFor="let countryCode of filteredCountryCodes" class="dropdown-item country-code-item"
+                      (click)="selectCountryCode(countryCode)">
+                      <span class="country-code-flag">{{ countryCode.flag }}</span>
+                      <span class="country-code-name">{{ countryCode.name }}</span>
+                      <span class="country-code-value">{{ countryCode.code }}</span>
+                    </div>
+                    <div *ngIf="filteredCountryCodes.length === 0" class="no-results">
+                      No country codes found
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Phone Number Input -->
+              <input type="tel" name="primaryPhone" required [(ngModel)]="clientData.primaryPhone"
+                #primaryPhone="ngModel" placeholder="Enter phone number" class="phone-number-input" />
+            </div>
             <div class="error" *ngIf="primaryPhone.invalid && (primaryPhone.touched || showErrors)">
-              <small>Please enter Phone.</small>
+              <small>Please enter Phone number.</small>
             </div>
           </div>
         </div>

@@ -17,6 +17,13 @@ interface State {
   state_code?: string;
 }
 
+interface CountryCode {
+  name: string;
+  code: string;
+  flag: string;
+  iso2: string;
+}
+
 @Component({
   selector: 'app-add-client',
   standalone: true,
@@ -52,7 +59,8 @@ export class AddClient implements OnInit {
     primaryName: '',
     primaryDesignation: '',
     primaryEmail: '',
-    primaryPhone: '',
+    primaryPhone: '', 
+    phoneCountryCode: '+1', 
     technicalContact: '',
     informationSecurityOfficer: '',
     clientSignoff: '',
@@ -66,12 +74,18 @@ export class AddClient implements OnInit {
   filteredStates: State[] = [];
   allCities: string[] = [];
   filteredCities: string[] = [];
-  
+
+  // Country codes data
+  allCountryCodes: CountryCode[] = [];
+  filteredCountryCodes: CountryCode[] = [];
+  showCountryCodeDropdown: boolean = false;
+  countryCodeSearch: string = '';
+
   // Search terms
   countrySearch: string = '';
   stateSearch: string = '';
   citySearch: string = '';
-  
+
   // Dropdown visibility
   showCountryDropdown: boolean = false;
   showStateDropdown: boolean = false;
@@ -84,13 +98,14 @@ export class AddClient implements OnInit {
 
   ngOnInit() {
     this.loadCountries();
+    this.loadCountryCodes();
   }
 
   // Handle clicks outside dropdowns
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     const target = event.target as HTMLElement;
-    
+
     if (!target.closest('.country-dropdown')) {
       this.showCountryDropdown = false;
     }
@@ -100,11 +115,14 @@ export class AddClient implements OnInit {
     if (!target.closest('.city-dropdown')) {
       this.showCityDropdown = false;
     }
+    if (!target.closest('.country-code-dropdown')) {
+      this.showCountryCodeDropdown = false;
+    }
   }
 
   // Load all countries from API
   loadCountries() {
-    this.http.get<{data: Country[]}>('https://countriesnow.space/api/v0.1/countries')
+    this.http.get<{ data: Country[] }>('https://countriesnow.space/api/v0.1/countries')
       .pipe(
         map(response => response.data),
         catchError(error => {
@@ -117,6 +135,108 @@ export class AddClient implements OnInit {
         this.filteredCountries = [...this.allCountries];
       });
   }
+
+  // Load country codes from API
+  loadCountryCodes() {
+    // Using REST Countries API for country codes and flags
+    this.http.get<any[]>('https://restcountries.com/v3.1/all?fields=name,flags,idd,cca2')
+      .pipe(
+        map(countries => {
+          return countries
+            .filter(country => country.idd?.root && country.idd?.suffixes)
+            .map(country => {
+              const code = country.idd.root + (country.idd.suffixes[0] || '');
+              return {
+                name: country.name.common,
+                code: code,
+                flag: this.getFlagEmoji(country.cca2),
+                iso2: country.cca2
+              };
+            })
+            .sort((a: CountryCode, b: CountryCode) => a.name.localeCompare(b.name));
+        }),
+        catchError(error => {
+          console.error('Error loading country codes:', error);
+          // Fallback to common country codes if API fails
+          return of(this.getFallbackCountryCodes());
+        })
+      )
+      .subscribe(data => {
+        this.allCountryCodes = data;
+        this.filteredCountryCodes = [...data];
+      });
+  }
+
+  // Helper method to get flag emoji from country code
+  private getFlagEmoji(countryCode: string): string {
+    if (!countryCode) return '🏳️';
+
+    const codePoints = countryCode
+      .toUpperCase()
+      .split('')
+      .map(char => 127397 + char.charCodeAt(0));
+
+    return String.fromCodePoint(...codePoints);
+  }
+
+  // Fallback country codes if API fails
+  private getFallbackCountryCodes(): CountryCode[] {
+    return [
+      { name: 'United States', code: '+1', flag: '🇺🇸', iso2: 'US' },
+      { name: 'United Kingdom', code: '+44', flag: '🇬🇧', iso2: 'GB' },
+      { name: 'Canada', code: '+1', flag: '🇨🇦', iso2: 'CA' },
+      { name: 'Australia', code: '+61', flag: '🇦🇺', iso2: 'AU' },
+      { name: 'India', code: '+91', flag: '🇮🇳', iso2: 'IN' },
+      { name: 'Germany', code: '+49', flag: '🇩🇪', iso2: 'DE' },
+      { name: 'France', code: '+33', flag: '🇫🇷', iso2: 'FR' },
+      { name: 'China', code: '+86', flag: '🇨🇳', iso2: 'CN' },
+      { name: 'Japan', code: '+81', flag: '🇯🇵', iso2: 'JP' },
+      { name: 'Brazil', code: '+55', flag: '🇧🇷', iso2: 'BR' },
+      { name: 'Russia', code: '+7', flag: '🇷🇺', iso2: 'RU' },
+      { name: 'Mexico', code: '+52', flag: '🇲🇽', iso2: 'MX' },
+      { name: 'Italy', code: '+39', flag: '🇮🇹', iso2: 'IT' },
+      { name: 'Spain', code: '+34', flag: '🇪🇸', iso2: 'ES' }
+    ];
+  }
+
+  // Open country code dropdown
+  openCountryCodeDropdown(event: Event) {
+    event.stopPropagation();
+    this.showCountryCodeDropdown = true;
+    this.countryCodeSearch = '';
+    this.filterCountryCodes();
+  }
+
+  // Filter country codes based on search
+  filterCountryCodes() {
+    if (!this.countryCodeSearch) {
+      this.filteredCountryCodes = [...this.allCountryCodes];
+    } else {
+      this.filteredCountryCodes = this.allCountryCodes.filter(country =>
+        country.name.toLowerCase().includes(this.countryCodeSearch.toLowerCase()) ||
+        country.code.toLowerCase().includes(this.countryCodeSearch.toLowerCase())
+      );
+    }
+  }
+
+  // Select a country code
+  selectCountryCode(countryCode: CountryCode) {
+    this.clientData.phoneCountryCode = countryCode.code;
+    this.showCountryCodeDropdown = false;
+  }
+  getSelectedCountryCodeFlag(): string {
+    if (!this.clientData.phoneCountryCode || this.allCountryCodes.length === 0) {
+      return '🇺🇸'; // Default flag
+    }
+    const selectedCode = this.allCountryCodes.find(
+      code => code.code === this.clientData.phoneCountryCode
+    );
+
+    return selectedCode?.flag || '🇺🇸';
+  }
+
+  // ... rest of your existing methods for country, state, city remain exactly the same ...
+  // No changes needed to those methods
 
   // Open country dropdown
   openCountryDropdown(event: Event) {
@@ -133,7 +253,7 @@ export class AddClient implements OnInit {
     if (!this.countrySearch) {
       this.filteredCountries = [...this.allCountries];
     } else {
-      this.filteredCountries = this.allCountries.filter(country => 
+      this.filteredCountries = this.allCountries.filter(country =>
         country.country.toLowerCase().includes(this.countrySearch.toLowerCase())
       );
     }
@@ -143,7 +263,7 @@ export class AddClient implements OnInit {
   selectCountry(country: Country) {
     this.clientData.country = country.country;
     this.showCountryDropdown = false;
-    
+
     // Reset dependent fields
     this.allStates = [];
     this.filteredStates = [];
@@ -153,7 +273,7 @@ export class AddClient implements OnInit {
     this.clientData.city = '';
     this.stateSearch = '';
     this.citySearch = '';
-    
+
     // Load states for selected country
     this.loadStates(country.country);
   }
@@ -162,7 +282,7 @@ export class AddClient implements OnInit {
   loadStates(countryName: string) {
     if (!countryName) return;
 
-    this.http.post<{data: {states: State[]}}>(
+    this.http.post<{ data: { states: State[] } }>(
       'https://countriesnow.space/api/v0.1/countries/states',
       { country: countryName }
     )
@@ -199,7 +319,7 @@ export class AddClient implements OnInit {
     if (!this.stateSearch) {
       this.filteredStates = [...this.allStates];
     } else {
-      this.filteredStates = this.allStates.filter(state => 
+      this.filteredStates = this.allStates.filter(state =>
         state.name.toLowerCase().includes(this.stateSearch.toLowerCase())
       );
     }
@@ -209,13 +329,13 @@ export class AddClient implements OnInit {
   selectState(state: State) {
     this.clientData.state = state.name;
     this.showStateDropdown = false;
-    
+
     // Reset cities
     this.allCities = [];
     this.filteredCities = [];
     this.clientData.city = '';
     this.citySearch = '';
-    
+
     // Load cities for selected state
     this.loadCities(this.clientData.country, state.name);
   }
@@ -224,11 +344,11 @@ export class AddClient implements OnInit {
   loadCities(countryName: string, stateName: string) {
     if (!countryName || !stateName) return;
 
-    this.http.post<{data: string[]}>(
+    this.http.post<{ data: string[] }>(
       'https://countriesnow.space/api/v0.1/countries/state/cities',
-      { 
+      {
         country: countryName,
-        state: stateName 
+        state: stateName
       }
     )
       .pipe(
@@ -264,7 +384,7 @@ export class AddClient implements OnInit {
     if (!this.citySearch) {
       this.filteredCities = [...this.allCities];
     } else {
-      this.filteredCities = this.allCities.filter(city => 
+      this.filteredCities = this.allCities.filter(city =>
         city.toLowerCase().includes(this.citySearch.toLowerCase())
       );
     }
@@ -277,7 +397,9 @@ export class AddClient implements OnInit {
   }
 
   // ... rest of your existing methods remain exactly the same ...
-  // No changes needed to the below methods
+  // (formatDate, buildPayload, sendClientDataToAPI, etc.)
+
+  // ... rest of your existing methods remain exactly the same ...
   formatDate(date: any): string | null {
     if (!date) return null;
     const d = new Date(date);
@@ -300,7 +422,7 @@ export class AddClient implements OnInit {
       contact_name: this.clientData.primaryName,
       designation: this.clientData.primaryDesignation,
       contact_email: this.clientData.primaryEmail,
-      phone: this.clientData.primaryPhone,
+      phone: this.clientData.phoneCountryCode + ' ' + this.clientData.primaryPhone, // Combine country code and phone
       technical_contacts: this.clientData.technicalContact,
       information_security_officer: this.clientData.informationSecurityOfficer,
       client_signoff_authority: this.clientData.clientSignoff,
@@ -329,7 +451,7 @@ export class AddClient implements OnInit {
 
   validateCurrentTab(form: NgForm): boolean {
     const requiredFields: string[] = this.tabRequiredFields[this.activeTab] || [];
-    
+
     requiredFields.forEach((fieldName: string) => {
       const control = form.controls[fieldName];
       if (control) {
@@ -348,10 +470,10 @@ export class AddClient implements OnInit {
       this.showErrors = true;
       return;
     }
-    
+
     this.showErrors = false;
     const currentIndex = this.tabs.indexOf(this.activeTab);
-    
+
     if (currentIndex < this.tabs.length - 1) {
       this.activeTab = this.tabs[currentIndex + 1];
     } else {
@@ -363,14 +485,14 @@ export class AddClient implements OnInit {
     if (tabName !== this.activeTab) {
       const currentIndex = this.tabs.indexOf(this.activeTab);
       const targetIndex = this.tabs.indexOf(tabName);
-      
+
       if (targetIndex > currentIndex) {
         if (this.clientForm && !this.validateCurrentTab(this.clientForm)) {
           this.showErrors = true;
           return;
         }
       }
-      
+
       this.showErrors = false;
       this.activeTab = tabName;
     }
@@ -386,25 +508,25 @@ export class AddClient implements OnInit {
 
   onSubmit(form: NgForm) {
     let allTabsValid = true;
-    
+
     for (const tab of this.tabs) {
       this.activeTab = tab;
       if (!this.validateCurrentTab(form)) {
         allTabsValid = false;
       }
     }
-    
+
     if (!allTabsValid) {
       this.activeTab = this.tabs[this.tabs.length - 1];
       this.showErrors = true;
       return;
     }
-    
+
     this.showErrors = false;
-    
+
     const payload: { [key: string]: any } = this.buildPayload();
     const formData = new FormData();
-    
+
     Object.entries(payload).forEach(([key, value]) => {
       if (value !== null && value !== undefined && value !== '') {
         formData.append(key, value.toString());

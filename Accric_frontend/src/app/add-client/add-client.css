@@ -488,3 +488,217 @@ select.ng-invalid.ng-touched {
 
 
 }
+
+/* =========================================== */
+/* Phone Country Code Dropdown Styles          */
+/* =========================================== */
+
+.phone-input-container {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+}
+
+.country-code-dropdown {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.country-code-selector {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+  height: 2.5rem;
+  border: 1px solid rgba(223, 234, 242, 1);
+  border-radius: 1rem;
+  background-color: white;
+  cursor: pointer;
+  min-width: 90px;
+  transition: border-color 0.3s;
+}
+
+.country-code-selector:hover {
+  border-color: rgba(57, 106, 255, 0.5);
+}
+
+.country-code-flag {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.country-code-value {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  color: rgba(35, 35, 35, 1);
+  font-weight: 500;
+}
+
+.country-code-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 200px;
+  max-height: 300px;
+  background: white;
+  border: 1px solid rgb(154, 175, 190);
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+  margin-top: 4px;
+  overflow: hidden;
+}
+
+.country-code-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(223, 234, 242, 0.3);
+  transition: background-color 0.2s;
+}
+
+.country-code-item:last-child {
+  border-bottom: none;
+}
+
+.country-code-item:hover {
+  background-color: rgba(57, 106, 255, 0.1);
+}
+
+.country-code-item .country-code-flag {
+  font-size: 1.2rem;
+  width: 24px;
+  text-align: center;
+}
+
+.country-code-item .country-code-name {
+  flex: 1;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: rgba(35, 35, 35, 1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.country-code-item .country-code-value {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  color: rgba(113, 142, 191, 1);
+  font-weight: 400;
+}
+
+.phone-number-input {
+  flex: 1;
+  min-width: 0; /* Important for flexbox shrinking */
+  height: 2.5rem;
+  padding: 0 12px;
+  border: 1px solid rgba(223, 234, 242, 1);
+  border-radius: 1rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: rgba(35, 35, 35, 1);
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.phone-number-input:focus {
+  border-color: rgba(57, 106, 255, 1);
+}
+
+.phone-number-input.ng-invalid.ng-touched {
+  border: 1px solid #d9534f !important;
+}
+
+/* Error message alignment for phone field */
+.form-group .error {
+  margin-top: 5px;
+}
+
+/* =========================================== */
+/* Responsive Styles for Phone Input           */
+/* =========================================== */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .phone-input-container {
+    gap: 6px;
+  }
+  
+  .country-code-selector {
+    min-width: 85px;
+    padding: 0 8px;
+  }
+  
+  .country-code-list {
+    width: 280px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .phone-input-container {
+    flex-direction: row;
+    gap: 8px;
+  }
+  
+  .country-code-dropdown {
+    width: auto;
+  }
+  
+  .country-code-selector {
+    min-width: 80px;
+    justify-content: center;
+  }
+  
+  .country-code-list {
+    width: 260px;
+    left: 0;
+    right: auto;
+  }
+  
+  .phone-number-input {
+    flex: 1;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .phone-input-container {
+    gap: 6px;
+  }
+  
+  .country-code-selector {
+    min-width: 75px;
+    padding: 0 6px;
+  }
+  
+  .country-code-value {
+    font-size: 0.8rem;
+  }
+  
+  .country-code-list {
+    width: 240px;
+  }
+  
+  .country-code-item {
+    padding: 8px 10px;
+    gap: 8px;
+  }
+  
+  .country-code-item .country-code-name {
+    font-size: 0.85rem;
+  }
+  
+  .country-code-item .country-code-value {
+    font-size: 0.8rem;
+  }
+  
+  .phone-number-input {
+    padding: 0 10px;
+    font-size: 0.85rem;
+  }
+}

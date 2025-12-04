@@ -34,67 +34,79 @@
       <aside class="sidebar">
         <nav class="sidebar-nav">
           <ul>
-            <li routerLink="/dashboard" routerLinkActive="active">
+            <!-- MAIN MENU ITEMS - Close submenu when clicked -->
+            <li routerLink="/dashboard" routerLinkActive="active" (click)="onMainMenuItemClick()">
               <div style="padding-left: 4px; gap: 1.2rem;" class="nav-item">
                 <img src="assets/icons/home.png" alt="icon" class="nav-icon">
                 <span class="nav-text">Dashboard</span>
               </div>
             </li>
 
+            <!-- CLIENTS SUBMENU -->
             <li class="has-submenu" [class.expanded]="isClientsExpanded">
-              <div class="submenu-header" (click)="toggleClientsMenu()">
+              <div class="submenu-header" (click)="toggleClientsMenu($event)">
                 <div class="nav-item">
-                  <img src="assets/icons/calendar_view_week.png" alt="icon" class="nav-icon">
-
+                  <img src="/assets/icons/person_add.png" alt="icon" class="nav-icon">
                   <span class="nav-text">Clients</span>
-                  <img class="arrow-icon" [class.rotate]="isClientsExpanded" src="/assets/icons8-dropdown-48.png"
+                  <img class="arrow-icon" [class.rotate]="isClientsExpanded" src="/assets/icons8-dropdown-50.png"
                     alt="arrow">
-
                 </div>
               </div>
+              <!-- SUBMENU ITEMS - DON'T close submenu when clicked -->
               <ul class="submenu" *ngIf="isClientsExpanded">
-                <li routerLink="/add-client" routerLinkActive="active">
+                <li routerLink="/add-client" routerLinkActive="active" (click)="onSubmenuItemClick()">
                   <span>Add Client</span>
                 </li>
-                <li routerLink="/add-audit" routerLinkActive="active">
+                <li routerLink="/add-audit" routerLinkActive="active" (click)="onSubmenuItemClick()">
                   <span>Add Audit</span>
                 </li>
-                <li routerLink="/add-asv-audit" routerLinkActive="active">
+                <li routerLink="/add-asv-audit" routerLinkActive="active" (click)="onSubmenuItemClick()">
                   <span>ASV Audit</span>
                 </li>
-                <li routerLink="/report-verification" routerLinkActive="active">
+                <li routerLink="/report-verification" routerLinkActive="active" (click)="onSubmenuItemClick()">
                   <span>Report Verification</span>
                 </li>
               </ul>
             </li>
-            <li routerLink="/client-list" routerLinkActive="active">
+
+            <!-- MAIN MENU ITEMS - Close submenu when clicked -->
+            <li routerLink="/client-list" routerLinkActive="active" (click)="onMainMenuItemClick()">
               <div class="nav-item">
                 <img src="assets/icons/calendar_view_week.png" alt="icon" class="nav-icon">
                 <span class="nav-text">Client List</span>
               </div>
             </li>
-
-            <li routerLink="/asv-client-list" routerLinkActive="active">
+            <li routerLink="/asv-dashboard" routerLinkActive="active" (click)="onMainMenuItemClick()">
               <div class="nav-item">
                 <img src="assets/icons/breaking_news_alt_1.png" alt="icon" class="nav-icon">
+                <span class="nav-text">ASV</span>
+              </div>
+            </li>
+
+            <li routerLink="/asv-client-list" routerLinkActive="active" (click)="onMainMenuItemClick()">
+              <div class="nav-item">
+                <img src="assets/icons/calendar_view_week.png" alt="icon" class="nav-icon">
                 <span class="nav-text">ASV Client List</span>
               </div>
             </li>
 
-            <li routerLink="/certificate-gen" routerLinkActive="active">
+            <li routerLink="/certificate-gen" routerLinkActive="active" (click)="onMainMenuItemClick()">
               <div class="nav-item">
                 <img src="assets/icons/card_membership.png" alt="icon" class="nav-icon">
                 <span class="nav-text">Certificate Gen.</span>
               </div>
             </li>
 
-            <li routerLink="/create-user" routerLinkActive="active">
+            <li *ngIf="userRole === 'SUPER_ADMIN'" routerLink="/create-user" routerLinkActive="active"
+              (click)="onMainMenuItemClick()">
               <div class="nav-item">
                 <img src="assets/icons/person_add.png" alt="icon" class="nav-icon">
                 <span class="nav-text">Create User</span>
               </div>
             </li>
-            <li routerLink="/user-settings" routerLinkActive="active">
+
+
+            <li routerLink="/user-settings" routerLinkActive="active" (click)="onMainMenuItemClick()">
               <div class="nav-item">
                 <img src="assets/icons/settings solid 1.png" alt="icon" class="nav-icon">
                 <span class="nav-text">Settings</span>

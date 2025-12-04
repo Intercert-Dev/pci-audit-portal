@@ -28,27 +28,106 @@
         </div>
 
         <div class="form-row">
-          <div class="form-group">
+          <!-- Country Field -->
+          <div class="form-group custom-dropdown country-dropdown">
             <label>Country*</label>
-            <input type="text" name="country" required [(ngModel)]="clientData.country" #country="ngModel"
-              placeholder="Country" />
+            <div class="dropdown-container">
+              <input type="text" name="country" required [(ngModel)]="clientData.country"
+                (click)="openCountryDropdown($event)" #country="ngModel" placeholder="Select country..." readonly
+                class="dropdown-input" />
+              <div class="dropdown-icon">▼</div>
+
+              <div class="dropdown-list" *ngIf="showCountryDropdown">
+                <div class="search-container" (click)="$event.stopPropagation()">
+                  <input type="text" name="countrySearch" placeholder="Search country..." [(ngModel)]="countrySearch"
+                    (ngModelChange)="filterCountries()" class="search-input" autocomplete="off" />
+
+                </div>
+                <div class="dropdown-items">
+                  <div *ngFor="let country of filteredCountries" class="dropdown-item" (click)="selectCountry(country)">
+                    {{ country.country }}
+                  </div>
+                  <div *ngIf="filteredCountries.length === 0" class="no-results">
+                    No countries found
+                  </div>
+                </div>
+              </div>
+            </div>
             <div class="error" *ngIf="country.invalid && (country.touched || showErrors)">
-              <small>Please enter Country.</small>
+              <small>Please select a country.</small>
             </div>
           </div>
-          <div class="form-group">
+
+          <!-- State Field -->
+          <div class="form-group custom-dropdown state-dropdown">
             <label>State*</label>
-            <input type="text" name="state" required [(ngModel)]="clientData.state" #state="ngModel"
-              placeholder="State" />
+            <div class="dropdown-container">
+              <input type="text" name="state" required [(ngModel)]="clientData.state"
+                (click)="openStateDropdown($event)" #state="ngModel"
+                placeholder="{{ clientData.country ? 'Select state...' : 'Select country first' }}" readonly
+                class="dropdown-input" [disabled]="!clientData.country" />
+              <div class="dropdown-icon">▼</div>
+
+              <div class="dropdown-list" *ngIf="showStateDropdown && clientData.country">
+                <div class="search-container" (click)="$event.stopPropagation()">
+                  <input type="text" name="stateSearch" placeholder="Search state..." [(ngModel)]="stateSearch"
+                    (ngModelChange)="filterStates()" class="search-input" autocomplete="off" />
+
+                </div>
+                <div class="dropdown-items">
+                  <div *ngFor="let state of filteredStates" class="dropdown-item" (click)="selectState(state)">
+                    {{ state.name }}
+                  </div>
+                  <div *ngIf="filteredStates.length === 0 && allStates.length > 0" class="no-results">
+                    No states found
+                  </div>
+                  <div *ngIf="allStates.length === 0" class="no-results">
+                    Loading states...
+                  </div>
+                </div>
+              </div>
+            </div>
             <div class="error" *ngIf="state.invalid && (state.touched || showErrors)">
-              <small>Please enter State.</small>
+              <small>Please select a state.</small>
+            </div>
+            <div *ngIf="!clientData.country" class="field-hint">
+              Please select a country first
             </div>
           </div>
-          <div class="form-group">
+
+          <!-- City Field -->
+          <div class="form-group custom-dropdown city-dropdown">
             <label>City*</label>
-            <input type="text" name="city" required [(ngModel)]="clientData.city" #city="ngModel" placeholder="City" />
+            <div class="dropdown-container">
+              <input type="text" name="city" required [(ngModel)]="clientData.city" (click)="openCityDropdown($event)"
+                #city="ngModel" placeholder="{{ clientData.state ? 'Select city...' : 'Select state first' }}" readonly
+                class="dropdown-input" [disabled]="!clientData.state" />
+              <div class="dropdown-icon">▼</div>
+
+              <div class="dropdown-list" *ngIf="showCityDropdown && clientData.state">
+                <div class="search-container" (click)="$event.stopPropagation()">
+                  <input type="text" name="citySearch" placeholder="Search city..." [(ngModel)]="citySearch"
+                    (ngModelChange)="filterCities()" class="search-input" autocomplete="off" />
+
+                </div>
+                <div class="dropdown-items">
+                  <div *ngFor="let city of filteredCities" class="dropdown-item" (click)="selectCity(city)">
+                    {{ city }}
+                  </div>
+                  <div *ngIf="filteredCities.length === 0 && allCities.length > 0" class="no-results">
+                    No cities found
+                  </div>
+                  <div *ngIf="allCities.length === 0" class="no-results">
+                    Loading cities...
+                  </div>
+                </div>
+              </div>
+            </div>
             <div class="error" *ngIf="city.invalid && (city.touched || showErrors)">
-              <small>Please enter City.</small>
+              <small>Please select a city.</small>
+            </div>
+            <div *ngIf="!clientData.state" class="field-hint">
+              Please select a state first
             </div>
           </div>
         </div>

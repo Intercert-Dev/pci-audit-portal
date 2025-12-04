@@ -1,7 +1,21 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { map, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+
+// Define interfaces for better typing
+interface Country {
+  country: string;
+  iso2?: string;
+  iso3?: string;
+}
+
+interface State {
+  name: string;
+  state_code?: string;
+}
 
 @Component({
   selector: 'app-add-client',
@@ -10,7 +24,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   templateUrl: './add-client.html',
   styleUrls: ['./add-client.css']
 })
-export class AddClient {
+export class AddClient implements OnInit {
   @ViewChild('clientForm') clientForm!: NgForm;
 
   activeTab: string = 'client-profile';
@@ -45,11 +59,225 @@ export class AddClient {
     clientStatus: ''
   };
 
+  // Data for dropdowns
+  allCountries: Country[] = [];
+  filteredCountries: Country[] = [];
+  allStates: State[] = [];
+  filteredStates: State[] = [];
+  allCities: string[] = [];
+  filteredCities: string[] = [];
+  
+  // Search terms
+  countrySearch: string = '';
+  stateSearch: string = '';
+  citySearch: string = '';
+  
+  // Dropdown visibility
+  showCountryDropdown: boolean = false;
+  showStateDropdown: boolean = false;
+  showCityDropdown: boolean = false;
+
   tabRequiredFields: { [key: string]: string[] } = {
     "client-profile": ["legalEntityName", "country", "state", "city", "street", "zipCode", "typeOfBusiness"],
     "primary-contacts": ["primaryName", "primaryDesignation", "primaryEmail", "primaryPhone", "clientSignoff"]
   };
 
+  ngOnInit() {
+    this.loadCountries();
+  }
+
+  // Handle clicks outside dropdowns
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    
+    if (!target.closest('.country-dropdown')) {
+      this.showCountryDropdown = false;
+    }
+    if (!target.closest('.state-dropdown')) {
+      this.showStateDropdown = false;
+    }
+    if (!target.closest('.city-dropdown')) {
+      this.showCityDropdown = false;
+    }
+  }
+
+  // Load all countries from API
+  loadCountries() {
+    this.http.get<{data: Country[]}>('https://countriesnow.space/api/v0.1/countries')
+      .pipe(
+        map(response => response.data),
+        catchError(error => {
+          console.error('Error loading countries:', error);
+          return of([]);
+        })
+      )
+      .subscribe(data => {
+        this.allCountries = data.sort((a: Country, b: Country) => a.country.localeCompare(b.country));
+        this.filteredCountries = [...this.allCountries];
+      });
+  }
+
+  // Open country dropdown
+  openCountryDropdown(event: Event) {
+    event.stopPropagation();
+    this.showCountryDropdown = true;
+    this.showStateDropdown = false;
+    this.showCityDropdown = false;
+    this.countrySearch = '';
+    this.filterCountries();
+  }
+
+  // Filter countries based on search
+  filterCountries() {
+    if (!this.countrySearch) {
+      this.filteredCountries = [...this.allCountries];
+    } else {
+      this.filteredCountries = this.allCountries.filter(country => 
+        country.country.toLowerCase().includes(this.countrySearch.toLowerCase())
+      );
+    }
+  }
+
+  // Select a country
+  selectCountry(country: Country) {
+    this.clientData.country = country.country;
+    this.showCountryDropdown = false;
+    
+    // Reset dependent fields
+    this.allStates = [];
+    this.filteredStates = [];
+    this.allCities = [];
+    this.filteredCities = [];
+    this.clientData.state = '';
+    this.clientData.city = '';
+    this.stateSearch = '';
+    this.citySearch = '';
+    
+    // Load states for selected country
+    this.loadStates(country.country);
+  }
+
+  // Load states for selected country
+  loadStates(countryName: string) {
+    if (!countryName) return;
+
+    this.http.post<{data: {states: State[]}}>(
+      'https://countriesnow.space/api/v0.1/countries/states',
+      { country: countryName }
+    )
+      .pipe(
+        map(response => {
+          const states = response.data?.states || [];
+          return states.sort((a: State, b: State) => a.name.localeCompare(b.name));
+        }),
+        catchError(error => {
+          console.error('Error loading states:', error);
+          return of([]);
+        })
+      )
+      .subscribe(data => {
+        this.allStates = data;
+        this.filteredStates = [...data];
+      });
+  }
+
+  // Open state dropdown
+  openStateDropdown(event: Event) {
+    event.stopPropagation();
+    if (this.clientData.country) {
+      this.showStateDropdown = true;
+      this.showCountryDropdown = false;
+      this.showCityDropdown = false;
+      this.stateSearch = '';
+      this.filterStates();
+    }
+  }
+
+  // Filter states based on search
+  filterStates() {
+    if (!this.stateSearch) {
+      this.filteredStates = [...this.allStates];
+    } else {
+      this.filteredStates = this.allStates.filter(state => 
+        state.name.toLowerCase().includes(this.stateSearch.toLowerCase())
+      );
+    }
+  }
+
+  // Select a state
+  selectState(state: State) {
+    this.clientData.state = state.name;
+    this.showStateDropdown = false;
+    
+    // Reset cities
+    this.allCities = [];
+    this.filteredCities = [];
+    this.clientData.city = '';
+    this.citySearch = '';
+    
+    // Load cities for selected state
+    this.loadCities(this.clientData.country, state.name);
+  }
+
+  // Load cities for selected country and state
+  loadCities(countryName: string, stateName: string) {
+    if (!countryName || !stateName) return;
+
+    this.http.post<{data: string[]}>(
+      'https://countriesnow.space/api/v0.1/countries/state/cities',
+      { 
+        country: countryName,
+        state: stateName 
+      }
+    )
+      .pipe(
+        map(response => {
+          const cities = response.data || [];
+          return cities.sort((a: string, b: string) => a.localeCompare(b));
+        }),
+        catchError(error => {
+          console.error('Error loading cities:', error);
+          return of([]);
+        })
+      )
+      .subscribe(data => {
+        this.allCities = data;
+        this.filteredCities = [...data];
+      });
+  }
+
+  // Open city dropdown
+  openCityDropdown(event: Event) {
+    event.stopPropagation();
+    if (this.clientData.state) {
+      this.showCityDropdown = true;
+      this.showCountryDropdown = false;
+      this.showStateDropdown = false;
+      this.citySearch = '';
+      this.filterCities();
+    }
+  }
+
+  // Filter cities based on search
+  filterCities() {
+    if (!this.citySearch) {
+      this.filteredCities = [...this.allCities];
+    } else {
+      this.filteredCities = this.allCities.filter(city => 
+        city.toLowerCase().includes(this.citySearch.toLowerCase())
+      );
+    }
+  }
+
+  // Select a city
+  selectCity(city: string) {
+    this.clientData.city = city;
+    this.showCityDropdown = false;
+  }
+
+  // ... rest of your existing methods remain exactly the same ...
+  // No changes needed to the below methods
   formatDate(date: any): string | null {
     if (!date) return null;
     const d = new Date(date);
@@ -91,7 +319,6 @@ export class AddClient {
       next: (res) => {
         console.log('API Response:', res);
         alert('Client created successfully!');
-        // Reset form or navigate away
       },
       error: (err) => {
         console.error('API Error:', err);
@@ -103,7 +330,6 @@ export class AddClient {
   validateCurrentTab(form: NgForm): boolean {
     const requiredFields: string[] = this.tabRequiredFields[this.activeTab] || [];
     
-    // First, mark all required fields as touched to show errors
     requiredFields.forEach((fieldName: string) => {
       const control = form.controls[fieldName];
       if (control) {
@@ -111,7 +337,6 @@ export class AddClient {
       }
     });
 
-    // Check if all required fields are valid
     return requiredFields.every((fieldName: string) => {
       const control = form.controls[fieldName];
       return control && control.valid;
@@ -119,7 +344,6 @@ export class AddClient {
   }
 
   saveAndContinue(form: NgForm) {
-    // Validate current tab before proceeding
     if (!this.validateCurrentTab(form)) {
       this.showErrors = true;
       return;
@@ -128,23 +352,18 @@ export class AddClient {
     this.showErrors = false;
     const currentIndex = this.tabs.indexOf(this.activeTab);
     
-    // Check if we're on the last tab
     if (currentIndex < this.tabs.length - 1) {
-      // Move to next tab
       this.activeTab = this.tabs[currentIndex + 1];
     } else {
-      // If on last tab, submit the form
       this.onSubmit(form);
     }
   }
 
   switchTab(tabName: string) {
-    // Validate current tab before switching
     if (tabName !== this.activeTab) {
       const currentIndex = this.tabs.indexOf(this.activeTab);
       const targetIndex = this.tabs.indexOf(tabName);
       
-      // Only validate if moving forward (to next tab)
       if (targetIndex > currentIndex) {
         if (this.clientForm && !this.validateCurrentTab(this.clientForm)) {
           this.showErrors = true;
@@ -166,37 +385,32 @@ export class AddClient {
   }
 
   onSubmit(form: NgForm) {
-    // Validate all tabs before final submission
     let allTabsValid = true;
     
     for (const tab of this.tabs) {
-      this.activeTab = tab; // Temporarily switch to each tab for validation
+      this.activeTab = tab;
       if (!this.validateCurrentTab(form)) {
         allTabsValid = false;
       }
     }
     
-    // Switch back to last tab if validation failed
     if (!allTabsValid) {
       this.activeTab = this.tabs[this.tabs.length - 1];
       this.showErrors = true;
       return;
     }
     
-    // All validation passed, proceed with submission
     this.showErrors = false;
     
     const payload: { [key: string]: any } = this.buildPayload();
     const formData = new FormData();
     
-    // Convert payload to FormData
     Object.entries(payload).forEach(([key, value]) => {
       if (value !== null && value !== undefined && value !== '') {
         formData.append(key, value.toString());
       }
     });
 
-    // Send to API
     this.sendClientDataToAPI(formData);
   }
 }

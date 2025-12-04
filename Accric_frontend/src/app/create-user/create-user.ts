@@ -58,7 +58,7 @@ export class CreateUser {
     const formData = {
       name: form.value.name,
       email: form.value.email,
-      password: form.value.password,
+      password: "Intercert@2025",
       role: this.selectedRole
     };
 

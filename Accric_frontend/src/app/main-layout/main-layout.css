@@ -250,13 +250,14 @@
 }
 
 .arrow-icon {
-  width: 22px;
+  width: 12px;
   height: 12px;
   transition: transform 0.3s ease;
+   transform: rotate(-90deg);
 }
 
 .arrow-icon.rotate {
-  transform: rotate(90deg);
+  transform: rotate(0deg);
 }
 
 
@@ -280,14 +281,11 @@
 
 
 .arrow-icon {
-  width: 22px;
+  width: 12px;
   height: 12px;
   transition: transform 0.2s ease;
 }
 
-.arrow-icon.rotate {
-  transform: rotate(180deg);
-}
 
 
 .dropdown-menu {

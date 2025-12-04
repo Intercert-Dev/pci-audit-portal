@@ -1,6 +1,6 @@
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import * as XLSX from 'xlsx';
-import saveAs from 'file-saver';
+import { saveAs } from 'file-saver';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -12,8 +12,8 @@ interface Client {
   issueDate: string;
   validDate: string;
   status: string;
-  previous_report: string;
-  current_report: string;
+  previousReport: string;
+  currentReport: string;
   legalEntityName?: string;
   brandName?: string;
   country?: string;
@@ -59,16 +59,14 @@ interface Client {
   nonConformitiesGapIdentified?: string;
   remediationTargetDate?: string;
   revalidationDate?: string;
-  previousReport?: string;
-  currentReport?: string;
 }
 
 @Component({
   selector: 'app-client-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './client-list.html',
-  styleUrls: ['./client-list.css'],
+  styleUrls: ['./client-list.css']
 })
 export class ClientList implements OnInit {
   search_text: string = "";
@@ -96,12 +94,12 @@ export class ClientList implements OnInit {
         this.clientList = res.data.map((item: any) => ({
           company: item.legal_entity_name || '',
           certNo: item.certificate_number_unique_id || '',
-          standard: item.pci_dss_version_application || '',
+          standard: item.assessment_type || item.pci_dss_version_application || '',
           issueDate: item.certificate_issue_date || '',
           validDate: item.certificate_expiry_date || '',
           status: item.audit_status || '',
-          previous_report: item.previous_report || '',
-          current_report: item.current_report || '',
+          previousReport: item.previous_report || '',
+          currentReport: item.current_report || '',
           legalEntityName: item.legal_entity_name || '',
           brandName: item.trading_name || '',
           country: item.county_name || '',
@@ -146,9 +144,7 @@ export class ClientList implements OnInit {
           nonConformitiesGap: item.non_conformities_gap || '',
           nonConformitiesGapIdentified: item.non_conformities_gap_identified || '',
           remediationTargetDate: item.remediation_target_date || '',
-          revalidationDate: item.revalidation_date || '',
-          previousReport: item.previous_report || '',
-          currentReport: item.current_report || '',
+          revalidationDate: item.revalidation_date || ''
         }));
 
         this.filtered_list = [...this.clientList];
@@ -163,12 +159,12 @@ export class ClientList implements OnInit {
   filter_list() {
     const search = this.search_text.toLowerCase();
     this.filtered_list = this.clientList.filter((item: Client) =>
-      item.company?.toLowerCase().includes(search) ||
+      (item.company?.toLowerCase().includes(search) ||
       item.certNo?.toLowerCase().includes(search) ||
       item.standard?.toLowerCase().includes(search) ||
       item.issueDate?.toLowerCase().includes(search) ||
       item.validDate?.toLowerCase().includes(search) ||
-      item.status?.toLowerCase().includes(search)
+      item.status?.toLowerCase().includes(search))
     );
   }
 
@@ -202,14 +198,14 @@ export class ClientList implements OnInit {
 
     if (index !== -1) {
       this.clientList[index] = { ...this.editingClient };
+      
+      // Update main table fields
       this.clientList[index].company = this.editingClient.legalEntityName || this.editingClient.company;
       this.clientList[index].certNo = this.editingClient.certificateNumberUniqueId || this.editingClient.certNo;
-      this.clientList[index].standard = this.editingClient.pciVersion || this.editingClient.assessmentType || this.editingClient.standard;
+      this.clientList[index].standard = this.editingClient.assessmentType || this.editingClient.standard;
       this.clientList[index].issueDate = this.editingClient.certificateIssueDate || this.editingClient.issueDate;
       this.clientList[index].validDate = this.editingClient.certificateExpiryDate || this.editingClient.validDate;
       this.clientList[index].status = this.editingClient.auditStatus || this.editingClient.status;
-      this.clientList[index].previous_report = this.editingClient.previousReport || this.editingClient.previous_report;
-      this.clientList[index].current_report = this.editingClient.currentReport || this.editingClient.current_report;
 
       this.filtered_list = [...this.clientList];
       this.cdr.detectChanges();

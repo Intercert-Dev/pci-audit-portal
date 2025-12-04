@@ -20,7 +20,8 @@
   padding: 2rem;
   width: 100%;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-   animation: fadeIn 0.3s ease-in-out;
+  animation: fadeIn 0.3s ease-in-out;
+  
 }
 
 /* Tabs */
@@ -361,32 +362,3 @@ input:required, select:required {
   }
 }
 
-
-/* Print styles */
-@media print {
-  .add-audit-container {
-    background-color: white;
-    min-height: auto;
-  }
-  
-  .add-audit-box {
-    box-shadow: none;
-    border: 1px solid #ddd;
-    margin: 0;
-    padding: 1rem;
-  }
-  
-  .tabs,
-  .form-actions,
-  .go-back-btn,
-  .btn-primary {
-    display: none;
-  }
-  
-  input, select {
-    border: none;
-    background: none;
-    padding: 0;
-    height: auto;
-  }
-}

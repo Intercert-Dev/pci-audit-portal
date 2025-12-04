@@ -4,7 +4,6 @@
   padding: 0;
 }
 
-
 .client-list-container {
   width: 100%;
   background-color: rgba(250, 251, 254, 1);
@@ -33,13 +32,11 @@
   gap: 51px;
 }
 
-
 .header-row p {
   font-family: 'Inter', sans-serif;
   font-weight: 600;
   font-size: 20px;
   color: rgba(57, 106, 255, 1);
-
 }
 
 .search-box {
@@ -50,8 +47,6 @@
   border-radius: 16px;
   padding: 6px 12px;
   border: 1px solid rgba(139, 163, 203, 1);
-
-
 }
 
 .search-box input {
@@ -63,8 +58,6 @@
   border: none;
   outline: none;
   height: 25px;
-
-
 }
 
 .search-box input::placeholder {
@@ -73,7 +66,6 @@
   font-size: 15px;
   color: rgba(139, 163, 203, 1);
 }
-
 
 .export-btn {
   width: 170px;
@@ -91,8 +83,6 @@
   text-align: center;
   color: rgba(57, 106, 255, 1);
 }
-
-
 
 /* Table container */
 .table-wrapper {
@@ -128,9 +118,8 @@ thead tr th {
 tbody tr td {
   font-family: 'Inter', sans-serif;
   font-weight: 400;
-  font-size: 10px;
-  padding: 1rem 1.5rem;
   font-size: 14px;
+  padding: 1rem 1.5rem;
   color: rgba(35, 35, 35, 1);
 }
 
@@ -143,6 +132,11 @@ tbody tr {
   display: flex;
   gap: 22px;
   cursor: pointer;
+}
+
+.action-box img {
+  width: 20px;
+  height: 20px;
 }
 
 #client-status {
@@ -168,15 +162,12 @@ tbody tr {
   font-weight: 600;
   font-size: 1.25rem;
   font-size: 20px;
-
 }
-
 
 /* ============================
       RESPONSIVE (TABLET)
    ============================ */
 @media (max-width: 1024px) {
-
   .client-list-box {
     margin-top: 7rem;
     margin-left: 20px;
@@ -206,15 +197,11 @@ tbody tr {
   }
 }
 
-
-
 /* ============================
       RESPONSIVE (MOBILE)
    ============================ */
 @media (max-width: 768px) {
-
   .client-list-box {
-
     margin-left: 15px;
     margin-right: 15px;
     margin-top: 7rem;
@@ -256,16 +243,12 @@ tbody tr {
   #client-status {
     padding-left: 1rem;
   }
-
 }
-
-
 
 /* ============================
       RESPONSIVE (SMALL MOBILE)
    ============================ */
 @media (max-width: 480px) {
-
   .header-right {
     flex-direction: column;
     gap: 12px;
@@ -291,11 +274,9 @@ tbody tr {
   }
 }
 
-
 /* ============================
       EDIT CLIENT POPUP STYLES
    ============================ */
-
 .edit-client-popup-overlay {
   position: fixed;
   top: 0;
@@ -426,7 +407,6 @@ tbody tr {
   outline: none;
   border-color: rgba(57, 106, 255, 1);
   box-shadow: 0 0 0 3px rgba(57, 106, 255, 0.1);
-  
 }
 
 .form-group input::placeholder {
@@ -465,14 +445,13 @@ tbody tr {
   transition: background-color 0.3s;
 }
 
-.btn-upload,
-.btn-preview,
+.btn-upload span,
+.btn-preview span,
 .btn-download span {
   font-family: 'Inter', sans-serif;
   font-weight: 600;
   font-size: 1.25rem;
   font-size: 20px;
-
 }
 
 /* Button colors */
@@ -490,7 +469,6 @@ tbody tr {
   background-color: rgba(198, 215, 246, 1);
   color: rgba(52, 60, 106, 1);
 }
-
 
 .popup-footer {
   padding: 24px 30px;
@@ -518,7 +496,6 @@ tbody tr {
   background-color: rgba(57, 106, 255, 1);
   color: rgba(245, 247, 250, 1);
 }
-
 
 .btn-cancel {
   background-color: rgba(198, 215, 246, 1);

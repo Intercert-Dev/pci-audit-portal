@@ -8,9 +8,6 @@
 
 .certificate-box {
   padding: 48px 42px;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
   background: #f5f7fc;
   min-height: 89vh;
 }
@@ -26,15 +23,13 @@
   width: 60%;
   margin-top: 32px;
   padding: 20px 25px;
-  /* smaller when collapsed */
   background: #fff;
   border-radius: 18px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
   height: auto;
-  /* keeps growing based on content */
   min-height: auto;
   transition: all 0.3s ease;
-  /* ADD THIS */
+  margin-left: 10rem;
 }
 
 
@@ -228,6 +223,61 @@
   cursor: pointer;
 }
 
+/* Add to your certificate-gen.css file */
+.pdf-viewer-container {
+  margin-top: 30px;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.pdf-viewer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.pdf-viewer-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 1.5rem;
+}
+
+.pdf-viewer-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.pdf-viewer-controls .certificate-btn {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+}
+
+.btn-close {
+  background-color: #dc3545;
+}
+
+.btn-close:hover {
+  background-color: #c82333;
+}
+
+.pdf-loading {
+  text-align: center;
+  padding: 50px;
+  background: white;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.pdf-loading p {
+  color: #666;
+  font-size: 1.1rem;
+}
+
 /* Responsive adjustments */
 @media (max-width: 1024px) {
   .option-row {
@@ -288,11 +338,6 @@
   box-shadow: 0 0 0 3px rgba(57, 106, 255, 0.1);
 }
 
-/* Fix for Auditor Name field row (no checkbox) */
-.field-row:has(select) {
-  grid-template-columns: 1fr 2fr;
-  /* Remove the checkbox column */
-}
 
 /* Responsive fix for mobile */
 @media (max-width: 768px) {
@@ -400,11 +445,7 @@
   color: #1f2937;
 }
 
-/* ================================
-   Responsive Design
-   ================================ */
 
-/* 1024px */
 @media (max-width: 1024px) {
 
   .certificate-container,

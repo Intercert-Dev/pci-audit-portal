@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, ChangeDetectorRef } from '@angular/core'; // ADD THIS IMPORT
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { Component, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-certificate-gen',
@@ -13,22 +14,26 @@ import { FormsModule, NgForm } from '@angular/forms';
 export class CertificateGen {
   loading: boolean = false;
   showCertificateForm: boolean = false;
+  showPdfViewer: boolean = false;
   certificateData: any = null;
+  pdfUrl: SafeResourceUrl | null = null;
+  pdfBlob: Blob | null = null;
+  pdfFileName: string = 'certificate.pdf';
 
-  // UPDATED: Now uses one checkbox for full address
+  @ViewChild('pdfViewer') pdfViewer!: ElementRef;
+
   editFields = {
     certificateNo: false,
     companyName: false,
-    full_address: false, // NEW
+    full_address: false,
     dateIssue: false,
     dateValid: false,
-    assessment_classification: false
+    assessment_classification: false,
+    version: false,
+    auditor_name: false 
   };
 
-  auditorList = [
-    'Milan',
-    'Rakesh',
-  ];
+  auditorList = ['Milan John'];
 
   certificateOptions = {
     scopeFontSize: '12px',
@@ -47,9 +52,9 @@ export class CertificateGen {
 
   constructor(
     private http: HttpClient,
-    private cdr: ChangeDetectorRef // ADD THIS
+    private cdr: ChangeDetectorRef,
+    private sanitizer: DomSanitizer
   ) { }
-
 
   private enableAllEditFields() {
     Object.keys(this.editFields).forEach(key => {
@@ -82,6 +87,7 @@ export class CertificateGen {
     this.loading = true;
     this.showCertificateForm = false;
     this.certificateData = null;
+    this.showPdfViewer = false;
 
     this.http.get(url, { headers }).subscribe({
       next: (res: any) => {
@@ -93,18 +99,10 @@ export class CertificateGen {
         this.mapApiDataToCertificate(apiData);
 
         this.certificateData.certificateNo = certNo;
-
-        // Auto create full address
         this.setFullAddress();
-
-        // Turn ON all checkboxes automatically
         this.enableAllEditFields();
-
         this.showCertificateForm = true;
-
-        // ADD THIS LINE - Force UI update
         this.cdr.detectChanges();
-
       },
       error: (err) => {
         this.loading = false;
@@ -119,8 +117,6 @@ export class CertificateGen {
         } else {
           alert('Error fetching certificate! Please try again.');
         }
-
-        // ADD THIS LINE FOR ERROR TOO
         this.cdr.detectChanges();
       },
     });
@@ -130,22 +126,21 @@ export class CertificateGen {
     return {
       certificateNo: '',
       companyName: '',
-      full_address: '', // NEW
-
-      // KEEP these because we need splitting
+      full_address: '',
       street_name: '',
       city_name: '',
       state_name: '',
       county_name: '',
       zip_name: '',
-
       dateIssue: '',
       dateValid: '',
       assessment_classification: '',
       legal_entity_name: '',
       certificate_issue_date: '',
       certificate_expiry_date: '',
-      certificate_number_unique_id: ''
+      certificate_number_unique_id: '',
+      version: '',
+      auditor_name: ''
     };
   }
 
@@ -163,11 +158,12 @@ export class CertificateGen {
     this.certificateData.companyName = apiData.legal_entity_name || '';
     this.certificateData.dateIssue = this.formatDateForInput(apiData.certificate_issue_date);
     this.certificateData.dateValid = this.formatDateForInput(apiData.certificate_expiry_date);
+    this.certificateData.version = apiData.version || 'Standard Version 4.0.1';
+    this.certificateData.auditor_name = apiData.auditor_name || 'Milan John';
   }
 
   private setFullAddress() {
     const d = this.certificateData;
-
     this.certificateData.full_address =
       `${d.street_name || ''}, ${d.city_name || ''}, ${d.state_name || ''}, ${d.county_name || ''}, ${d.zip_name || ''}`
         .replace(/,\s*,/g, ',')
@@ -175,7 +171,6 @@ export class CertificateGen {
         .trim();
   }
 
-  // Called when user types inside full address field
   splitAddress() {
     if (!this.certificateData.full_address) return;
 
@@ -200,19 +195,31 @@ export class CertificateGen {
     }
   }
 
-  onFieldToggle(fieldName: keyof typeof this.editFields) {
-    if (!this.editFields[fieldName]) {
-      console.log(`Field ${fieldName} editing disabled`);
-    } else {
-      console.log(`Field ${fieldName} editing enabled`);
-    }
+  // Prepare data for PDF generation API
+  preparePdfData() {
+    return {
+      companyName: this.certificateData.companyName || this.certificateData.legal_entity_name || '',
+      issuanceDate: this.certificateData.dateIssue || this.certificateData.certificate_issue_date || '',
+      type: this.certificateOptions.type || 'On The Successful Audit against the Payment Card Industry Data Security',
+      version: this.certificateData.version || 'Standard Version 4.0.1',
+      address: this.certificateData.full_address || '',
+      certificateNumber: this.certificateData.certificateNo || this.certificateData.certificate_number_unique_id || '',
+      classification: this.certificateData.assessment_classification || '',
+      validTill: this.certificateData.dateValid || this.certificateData.certificate_expiry_date || '',
+      companyNameSize: 20,
+      addressSize: 12,
+      typeSize: 16,
+      name:'Milan John'
+    };
   }
 
-  getFinalCertificateData() {
-    return { ...this.certificateData };
+  private extractFontSizeNumber(fontSize: string): number {
+    if (!fontSize) return 12;
+    const match = fontSize.match(/(\d+)px/);
+    return match ? parseInt(match[1], 10) : 12;
   }
 
-  downloadPDF() {
+  generateCertificatePdf() {
     if (!this.certificateData || !this.certificateData.certificate_number_unique_id) {
       alert('No certificate data to download! Please generate a certificate first.');
       return;
@@ -220,18 +227,147 @@ export class CertificateGen {
 
     console.log('Downloading PDF with options:', this.certificateOptions);
 
-    const pdfData = {
-      certificateData: this.getFinalCertificateData(),
-      options: this.certificateOptions,
-      editedFields: this.editFields
-    };
+    // Prepare the request data according to backend requirements
+    const requestData = this.preparePdfData();
+    console.log('PDF Request Data:', requestData);
 
-    alert(`PDF generation initiated for certificate: ${this.certificateData.certificate_number_unique_id}`);
+    const token = localStorage.getItem('jwt');
+    if (!token) {
+      alert('JWT token not found! Please login first.');
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/pdf',
+      'Content-Type': 'application/json'
+    });
+
+    this.http.post(
+      'http://pci.accric.com/api/auth/generate-certificate-from-template',
+      requestData,
+      { 
+        headers: headers,
+        responseType: 'blob',
+        observe: 'response'
+      }
+    ).subscribe({
+      next: (response: HttpResponse<Blob>) => {
+        const pdfBlob = response.body;
+        if (!pdfBlob) {
+          alert('No PDF received from server!');
+          return;
+        }
+
+        this.pdfBlob = pdfBlob;
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(pdfUrl);
+
+        const contentDisposition = response.headers.get('content-disposition');
+        if (contentDisposition) {
+          const fileNameMatch = contentDisposition.match(/filename="?(.+)"?/);
+          if (fileNameMatch && fileNameMatch[1]) {
+            this.pdfFileName = fileNameMatch[1];
+          } else {
+            // Generate filename based on certificate number
+            this.pdfFileName = `certificate-${this.certificateData.certificateNo || this.certificateData.certificate_number_unique_id}.pdf`;
+          }
+        } else {
+          this.pdfFileName = `certificate-${this.certificateData.certificateNo || this.certificateData.certificate_number_unique_id}.pdf`;
+        }
+
+        this.showPdfViewer = true;
+        this.cdr.detectChanges();
+
+        setTimeout(() => {
+          if (this.pdfViewer) {
+            this.pdfViewer.nativeElement.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 100);
+
+        console.log('PDF loaded successfully');
+      },
+      error: (err) => {
+        console.error('Error generating PDF:', err);
+        if (err.status === 404) {
+          alert('PDF generation service not found!');
+        } else if (err.status === 401) {
+          alert('Invalid or expired token! Please login again.');
+        } else if (err.status === 400) {
+          alert('Bad request. Please check the certificate data.');
+        } else {
+          alert('Error generating PDF! Please try again.');
+        }
+      }
+    });
+  }
+
+  downloadCurrentPDF() {
+    if (!this.pdfBlob) {
+      alert('No PDF available to download!');
+      return;
+    }
+
+    const downloadUrl = URL.createObjectURL(this.pdfBlob);
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = this.pdfFileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    setTimeout(() => URL.revokeObjectURL(downloadUrl), 100);
+  }
+
+  closePdfViewer() {
+    this.showPdfViewer = false;
+    
+    // Clean up object URL if it exists
+    if (this.pdfUrl) {
+      // Get the actual string URL from SafeResourceUrl
+      const url = (this.pdfUrl as any).changingThisBreaksApplicationSecurity || '';
+      if (url) {
+        URL.revokeObjectURL(url);
+      }
+    }
+    
+    this.pdfUrl = null;
+    this.cdr.detectChanges();
+  }
+
+  printPDF() {
+    if (!this.pdfBlob) {
+      alert('No PDF available to print!');
+      return;
+    }
+
+    const pdfUrl = URL.createObjectURL(this.pdfBlob);
+    const printWindow = window.open(pdfUrl, '_blank');
+    
+    if (printWindow) {
+      printWindow.onload = () => {
+        printWindow.focus();
+        printWindow.print();
+      };
+    }
   }
 
   resetForm() {
     this.certificateData = null;
     this.showCertificateForm = false;
+    this.showPdfViewer = false;
+    
+    // Clean up object URL if it exists
+    if (this.pdfUrl) {
+      // Get the actual string URL from SafeResourceUrl
+      const url = (this.pdfUrl as any).changingThisBreaksApplicationSecurity || '';
+      if (url) {
+        URL.revokeObjectURL(url);
+      }
+    }
+    
+    this.pdfUrl = null;
+    this.pdfBlob = null;
 
     Object.keys(this.editFields).forEach(key => {
       this.editFields[key as keyof typeof this.editFields] = false;
@@ -247,7 +383,6 @@ export class CertificateGen {
       type: '',
     };
 
-    // ADD THIS LINE
     this.cdr.detectChanges();
   }
 

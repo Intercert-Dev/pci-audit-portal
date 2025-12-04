@@ -11,9 +11,7 @@
       <div *ngIf="showCertificateForm && certificateData">
         <p class="certificate-sub-heading">Select and Edit Certificate Fields</p>
         <div class="edit-options">
-
           <div class="fields-container">
-
             <!-- Certificate No -->
             <div class="field-row">
               <input type="checkbox" [(ngModel)]="editFields.certificateNo" name="certificateNoCheck" />
@@ -27,18 +25,14 @@
               <label>Company Name</label>
               <input type="text" [(ngModel)]="certificateData.companyName" name="companyName" />
             </div>
+
             <!-- Full Address -->
             <div class="field-row">
               <input type="checkbox" [(ngModel)]="editFields.full_address" name="full_address_check" />
-
               <label>Full Address</label>
-
               <input type="text" [(ngModel)]="certificateData.full_address" name="full_address" (input)="splitAddress()"
                 placeholder="Street, City, State, Country, Zip" />
             </div>
-
-
-
 
             <!-- Date Issue -->
             <div class="field-row">
@@ -62,20 +56,25 @@
                 name="assessment_classification" />
             </div>
 
-            <!-- AUDITOR NAME DROPDOWN -->
-            <!-- <div class="field-row">
+            <!-- Version -->
+            <div class="field-row">
+              <input type="checkbox" [(ngModel)]="editFields.version" name="versionCheck" />
+              <label>Version</label>
+              <input type="text" [(ngModel)]="certificateData.version" name="version"
+                placeholder="Standard Version 4.0.1" />
+            </div>
 
+            <!-- Auditor Name -->
+            <div class="field-row">
+              <input type="checkbox" [(ngModel)]="editFields.auditor_name" name="auditorNameCheck" />
               <label>Auditor Name</label>
-
               <select [(ngModel)]="certificateData.auditor_name" name="auditor_name">
                 <option value="">-- Select Auditor --</option>
                 <option *ngFor="let auditor of auditorList" [value]="auditor">
                   {{ auditor }}
                 </option>
               </select>
-
-            </div> -->
-
+            </div>
 
           </div>
         </div>
@@ -104,8 +103,6 @@
               </select>
             </div>
 
-
-
             <div class="option-row">
               <label>Type</label>
               <select [(ngModel)]="certificateOptions.type" name="type">
@@ -123,14 +120,14 @@
             </div>
 
             <div class="option-row checkbox">
-              <div class="option-row checkbox-row">
+              <div class="checkbox-row">
                 <label>
                   <input type="checkbox" [(ngModel)]="certificateOptions.includeLineBreak" name="includeLineBreak">
                   Include line break before version
                 </label>
               </div>
 
-              <div class="option-row checkbox-row">
+              <div class="checkbox-row">
                 <label>
                   <input type="checkbox" [(ngModel)]="certificateOptions.showValidityLine" name="showValidityLine">
                   Show validity line
@@ -142,15 +139,41 @@
 
         <!-- Buttons -->
         <div class="btn-certificate">
-          <button class="certificate-btn" type="submit">
+          <button class="certificate-btn" type="button" (click)="generateCertificatePdf()" >
             <span>Generate Certificate</span>
-          </button>
-
-          <button class="certificate-btn" type="button" (click)="downloadPDF()">
-            <span>Download PDF</span>
           </button>
         </div>
       </div>
     </form>
   </div>
+  <!-- PDF Viewer Section (OUTSIDE the form) -->
+  <div *ngIf="showPdfViewer" #pdfViewer class="pdf-viewer-container">
+    <div class="pdf-viewer-header">
+      <h3>Certificate Preview</h3>
+      <div class="pdf-viewer-controls">
+        <button class="certificate-btn" (click)="downloadCurrentPDF()">
+          <span>Download PDF</span>
+        </button>
+        <button class="certificate-btn" (click)="printPDF()">
+          <span>Print PDF</span>
+        </button>
+        <button class="certificate-btn btn-close" (click)="closePdfViewer()">
+          <span>Close</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="pdf-viewer">
+      <iframe *ngIf="pdfUrl" [src]="pdfUrl" width="100%" height="600px"
+        style="border: 1px solid #ddd; border-radius: 4px;" title="Certificate PDF">
+        Your browser does not support PDF viewing.
+        Please <a href="javascript:void(0)" (click)="downloadCurrentPDF()">download the PDF</a> instead.
+      </iframe>
+
+      <div *ngIf="!pdfUrl" class="pdf-loading">
+        <p>Loading PDF...</p>
+      </div>
+    </div>
+  </div>
 </div>
+  

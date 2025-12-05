@@ -163,7 +163,7 @@
       <div class="upcoming-box">
         <div>
           <p id="upcoming-box-text">Total Upcoming Audits</p>
-          <p class="count">{{ totalClients }}</p>
+          <p class="upcoming-count">{{ upcomingAudits.length }}</p>
 
         </div>
         <div class="upcoming-box-percentage-div">
@@ -176,53 +176,35 @@
 
 
       <div class="audit-list">
-        <div class="audit-card">
+
+        <div *ngFor="let audit of upcomingAudits" class="audit-card">
           <div class="audit-card-box">
+
             <div class="card-box-item">
               <img src="/assets/icons/article.png" alt="">
             </div>
 
             <div class="audit-card-info">
-              <p class="code">IC-OS- 44782408</p>
-              <p class="client">PANECO AMBIENTE sei</p>
-              <p class="date">Nov 10, 2025</p>
+
+              <!-- certificate number -->
+              <p class="code">{{ audit.certificate_number_unique_id || 'N/A' }}</p>
+
+              <!-- client name -->
+              <p class="client">{{ audit.legal_entity_name || 'Unknown Client' }}</p>
+
+              <!-- audit start date -->
+              <p class="date">
+                {{ audit.audit_start_date | date:'MMM dd, yyyy' }}
+              </p>
+
               <a class="view-details" href="#">View Details</a>
             </div>
+
           </div>
         </div>
-        <div class="audit-card">
-          <div class="audit-card-box">
-            <div style="background-color: rgba(255, 249, 231, 1);" class="card-box-item">
-              <img src="/assets/icons/article1.png" alt="">
-            </div>
-
-            <div class="audit-card-info">
-              <p class="code">IC-OS- 44782408</p>
-              <p class="client">PANECO AMBIENTE sei</p>
-              <p class="date">Nov 10, 2025</p>
-              <a class="view-details" href="#">View Details</a>
-            </div>
-          </div>
-        </div>
-        <div class="audit-card">
-          <div class="audit-card-box">
-            <div style="background-color: rgba(231, 255, 235, 1);" class="card-box-item">
-              <img src="/assets/icons/article2.png" alt="">
-            </div>
-
-            <div class="audit-card-info">
-              <p class="code">IC-OS- 44782408</p>
-              <p class="client">Global Tube</p>
-              <p class="date">Nov 10, 2025</p>
-              <a class="view-details" href="#">View Details</a>
-            </div>
-          </div>
-        </div>
-
-
-
 
       </div>
+
     </div>
 
   </div>

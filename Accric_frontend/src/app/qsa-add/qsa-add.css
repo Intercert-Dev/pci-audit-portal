@@ -9,15 +9,14 @@
   width: 100%;
   background-color: white;
   border-radius: 1rem;
-  /* Remove min-height: 100vh and use max-height instead */
-  max-height: 90vh; /* Changed from min-height to max-height */
-  overflow-y: auto; /* Enable vertical scrolling */
   padding: 2rem;
   margin: 1rem 0;
   box-shadow: 0 6px 35px rgba(0, 0, 0, 0.08);
-  /* Add flexbox to ensure proper layout */
+  /* REMOVE max-height and overflow from here */
+  /* The scrolling should be handled by parent (.settings-panels) */
   display: flex;
   flex-direction: column;
+  min-height: 0; /* Important for proper flexbox behavior */
 }
 
 /* Titles */
@@ -28,13 +27,11 @@
   margin-bottom: 1rem;
 }
 
-/* ============================
-      FORM ELEMENTS
-   ============================ */
 form {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  flex: 1; /* Take available space */
+  min-height: 0; /* Important for scrolling */
 }
 
 .form-group {

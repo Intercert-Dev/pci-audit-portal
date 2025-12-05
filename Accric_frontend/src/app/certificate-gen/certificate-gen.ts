@@ -39,7 +39,7 @@ export class CertificateGen {
   certificateOptions = {
     companyNameFontSize: '20px', // Default: 20px (range: 16px-24px)
     addressFontSize: '12px',     // Default: 12px (range: 8px-16px)
-    typeFontSize: '16px',        // Default: 16px (range: 10px-16px)
+    typeFontSize: '12px',        // Default: 16px (range: 10px-16px)
     pageSize: 'A4',
     formatType: 'Softcopy',
     includeLineBreak: false,
@@ -48,7 +48,7 @@ export class CertificateGen {
   };
 
   // Font size arrays for dropdowns with specified ranges
-  companyNameFontSizes: string[] = ['16px', '18px', '20px', '22px', '24px']; // 16px-24px
+  companyNameFontSizes: string[] = ['4px','8px','16px', '20px', '24px']; // 16px-38px
   addressFontSizes: string[] = ['8px', '10px', '12px', '14px', '16px']; // 8px-16px
   typeFontSizes: string[] = ['10px', '12px', '14px', '16px']; // 10px-16px
   pageSizes: string[] = ['A4', 'Letter'];

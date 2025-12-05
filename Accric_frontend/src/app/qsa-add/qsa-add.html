@@ -15,7 +15,8 @@
             <label>Email *</label>
             <input type="email" formControlName="email" placeholder="Enter email">
             <small *ngIf="f['email'].touched && f['email'].invalid" class="error">
-                Valid email required
+                <span *ngIf="f['email'].errors?.['required']">Email is required</span>
+                <span *ngIf="f['email'].errors?.['email']">Please enter a valid email</span>
             </small>
         </div>
 
@@ -47,8 +48,19 @@
                     </div>
                 </div>
             </div>
+            
+            <small *ngIf="f['signature'].touched && f['signature'].invalid" class="error">
+                Signature file is required
+            </small>
         </div>
 
-        <button type="submit" [disabled]="qsaForm.invalid" class="submit-btn">Add QSA</button>
+        <button 
+            type="submit" 
+            [disabled]="qsaForm.invalid || isLoading" 
+            class="submit-btn"
+        >
+            <span *ngIf="!isLoading">Add QSA</span>
+            <span *ngIf="isLoading">Adding...</span>
+        </button>
     </form>
 </div>

@@ -379,6 +379,7 @@ tbody tr {
 
 .form-group.full-width {
   grid-column: 1 / -1;
+  margin-top: 16px;
 }
 
 .form-group label {
@@ -506,6 +507,28 @@ tbody tr {
   font-family: 'Inter', sans-serif;
   font-weight: 600;
   font-size: 20px;
+}
+
+textarea {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 0.9rem;
+  color: rgba(139, 163, 203, 1);
+  padding: 12px;
+  border: 1px solid rgba(223, 234, 242, 1);
+  border-radius: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+  background-color: white;
+  resize: vertical;
+  min-height: 60px;
+}
+
+textarea::placeholder {
+  color: rgba(139, 163, 203, 0.7);
+  font-weight: 400;
+  font-family: 'Inter', sans-serif;
+  opacity: 0.8;
 }
 
 /* ============================

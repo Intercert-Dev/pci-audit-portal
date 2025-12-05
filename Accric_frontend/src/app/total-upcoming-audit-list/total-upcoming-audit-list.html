@@ -8,8 +8,8 @@
       <div class="header-right">
         <div class="search-box">
           <img src="/assets/icons/magnifying-glass 2.png" alt="Search Icon">
-          <input 
-            type="text" 
+          <input
+            type="text"
             placeholder="Search Audits"
             [(ngModel)]="search_text"
             (input)="filter_list()"
@@ -29,65 +29,36 @@
           <tr>
             <th>Company Name</th>
             <th>Certificate Number</th>
-            <th>Date</th>
+            <th>Audit Date</th>
             <th>Details</th>
-            <th>Action</th>
           </tr>
         </thead>
 
         <tbody>
-          <tr *ngFor="let row of filtered_list">
-            <td>{{ row.code }}</td>
-            <td>{{ row.client }}</td>
-            <td>{{ row.date }}</td>
+          <tr *ngFor="let audit of filtered_list">
+            <!-- Company -->
+            <td>{{ audit.legal_entity_name || 'N/A' }}</td>
+
+            <!-- Certificate Number -->
+            <td>{{ audit.certificate_number_unique_id || 'N/A' }}</td>
+
+            <!-- Audit Date (formatted) -->
+            <td>{{ audit.audit_start_date ? (audit.audit_start_date | date:'MMM dd, yyyy') : 'N/A' }}</td>
 
             <td>
-              <button class="view-btn" (click)="viewDetails(row)">
+              <button class="view-btn" (click)="viewDetails(audit)">
                 <span>View Details</span>
               </button>
             </td>
+          </tr>
 
-            <!-- Sticky Action -->
-            <td class="sticky-action">
-              <div class="action-box">
-                <img src="/assets/icons/edit.png" alt="Edit" (click)="editAudit(row)">
-                <img src="/assets/icons/delete.png" alt="Delete" (click)="deleteAudit(row)">
-              </div>
-            </td>
+          <!-- show friendly message when list empty -->
+          <tr *ngIf="filtered_list.length === 0">
+            <td colspan="5" style="text-align:center; padding: 20px;">No audits found.</td>
           </tr>
         </tbody>
       </table>
     </div>
 
-  </div>
-</div>
-
-
-<!-- Edit Popup -->
-<div class="audit-edit-popup" *ngIf="editingAudit">
-  <h2>Edit Audit</h2>
-
-  <div class="form-row">
-    <div class="form-group">
-      <label>Code</label>
-      <input type="text" [(ngModel)]="editingAudit.code">
-    </div>
-
-    <div class="form-group">
-      <label>Client</label>
-      <input type="text" [(ngModel)]="editingAudit.client">
-    </div>
-  </div>
-
-  <div class="form-row">
-    <div class="form-group">
-      <label>Date</label>
-      <input type="date" [(ngModel)]="editingAudit.date">
-    </div>
-  </div>
-
-  <div class="buttons">
-    <button class="save-btn" (click)="saveEdit()">Save</button>
-    <button class="cancel-btn" (click)="cancelEdit()">Cancel</button>
   </div>
 </div>

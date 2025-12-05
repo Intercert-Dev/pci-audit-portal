@@ -1,29 +1,30 @@
-/* ===========================
-   MAIN CONTAINER
-=========================== */
+
 .settings-container {
   width: 100%;
-  padding: 2rem;
+  height: 89vh;
+  display: flex;
+  flex-direction: column;
   background: #f8f9fa;
-  overflow: hidden;
-  max-height: 100vh;
+  overflow: hidden; /* Hide overflow on container */
 }
 
 /* ===========================
-   HEADER
+   HEADER - Unchanged
 =========================== */
-.settings-header{
+.settings-header {
   color: rgba(52, 60, 106, 1);
   font-family: 'Inter', sans-serif;
   font-weight: 600;
   font-size: 1.5rem;
   margin: 0;
   text-align: center;
+  padding: 2rem 2rem 0 2rem; /* Add top and side padding */
+  flex-shrink: 0; /* Prevent header from shrinking */
 }
 
-
-
-
+/* ===========================
+   CONTENT AREA - FIXED
+=========================== */
 .settings-content {
   display: grid;
   grid-template-columns: 260px 1fr;
@@ -31,8 +32,34 @@
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
+  margin: 0 2rem 2rem 2rem; /* Consistent margin */
+  flex: 1; /* Take remaining space */
+  min-height: 0; /* Important for flexbox scrolling */
+  overflow: hidden; /* Hide overflow */
 }
+
+/* ===========================
+   SIDEBAR - Unchanged
+=========================== */
+.settings-sidebar {
+  background: #2c3e50;
+  padding: 1.5rem 0;
+}
+
+
+
+/* Remove or fix this problematic rule */
+.manage-heading {
+  color: rgba(52, 60, 106, 1);
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1.5rem;
+  margin: 0;
+  min-height: 0; /* Remove any fixed height */
+}
+
+
+/* Keep your existing responsive styles... */
 
 /* ===========================
    SIDEBAR
@@ -74,26 +101,24 @@
 }
 
 /* ===========================
-   MAIN PANEL
+   MAIN PANEL - FIXED
 =========================== */
 .settings-panels {
   padding: 2rem;
-  min-height: 600px;
+  overflow-y: auto; /* Enable vertical scrolling here */
+  height: 100%; /* Take full height of parent */
 }
 
-.manage-heading{
+/* Remove or fix this problematic rule */
+.manage-heading {
   color: rgba(52, 60, 106, 1);
   font-family: 'Inter', sans-serif;
   font-weight: 600;
   font-size: 1.5rem;
   margin: 0;
-
+  min-height: 0; /* Remove any fixed height */
 }
 
-/* ===========================
-   COMPONENT PLACEHOLDERS
-=========================== */
-/* These handle spacing for your child components */
 app-user-list,
 app-qsa-management,
 app-role-permission {

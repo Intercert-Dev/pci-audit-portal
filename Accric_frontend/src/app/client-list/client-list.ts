@@ -59,6 +59,12 @@ interface Client {
   nonConformitiesGapIdentified?: string;
   remediationTargetDate?: string;
   revalidationDate?: string;
+  
+  // ASV Audit Properties - ADD THESE
+  numberOfIPs?: number;
+  associatedAudit?: string;
+  associatedApplication?: string;
+  IPDetails?: string;
 }
 
 @Component({
@@ -144,7 +150,12 @@ export class ClientList implements OnInit {
           nonConformitiesGap: item.non_conformities_gap || '',
           nonConformitiesGapIdentified: item.non_conformities_gap_identified || '',
           remediationTargetDate: item.remediation_target_date || '',
-          revalidationDate: item.revalidation_date || ''
+          revalidationDate: item.revalidation_date || '',
+          // Map ASV Audit fields from API response
+          numberOfIPs: item.number_of_ips || 0,
+          associatedAudit: item.associated_audit || '',
+          associatedApplication: item.associated_application || '',
+          IPDetails: item.ip_details || ''
         }));
 
         this.filtered_list = [...this.clientList];

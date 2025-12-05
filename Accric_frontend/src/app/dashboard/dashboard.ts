@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ChangeDetectorRef } from '@angular/core'; // ADD THIS IMPORT
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
@@ -17,6 +17,8 @@ export class Dashboard {
   activeClients: number = 0;
   suspendedClients: number = 0;
   totalCertificates: number = 0;
+  upcomingAudits: any[] = [];
+
 
   constructor(
     private route: ActivatedRoute,
@@ -32,7 +34,6 @@ export class Dashboard {
       const token = params['token'];
 
       if (token) {
-        console.log("JWT Token Received:", token);
 
         // Step 2: Save token in localStorage
         localStorage.setItem('jwt', token);
@@ -76,6 +77,7 @@ export class Dashboard {
         this.activeClients = res.activeClientsCount;
         this.suspendedClients = res.suspendedClientsCount;
         this.totalCertificates = res.clientsWithCertificateCount;
+        this.upcomingAudits = res.activeOldCertificates || [];
 
         // ADD THIS LINE - Force UI update
         this.cdr.detectChanges();
@@ -90,11 +92,4 @@ export class Dashboard {
   }
 
 
-
-  cards = [
-    { id: 1, count: 507, title: 'User', link: 'Related Link' },
-    { id: 2, count: 178, title: 'Certification Form', link: 'Related Link' },
-    { id: 3, count: 235, title: 'Auditor', link: 'Related Link' },
-    { id: 4, count: 856, title: 'Client', link: 'Related Link' }
-  ];
 }

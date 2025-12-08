@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -40,7 +40,9 @@ export class QsaList implements OnInit, OnDestroy {
   // Store object URLs for cleanup
   private objectUrls: string[] = [];
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef, private router: Router, private zone: NgZone) { }
+  private http = inject(HttpClient);
+  private cdr = inject(ChangeDetectorRef);
+  private router = inject(Router);
 
   ngOnInit(): void {
     this.loadQsaList();
@@ -68,7 +70,6 @@ export class QsaList implements OnInit, OnDestroy {
 
     this.http.get<any>(url, { headers }).subscribe({
       next: (res) => {
-        console.log("List of QSA", res.data);
         this.qsaList = res.data || [];
         this.cdr.detectChanges();
       },
@@ -122,6 +123,130 @@ export class QsaList implements OnInit, OnDestroy {
     this.closeEditPopup();
     this.successMessage = '';
     this.cdr.detectChanges();
+  }
+
+  saveEdit(): void {
+    if (!this.editModel.qsa_id) {
+      this.errorMessage = 'Invalid QSA ID';
+      this.cdr.detectChanges();
+      return;
+    }
+
+    // Validation
+    if (!this.editModel.qsa_name.trim()) {
+      this.errorMessage = 'QSA Name is required';
+      this.cdr.detectChanges();
+      return;
+    }
+
+    if (!this.editModel.qsa_email.trim()) {
+      this.errorMessage = 'Email is required';
+      this.cdr.detectChanges();
+      return;
+    }
+
+    if (!this.isValidEmail(this.editModel.qsa_email)) {
+      this.errorMessage = 'Please enter a valid email address';
+      this.cdr.detectChanges();
+      return;
+    }
+
+    // Prepare form data
+    const formData = new FormData();
+    formData.append('qsa_name', this.editModel.qsa_name.trim());
+    formData.append('qsa_email', this.editModel.qsa_email.trim());
+    formData.append('certification_number', this.editModel.certification_number || '');
+
+    if (this.newSignatureFile) {
+      formData.append('signature', this.newSignatureFile);
+      formData.append('old_signature', this.editModel.signature || '');
+    }
+    else if (this.editModel.signature === null) {
+      formData.append('signature', '');
+      formData.append('old_signature', '');
+    }
+    else {
+      formData.append('signature', '');
+      formData.append('old_signature', this.editModel.signature);
+    }
+
+    // Store the qsa_id before cleaning up
+    const qsaIdToUpdate = this.editModel.qsa_id;
+    
+    // =============================================
+    // ⚡⚡⚡ INSTANT ACTIONS (within 50ms) ⚡⚡⚡
+    // =============================================
+    
+    // 1. INSTANTLY close popup
+    this.showEditPopup = false;
+    this.cleanupEditPopup();
+    
+    // 2. INSTANTLY show loading indicator
+    this.isLoading = true;
+    this.successMessage = 'Saving changes...';
+    this.errorMessage = '';
+    
+    // 3. INSTANTLY navigate (no waiting!)
+    setTimeout(() => {
+      this.router.navigate(['/qsa-list'], {
+        queryParams: { 
+          refresh: Date.now(),
+          updating: qsaIdToUpdate
+        }
+      });
+    }, 50); // 50ms delay to ensure smooth transition
+    
+    this.cdr.detectChanges();
+    // =============================================
+    
+    // Send API request in background (doesn't block UI)
+    this.sendUpdateRequest(formData, qsaIdToUpdate);
+  }
+
+  private sendUpdateRequest(formData: FormData, qsaId: string): void {
+    const url = `http://pci.accric.com/api/auth/update-qsa/${qsaId}`;
+    const token = localStorage.getItem("jwt");
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    this.http.put<any>(url, formData, { headers }).subscribe({
+      next: (res) => {
+        console.log('Update response:', res);
+
+        if (res.success) {
+          // Update local list with server data
+          const updatedIndex = this.qsaList.findIndex(q => q.qsa_id === res.data.qsa_id);
+          if (updatedIndex !== -1) {
+            this.qsaList[updatedIndex] = res.data;
+            this.qsaList = [...this.qsaList];
+          }
+          
+          this.successMessage = '✅ QSA updated successfully!';
+          console.log('Update successful:', res.data);
+        } else {
+          this.errorMessage = res.message || 'Failed to update QSA';
+          console.error('Update failed:', res);
+        }
+        
+        this.isLoading = false;
+        this.cdr.detectChanges();
+        
+        // Auto-clear success message after 3 seconds
+        if (res.success) {
+          setTimeout(() => {
+            this.successMessage = '';
+            this.cdr.detectChanges();
+          }, 3000);
+        }
+      },
+      error: (err) => {
+        console.error('Update error:', err);
+        this.errorMessage = this.getErrorMessage(err);
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   onSignatureUpload(event: any): void {
@@ -183,114 +308,12 @@ export class QsaList implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
-  saveEdit(): void {
-    if (!this.editModel.qsa_id) {
-      this.errorMessage = 'Invalid QSA ID';
-      this.cdr.detectChanges();
-      return;
-    }
-
-    // Validation
-    if (!this.editModel.qsa_name.trim()) {
-      this.errorMessage = 'QSA Name is required';
-      this.cdr.detectChanges();
-      return;
-    }
-
-    if (!this.editModel.qsa_email.trim()) {
-      this.errorMessage = 'Email is required';
-      this.cdr.detectChanges();
-      return;
-    }
-
-    if (!this.isValidEmail(this.editModel.qsa_email)) {
-      this.errorMessage = 'Please enter a valid email address';
-      this.cdr.detectChanges();
-      return;
-    }
-
-    const formData = new FormData();
-
-    // 1. ALWAYS send these text fields
-    formData.append('qsa_name', this.editModel.qsa_name.trim());
-    formData.append('qsa_email', this.editModel.qsa_email.trim());
-    formData.append('certification_number', this.editModel.certification_number || '');
-
-    // 2. Handle signature fields based on scenario:
-    if (this.newSignatureFile) {
-      console.log('Uploading new signature file');
-      formData.append('signature', this.newSignatureFile);
-      formData.append('old_signature', this.editModel.signature || '');
-    }
-    else if (this.editModel.signature === null) {
-      formData.append('signature', '');
-      formData.append('old_signature', '');
-    }
-    else {
-      formData.append('signature', '');
-      formData.append('old_signature', this.editModel.signature);
-    }
-
-    this.isLoading = true;
-    this.errorMessage = '';
-    this.successMessage = '';
-    this.cdr.detectChanges();
-
-    const url = `http://pci.accric.com/api/auth/update-qsa/${this.editModel.qsa_id}`;
-    const token = localStorage.getItem("jwt");
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-
-    this.http.put<any>(url, formData, { headers }).subscribe({
-      next: (res) => {
-        console.log('Update response:', res);
-
-        if (res.success) {
-          this.successMessage = 'QSA updated successfully!';
-          this.router.navigate(['/qsa-list']);
-            this.closeEditPopup();
-            this.loadQsaList();   // <<< Fetch updated list instantly
-            this.cdr.detectChanges();
-        } else {
-          this.errorMessage = res.message || 'Failed to update QSA';
-        }
-
-        this.isLoading = false;
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        console.error('Update error:', err);
-        this.isLoading = false;
-        this.errorMessage = this.getErrorMessage(err);
-        this.cdr.detectChanges();
-      }
-    });
-  }
-
-  // Helper to update QSA in the local list
-  private updateQsaInList(updatedQsa: QSA): void {
-    const index = this.qsaList.findIndex(qsa => qsa.qsa_id === updatedQsa.qsa_id);
-
-    if (index !== -1) {
-      // Update the existing QSA
-      this.qsaList[index] = { ...updatedQsa };
-    } else {
-      // Add new QSA if not found (should not happen)
-      this.qsaList.push({ ...updatedQsa });
-    }
-
-    // Trigger change detection by creating a new reference
-    this.qsaList = [...this.qsaList];
-    console.log('QSA list updated:', this.qsaList);
-  }
-
-  // Helper to close edit popup with cleanup
   private closeEditPopup(): void {
-    // Close popup FIRST (this is the key change)
     this.showEditPopup = false;
+    this.cleanupEditPopup();
+  }
 
-    // Then cleanup
+  private cleanupEditPopup(): void {
     if (this.signaturePreview && this.signaturePreview.startsWith('blob:')) {
       URL.revokeObjectURL(this.signaturePreview);
       const index = this.objectUrls.indexOf(this.signaturePreview);
@@ -309,30 +332,6 @@ export class QsaList implements OnInit, OnDestroy {
     this.newSignatureFile = null;
     this.signaturePreview = null;
     this.errorMessage = '';
-  }
-
-  // Helper to debug FormData
-  private debugFormData(formData: FormData): void {
-    const entries: Array<{ key: string, value: string }> = [];
-
-    formData.forEach((value, key) => {
-      let displayValue: string;
-
-      if (value instanceof File) {
-        displayValue = `File: "${value.name}" (${value.size} bytes, ${value.type})`;
-      } else {
-        displayValue = `String: "${value}"`;
-      }
-
-      entries.push({ key, value: displayValue });
-    });
-
-    entries.sort((a, b) => a.key.localeCompare(b.key));
-
-    console.log('FormData contents:');
-    entries.forEach(entry => {
-      console.log(`   ${entry.key}: ${entry.value}`);
-    });
   }
 
   private getErrorMessage(err: any): string {

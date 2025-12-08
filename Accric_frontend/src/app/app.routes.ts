@@ -20,6 +20,7 @@ import { TotalCertificationList } from './total-certification-list/total-certifi
 import { AddAudit } from './add-audit/add-audit';
 import { AddAsvAudit } from './add-asv-audit/add-asv-audit';
 import { ReportVerification } from './report-verification/report-verification';
+import { QsaList } from './qsa-list/qsa-list';
 
 
 export const routes: Routes = [
@@ -49,6 +50,7 @@ export const routes: Routes = [
       { path: 'total-active-client-list', component: TotalActiveClientList},
       { path: 'total-suspended-client-list', component: SuspendedClientList},
       { path: 'total-certificated-client-list', component: TotalCertificationList},
+      { path: 'qsa-list', component: QsaList},
 
     ],
   },

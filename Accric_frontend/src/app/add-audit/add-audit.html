@@ -17,6 +17,33 @@
       <!-- ASSESSMENT SUMMARY TAB -->
       <div class="tab-content" *ngIf="activeTab === 'assessment-summary'">
         <div class="form-row">
+          <div class="form-group search-dropdown">
+            <label>Legal Entity Name</label>
+            <div class="search-input-wrapper">
+              <input style="width: 50%;" type="text" name="legalEntityName" [(ngModel)]="legalEntitySearch" (input)="onLegalEntitySearch()"
+                (focus)="showLegalEntityDropdown = true" (blur)="onLegalEntityBlur()"
+                placeholder="Search legal entity name" autocomplete="off" />
+            </div>
+
+            <!-- Dropdown list -->
+            <div class="search-dropdown-list" *ngIf="showLegalEntityDropdown && filteredLegalEntities.length > 0">
+              <div *ngFor="let entity of filteredLegalEntities" class="dropdown-item"
+                (mousedown)="selectLegalEntity(entity)" [class.selected]="entity.id === selectedLegalEntityId">
+                {{ entity.name }}
+              </div>
+            </div>
+
+            <div class="search-dropdown-list"
+              *ngIf="showLegalEntityDropdown && filteredLegalEntities.length === 0 && legalEntitySearch">
+              <div class="no-results">No legal entities found</div>
+            </div>
+
+            <!-- Hidden input to store the actual value -->
+            <input type="hidden" name="legalEntityId" [(ngModel)]="selectedLegalEntityId" />
+          </div>
+
+        </div>
+        <div class="form-row">
           <div class="form-group">
             <label>Assessment / Project Name</label>
             <input type="text" name="assessmentName" [(ngModel)]="auditData.assessmentName"
@@ -55,21 +82,33 @@
         <div class="form-row">
           <div class="form-group">
             <label>Audit Start Date*</label>
-            <input type="date" name="auditStart" required [(ngModel)]="auditData.auditStart" #auditStart="ngModel" />
+            <input type="date" name="auditStart" required [(ngModel)]="auditData.auditStart" (change)="validateDates()"
+              #auditStart="ngModel" />
             <div class="error" *ngIf="auditStart.invalid && (auditStart.touched || showErrors)">
               <small>Audit Start Date is required</small>
+            </div>
+            <div class="error" *ngIf="dateErrors.auditStart">
+              <small>{{dateErrors.auditStart}}</small>
             </div>
           </div>
           <div class="form-group">
             <label>Audit End Date*</label>
-            <input type="date" name="auditEnd" required [(ngModel)]="auditData.auditEnd" #auditEnd="ngModel" />
+            <input type="date" name="auditEnd" required [(ngModel)]="auditData.auditEnd" (change)="validateDates()"
+              #auditEnd="ngModel" />
             <div class="error" *ngIf="auditEnd.invalid && (auditEnd.touched || showErrors)">
               <small>Audit End Date is required</small>
+            </div>
+            <div class="error" *ngIf="dateErrors.auditEnd">
+              <small>{{dateErrors.auditEnd}}</small>
             </div>
           </div>
           <div class="form-group">
             <label>Date of Report Submission</label>
-            <input type="date" name="reportSubmittedDate" [(ngModel)]="auditData.reportSubmittedDate" />
+            <input type="date" name="reportSubmittedDate" [(ngModel)]="auditData.reportSubmittedDate"
+              (change)="validateDates()" />
+            <div class="error" *ngIf="dateErrors.reportSubmittedDate">
+              <small>{{dateErrors.reportSubmittedDate}}</small>
+            </div>
           </div>
         </div>
 
@@ -86,18 +125,27 @@
           </div>
           <div class="form-group">
             <label>Certificate Issue Date</label>
-            <input type="date" name="certificateIssueDate" [(ngModel)]="auditData.certificateIssueDate" />
+            <input type="date" name="certificateIssueDate" [(ngModel)]="auditData.certificateIssueDate"
+              (change)="validateDates()" />
+            <div class="error" *ngIf="dateErrors.certificateIssueDate">
+              <small>{{dateErrors.certificateIssueDate}}</small>
+            </div>
           </div>
           <div class="form-group">
             <label>Certificate Expiry Date</label>
-            <input type="date" name="certificateExpiryDate" [(ngModel)]="auditData.certificateExpiryDate" />
+            <input type="date" name="certificateExpiryDate" [(ngModel)]="auditData.certificateExpiryDate"
+              (change)="validateDates()" />
+            <div class="error" *ngIf="dateErrors.certificateExpiryDate">
+              <small>{{dateErrors.certificateExpiryDate}}</small>
+            </div>
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label>Certificate Number / Unique ID</label>
-            <input type="text" name="certificateNumberUniqueId" [(ngModel)]="auditData.certificateNumberUniqueId" placeholder="Enter Certificate Number" />
+            <input type="text" name="certificateNumberUniqueId" [(ngModel)]="auditData.certificateNumberUniqueId"
+              placeholder="Enter Certificate Number" />
           </div>
           <div class="form-group">
             <label>Classification</label>
@@ -106,7 +154,11 @@
           </div>
           <div class="form-group">
             <label>Next Audit Due Date</label>
-            <input type="date" name="nextAuditDueDate" [(ngModel)]="auditData.nextAuditDueDate" />
+            <input type="date" name="nextAuditDueDate" [(ngModel)]="auditData.nextAuditDueDate"
+              (change)="validateDates()" />
+            <div class="error" *ngIf="dateErrors.nextAuditDueDate">
+              <small>{{dateErrors.nextAuditDueDate}}</small>
+            </div>
           </div>
         </div>
 

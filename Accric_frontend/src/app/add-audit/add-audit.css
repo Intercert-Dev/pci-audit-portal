@@ -70,6 +70,13 @@
   gap: 1.5rem;
 }
 
+.no-results {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: rgba(113, 142, 191, 1);
+
+}
+
 .tab-content {
   display: block;
   animation: fadeIn 0.3s ease-in-out;

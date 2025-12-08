@@ -64,6 +64,7 @@ select {
   color: rgba(113, 142, 191, 1);
   outline: none;
   background-color: #fff;
+  cursor: pointer;
 }
 
 .client-form {

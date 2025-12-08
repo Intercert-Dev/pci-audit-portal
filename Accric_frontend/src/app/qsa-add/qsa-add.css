@@ -164,16 +164,6 @@ button[type="submit"],
   align-self: flex-start; /* Align to left, or use center for center alignment */
 }
 
-button[type="submit"]:disabled,
-.submit-btn:disabled {
-  background: #a5b1d1;
-  cursor: not-allowed;
-}
-
-button[type="submit"]:hover:not(:disabled),
-.submit-btn:hover:not(:disabled) {
-  background-color: #2f55d4;
-}
 
 /* ============================
       RESPONSIVE DESIGN

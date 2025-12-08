@@ -8,9 +8,7 @@
   overflow: hidden; /* Hide overflow on container */
 }
 
-/* ===========================
-   HEADER - Unchanged
-=========================== */
+
 .settings-header {
   color: rgba(52, 60, 106, 1);
   font-family: 'Inter', sans-serif;

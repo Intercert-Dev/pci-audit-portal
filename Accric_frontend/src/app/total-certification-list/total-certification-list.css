@@ -139,16 +139,7 @@ tbody tr {
   border-top: 1px solid #f0f0f0;
 }
 
-/* Action Box */
-.action-box {
-  display: flex;
-  gap: 22px;
-  cursor: pointer;
-}
 
-#client-status {
-  padding-left: 2.5rem;
-}
 
 
 /* ============================

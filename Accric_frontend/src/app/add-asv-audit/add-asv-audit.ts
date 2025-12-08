@@ -14,22 +14,12 @@ export class AddAsvAudit {
   asvData = {
     numberOfIPs: null as number | null,  // Changed to number type
     IPDetails: '',
-    associatedAudit: '',  // Keep as string since input type="number" but value might be string
-    associatedApplication: ''
+    associatedOrganization: '', //legalEntityName
+    associatedApplication: ''  //AssessmentName
   };
 
   onSubmit(form: NgForm) {
     if (form.valid) {
-      // Submit logic
-      console.log('ASV Audit submitted:', this.asvData);
-      
-      // Here you would typically make an API call
-      // For example:
-      // this.asvService.submitAudit(this.asvData).subscribe(
-      //   response => console.log('Success:', response),
-      //   error => console.error('Error:', error)
-      // );
-      
       // Reset form after successful submission
       this.resetForm(form);
       
@@ -51,7 +41,7 @@ export class AddAsvAudit {
     this.asvData = {
       numberOfIPs: null,
       IPDetails: '',
-      associatedAudit: '',
+      associatedOrganization: '',
       associatedApplication: ''
     };
     this.showErrors = false;
@@ -86,7 +76,7 @@ export class AddAsvAudit {
     return (
       this.asvData.numberOfIPs !== null &&
       this.asvData.numberOfIPs > 0 &&
-      !!this.asvData.associatedAudit &&
+      !!this.asvData.associatedOrganization &&
       !!this.asvData.associatedApplication
     );
   }

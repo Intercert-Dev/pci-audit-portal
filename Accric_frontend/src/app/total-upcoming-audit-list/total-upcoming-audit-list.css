@@ -52,7 +52,7 @@
 }
 
 .search-box input {
-  width: 100%;
+  width: 137px;
   font-family: 'Inter', sans-serif;
   font-weight: 400;
   font-size: 15px;
@@ -92,13 +92,12 @@
 
 /* Table container */
 .table-wrapper {
-  margin-top: 2rem;
+  margin-top: 1rem;
   background: white;
   border-radius: 20px;
-  padding: 1.5rem;
+  padding: 1rem 0;
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
-  overflow-x: auto;
 }
 
 /* Table with content-based sizing */
@@ -106,8 +105,6 @@ table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  table-layout: auto; /* Changed from default to auto for content-based sizing */
-  min-width: 800px; /* Minimum width to prevent too much squishing */
 }
 
 thead {
@@ -123,30 +120,6 @@ thead tr th {
   color: rgba(113, 142, 191, 1);
   padding: 1rem 1.5rem;
   border-bottom: 1px solid rgba(230, 239, 245, 1);
-  white-space: nowrap; /* Prevent header text from wrapping */
-  text-align: left;
-}
-
-/* Column-specific widths based on content */
-thead tr th:nth-child(1) { /* Company Name */
-  width: auto; /* Let content determine width */
-  min-width: 200px;
-}
-
-thead tr th:nth-child(2) { /* Certificate Number */
-  width: auto;
-  min-width: 180px;
-}
-
-thead tr th:nth-child(3) { /* Audit Date */
-  width: auto;
-  min-width: 150px;
-}
-
-thead tr th:nth-child(4) { /* Details */
-  width: auto;
-  min-width: 160px;
-  text-align: center;
 }
 
 tbody tr td {
@@ -155,26 +128,6 @@ tbody tr td {
   font-size: 14px;
   padding: 1rem 1.5rem;
   color: rgba(35, 35, 35, 1);
-  vertical-align: top;
-  word-break: break-word; /* Allow long text to wrap */
-}
-
-/* Specific styling for different columns */
-tbody tr td:nth-child(1) { /* Company Name */
-  max-width: 300px;
-}
-
-tbody tr td:nth-child(2) { /* Certificate Number */
-  max-width: 200px;
-  word-break: break-all; /* Break long certificate numbers */
-}
-
-tbody tr td:nth-child(3) { /* Audit Date */
-  white-space: nowrap;
-}
-
-tbody tr td:nth-child(4) { /* Details */
-  text-align: center;
 }
 
 tbody tr {
@@ -185,39 +138,24 @@ tbody tr:hover {
   background-color: rgba(250, 251, 254, 0.5);
 }
 
-/* View Button */
 .view-btn {
   border: none;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  justify-content: center;
   gap: 0.5rem;
   border-radius: 1rem;
-  padding: 0.6rem 1.2rem;
+  opacity: 1;
+  padding: 0.8rem 1.5rem;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: background-color 0.3s;
   background-color: rgba(57, 106, 255, 1);
   color: rgba(245, 247, 250, 1);
-  font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  font-size: 14px;
-  min-width: 140px;
-}
-
-.view-btn:hover {
-  background-color: rgba(45, 95, 240, 1);
-  transform: translateY(-1px);
 }
 
 .view-btn span {
-  font-size: 14px;
-}
-
-/* Action Box */
-.action-box {
-  display: flex;
-  gap: 22px;
-  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 20px;
 }
 
 /* Empty state styling */
@@ -235,7 +173,6 @@ tbody tr td[colspan] {
    ============================ */
 @media (max-width: 1024px) {
   .upcoming-audit-list-box {
-    margin-top: 7rem;
     margin-left: 20px;
     margin-right: 20px;
   }
@@ -245,7 +182,7 @@ tbody tr td[colspan] {
   }
 
   .search-box {
-    width: 180px;
+    width: 190px;
   }
 
   .export-btn {
@@ -255,15 +192,6 @@ tbody tr td[colspan] {
   thead tr th,
   tbody tr td {
     padding: 0.8rem 1rem;
-    font-size: 14px;
-  }
-
-  thead tr th {
-    font-size: 15px;
-  }
-
-  table {
-    min-width: 700px;
   }
 }
 
@@ -274,56 +202,39 @@ tbody tr td[colspan] {
   .upcoming-audit-list-box {
     margin-left: 15px;
     margin-right: 15px;
-    margin-top: 7rem;
+    padding: 2rem;
   }
 
   .header-row {
     flex-direction: column;
     align-items: flex-start;
-    gap: 20px;
-    width: 100%;
+    gap: 15px;
   }
 
   .header-right {
     width: 100%;
+    display: flex;
     justify-content: space-between;
-    gap: 15px;
   }
 
   .search-box {
-    width: calc(60% - 10px);
-    flex: 1;
-  }
-
-  .search-box input {
-    width: 100%;
+    width: 60%;
   }
 
   .export-btn {
-    width: calc(40% - 10px);
-    min-width: 120px;
-  }
-
-  .table-wrapper {
-    padding: 1rem;
-    margin-top: 1.5rem;
-    border-radius: 15px;
+    width: 40%;
   }
 
   table {
-    min-width: 600px;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
   }
 
   thead tr th,
   tbody tr td {
-    font-size: 13px;
-    padding: 0.7rem 0.8rem;
-  }
-
-  .view-btn {
-    padding: 0.5rem 1rem;
     font-size: 12px;
-    min-width: 120px;
+    padding: 0.7rem 1rem;
   }
 }
 
@@ -339,81 +250,14 @@ tbody tr td[colspan] {
 
   .search-box {
     width: 100%;
-    max-width: 100%;
   }
 
   .export-btn {
     width: 100%;
-    max-width: 100%;
-  }
-
-  .table-wrapper {
-    margin-top: 1.5rem;
-    padding: 0.8rem;
-    border-radius: 12px;
-  }
-
-  table {
-    min-width: 500px;
   }
 
   thead tr th,
   tbody tr td {
-    font-size: 12px;
-    padding: 0.6rem 0.7rem;
-  }
-
-  thead tr th {
-    font-size: 13px;
-  }
-
-  .view-btn {
-    padding: 0.4rem 0.8rem;
-    font-size: 11px;
-    min-width: 110px;
-    border-radius: 0.8rem;
-  }
-
-  .view-btn span {
-    font-size: 12px;
-  }
-
-  /* Reduce min-widths for mobile */
-  thead tr th:nth-child(1),
-  thead tr th:nth-child(2) {
-    min-width: 150px;
-  }
-
-  thead tr th:nth-child(3) {
-    min-width: 120px;
-  }
-
-  thead tr th:nth-child(4) {
-    min-width: 140px;
-  }
-}
-
-/* ============================
-      RESPONSIVE (VERY SMALL MOBILE)
-   ============================ */
-@media (max-width: 360px) {
-  .upcoming-audit-list-box {
-    margin-left: 10px;
-    margin-right: 10px;
-  }
-
-  table {
-    min-width: 450px;
-  }
-
-  thead tr th,
-  tbody tr td {
-    font-size: 11px;
-    padding: 0.5rem 0.6rem;
-  }
-
-  .view-btn {
-    min-width: 100px;
-    padding: 0.3rem 0.7rem;
+    padding: 0.6rem 0.8rem;
   }
 }

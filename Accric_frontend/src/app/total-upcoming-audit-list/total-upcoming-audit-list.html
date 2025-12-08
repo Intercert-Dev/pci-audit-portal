@@ -36,14 +36,9 @@
 
         <tbody>
           <tr *ngFor="let audit of filtered_list">
-            <!-- Company -->
             <td>{{ audit.legal_entity_name || 'N/A' }}</td>
-
-            <!-- Certificate Number -->
             <td>{{ audit.certificate_number_unique_id || 'N/A' }}</td>
-
-            <!-- Audit Date (formatted) -->
-            <td>{{ audit.audit_start_date ? (audit.audit_start_date | date:'MMM dd, yyyy') : 'N/A' }}</td>
+            <td>{{ audit.audit_start_date ? (audit.audit_start_date | date) : 'N/A' }}</td>
 
             <td>
               <button class="view-btn" (click)="viewDetails(audit)">

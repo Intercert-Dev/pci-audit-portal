@@ -5,11 +5,9 @@ import { FormsModule } from '@angular/forms';
 import * as XLSX from 'xlsx';
 
 interface AuditRow {
-  // matches API fields you provided earlier
   certificate_number_unique_id?: string;
   legal_entity_name?: string;
-  audit_start_date?: string; // ISO date string
-  // you can add more fields from the API if needed
+  audit_start_date?: string;
 }
 
 @Component({

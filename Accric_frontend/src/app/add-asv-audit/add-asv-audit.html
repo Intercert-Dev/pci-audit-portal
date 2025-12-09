@@ -7,39 +7,80 @@
       <div class="form-section">
 
         <div class="form-row">
+          <div class="form-group search-dropdown">
+            <label>Legal Entity Name</label>
+            <div class="search-input-wrapper">
+              <input style="width: 100%;" type="text" name="legalEntityName" [(ngModel)]="legalEntitySearch"
+                (input)="onLegalEntitySearch()" (focus)="showLegalEntityDropdown = true" (blur)="onLegalEntityBlur()"
+                placeholder="Search legal entity name" autocomplete="off" />
+            </div>
+
+            <!-- Dropdown list -->
+            <div class="search-dropdown-list" *ngIf="showLegalEntityDropdown && filteredLegalEntities.length > 0">
+              <div *ngFor="let entity of filteredLegalEntities" class="dropdown-item"
+                (mousedown)="selectLegalEntity(entity)" [class.selected]="entity.id === selectedLegalEntityId">
+                {{ entity.name }}
+              </div>
+            </div>
+
+            <div class="search-dropdown-list"
+              *ngIf="showLegalEntityDropdown && filteredLegalEntities.length === 0 && legalEntitySearch">
+              <div class="no-results">No legal entities found</div>
+            </div>
+
+            <!-- Hidden input to store the actual value -->
+            <input type="hidden" name="legalEntityId" [(ngModel)]="selectedLegalEntityId" />
+          </div>
+
+           <div class="form-group search-dropdown">
+          <label>PCI Audit</label>
+          <div class="search-input-wrapper">
+            <input style="width: 100%;" type="text" name="audit" [(ngModel)]="auditSearch" (input)="onAuditSearch()"
+              (focus)="showAuditDropdown = true" (blur)="onAuditBlur()" placeholder="Search audit" autocomplete="off"
+              required />
+          </div>
+
+          <!-- Dropdown list -->
+          <div class="search-dropdown-list" *ngIf="showAuditDropdown && filteredAudits.length > 0">
+            <div *ngFor="let audit of filteredAudits" class="dropdown-item" (mousedown)="selectAudit(audit)"
+              [class.selected]="audit.id === selectedAuditId">
+              {{ audit.name }}
+            </div>
+          </div>
+
+          <div class="search-dropdown-list" *ngIf="showAuditDropdown && filteredAudits.length === 0 && auditSearch">
+            <div class="no-results">No audits found</div>
+          </div>
+
+          <!-- Hidden input to store the actual value -->
+          <input type="hidden" name="auditId" [(ngModel)]="selectedAuditId" />
+
+        </div>
+        </div>
+
+       
+
+      </div>
+      <div class="form-section">
+
+        <div class="form-row">
 
           <div class="form-group">
             <label>Number of IP</label>
-            <input
-              type="number"
-              name="numberOfIPs"
-              [(ngModel)]="asvData.numberOfIPs"
-              #numberOfIPs="ngModel"
-              placeholder="Enter number of IP"
-              min="1"
-            />
+            <input type="number" name="numberOfIPs" [(ngModel)]="asvData.numberOfIPs" #numberOfIPs="ngModel"
+              placeholder="Enter number of IP" min="1" />
           </div>
 
           <div class="form-group">
             <label>Associated Organization</label>
-            <input
-              type="text"
-              name="associatedOrganization"
-              [(ngModel)]="asvData.associatedOrganization"
-              #associatedOrganization="ngModel"
-              placeholder="Enter Associated Organization"
-            />
+            <input type="text" name="associatedOrganization" [(ngModel)]="asvData.associatedOrganization"
+              #associatedOrganization="ngModel" placeholder="Enter Associated Organization" />
           </div>
 
           <div class="form-group">
             <label>Associated Application</label>
-            <input
-              type="text"
-              name="associatedApplication"
-              [(ngModel)]="asvData.associatedApplication"
-              #associatedApplication="ngModel"
-              placeholder="Enter application name"
-            />
+            <input type="text" name="associatedApplication" [(ngModel)]="asvData.associatedApplication"
+              #associatedApplication="ngModel" placeholder="Enter application name" />
           </div>
 
         </div>
@@ -50,13 +91,8 @@
       <div class="form-section">
         <div class="form-group">
           <label>IP Details</label>
-          <textarea
-            name="IPDetails"
-            [(ngModel)]="asvData.IPDetails"
-            #IPDetails="ngModel"
-            placeholder="Enter IP Details"
-            rows="3"
-          ></textarea>
+          <textarea name="IPDetails" [(ngModel)]="asvData.IPDetails" #IPDetails="ngModel" placeholder="Enter IP Details"
+            rows="3"></textarea>
         </div>
       </div>
 

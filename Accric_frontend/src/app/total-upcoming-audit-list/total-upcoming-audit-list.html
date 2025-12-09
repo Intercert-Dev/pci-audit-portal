@@ -29,7 +29,8 @@
           <tr>
             <th>Company Name</th>
             <th>Certificate Number</th>
-            <th>Audit Date</th>
+            <th>Audit Start </th>
+            <th>Audit End </th>
             <th>Details</th>
           </tr>
         </thead>
@@ -39,6 +40,7 @@
             <td>{{ audit.legal_entity_name || 'N/A' }}</td>
             <td>{{ audit.certificate_number_unique_id || 'N/A' }}</td>
             <td>{{ audit.audit_start_date ? (audit.audit_start_date | date) : 'N/A' }}</td>
+            <td>{{ audit.audit_end_date ? (audit.audit_end_date | date) : 'N/A' }}</td>
 
             <td>
               <button class="view-btn" (click)="viewDetails(audit)">

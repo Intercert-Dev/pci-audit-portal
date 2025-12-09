@@ -8,6 +8,7 @@ interface AuditRow {
   certificate_number_unique_id?: string;
   legal_entity_name?: string;
   audit_start_date?: string;
+  audit_end_date?: string;
 }
 
 @Component({
@@ -50,6 +51,8 @@ export class TotalUpcomingAuditList implements OnInit {
     this.http.get(url, { headers }).subscribe({
       next: (res: any) => {
         // Keep defensive: if API returns object, check key
+        console.log("res api",res.activeOldCertificates);
+        
         this.upcomingAudits = Array.isArray(res.activeOldCertificates)
           ? res.activeOldCertificates
           : [];

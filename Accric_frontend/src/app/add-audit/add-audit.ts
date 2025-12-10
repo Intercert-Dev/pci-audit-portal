@@ -13,9 +13,34 @@ interface DateErrors {
   nextAuditDueDate: string;
 }
 
-interface LegalEntity { 
-  id: number;
-  name: string;
+interface Client {
+  clientId: string;
+  legal_entity_name: string;
+  trading_name: string;
+}
+
+interface AuditPayload {
+  clientId: string;
+  assessment_project_name: string;
+  assessment_type: string;
+  assessment_category: string;
+  assessment_year: string;
+  pci_dss_version_application: string;
+  assessment_period_covered: string;
+  audit_start_date: string;
+  audit_end_date: string;
+  date_of_report_submission: string | null;
+  audit_status: string;
+  certificate_issue_date: string | null;
+  certificate_expiry_date: string | null;
+  certificate_number_unique_id: string | null;
+  classification: string | null;
+  next_audit_due_date: string | null;
+  name_of_qsa: string | null;
+  qsa_license_certificate_number: string | null;
+  audit_manager_reviewer_name: string | null;
+  scope_of_assessment: string | null;
+  location_of_scope: string | null;
 }
 
 @Component({
@@ -29,6 +54,7 @@ export class AddAudit implements OnInit {
 
   activeTab = 'assessment-summary';
   showErrors = false;
+  isLoading = false;
 
   tabs = [
     'assessment-summary',
@@ -37,31 +63,40 @@ export class AddAudit implements OnInit {
   ];
   qsaList = [
     'Milan',
+    'John Smith',
+    'Sarah Johnson',
+    'Robert Chen',
+    'Emma Wilson'
   ];
 
   auditData = {
-    assessmentName: '',
-    assessmentType: '',
-    assessmentCategory: '',
-    assessmentYear: '',
-    pciVersion: '',
-    periodCovered: '',
-    auditStart: '',
-    auditEnd: '',
-    reportSubmittedDate: '',
-    auditStatus: '',
-    certificateIssueDate: '',
-    certificateExpiryDate: '',
-    certificateNumberUniqueId: '',
-    assessmentClassification: '',
-    nextAuditDueDate: '',
-    nameOfQsa: '',
-    qsaLicense: '',
-    auditManagerReviewer: '',
-    scopeOfAssessment: '',
-    locationOfScope: '',
-    legalEntityId: null as number | null,
-    legalEntityName: ''
+    clientId: '',
+    clientName: '',
+    
+    assessment_project_name: '',
+    assessment_type: '',
+    assessment_category: '',
+    assessment_year: '',
+    pci_dss_version_application: '',
+    assessment_period_covered: '',
+    
+    audit_start_date: '',
+    audit_end_date: '',
+    date_of_report_submission: '',
+    audit_status: 'NOT_STARTED',
+    
+    certificate_issue_date: '',
+    certificate_expiry_date: '',
+    certificate_number_unique_id: '',
+    classification: '',
+    next_audit_due_date: '',
+    
+    name_of_qsa: '',
+    qsa_license_certificate_number: '',
+    audit_manager_reviewer_name: '',
+    
+    scope_of_assessment: '',
+    location_of_scope: ''
   };
 
   dateErrors: DateErrors = {
@@ -73,99 +108,114 @@ export class AddAudit implements OnInit {
     nextAuditDueDate: ''
   };
 
-  legalEntitySearch: string = '';
-  legalEntities: LegalEntity[] = [
-    { id: 1, name: "Intercert" },
-    { id: 2, name: "Tech Solutions" },
-    { id: 3, name: "SecureTech" },
-    { id: 4, name: "DataSafe Inc." },
-    { id: 5, name: "NetGuardians" } 
-  ];
-  filteredLegalEntities: LegalEntity[] = [];
-  selectedLegalEntityId: number | null = null;
-  showLegalEntityDropdown: boolean = false;
+  clientSearch: string = '';
+  clients: Client[] = [];
+  filteredClients: Client[] = [];
+  selectedClientId: string | null = null;
+  showClientDropdown: boolean = false;
   private searchSubject = new Subject<string>();
 
-  tabRequiredFields: { [key: string]: string[] } = {
-    "assessment-summary": ["auditStart", "auditEnd"],
-    "assessor-info": [],
-    "scope-env": []
-  };
+  constructor(private http: HttpClient) { }
 
   ngOnInit() {
-    this.loadLegalEntities();
+    this.loadClients();
+    
     this.searchSubject.pipe(
       debounceTime(300),
       distinctUntilChanged()
     ).subscribe(searchTerm => {
-      this.filterLegalEntities(searchTerm);
+      this.filterClients(searchTerm);
     });
   }
 
-  loadLegalEntities() {
-    // Replace with your actual API call
-    const url = 'YOUR_API_ENDPOINT/legal-entities';
+  loadClients() {
+    this.isLoading = true;
+    const url = 'http://pci.accric.com/api/auth/client-list';
     const token = localStorage.getItem("jwt");
+    
+    if (!token) {
+      alert('Please login first. No authentication token found.');
+      this.isLoading = false;
+      return;
+    }
+    
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
+      'Authorization': `Bearer ${token}`
     });
 
-    this.http.get<LegalEntity[]>(url, { headers }).subscribe({
-      next: (entities) => {
-        this.legalEntities = entities;
-        this.filteredLegalEntities = [...entities];
+    this.http.get<{data: Client[]}>(url, { headers }).subscribe({
+      next: (res) => {
+        this.clients = res.data;
+        this.filteredClients = [...res.data];
+        this.isLoading = false;
       },
       error: (err) => {
-        console.error('Failed to load legal entities:', err);
+        console.error('Failed to load clients:', err);
+        this.isLoading = false;
+        alert('Failed to load clients. Please try again.');
       }
     });
   }
 
-  onLegalEntitySearch() {
-    this.searchSubject.next(this.legalEntitySearch);
+  onClientSearch() {
+    this.searchSubject.next(this.clientSearch);
   }
 
-  filterLegalEntities(searchTerm: string) {
+  filterClients(searchTerm: string) {
     if (!searchTerm.trim()) {
-      this.filteredLegalEntities = [...this.legalEntities];
+      this.filteredClients = [...this.clients];
       return;
     }
 
     const term = searchTerm.toLowerCase();
-    this.filteredLegalEntities = this.legalEntities.filter(entity =>
-      entity.name.toLowerCase().includes(term)
+    this.filteredClients = this.clients.filter(client =>
+      client.legal_entity_name.toLowerCase().includes(term) ||
+      client.trading_name.toLowerCase().includes(term) ||
+      client.clientId.toLowerCase().includes(term)
     );
   }
 
-  selectLegalEntity(entity: LegalEntity) {
-    this.selectedLegalEntityId = entity.id;
-    this.legalEntitySearch = entity.name;
-    this.auditData.legalEntityId = entity.id;
-    this.auditData.legalEntityName = entity.name;
-    this.showLegalEntityDropdown = false;
+  selectClient(client: Client) {
+    this.selectedClientId = client.clientId;
+    this.clientSearch = client.legal_entity_name;
+    this.auditData.clientId = client.clientId;
+    this.auditData.clientName = client.legal_entity_name;
+    this.showClientDropdown = false;
+    
+    // Update form control
+    if (this.auditForm?.controls['clientId']) {
+      this.auditForm.controls['clientId'].setValue(client.clientId);
+      this.auditForm.controls['clientId'].markAsTouched();
+      this.auditForm.controls['clientId'].updateValueAndValidity();
+    }
   }
 
-  onLegalEntityBlur() {
+  onClientBlur() {
     setTimeout(() => {
-      this.showLegalEntityDropdown = false;
+      this.showClientDropdown = false;
 
-      if (!this.selectedLegalEntityId && this.legalEntitySearch) {
-        const matchedEntity = this.legalEntities.find(entity =>
-          entity.name.toLowerCase() === this.legalEntitySearch.toLowerCase()
+      if (!this.selectedClientId && this.clientSearch) {
+        const matchedClient = this.clients.find(client =>
+          client.legal_entity_name.toLowerCase() === this.clientSearch.toLowerCase()
         );
 
-        if (matchedEntity) {
-          this.selectLegalEntity(matchedEntity);
+        if (matchedClient) {
+          this.selectClient(matchedClient);
         } else {
-          this.legalEntitySearch = '';
-          this.auditData.legalEntityId = null;
-          this.auditData.legalEntityName = '';
+          this.clientSearch = '';
+          this.auditData.clientId = '';
+          this.auditData.clientName = '';
+          
+          if (this.auditForm?.controls['clientId']) {
+            this.auditForm.controls['clientId'].setValue('');
+            this.auditForm.controls['clientId'].markAsTouched();
+            this.auditForm.controls['clientId'].updateValueAndValidity();
+          }
         }
       }
     }, 200);
   }
 
-  // Date validation methods - FIXED
   validateDates(): boolean {
     this.clearDateErrors();
     let isValid = true;
@@ -173,103 +223,50 @@ export class AddAudit implements OnInit {
     const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
 
-    // 1. Audit Start Date validations - FIXED
-    if (this.auditData.auditStart) {
-      const auditStartDate = new Date(this.auditData.auditStart);
-
-      // Audit Start Date can be today or in the future, but not in the past
+    if (this.auditData.audit_start_date) {
+      const auditStartDate = new Date(this.auditData.audit_start_date);
       if (auditStartDate < currentDate) {
         this.dateErrors.auditStart = 'Audit Start Date cannot be in the past';
         isValid = false;
       }
     }
 
-    // 2. Audit End Date validations
-    if (this.auditData.auditEnd) {
-      const auditEndDate = new Date(this.auditData.auditEnd);
-
-      // Audit End Date should not be in the future (if audit is completed)
-      if (auditEndDate > currentDate && this.auditData.auditStatus === 'COMPLETED') {
-        this.dateErrors.auditEnd = 'Completed audit cannot have future end date';
-        isValid = false;
-      }
-
-      // Audit End Date must be after Audit Start Date
-      if (this.auditData.auditStart && auditEndDate <= new Date(this.auditData.auditStart)) {
+    if (this.auditData.audit_end_date) {
+      const auditEndDate = new Date(this.auditData.audit_end_date);
+      if (this.auditData.audit_start_date && auditEndDate <= new Date(this.auditData.audit_start_date)) {
         this.dateErrors.auditEnd = 'Audit End Date must be after Audit Start Date';
         isValid = false;
       }
     }
 
-    // 3. Report Submission Date validations
-    if (this.auditData.reportSubmittedDate) {
-      const reportDate = new Date(this.auditData.reportSubmittedDate);
-
-
-      // Report date should be after audit start date
-      if (this.auditData.auditEnd && reportDate < new Date(this.auditData.auditEnd)) {
+    if (this.auditData.date_of_report_submission) {
+      const reportDate = new Date(this.auditData.date_of_report_submission);
+      if (this.auditData.audit_end_date && reportDate < new Date(this.auditData.audit_end_date)) {
         this.dateErrors.reportSubmittedDate = 'Report Submission Date cannot be before Audit End Date';
         isValid = false;
       }
     }
 
-    // 4. Certificate Issue Date validations
-    if (this.auditData.certificateIssueDate) {
-      const certIssueDate = new Date(this.auditData.certificateIssueDate);
-
-      // Certificate issue date should not be in the future
-      if (certIssueDate > currentDate) {
-        this.dateErrors.certificateIssueDate = 'Certificate Issue Date cannot be in the future';
-        isValid = false;
-      }
-
-      // Certificate issue date should be after audit end date
-      if (this.auditData.auditEnd && certIssueDate < new Date(this.auditData.auditEnd)) {
+    if (this.auditData.certificate_issue_date) {
+      const certIssueDate = new Date(this.auditData.certificate_issue_date);
+      if (this.auditData.audit_end_date && certIssueDate < new Date(this.auditData.audit_end_date)) {
         this.dateErrors.certificateIssueDate = 'Certificate Issue Date cannot be before Audit End Date';
         isValid = false;
       }
     }
 
-    // 5. Certificate Expiry Date validations
-    if (this.auditData.certificateExpiryDate) {
-      const certExpiryDate = new Date(this.auditData.certificateExpiryDate);
-
-      // Certificate expiry date should be after certificate issue date
-      if (this.auditData.certificateIssueDate && certExpiryDate <= new Date(this.auditData.certificateIssueDate)) {
+    if (this.auditData.certificate_expiry_date) {
+      const certExpiryDate = new Date(this.auditData.certificate_expiry_date);
+      if (this.auditData.certificate_issue_date && certExpiryDate <= new Date(this.auditData.certificate_issue_date)) {
         this.dateErrors.certificateExpiryDate = 'Certificate Expiry Date must be after Certificate Issue Date';
-        isValid = false;
-      }
-
-      // Certificate expiry date should not be too far in the future (optional: max 3 years)
-      const maxExpiryDate = new Date();
-      maxExpiryDate.setFullYear(maxExpiryDate.getFullYear() + 3);
-      if (certExpiryDate > maxExpiryDate) {
-        this.dateErrors.certificateExpiryDate = 'Certificate Expiry Date cannot be more than 3 years in the future';
         isValid = false;
       }
     }
 
-    // 6. Next Audit Due Date validations
-    if (this.auditData.nextAuditDueDate) {
-      const nextAuditDate = new Date(this.auditData.nextAuditDueDate);
-
-      // Next audit due date should be in the future
-      if (nextAuditDate <= currentDate) {
-        this.dateErrors.nextAuditDueDate = 'Next Audit Due Date must be in the future';
-        isValid = false;
-      }
-
-      // Next audit due date should be after certificate expiry date (if certificate exists)
-      if (this.auditData.certificateExpiryDate && nextAuditDate <= new Date(this.auditData.certificateExpiryDate)) {
+    if (this.auditData.next_audit_due_date) {
+      const nextAuditDate = new Date(this.auditData.next_audit_due_date);
+      if (this.auditData.certificate_expiry_date && nextAuditDate <= new Date(this.auditData.certificate_expiry_date)) {
         this.dateErrors.nextAuditDueDate = 'Next Audit Due Date should be after Certificate Expiry Date';
-        isValid = false;
-      }
-
-      // Next audit due date should not be too far in the future (optional: max 3 years)
-      const maxNextAuditDate = new Date();
-      maxNextAuditDate.setFullYear(maxNextAuditDate.getFullYear() + 3);
-      if (nextAuditDate > maxNextAuditDate) {
-        this.dateErrors.nextAuditDueDate = 'Next Audit Due Date cannot be more than 3 years in the future';
         isValid = false;
       }
     }
@@ -288,81 +285,148 @@ export class AddAudit implements OnInit {
     };
   }
 
-  onDateChange(fieldName: string): void {
-    // Trigger validation when date changes
-    this.validateDates();
-  }
-
-  // Update the validateCurrentTab method to include date validations
-  validateCurrentTab(form: NgForm): boolean {
-    const requiredFields: string[] = this.tabRequiredFields[this.activeTab] || [];
-
-    // Validate required fields
-    const requiredValid = requiredFields.every((fieldName: string) => {
-      const control = form.controls[fieldName];
-      return control && control.valid;
-    });
-
-    // Validate dates for assessment-summary tab
-    let datesValid = true;
-    if (this.activeTab === 'assessment-summary') {
-      datesValid = this.validateDates();
+  validateAllFields(): boolean {
+    console.log('🔄 Validating all fields...');
+    
+    let allValid = true;
+    
+    // 1. Validate client selection
+    if (!this.auditData.clientId || this.auditData.clientId.trim() === '') {
+      console.log('❌ Client validation failed');
+      allValid = false;
+    } else {
+      console.log('✅ Client validation passed');
     }
-
-    return requiredValid && datesValid;
+    
+    // 2. Validate required dates
+    if (!this.auditData.audit_start_date) {
+      console.log('❌ Audit start date required');
+      allValid = false;
+    } else {
+      console.log('✅ Audit start date provided');
+    }
+    
+    if (!this.auditData.audit_end_date) {
+      console.log('❌ Audit end date required');
+      allValid = false;
+    } else {
+      console.log('✅ Audit end date provided');
+    }
+    
+    // 3. Validate date logic
+    const datesValid = this.validateDates();
+    if (!datesValid) {
+      console.log('❌ Date validation failed');
+      allValid = false;
+    } else {
+      console.log('✅ Date validation passed');
+    }
+    
+    console.log(`🎯 Overall validation: ${allValid ? 'PASSED' : 'FAILED'}`);
+    return allValid;
   }
 
   focusOnFirstError(): void {
-    // Find the first date error and focus on that field
-    const errorEntries = Object.entries(this.dateErrors).find(([key, value]) => value);
-
-    if (errorEntries) {
-      const [firstErrorField] = errorEntries;
-      const inputElement = document.querySelector(`[name="${firstErrorField}"]`) as HTMLInputElement;
-      if (inputElement) {
-        inputElement.focus();
+    if (!this.auditData.clientId) {
+      const clientSearchElement = document.querySelector('[name="clientSearch"]') as HTMLInputElement;
+      if (clientSearchElement) {
+        clientSearchElement.focus();
+        clientSearchElement.style.borderColor = '#dc3545';
       }
-    } else {
-      // If no date errors, find first form error
-      const invalidControl = document.querySelector('.ng-invalid');
-      if (invalidControl) {
-        (invalidControl as HTMLInputElement).focus();
-      }
-    }
-  }
-
-  saveAndContinue(form: NgForm) {
-    // Validate current tab before proceeding
-    if (!this.validateCurrentTab(form)) {
-      this.showErrors = true;
-      this.focusOnFirstError();
       return;
     }
 
+    if (!this.auditData.audit_start_date) {
+      const element = document.querySelector('[name="audit_start_date"]') as HTMLInputElement;
+      if (element) element.focus();
+      return;
+    }
+
+    if (!this.auditData.audit_end_date) {
+      const element = document.querySelector('[name="audit_end_date"]') as HTMLInputElement;
+      if (element) element.focus();
+      return;
+    }
+
+    const errorEntries = Object.entries(this.dateErrors).find(([key, value]) => value);
+    if (errorEntries) {
+      const [firstErrorField] = errorEntries;
+      const fieldMap: {[key: string]: string} = {
+        auditStart: 'audit_start_date',
+        auditEnd: 'audit_end_date',
+        reportSubmittedDate: 'date_of_report_submission',
+        certificateIssueDate: 'certificate_issue_date',
+        certificateExpiryDate: 'certificate_expiry_date',
+        nextAuditDueDate: 'next_audit_due_date'
+      };
+      
+      const formFieldName = fieldMap[firstErrorField];
+      const inputElement = document.querySelector(`[name="${formFieldName}"]`) as HTMLInputElement;
+      if (inputElement) inputElement.focus();
+    }
+  }
+
+  saveAndContinue() {
+    console.log('💾 Save and Continue for tab:', this.activeTab);
+    
+    // Validate based on current tab
+    if (this.activeTab === 'assessment-summary') {
+      const clientValid = !!this.auditData.clientId && this.auditData.clientId.trim() !== '';
+      const startDateValid = !!this.auditData.audit_start_date && this.auditData.audit_start_date.trim() !== '';
+      const endDateValid = !!this.auditData.audit_end_date && this.auditData.audit_end_date.trim() !== '';
+      const datesValid = this.validateDates();
+      
+      if (!clientValid || !startDateValid || !endDateValid || !datesValid) {
+        this.showErrors = true;
+        this.focusOnFirstError();
+        
+        // Show appropriate error message
+        let errorMessage = '';
+        if (!clientValid) errorMessage = 'Please select a client.';
+        else if (!startDateValid) errorMessage = 'Audit Start Date is required.';
+        else if (!endDateValid) errorMessage = 'Audit End Date is required.';
+        else errorMessage = 'Please fix the date errors before continuing.';
+        
+        alert(errorMessage);
+        return;
+      }
+    }
+    
     this.showErrors = false;
     const currentIndex = this.tabs.indexOf(this.activeTab);
 
-    // Check if we're on the last tab
     if (currentIndex < this.tabs.length - 1) {
       // Move to next tab
       this.activeTab = this.tabs[currentIndex + 1];
     } else {
       // If on last tab, submit the form
-      this.onSubmit(form);
+      this.onSubmit();
     }
   }
 
   switchTab(tabName: string) {
-    // Validate current tab before switching
     if (tabName !== this.activeTab) {
       const currentIndex = this.tabs.indexOf(this.activeTab);
       const targetIndex = this.tabs.indexOf(tabName);
 
-      // Only validate if moving forward (to next tab)
-      if (targetIndex > currentIndex) {
-        if (this.auditForm && !this.validateCurrentTab(this.auditForm)) {
+      // Only validate if moving forward from assessment-summary tab
+      if (targetIndex > currentIndex && this.activeTab === 'assessment-summary') {
+        const clientValid = !!this.auditData.clientId && this.auditData.clientId.trim() !== '';
+        const startDateValid = !!this.auditData.audit_start_date && this.auditData.audit_start_date.trim() !== '';
+        const endDateValid = !!this.auditData.audit_end_date && this.auditData.audit_end_date.trim() !== '';
+        const datesValid = this.validateDates();
+        
+        if (!clientValid || !startDateValid || !endDateValid || !datesValid) {
           this.showErrors = true;
           this.focusOnFirstError();
+          
+          let errorMessage = '';
+          if (!clientValid) errorMessage = 'Please select a client before switching tabs.';
+          else if (!startDateValid) errorMessage = 'Please enter audit start date before switching tabs.';
+          else if (!endDateValid) errorMessage = 'Please enter audit end date before switching tabs.';
+          else errorMessage = 'Please fix the date errors before switching tabs.';
+          
+          alert(errorMessage);
           return;
         }
       }
@@ -380,93 +444,126 @@ export class AddAudit implements OnInit {
     }
   }
 
-  onSubmit(form: NgForm) {
-    // Validate all tabs before final submission
-    let allTabsValid = true;
-
-    for (const tab of this.tabs) {
-      this.activeTab = tab; // Temporarily switch to each tab for validation
-      if (!this.validateCurrentTab(form)) {
-        allTabsValid = false;
-      }
-    }
-
-    // Switch back to last tab if validation failed
-    if (!allTabsValid) {
-      this.activeTab = this.tabs[this.tabs.length - 1];
+  onSubmit() {
+    console.log('✅ Submitting audit...');
+    
+    // Validate all required fields
+    if (!this.validateAllFields()) {
+      console.log('❌ Validation failed');
       this.showErrors = true;
       this.focusOnFirstError();
+      
+      let errorMessage = 'Please fix the following errors:\n\n';
+      if (!this.auditData.clientId) errorMessage += '• Select a client\n';
+      if (!this.auditData.audit_start_date) errorMessage += '• Enter audit start date\n';
+      if (!this.auditData.audit_end_date) errorMessage += '• Enter audit end date\n';
+      
+      // Add date errors if any
+      Object.entries(this.dateErrors).forEach(([key, value]) => {
+        if (value) {
+          errorMessage += `• ${value}\n`;
+        }
+      });
+      
+      alert(errorMessage);
       return;
     }
 
-    // All validation passed, proceed with submission
+    console.log('✅ All validations passed, creating audit...');
     this.showErrors = false;
-
-    const payload: { [key: string]: any } = this.buildPayload();
-    const formData = new FormData();
-
-    // Convert payload to FormData
-    Object.entries(payload).forEach(([key, value]) => {
-      if (value !== null && value !== undefined && value !== '') {
-        formData.append(key, value.toString());
-      }
-    });
-
-    // Send to API
-    this.sendAuditDataToAPI(formData);
+    this.createAudit();
   }
 
-  private buildPayload(): { [key: string]: any } {
-    return {
-      assessment_name: this.auditData.assessmentName,
-      assessment_type: this.auditData.assessmentType,
-      assessment_category: this.auditData.assessmentCategory,
-      assessment_year: this.auditData.assessmentYear,
-      pci_dss_version: this.auditData.pciVersion,
-      assessment_period_covered: this.auditData.periodCovered,
-      audit_start_date: this.formatDate(this.auditData.auditStart),
-      audit_end_date: this.formatDate(this.auditData.auditEnd),
-      report_submitted_date: this.formatDate(this.auditData.reportSubmittedDate),
-      audit_status: this.auditData.auditStatus,
-      certificate_issue_date: this.formatDate(this.auditData.certificateIssueDate),
-      certificate_expiry_date: this.formatDate(this.auditData.certificateExpiryDate),
-      certificate_number: this.auditData.certificateNumberUniqueId,
-      assessment_classification: this.auditData.assessmentClassification,
-      next_audit_due_date: this.formatDate(this.auditData.nextAuditDueDate),
-      qsa_name: this.auditData.nameOfQsa,
-      qsa_license: this.auditData.qsaLicense,
-      manager_reviewer_name: this.auditData.auditManagerReviewer,
-      scope_of_assessment: this.auditData.scopeOfAssessment,
-      location_in_scope: this.auditData.locationOfScope,
-      // ADDED legal entity fields
-      legal_entity_id: this.auditData.legalEntityId,
-      legal_entity_name: this.auditData.legalEntityName
-    };
-  }
-
-  private formatDate(dateString: string): string | null {
-    if (!dateString) return null;
+  private formatDateForAPI(dateString: string): string | null {
+    if (!dateString || dateString.trim() === '') return null;
     const date = new Date(dateString);
     return isNaN(date.getTime()) ? null : date.toISOString().split('T')[0];
   }
 
-  private sendAuditDataToAPI(formData: FormData) {
-    const url = 'YOUR_API_ENDPOINT_HERE'; // Replace with your API endpoint
+  private buildPayload(): AuditPayload {
+    return {
+      clientId: this.auditData.clientId,
+      
+      assessment_project_name: this.auditData.assessment_project_name || '',
+      assessment_type: this.auditData.assessment_type || '',
+      assessment_category: this.auditData.assessment_category || '',
+      assessment_year: this.auditData.assessment_year || '',
+      pci_dss_version_application: this.auditData.pci_dss_version_application || '',
+      assessment_period_covered: this.auditData.assessment_period_covered || '',
+      
+      audit_start_date: this.formatDateForAPI(this.auditData.audit_start_date) || '',
+      audit_end_date: this.formatDateForAPI(this.auditData.audit_end_date) || '',
+      date_of_report_submission: this.formatDateForAPI(this.auditData.date_of_report_submission),
+      audit_status: this.auditData.audit_status || 'NOT_STARTED',
+      
+      certificate_issue_date: this.formatDateForAPI(this.auditData.certificate_issue_date),
+      certificate_expiry_date: this.formatDateForAPI(this.auditData.certificate_expiry_date),
+      certificate_number_unique_id: this.auditData.certificate_number_unique_id || null,
+      classification: this.auditData.classification || null,
+      next_audit_due_date: this.formatDateForAPI(this.auditData.next_audit_due_date),
+      
+      name_of_qsa: this.auditData.name_of_qsa || null,
+      qsa_license_certificate_number: this.auditData.qsa_license_certificate_number || null,
+      audit_manager_reviewer_name: this.auditData.audit_manager_reviewer_name || null,
+      
+      scope_of_assessment: this.auditData.scope_of_assessment || null,
+      location_of_scope: this.auditData.location_of_scope || null
+    };
+  }
+
+  private createAudit() {
+    console.log('Creating audit...');
+    this.isLoading = true;
+    
+    const url = 'http://pci.accric.com/api/auth/add-audit-to-client';
     const token = localStorage.getItem("jwt");
+    
+    if (!token) {
+      alert('Please login first. No authentication token found.');
+      this.isLoading = false;
+      return;
+    }
+    
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
     });
 
-    this.http.post(url, formData, { headers }).subscribe({
-      next: (res) => {
-        console.log('API Response:', res);
-        alert('Audit created successfully!');
-        // Reset form or navigate away
+    const payload = this.buildPayload();
+    
+    console.log('Payload:', JSON.stringify(payload, null, 2));
+
+    this.http.post(url, payload, { headers }).subscribe({
+      next: (response: any) => {
+        console.log('Audit created successfully:', response);
+        this.isLoading = false;
+        
+        if (response && response.message) {
+          alert(`Success: ${response.message}`);
+        } else {
+          alert('Audit created successfully!');
+        }
+        
         this.resetForm();
       },
-      error: (err) => {
-        console.error('API Error:', err);
-        alert('Failed to create audit. Check console for details.');
+      error: (error: any) => {
+        console.error('❌ Error creating audit:', error);
+        this.isLoading = false;
+        
+        let errorMessage = 'Failed to create audit. ';
+        
+        if (error.error && error.error.message) {
+          errorMessage += error.error.message;
+        } else if (error.status === 401) {
+          errorMessage += 'Unauthorized. Please check your authentication token.';
+        } else if (error.status === 400) {
+          errorMessage += 'Bad request. Please check the data you entered.';
+        } else if (error.status === 404) {
+          errorMessage += 'Client not found.';
+        } else if (error.status === 500) {
+          errorMessage += 'Server error. Please try again later.';
+        }
+        
+        alert(errorMessage);
       }
     });
   }
@@ -475,16 +572,38 @@ export class AddAudit implements OnInit {
     if (this.auditForm) {
       this.auditForm.resetForm();
     }
+    
     this.activeTab = 'assessment-summary';
     this.showErrors = false;
     this.clearDateErrors();
-    // Clear legal entity search
-    this.legalEntitySearch = '';
-    this.selectedLegalEntityId = null;
-    this.auditData.legalEntityId = null;
-    this.auditData.legalEntityName = '';
-    this.filteredLegalEntities = [...this.legalEntities];
+    
+    this.auditData = {
+      clientId: '',
+      clientName: '',
+      assessment_project_name: '',
+      assessment_type: '',
+      assessment_category: '',
+      assessment_year: '',
+      pci_dss_version_application: '',
+      assessment_period_covered: '',
+      audit_start_date: '',
+      audit_end_date: '',
+      date_of_report_submission: '',
+      audit_status: 'NOT_STARTED',
+      certificate_issue_date: '',
+      certificate_expiry_date: '',
+      certificate_number_unique_id: '',
+      classification: '',
+      next_audit_due_date: '',
+      name_of_qsa: '',
+      qsa_license_certificate_number: '',
+      audit_manager_reviewer_name: '',
+      scope_of_assessment: '',
+      location_of_scope: ''
+    };
+    
+    this.clientSearch = '';
+    this.selectedClientId = null;
+    this.filteredClients = [...this.clients];
   }
-
-  constructor(private http: HttpClient) { }
 }

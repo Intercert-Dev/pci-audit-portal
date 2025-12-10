@@ -450,7 +450,6 @@ export class AddClient implements OnInit {
     
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
     });
 
     this.http.post(url, payload, { headers }).subscribe({

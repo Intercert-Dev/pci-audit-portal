@@ -36,6 +36,7 @@ export class AddClient implements OnInit {
 
   activeTab: string = 'client-profile';
   showErrors = false;
+  isLoading = false;
 
   constructor(private http: HttpClient) { }
 
@@ -64,7 +65,7 @@ export class AddClient implements OnInit {
     technicalContact: '',
     informationSecurityOfficer: '',
     clientSignoff: '',
-    clientStatus: ''
+    clientStatus: 'ACTIVE'
   };
 
   // Data for dropdowns
@@ -152,7 +153,6 @@ export class AddClient implements OnInit {
 
   // Load country codes from API
   loadCountryCodes() {
-    // Using REST Countries API for country codes and flags
     this.http.get<any[]>('https://restcountries.com/v3.1/all?fields=name,flags,idd,cca2')
       .pipe(
         map(countries => {
@@ -171,7 +171,6 @@ export class AddClient implements OnInit {
         }),
         catchError(error => {
           console.error('Error loading country codes:', error);
-          // Fallback to common country codes if API fails
           return of(this.getFallbackCountryCodes());
         })
       )
@@ -238,9 +237,10 @@ export class AddClient implements OnInit {
     this.clientData.phoneCountryCode = countryCode.code;
     this.showCountryCodeDropdown = false;
   }
+  
   getSelectedCountryCodeFlag(): string {
     if (!this.clientData.phoneCountryCode || this.allCountryCodes.length === 0) {
-      return '🇺🇸'; // Default flag
+      return '🇺🇸';
     }
     const selectedCode = this.allCountryCodes.find(
       code => code.code === this.clientData.phoneCountryCode
@@ -248,7 +248,6 @@ export class AddClient implements OnInit {
 
     return selectedCode?.flag || '🇺🇸';
   }
-
 
   // Open country dropdown
   openCountryDropdown(event: Event) {
@@ -408,59 +407,126 @@ export class AddClient implements OnInit {
     this.showCityDropdown = false;
   }
 
-  // ... rest of your existing methods remain exactly the same ...
-  // (formatDate, buildPayload, sendClientDataToAPI, etc.)
+  // Build the payload for API request
+  private buildPayload(): any {
+    const payload = {
+      legal_entity_name: this.clientData.legalEntityName || '',
+      trading_name: this.clientData.brandName || '',
+      county_name: this.clientData.country || '',
+      state_name: this.clientData.state || '',
+      city_name: this.clientData.city || '',
+      street_name: this.clientData.street || '',
+      zip_name: this.clientData.zipCode || '',
+      nature_of_business: this.clientData.natureOfBusiness || '',
+      website_domain_url: this.clientData.website || '',
+      type_of_business: this.clientData.typeOfBusiness || '',
 
-  // ... rest of your existing methods remain exactly the same ...
-  formatDate(date: any): string | null {
-    if (!date) return null;
-    const d = new Date(date);
-    return isNaN(d.getTime()) ? null : d.toISOString().split('T')[0];
-  }
-
-  private buildPayload(): { [key: string]: any } {
-    return {
-      legal_entity_name: this.clientData.legalEntityName,
-      trading_name: this.clientData.brandName,
-      county_name: this.clientData.country,
-      state_name: this.clientData.state,
-      city_name: this.clientData.city,
-      street_name: this.clientData.street,
-      zip_name: this.clientData.zipCode,
-      nature_of_business: this.clientData.natureOfBusiness,
-      website_domain_url: this.clientData.website,
-      type_of_business: this.clientData.typeOfBusiness,
-
-      contact_name: this.clientData.primaryName,
-      designation: this.clientData.primaryDesignation,
-      contact_email: this.clientData.primaryEmail,
-      phone: this.clientData.phoneCountryCode + ' ' + this.clientData.primaryPhone, // Combine country code and phone
-      technical_contacts: this.clientData.technicalContact,
-      information_security_officer: this.clientData.informationSecurityOfficer,
-      client_signoff_authority: this.clientData.clientSignoff,
-      client_status: this.clientData.clientStatus
+      contact_name: this.clientData.primaryName || '',
+      designation: this.clientData.primaryDesignation || '',
+      contact_email: this.clientData.primaryEmail || '',
+      phone: (this.clientData.phoneCountryCode || '') + ' ' + (this.clientData.primaryPhone || ''),
+      technical_contacts: this.clientData.technicalContact || '',
+      information_security_officer: this.clientData.informationSecurityOfficer || '',
+      client_signoff_authority: this.clientData.clientSignoff || '',
+      client_status: this.clientData.clientStatus || 'ACTIVE'
     };
+
+    return payload;
   }
 
-  private sendClientDataToAPI(formData: FormData) {
+  // Send client data to API
+  private sendClientDataToAPI(payload: any) {
+    this.isLoading = true;
+    
     const url = 'http://pci.accric.com/api/auth/create-client';
-    const token = localStorage.getItem("jwt");
+    const token = localStorage.getItem('jwt');
+    
+    if (!token) {
+      console.error('No JWT token found');
+      alert('Please login first. No authentication token found.');
+      this.isLoading = false;
+      return;
+    }
+    
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
     });
 
-    this.http.post(url, formData, { headers }).subscribe({
-      next: (res) => {
-        console.log('API Response:', res);
-        alert('Client created successfully!');
+    this.http.post(url, payload, { headers }).subscribe({
+      next: (response: any) => {
+        console.log('API Response:', response);
+        this.isLoading = false;
+        
+        if (response && response.message) {
+          alert(`Success: ${response.message}`);
+        } else {
+          alert('Client created successfully!');
+        }
+        
+        this.resetForm();
       },
-      error: (err) => {
-        console.error('API Error:', err);
-        alert('Failed to create client. Check console for details.');
+      error: (error: any) => {
+        console.error('API Error Details:', error);
+        this.isLoading = false;
+        
+        let errorMessage = 'Failed to create client. ';
+        
+        if (error.error && error.error.message) {
+          errorMessage += error.error.message;
+        } else if (error.status === 401) {
+          errorMessage += 'Unauthorized. Please check your authentication token.';
+        } else if (error.status === 400) {
+          errorMessage += 'Bad request. Please check the data you entered.';
+        } else if (error.status === 500) {
+          errorMessage += 'Server error. Please try again later.';
+        } else if (error.status === 0) {
+          errorMessage += 'Network error. Please check your internet connection.';
+        }
+        
+        alert(errorMessage);
       }
     });
   }
 
+  // Reset form after successful submission
+  private resetForm() {
+    if (this.clientForm) {
+      this.clientForm.resetForm();
+    }
+    
+    this.clientData = {
+      legalEntityName: '',
+      brandName: '',
+      country: '',
+      state: '',
+      city: '',
+      street: '',
+      zipCode: '',
+      natureOfBusiness: '',
+      website: '',
+      typeOfBusiness: '',
+      primaryName: '',
+      primaryDesignation: '',
+      primaryEmail: '',
+      primaryPhone: '',
+      phoneCountryCode: '+1',
+      technicalContact: '',
+      informationSecurityOfficer: '',
+      clientSignoff: '',
+      clientStatus: 'ACTIVE'
+    };
+    
+    this.allStates = [];
+    this.filteredStates = [];
+    this.allCities = [];
+    this.filteredCities = [];
+    
+    this.activeTab = 'client-profile';
+    this.showErrors = false;
+  }
+
+  // Validate current tab - FOR TAB NAVIGATION ONLY
   validateCurrentTab(form: NgForm): boolean {
     const requiredFields: string[] = this.tabRequiredFields[this.activeTab] || [];
 
@@ -477,7 +543,26 @@ export class AddClient implements OnInit {
     });
   }
 
+  // Validate ALL tabs for final submission
+  validateAllTabs(): boolean {
+    for (const tab of this.tabs) {
+      const requiredFields: string[] = this.tabRequiredFields[tab] || [];
+      
+      const tabValid = requiredFields.every((fieldName: string) => {
+        const value = this.clientData[fieldName];
+        return value && value.toString().trim() !== '';
+      });
+      
+      if (!tabValid) {
+        return false;
+      }
+    }
+    
+    return true;
+  }
+
   saveAndContinue(form: NgForm) {
+    // Only validate current tab for navigation
     if (!this.validateCurrentTab(form)) {
       this.showErrors = true;
       return;
@@ -491,6 +576,10 @@ export class AddClient implements OnInit {
     } else {
       this.onSubmit(form);
     }
+  }
+
+  submitClient(form: NgForm) {
+    this.onSubmit(form);
   }
 
   switchTab(tabName: string) {
@@ -519,32 +608,54 @@ export class AddClient implements OnInit {
   }
 
   onSubmit(form: NgForm) {
-    let allTabsValid = true;
-
-    for (const tab of this.tabs) {
-      this.activeTab = tab;
-      if (!this.validateCurrentTab(form)) {
-        allTabsValid = false;
-      }
-    }
-
-    if (!allTabsValid) {
-      this.activeTab = this.tabs[this.tabs.length - 1];
+    // Use the new validateAllTabs method that checks clientData directly
+    if (!this.validateAllTabs()) {
       this.showErrors = true;
+      this.activeTab = this.tabs[this.tabs.length - 1];
+      
+      // Find and show missing fields
+      const missingFields: string[] = [];
+      for (const tab of this.tabs) {
+        const requiredFields: string[] = this.tabRequiredFields[tab] || [];
+        requiredFields.forEach((fieldName: string) => {
+          const value = this.clientData[fieldName];
+          if (!value || value.toString().trim() === '') {
+            const fieldDisplayName = this.getFieldDisplayName(fieldName);
+            const tabDisplayName = tab === 'client-profile' ? 'Client Profile' : 'Primary Contacts';
+            missingFields.push(`${fieldDisplayName} (${tabDisplayName})`);
+          }
+        });
+      }
+      
+      if (missingFields.length > 0) {
+        alert(`Please fill all required fields:\n\n${missingFields.join('\n')}`);
+      }
       return;
     }
 
     this.showErrors = false;
 
-    const payload: { [key: string]: any } = this.buildPayload();
-    const formData = new FormData();
+    const payload = this.buildPayload();
+    this.sendClientDataToAPI(payload);
+  }
 
-    Object.entries(payload).forEach(([key, value]) => {
-      if (value !== null && value !== undefined && value !== '') {
-        formData.append(key, value.toString());
-      }
-    });
-
-    this.sendClientDataToAPI(formData);
+  // Helper method to get display names for fields
+  private getFieldDisplayName(fieldName: string): string {
+    const displayNames: {[key: string]: string} = {
+      'legalEntityName': 'Legal Entity Name',
+      'country': 'Country',
+      'state': 'State',
+      'city': 'City',
+      'street': 'Street',
+      'zipCode': 'Zip Code',
+      'typeOfBusiness': 'Type of Business',
+      'primaryName': 'Primary Contact Name',
+      'primaryDesignation': 'Primary Contact Designation',
+      'primaryEmail': 'Primary Contact Email',
+      'primaryPhone': 'Primary Contact Phone',
+      'clientSignoff': 'Client Signoff Authority'
+    };
+    
+    return displayNames[fieldName] || fieldName;
   }
 }

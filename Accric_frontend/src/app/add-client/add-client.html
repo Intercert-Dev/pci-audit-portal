@@ -1,5 +1,11 @@
 <div class="add-client-container">
   <div class="add-client-box">
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" *ngIf="isLoading">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Creating client...</div>
+    </div>
+
     <div class="tabs">
       <button class="tab" [class.active]="activeTab === 'client-profile'" (click)="switchTab('client-profile')">
         Client Profile
@@ -41,7 +47,6 @@
                 <div class="search-container" (click)="$event.stopPropagation()">
                   <input type="text" name="countrySearch" placeholder="Search country..." [(ngModel)]="countrySearch"
                     (ngModelChange)="filterCountries()" class="search-input" autocomplete="off" />
-
                 </div>
                 <div class="dropdown-items">
                   <div *ngFor="let country of filteredCountries" class="dropdown-item" (click)="selectCountry(country)">
@@ -68,11 +73,11 @@
                 class="dropdown-input" [disabled]="!clientData.country" />
               <div class="dropdown-icon">▼</div>
 
-              <div class="dropdown-list" *ngIf="showStateDropdown && clientData.country" (mouseleave)="closeStateDropdown()">
+              <div class="dropdown-list" *ngIf="showStateDropdown && clientData.country"
+                (mouseleave)="closeStateDropdown()">
                 <div class="search-container" (click)="$event.stopPropagation()">
                   <input type="text" name="stateSearch" placeholder="Search state..." [(ngModel)]="stateSearch"
                     (ngModelChange)="filterStates()" class="search-input" autocomplete="off" />
-
                 </div>
                 <div class="dropdown-items">
                   <div *ngFor="let state of filteredStates" class="dropdown-item" (click)="selectState(state)">
@@ -104,11 +109,11 @@
                 class="dropdown-input" [disabled]="!clientData.state" />
               <div class="dropdown-icon">▼</div>
 
-              <div class="dropdown-list" *ngIf="showCityDropdown && clientData.state" (mouseleave)="closeCityDropdown()">
+              <div class="dropdown-list" *ngIf="showCityDropdown && clientData.state"
+                (mouseleave)="closeCityDropdown()">
                 <div class="search-container" (click)="$event.stopPropagation()">
                   <input type="text" name="citySearch" placeholder="Search city..." [(ngModel)]="citySearch"
                     (ngModelChange)="filterCities()" class="search-input" autocomplete="off" />
-
                 </div>
                 <div class="dropdown-items">
                   <div *ngFor="let city of filteredCities" class="dropdown-item" (click)="selectCity(city)">
@@ -172,7 +177,7 @@
         </div>
 
         <div class="form-actions">
-          <button type="button" class="btn-primary" (click)="saveAndContinue(clientForm)">
+          <button type="button" class="btn-primary" (click)="saveAndContinue(clientForm)" [disabled]="isLoading">
             <img src="/assets/icons/arrow_circle_down.png" alt="arrow_down" />
             <span>Save and Continue</span>
           </button>
@@ -285,10 +290,10 @@
         </div>
 
         <div class="form-actions">
-          <button type="button" class="go-back-btn" (click)="goBack()">
+          <button type="button" class="go-back-btn" (click)="goBack()" [disabled]="isLoading">
             <img src="/assets/icons/arrow_left_alt.png" alt="add_icon" />
           </button>
-          <button type="button" class="btn-primary" (click)="saveAndContinue(clientForm)">
+          <button type="button" class="btn-primary" (click)="submitClient(clientForm)" [disabled]="isLoading">
             <img src="/assets/icons/arrow_circle_down.png" alt="arrow_down" />
             <span>Submit Client</span>
           </button>

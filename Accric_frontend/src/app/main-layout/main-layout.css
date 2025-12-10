@@ -348,7 +348,7 @@
     left: 0;
     width: 100%;
     background-color: white;
-    z-index: 2000;
+    z-index: 9999 !important;
     display: flex;
     justify-content: flex-start;
     padding: 0.8rem 1rem;
@@ -657,4 +657,72 @@
   .main-content {
     margin-top: 2rem;
   }
+}
+
+/* Extra Small Devices (max-width: 360px) */
+@media (max-width: 360px) {
+
+  .asv-audit-container {
+    margin-top: 8rem; /* Space for fixed topbar */
+    padding: 0.75rem;
+    min-height: calc(100vh - 60px);
+  }
+
+  .asv-audit-box {
+    padding: 0.75rem;
+    margin: 0;
+    border-radius: 0;
+    width: 100%;
+  }
+
+  .asv-audit-box h2 {
+    font-size: 1.15rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-section h3 {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+
+  input,
+  textarea {
+    font-size: 0.9rem;
+    padding: 0.6rem 0.75rem;
+    height: 2.5rem;
+  }
+
+  label {
+    font-size: 0.9rem;
+  }
+
+  .form-actions {
+    margin-top: 1rem;
+    padding-top: 0.5rem;
+    flex-direction: column;
+    width: 100%;
+    gap: 0.5rem;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    padding: 0.6rem 1rem;
+  }
+
+  .btn-primary span,
+  .btn-secondary span {
+    font-size: 0.95rem;
+  }
+
+  /* Dropdown responsiveness */
+  .search-dropdown-list {
+    max-height: 150px;
+  }
+
+  .dropdown-item {
+    padding: 0.6rem 0.6rem;
+    font-size: 0.85rem;
+  }
+
 }

@@ -413,6 +413,11 @@ textarea.ng-invalid.ng-touched {
 
 /* Mobile (max-width: 768px) */
 @media (max-width: 768px) {
+
+  .asv-audit-container {
+    margin-top: 7rem;
+  }
+  
   .asv-audit-box {
     padding: 1.25rem;
     margin: 0.5rem;

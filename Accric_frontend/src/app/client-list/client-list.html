@@ -1,49 +1,197 @@
 <div class="client-list-container">
-    <div class="client-list-box">
-        <div class="header-row">
-            <p>Client Certificates</p>
-            <div class="header-right">
-                <div class="search-box">
-                    <img src="/assets/icons/magnifying-glass 2.png" alt="Search Icon">
-                    <input type="text" placeholder="Search Certificates">
-                </div>
-                <button class="export-btn"><span>Export to Excel</span></button>
-            </div>
+  <div class="client-list-box">
+    <div class="header-row">
+      <p>Client List</p>
+      <div class="header-right">
+        <div class="search-box">
+          <img src="/assets/icons/magnifying-glass 2.png" alt="Search Icon">
+          <input type="text" placeholder="Search Clients" [(ngModel)]="search_text" (input)="filter_list()">
         </div>
-
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Company</th>
-                        <th>Cert No.</th>
-                        <th>Standard</th>
-                        <th>Issue</th>
-                        <th>Valid</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    <!-- Example Row -->
-                    <tr *ngFor="let row of clientList">
-                        <td>{{ row.company }}</td>
-                        <td>{{ row.certNo }}</td>
-                        <td>{{ row.standard }}</td>
-                        <td>{{ row.issueDate }}</td>
-                        <td>{{ row.validDate }}</td>
-                        <td id="client-status">{{ row.status }}</td>
-                        <td>
-                            <div class="action-box">
-                                <img src="/assets/icons/edit.png" alt="Edit">
-                                <img src="/assets/icons/delete.png" alt="Delete">
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
+        <button class="export-btn" (click)="exportToExcel()"><span>Export to Excel</span></button>
+      </div>
     </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Company Name</th>
+            <th>Contact Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Country</th>
+            <th>Status</th>
+            <th>Created Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let client of filtered_list">
+            <td>{{ client.company || 'N/A' }}</td>
+            <td>{{ client.contact_name || 'N/A' }}</td>
+            <td>{{ client.contact_email || 'N/A' }}</td>
+            <td>{{ client.phone || 'N/A' }}</td>
+            <td>{{ client.county_name || 'N/A' }}</td>
+            <td id="client-status">
+              <span class="status-badge" [class.active]="client.client_status === 'ACTIVE'" 
+                [class.suspended]="client.client_status === 'SUSPENDED'">
+                {{ client.client_status || 'N/A' }}
+              </span>
+            </td>
+            <td>{{ (client.created_at | date:'shortDate') || 'N/A' }}</td>
+            <td class="sticky-action">
+              <div class="action-box">
+                <img src="/assets/icons/edit.png" alt="Edit" (click)="editClient(client)">
+                <img src="/assets/icons/delete.png" alt="Delete" (click)="deleteClient(client)">
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Client Popup -->
+<div class="edit-client-popup-overlay" *ngIf="editingClient">
+  <div class="edit-client-popup">
+    <div class="popup-header">
+      <h2>Edit Client</h2>
+      <button class="close-btn" (click)="cancelEdit()">&times;</button>
+    </div>
+
+    <div class="popup-content">
+      <form #editClientForm="ngForm">
+
+        <!-- Client Profile Section -->
+        <div class="popup-section">
+          <h3 class="section-title">Client Profile</h3>
+          <div class="form-grid">
+
+            <div class="form-group">
+              <label>Legal Entity Name*</label>
+              <input type="text" name="legal_entity_name" required [(ngModel)]="editingClient.legal_entity_name"
+                placeholder="Legal Entity Name" />
+            </div>
+
+            <div class="form-group">
+              <label>Trading / Brand Name</label>
+              <input type="text" name="trading_name" [(ngModel)]="editingClient.trading_name"
+                placeholder="Trading / Brand Name" />
+            </div>
+
+            <div class="form-group">
+              <label>Country*</label>
+              <input type="text" name="county_name" required [(ngModel)]="editingClient.county_name" placeholder="Country" />
+            </div>
+
+            <div class="form-group">
+              <label>State*</label>
+              <input type="text" name="state_name" required [(ngModel)]="editingClient.state_name" placeholder="State" />
+            </div>
+
+            <div class="form-group">
+              <label>City*</label>
+              <input type="text" name="city_name" required [(ngModel)]="editingClient.city_name" placeholder="City" />
+            </div>
+
+            <div class="form-group">
+              <label>Street*</label>
+              <input type="text" name="street_name" required [(ngModel)]="editingClient.street_name" placeholder="Street" />
+            </div>
+
+            <div class="form-group">
+              <label>Zip Code*</label>
+              <input type="text" name="zip_name" required [(ngModel)]="editingClient.zip_name" placeholder="Zip Code" />
+            </div>
+
+            <div class="form-group">
+              <label>Nature of Business</label>
+              <input type="text" name="nature_of_business" [(ngModel)]="editingClient.nature_of_business"
+                placeholder="Nature of Business" />
+            </div>
+
+            <div class="form-group">
+              <label>Website / Domain URL</label>
+              <input type="text" name="website_domain_url" [(ngModel)]="editingClient.website_domain_url"
+                placeholder="Website / Domain URL" />
+            </div>
+
+            <div class="form-group">
+              <label>Type of Business*</label>
+              <input type="text" name="type_of_business" required [(ngModel)]="editingClient.type_of_business"
+                placeholder="Type of Business" />
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Primary Contacts Section -->
+        <div class="popup-section">
+          <h3 class="section-title">Primary Contacts</h3>
+          <div class="form-grid">
+
+            <div class="form-group">
+              <label>Name*</label>
+              <input type="text" name="contact_name" required [(ngModel)]="editingClient.contact_name"
+                placeholder="Enter Name" />
+            </div>
+
+            <div class="form-group">
+              <label>Designation*</label>
+              <input type="text" name="designation" required [(ngModel)]="editingClient.designation"
+                placeholder="Enter Designation" />
+            </div>
+
+            <div class="form-group">
+              <label>Email*</label>
+              <input type="email" name="contact_email" required [(ngModel)]="editingClient.contact_email"
+                placeholder="Enter Email" />
+            </div>
+
+            <div class="form-group">
+              <label>Phone*</label>
+              <input type="text" name="phone" required [(ngModel)]="editingClient.phone"
+                placeholder="Enter Phone" />
+            </div>
+
+            <div class="form-group">
+              <label>Technical Contacts</label>
+              <input type="text" name="technical_contacts" [(ngModel)]="editingClient.technical_contacts"
+                placeholder="Enter Technical Contacts" />
+            </div>
+
+            <div class="form-group">
+              <label>Information Security Officer</label>
+              <input type="text" name="information_security_officer"
+                [(ngModel)]="editingClient.information_security_officer" placeholder="Enter ISO" />
+            </div>
+
+            <div class="form-group">
+              <label>Client Status</label>
+              <select name="client_status" [(ngModel)]="editingClient.client_status">
+                <option value="" disabled>Select Status</option>
+                <option value="ACTIVE">Active</option>
+                <option value="SUSPENDED">Suspended</option>
+              </select>
+            </div>
+
+            <div class="form-group full-width">
+              <label>Client Signoff Authority*</label>
+              <input type="text" name="client_signoff_authority" required [(ngModel)]="editingClient.client_signoff_authority"
+                placeholder="Enter Client Signoff Authority" />
+            </div>
+
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+    <div class="popup-footer">
+      <button class="btn-cancel" (click)="cancelEdit()"><span>Cancel</span></button>
+      <button class="btn-save" (click)="saveClient()"><span>Save Changes</span></button>
+    </div>
+  </div>
 </div>

@@ -2,14 +2,14 @@
   <div class="dashboard-box">
     <h1>PCI Audit Dashboard</h1>
     <div class="cards">
-      <div class="card">
+      <div class="card" [routerLink]="['/total-Client-list']">
         <div class="card-header">
           <div class="card-logo">
             <img src="/assets/icons/user 3 2.png" alt="Card Logo" />
           </div>
           <div class="card-info">
             <p class="text">Total Clients</p>
-            <p class="count">10,000</p>
+            <p class="count">{{ totalClients }}</p>
           </div>
         </div>
         <div class="card-footer">
@@ -19,7 +19,7 @@
           </div>
 
           <div class="chart">
-            <svg viewBox="0 0 260 140" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <svg class="chart-img" viewBox="0 0 260 140" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <!-- gradient used for area fill -->
                 <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
@@ -65,14 +65,15 @@
 
         </div>
       </div>
-      <div class="card">
+      <div class="card" [routerLink]="['/total-active-client-list']">
         <div class="card-header">
           <div style="background-color: rgba(231, 255, 235, 1);" class="card-logo">
             <img src="/assets/icons/sensor_occupied.png" alt="">
           </div>
           <div class="card-info">
             <p class="text">Active Clients</p>
-            <p class="count">10,000</p>
+            <p class="count">{{ activeClients }}</p>
+
           </div>
         </div>
 
@@ -83,7 +84,7 @@
           </div>
 
           <div class="chart">
-            <svg viewBox="0 0 260 140" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <svg class="chart-img" viewBox="0 0 260 140" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <!-- Green gradient for fill area -->
                 <linearGradient id="gradient-green" x1="0" y1="0" x2="0" y2="1">
@@ -127,25 +128,26 @@
           </div>
         </div>
       </div>
-      <div class="card">
+      <div class="card" [routerLink]="['/total-suspended-client-list']">
         <div class="card-header">
           <div style="background-color: rgba(255, 231, 241, 1)" class="card-logo">
             <img src="/assets/icons/person_off.svg" alt="">
           </div>
           <div class="card-info">
             <p class="text">Suspended Clients</p>
-            <p class="count">10,000</p>
+            <p class="count">{{ suspendedClients }}</p>
+
           </div>
         </div>
       </div>
-      <div class="card">
+      <div class="card" [routerLink]="['/total-certificated-client-list']">
         <div class="card-header">
           <div style="background-color: rgba(255, 249, 231, 1)" class="card-logo">
             <img src="/assets/icons/license.png" alt="" />
           </div>
           <div class="card-info">
             <p class="text">Total Certification</p>
-            <p class="count">13,000</p>
+            <p class="count">{{ totalCertificates }}</p>
           </div>
         </div>
       </div>
@@ -155,13 +157,14 @@
     <div class="upcoming">
       <div class="upcoming-header">
         <p>Upcoming Audits</p>
-        <a href="#">See All</a>
+        <a href="upcoming-audit-list">See All</a>
       </div>
 
       <div class="upcoming-box">
         <div>
-          <p id="upcoming-box-text">Total Clients</p>
-          <p id="upcoming-box-number">10,000</p>
+          <p id="upcoming-box-text">Total Upcoming Audits</p>
+          <p class="upcoming-count">{{ upcomingAudits.length }}</p>
+
         </div>
         <div class="upcoming-box-percentage-div">
           <p id="upcoming-box-percentage">12.7%</p>
@@ -173,53 +176,34 @@
 
 
       <div class="audit-list">
-        <div class="audit-card">
+
+        <div *ngFor="let audit of upcomingAudits" class="audit-card">
           <div class="audit-card-box">
+
             <div class="card-box-item">
               <img src="/assets/icons/article.png" alt="">
             </div>
 
             <div class="audit-card-info">
-              <p class="code">IC-OS- 44782408</p>
-              <p class="client">PANECO AMBIENTE sei</p>
-              <p class="date">Nov 10, 2025</p>
-            <a class="view-details" href="#">View Details</a>
-            </div>
-          </div>
-        </div>
-        <div class="audit-card">
-          <div class="audit-card-box">
-            <div style="background-color: rgba(255, 249, 231, 1);"  class="card-box-item">
-              <img src="/assets/icons/article1.png" alt="">
-            </div>
 
-            <div class="audit-card-info">
-              <p class="code">IC-OS- 44782408</p>
-              <p class="client">PANECO AMBIENTE sei</p>
-              <p class="date">Nov 10, 2025</p>
-            <a class="view-details" href="#">View Details</a>
-            </div>
-          </div>
-        </div>
-        <div class="audit-card">
-          <div class="audit-card-box">
-            <div style="background-color: rgba(231, 255, 235, 1);" class="card-box-item">
-              <img src="/assets/icons/article2.png" alt="">
-            </div>
+              <!-- certificate number -->
+              <p class="code">{{ audit.certificate_number_unique_id || 'N/A' }}</p>
 
-            <div class="audit-card-info">
-              <p class="code">IC-OS- 44782408</p>
-              <p class="client">Global Tube</p>
-              <p class="date">Nov 10, 2025</p>
-            <a class="view-details" href="#">View Details</a>
+              <!-- client name -->
+              <p class="client">{{ audit.legal_entity_name || 'Unknown Client' }}</p>
+
+              <!-- audit start date -->
+              <p class="date">
+                {{ audit.audit_start_date | date:'MMM dd, yyyy' }}
+              </p>
+
+              <a class="view-details" href="/upcoming-audit-list">View Details</a>
             </div>
           </div>
         </div>
 
-        
-
-        
       </div>
+
     </div>
 
   </div>

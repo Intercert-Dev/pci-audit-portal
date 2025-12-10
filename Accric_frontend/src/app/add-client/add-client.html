@@ -1,363 +1,304 @@
 <div class="add-client-container">
-  <!-- Tabs -->
   <div class="add-client-box">
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" *ngIf="isLoading">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Creating client...</div>
+    </div>
+
     <div class="tabs">
       <button class="tab" [class.active]="activeTab === 'client-profile'" (click)="switchTab('client-profile')">
         Client Profile
       </button>
-
       <button class="tab" [class.active]="activeTab === 'primary-contacts'" (click)="switchTab('primary-contacts')">
         Primary Contacts
       </button>
-
-      <button class="tab" [class.active]="activeTab === 'assessment-summary'" (click)="switchTab('assessment-summary')">
-        Assessment Summary
-      </button>
-
-      <button class="tab" [class.active]="activeTab === 'assessor-info'" (click)="switchTab('assessor-info')">
-        Assessor Information
-      </button>
-
-      <button class="tab" [class.active]="activeTab === 'scope-env'" (click)="switchTab('scope-env')">
-        Scope and Environment
-      </button>
-
-      <button class="tab" [class.active]="activeTab === 'compliance-results'" (click)="switchTab('compliance-results')">
-        Compliance Results
-      </button>
     </div>
 
-    <!-- Form -->
-
     <form #clientForm="ngForm" (ngSubmit)="onSubmit(clientForm)" class="client-form">
+      <!-- CLIENT PROFILE TAB -->
       <div class="tab-content" *ngIf="activeTab === 'client-profile'">
         <div class="form-row">
           <div class="form-group">
             <label>Legal Entity Name*</label>
-            <input type="text" placeholder="Legal Entity Name" />
+            <input type="text" name="legalEntityName" required [(ngModel)]="clientData.legalEntityName"
+              #legalEntityName="ngModel" placeholder="Legal Entity Name" />
+            <div class="error" *ngIf="legalEntityName.invalid && (legalEntityName.touched || showErrors)">
+              <small>Please enter Legal Entity Name.</small>
+            </div>
           </div>
           <div class="form-group">
-            <label>Trading/ Brand Name</label>
-            <input type="text" placeholder="Trading/ Brand Name" />
+            <label>Trading / Brand Name</label>
+            <input type="text" name="brandName" [(ngModel)]="clientData.brandName" placeholder="Trading / Brand Name" />
           </div>
         </div>
 
         <div class="form-row">
-          <div class="form-group">
+          <!-- Country Field -->
+          <div class="form-group custom-dropdown country-dropdown">
             <label>Country*</label>
-            <input type="text" placeholder="Country" />
+            <div class="dropdown-container">
+              <input type="text" name="country" required [(ngModel)]="clientData.country"
+                (click)="openCountryDropdown($event)" #country="ngModel" placeholder="Select country..." readonly
+                class="dropdown-input" />
+              <div class="dropdown-icon">▼</div>
+
+              <div class="dropdown-list" *ngIf="showCountryDropdown" (mouseleave)="closeCountryDropdown()">
+                <div class="search-container" (click)="$event.stopPropagation()">
+                  <input type="text" name="countrySearch" placeholder="Search country..." [(ngModel)]="countrySearch"
+                    (ngModelChange)="filterCountries()" class="search-input" autocomplete="off" />
+                </div>
+                <div class="dropdown-items">
+                  <div *ngFor="let country of filteredCountries" class="dropdown-item" (click)="selectCountry(country)">
+                    {{ country.country }}
+                  </div>
+                  <div *ngIf="filteredCountries.length === 0" class="no-results">
+                    No countries found
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="error" *ngIf="country.invalid && (country.touched || showErrors)">
+              <small>Please select a country.</small>
+            </div>
           </div>
-          <div class="form-group">
+
+          <!-- State Field -->
+          <div class="form-group custom-dropdown state-dropdown">
             <label>State*</label>
-            <input type="text" placeholder="State" />
+            <div class="dropdown-container">
+              <input type="text" name="state" required [(ngModel)]="clientData.state"
+                (click)="openStateDropdown($event)" #state="ngModel"
+                placeholder="{{ clientData.country ? 'Select state...' : 'Select country first' }}" readonly
+                class="dropdown-input" [disabled]="!clientData.country" />
+              <div class="dropdown-icon">▼</div>
+
+              <div class="dropdown-list" *ngIf="showStateDropdown && clientData.country"
+                (mouseleave)="closeStateDropdown()">
+                <div class="search-container" (click)="$event.stopPropagation()">
+                  <input type="text" name="stateSearch" placeholder="Search state..." [(ngModel)]="stateSearch"
+                    (ngModelChange)="filterStates()" class="search-input" autocomplete="off" />
+                </div>
+                <div class="dropdown-items">
+                  <div *ngFor="let state of filteredStates" class="dropdown-item" (click)="selectState(state)">
+                    {{ state.name }}
+                  </div>
+                  <div *ngIf="filteredStates.length === 0 && allStates.length > 0" class="no-results">
+                    No states found
+                  </div>
+                  <div *ngIf="allStates.length === 0" class="no-results">
+                    Loading states...
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="error" *ngIf="state.invalid && (state.touched || showErrors)">
+              <small>Please select a state.</small>
+            </div>
+            <div *ngIf="!clientData.country" class="field-hint">
+              Please select a country first
+            </div>
           </div>
-          <div class="form-group">
+
+          <!-- City Field -->
+          <div class="form-group custom-dropdown city-dropdown">
             <label>City*</label>
-            <input type="text" placeholder="City" />
+            <div class="dropdown-container">
+              <input type="text" name="city" required [(ngModel)]="clientData.city" (click)="openCityDropdown($event)"
+                #city="ngModel" placeholder="{{ clientData.state ? 'Select city...' : 'Select state first' }}" readonly
+                class="dropdown-input" [disabled]="!clientData.state" />
+              <div class="dropdown-icon">▼</div>
+
+              <div class="dropdown-list" *ngIf="showCityDropdown && clientData.state"
+                (mouseleave)="closeCityDropdown()">
+                <div class="search-container" (click)="$event.stopPropagation()">
+                  <input type="text" name="citySearch" placeholder="Search city..." [(ngModel)]="citySearch"
+                    (ngModelChange)="filterCities()" class="search-input" autocomplete="off" />
+                </div>
+                <div class="dropdown-items">
+                  <div *ngFor="let city of filteredCities" class="dropdown-item" (click)="selectCity(city)">
+                    {{ city }}
+                  </div>
+                  <div *ngIf="filteredCities.length === 0 && allCities.length > 0" class="no-results">
+                    No cities found
+                  </div>
+                  <div *ngIf="allCities.length === 0" class="no-results">
+                    Loading cities...
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="error" *ngIf="city.invalid && (city.touched || showErrors)">
+              <small>Please select a city.</small>
+            </div>
+            <div *ngIf="!clientData.state" class="field-hint">
+              Please select a state first
+            </div>
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label>Street*</label>
-            <input type="text" placeholder="Street" />
+            <input type="text" name="street" required [(ngModel)]="clientData.street" #street="ngModel"
+              placeholder="Street" />
+            <div class="error" *ngIf="street.invalid && (street.touched || showErrors)">
+              <small>Please enter Street.</small>
+            </div>
           </div>
           <div class="form-group">
             <label>Zip Code*</label>
-            <input type="text" placeholder="Zip Code" />
+            <input type="text" name="zipCode" required [(ngModel)]="clientData.zipCode" #zipCode="ngModel"
+              placeholder="Zip Code" />
+            <div class="error" *ngIf="zipCode.invalid && (zipCode.touched || showErrors)">
+              <small>Please enter Zip Code.</small>
+            </div>
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label>Nature of Business</label>
-            <input type="text" placeholder="Nature of Business" />
+            <input type="text" name="natureOfBusiness" [(ngModel)]="clientData.natureOfBusiness"
+              placeholder="Nature of Business" />
           </div>
           <div class="form-group">
             <label>Website / Domain URL</label>
-            <input type="text" placeholder="Website / Domain URL" />
+            <input type="text" name="website" [(ngModel)]="clientData.website" placeholder="Website / Domain URL" />
           </div>
           <div class="form-group">
             <label>Type of Business*</label>
-            <input type="text" placeholder="Type of Business" />
+            <input type="text" name="typeOfBusiness" required [(ngModel)]="clientData.typeOfBusiness"
+              #typeOfBusiness="ngModel" placeholder="Type of Business" />
+            <div class="error" *ngIf="typeOfBusiness.invalid && (typeOfBusiness.touched || showErrors)">
+              <small>Please enter Type of Business.</small>
+            </div>
           </div>
         </div>
 
         <div class="form-actions">
-          <button type="button" class="btn-primary" (click)="saveAndContinue(clientForm)">
-            <img src="/assets/icons/arrow_circle_down.png" alt="arrow_down">
+          <button type="button" class="btn-primary" (click)="saveAndContinue(clientForm)" [disabled]="isLoading">
+            <img src="/assets/icons/arrow_circle_down.png" alt="arrow_down" />
             <span>Save and Continue</span>
           </button>
         </div>
-
       </div>
-      <div class="tab-content" *ngIf="activeTab === 'primary-contacts'">
 
-        <!-- Row 1 -->
+      <!-- PRIMARY CONTACTS TAB -->
+      <div class="tab-content" *ngIf="activeTab === 'primary-contacts'">
         <div class="form-row">
           <div class="form-group">
             <label>Name*</label>
-            <input type="text" placeholder="Enter Name" />
+            <input type="text" name="primaryName" required [(ngModel)]="clientData.primaryName" #primaryName="ngModel"
+              placeholder="Enter Name" />
+            <div class="error" *ngIf="primaryName.invalid && (primaryName.touched || showErrors)">
+              <small>Please enter Name.</small>
+            </div>
           </div>
           <div class="form-group">
             <label>Designation*</label>
-            <input type="text" placeholder="Enter Designation" />
+            <input type="text" name="primaryDesignation" required [(ngModel)]="clientData.primaryDesignation"
+              #primaryDesignation="ngModel" placeholder="Enter Designation" />
+            <div class="error" *ngIf="primaryDesignation.invalid && (primaryDesignation.touched || showErrors)">
+              <small>Please enter Designation.</small>
+            </div>
           </div>
         </div>
 
-        <!-- Row 2 -->
         <div class="form-row">
           <div class="form-group">
             <label>Email*</label>
-            <input type="email" placeholder="Enter Email" />
+            <input type="email" name="primaryEmail" required [(ngModel)]="clientData.primaryEmail"
+              #primaryEmail="ngModel" placeholder="Enter Email" />
+            <div class="error" *ngIf="primaryEmail.invalid && (primaryEmail.touched || showErrors)">
+              <small *ngIf="primaryEmail.errors?.['required']">Please enter Email.</small>
+              <small *ngIf="primaryEmail.errors?.['email']">Enter a valid email.</small>
+            </div>
           </div>
+          <!-- Phone Field with Country Code -->
           <div class="form-group">
             <label>Phone*</label>
-            <input type="text" placeholder="Enter Phone Number" />
+            <div class="phone-input-container">
+              <!-- Country Code Dropdown -->
+              <div class="country-code-dropdown custom-dropdown">
+                <div class="country-code-selector" (click)="openCountryCodeDropdown($event)">
+                  <span class="country-code-flag">{{ getSelectedCountryCodeFlag() }}</span>
+                  <span class="country-code-value">{{ clientData.phoneCountryCode }}</span>
+                  <span class="dropdown-icon">▼</span>
+                </div>
+
+                <div class="dropdown-list country-code-list" *ngIf="showCountryCodeDropdown">
+                  <div class="search-container" (click)="$event.stopPropagation()">
+                    <input type="text" placeholder="Search country or code..." [(ngModel)]="countryCodeSearch"
+                      (ngModelChange)="filterCountryCodes()" class="search-input" (click)="$event.stopPropagation()"
+                      autocomplete="off" name="countryCodeSearch" />
+                  </div>
+                  <div class="dropdown-items">
+                    <div *ngFor="let countryCode of filteredCountryCodes" class="dropdown-item country-code-item"
+                      (click)="selectCountryCode(countryCode)">
+                      <span class="country-code-flag">{{ countryCode.flag }}</span>
+                      <span class="country-code-name">{{ countryCode.name }}</span>
+                      <span class="country-code-value">{{ countryCode.code }}</span>
+                    </div>
+                    <div *ngIf="filteredCountryCodes.length === 0" class="no-results">
+                      No country codes found
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Phone Number Input -->
+              <input type="tel" name="primaryPhone" required [(ngModel)]="clientData.primaryPhone"
+                #primaryPhone="ngModel" placeholder="Enter phone number" class="phone-number-input" />
+            </div>
+            <div class="error" *ngIf="primaryPhone.invalid && (primaryPhone.touched || showErrors)">
+              <small>Please enter Phone number.</small>
+            </div>
           </div>
         </div>
 
-        <!-- Row 3 -->
         <div class="form-row">
           <div class="form-group">
             <label>Technical Contacts</label>
-            <input type="text" placeholder="Enter Technical Contact Name" />
+            <input type="text" name="technicalContact" [(ngModel)]="clientData.technicalContact"
+              placeholder="Enter Technical Contacts" />
           </div>
           <div class="form-group">
             <label>Information Security Officer</label>
-            <input type="text" placeholder="Enter Information Security Officer Name" />
+            <input type="text" name="informationSecurityOfficer" [(ngModel)]="clientData.informationSecurityOfficer"
+              placeholder="Enter ISO" />
+          </div>
+          <div class="form-group">
+            <label>Client Status</label>
+            <select name="clientStatus" [(ngModel)]="clientData.clientStatus">
+              <option value="" disabled selected>Select Status</option>
+              <option value="ACTIVE">Active</option>
+              <option value="SUSPENDED">Suspended</option>
+            </select>
           </div>
         </div>
 
-        <!-- Row 4 -->
         <div class="form-row">
           <div class="form-group wide">
             <label>Client Signoff Authority*</label>
-            <input type="text" placeholder="Enter Client Signoff Authority Name" />
-          </div>
-        </div>
-
-        <!-- Actions -->
-        <div class="form-actions">
-         <button type="button" class="go-back-btn" (click)="goBack()">
-            <img src="/assets/icons/arrow_left_alt.png" alt="add_icon">
-          </button>
-          <button type="button" class="btn-primary" (click)="saveAndContinue(clientForm)">
-            <img src="/assets/icons/arrow_circle_down.png" alt="arrow_down">
-            <span>Save and Continue</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="tab-content" *ngIf="activeTab === 'assessment-summary'">
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Assessment/Project Name</label>
-            <input type="text" placeholder="Assessment/Project Name" />
-          </div>
-          <div class="form-group">
-            <label>Assessment Type</label>
-            <input type="text" placeholder="Assessment Type" />
-          </div>
-          <div class="form-group">
-            <label>Assessment Category</label>
-            <input type="text" placeholder="Assessment Category" />
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Assessment Year</label>
-            <input type="date" placeholder="" />
-          </div>
-          <div class="form-group">
-            <label>PCI DSS Version Applicable</label>
-            <input type="text" placeholder="" />
-          </div>
-          <div class="form-group">
-            <label>Assessment Period Covered</label>
-            <input type="text" placeholder="" />
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Audit Start Date*</label>
-            <input type="date" placeholder="" />
-          </div>
-          <div class="form-group">
-            <label>Audit End Date*</label>
-            <input type="date" placeholder="" />
-          </div>
-          <div class="form-group">
-            <label>Date of Report Submission</label>
-            <input type="date" placeholder="" />
-          </div>
-
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Audit Status</label>
-            <select>
-              <option value="" disabled selected>Select Status</option>
-              <option value="completed">Completed</option>
-              <option value="in-progress">In Progress</option>
-              <option value="not-started">Not Started</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Certificate Issue Date</label>
-            <input type="date" placeholder="" />
-          </div>
-          <div class="form-group">
-            <label>Certificate Expiry Date</label>
-            <input type="date" placeholder="" />
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Certificate Number/Unique ID</label>
-            <input type="text" placeholder="" />
-          </div>
-          <div class="form-group">
-            <label>Next Audit Due Date</label>
-            <input type="date" placeholder="" />
-          </div>
-          <div class="form-group">
-
+            <input type="text" name="clientSignoff" required [(ngModel)]="clientData.clientSignoff"
+              #clientSignoff="ngModel" placeholder="Enter Client Signoff Authority" />
+            <div class="error" *ngIf="clientSignoff.invalid && (clientSignoff.touched || showErrors)">
+              <small>Please enter Client Signoff Authority.</small>
+            </div>
           </div>
         </div>
 
         <div class="form-actions">
-          <button type="button" class="go-back-btn" (click)="goBack()">
-            <img src="/assets/icons/arrow_left_alt.png" alt="add_icon">
+          <button type="button" class="go-back-btn" (click)="goBack()" [disabled]="isLoading">
+            <img src="/assets/icons/arrow_left_alt.png" alt="add_icon" />
           </button>
-          <button type="button" class="btn-primary" (click)="saveAndContinue(clientForm)">
-            <img src="/assets/icons/arrow_circle_down.png" alt="arrow_down">
-            <span>Save and Continue</span>
-          </button>
-        </div>
-      </div>
-
-
-      <div class="tab-content" *ngIf="activeTab === 'assessor-info'">
-        <div class="form-row">
-          <div class="form-group">
-            <label>Name of QSA</label>
-            <input type="text" placeholder="Name of QSA" />
-          </div>
-          <div class="form-group">
-            <label>QSA License/Certificate Number</label>
-            <input type="text" placeholder="QSA License/Certificate Number" />
-          </div>
-          <div class="form-group">
-            <label>Audit Manager Reviewer Name
-            </label>
-            <input type="text" placeholder="Audit Manager Reviewer Name" />
-          </div>
-        </div>
-
-
-
-        <div class="form-actions">
-         <button type="button" class="go-back-btn" (click)="goBack()">
-            <img src="/assets/icons/arrow_left_alt.png" alt="add_icon">
-          </button>
-          <button type="button" class="btn-primary" (click)="saveAndContinue(clientForm)">
-            <img src="/assets/icons/arrow_circle_down.png" alt="arrow_down">
-            <span>Save and Continue</span>
+          <button type="button" class="btn-primary" (click)="submitClient(clientForm)" [disabled]="isLoading">
+            <img src="/assets/icons/arrow_circle_down.png" alt="arrow_down" />
+            <span>Submit Client</span>
           </button>
         </div>
       </div>
-
-
-      <div class="tab-content" *ngIf="activeTab === 'scope-env'">
-        <div class="form-row">
-          <div class="form-group">
-            <label>Scope of Assessment</label>
-            <input type="text" placeholder="Scope of Assessment" />
-          </div>
-          <div class="form-group">
-            <label>Location in Scope</label>
-            <input type="text" placeholder="Location in Scope" />
-          </div>
-        </div>
-        <div class="form-actions">
-          <button type="button" class="go-back-btn" (click)="goBack()">
-            <img src="/assets/icons/arrow_left_alt.png" alt="add_icon">
-          </button>
-
-          <button type="button" class="btn-primary" (click)="saveAndContinue(clientForm)">
-            <img src="/assets/icons/arrow_circle_down.png" alt="arrow_down">
-            <span>Save and Continue</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="tab-content" *ngIf="activeTab === 'compliance-results'">
-        <div class="form-row">
-          <div class="form-group">
-            <label>Overall Compliance Status</label>
-            <input type="text" placeholder="Overall Compliance Status" />
-          </div>
-          <div class="form-group">
-            <label>Compensating Controls Used</label>
-            <select>
-              <option value="" disabled selected>Select Status</option>
-              <option value="completed">Completed</option>
-              <option value="in-progress">In Progress</option>
-              <option value="not-started">Not Started</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-row">
-
-          <div class="form-group">
-            <label>Customized Approach Used</label>
-            <select>
-              <option value="" disabled selected>Select Status</option>
-              <option value="completed">Completed</option>
-              <option value="in-progress">In Progress</option>
-              <option value="not-started">Not Started</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Non-Conformities/Gap</label>
-            <input type="text" placeholder="Non-Conformities/Gap" />
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Identified</label>
-            <input type="text" placeholder="Identified" />
-          </div>
-          <div class="form-group">
-            <label>Remediation Target Date</label>
-            <input type="date" placeholder="Remediation Target Date" />
-          </div>
-          <div class="form-group">
-            <label>Revalidation Date</label>
-            <input type="date" placeholder="Revalidation Date" />
-          </div>
-
-        </div>
-
-
-        <div class="form-actions">
-          <button type="button" class="go-back-btn" (click)="goBack()">
-            <img src="/assets/icons/arrow_left_alt.png" alt="add_icon">
-          </button>
-          <button type="submit" class="btn-primary">
-            <span>Submit</span>
-          </button>
-        </div>
-      </div>
-
     </form>
   </div>
 </div>

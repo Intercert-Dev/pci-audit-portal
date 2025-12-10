@@ -1,0 +1,163 @@
+<div class="edit-client-container">
+    <div class="edit-client-box">
+        <p class="edit-title">Edit ASV Client</p>
+
+        <!-- Company Name Section -->
+        <div class="form-section">
+            <div class="form-group">
+                <label class="form-label">Company</label>
+                <input type="text" class="form-input" [(ngModel)]="editingRow.company">
+            </div>
+        </div>
+
+        <!-- Q1 Report Section -->
+        <div class="form-section">
+            <div class="form-group">
+                <label class="form-label">Q1 Report</label>
+                <div class="report-section-container">
+                    <div class="report-upload-box">
+                        <input type="text" class="file-display-input"
+                            [value]="editingRow.Q1File ? editingRow.Q1File.name : 'No file selected'" disabled />
+
+                        <div class="action-buttons">
+                            <button type="button" class="action-btn upload-btn" (click)="triggerInput('Q1')">
+                                <span>Upload</span>
+                            </button>
+
+                            <button type="button" class="action-btn preview-btn" (click)="onPreview('Q1')"
+                                [disabled]="!editingRow.Q1File">
+                                <span>Preview</span>
+                            </button>
+
+                            <button type="button" class="action-btn download-btn" (click)="onDownload('Q1')"
+                                [disabled]="!editingRow.Q1File">
+                                <span>Download</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="status-selector">
+                        <select class="status-dropdown" [(ngModel)]="editingRow.Q1Status"
+                            (change)="onStatusChange('Q1', editingRow.Q1Status)">
+                            <option value="PENDING" selected>Pending</option>
+                            <option value="INPROGRESS">In Progress</option>
+                            <option value="COMPLETED">Completed</option>
+                        </select>
+                    </div>
+                </div>
+                <input type="file" #Q1Input class="file-input-hidden" (change)="onFileSelect($event, 'Q1')">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Q2 Report</label>
+                <div class="report-section-container">
+                    <div class="report-upload-box">
+                        <input type="text" class="file-display-input"
+                            [value]="editingRow.Q2File ? editingRow.Q2File.name : 'No file selected'" disabled />
+
+                        <div class="action-buttons">
+                            <button type="button" class="action-btn upload-btn" (click)="triggerInput('Q2')">
+                                <span>Upload</span>
+                            </button>
+
+                            <button type="button" class="action-btn preview-btn" (click)="onPreview('Q2')"
+                                [disabled]="!editingRow.Q2File">
+                                <span>Preview</span>
+                            </button>
+
+                            <button type="button" class="action-btn download-btn" (click)="onDownload('Q2')"
+                                [disabled]="!editingRow.Q2File">
+                                <span>Download</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="status-selector">
+                        <select class="status-dropdown" [(ngModel)]="editingRow.Q2Status"
+                            (change)="onStatusChange('Q2', editingRow.Q2Status)">
+                            <option value="PENDING" selected>Pending</option>
+                            <option value="INPROGRESS">In Progress</option>
+                            <option value="COMPLETED">Completed</option>
+                        </select>
+                    </div>
+                </div>
+                <input type="file" #Q2Input class="file-input-hidden" (change)="onFileSelect($event, 'Q2')">
+            </div>
+        </div>
+
+        <!-- Q3 Report Section -->
+        <div class="form-section">
+            <div class="form-group">
+                <label class="form-label">Q3 Report</label>
+                <div class="report-section-container">
+                    <div class="report-upload-box">
+                        <input type="text" class="file-display-input"
+                            [value]="editingRow.Q3File ? editingRow.Q3File.name : 'No file selected'" disabled />
+
+                        <div class="action-buttons">
+                            <button type="button" class="action-btn upload-btn" (click)="triggerInput('Q3')">
+                                <span>Upload</span>
+                            </button>
+
+                            <button type="button" class="action-btn preview-btn" (click)="onPreview('Q3')"
+                                [disabled]="!editingRow.Q3File">
+                                <span>Preview</span>
+                            </button>
+
+                            <button type="button" class="action-btn download-btn" (click)="onDownload('Q3')"
+                                [disabled]="!editingRow.Q3File">
+                                <span>Download</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="status-selector">
+                        <select class="status-dropdown" [(ngModel)]="editingRow.Q3Status"
+                            (change)="onStatusChange('Q3', editingRow.Q3Status)">
+                            <option value="PENDING" selected>Pending</option>
+                            <option value="INPROGRESS">In Progress</option>
+                            <option value="COMPLETED">Completed</option>
+                        </select>
+                    </div>
+                </div>
+                <input type="file" #Q3Input class="file-input-hidden" (change)="onFileSelect($event, 'Q3')">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Q4 Report</label>
+                <div class="report-section-container">
+                    <div class="report-upload-box">
+                        <input type="text" class="file-display-input"
+                            [value]="editingRow.Q4File ? editingRow.Q4File.name : 'No file selected'" disabled />
+
+                        <div class="action-buttons">
+                            <button type="button" class="action-btn upload-btn" (click)="triggerInput('Q4')">
+                                <span>Upload</span>
+                            </button>
+
+                            <button type="button" class="action-btn preview-btn" (click)="onPreview('Q4')"
+                                [disabled]="!editingRow.Q4File">
+                                <span>Preview</span>
+                            </button>
+
+                            <button type="button" class="action-btn download-btn" (click)="onDownload('Q4')"
+                                [disabled]="!editingRow.Q4File">
+                                <span>Download</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="status-selector">
+                        <select class="status-dropdown" [(ngModel)]="editingRow.Q4Status"
+                            (change)="onStatusChange('Q4', editingRow.Q4Status)">
+                            <option value="PENDING" selected>Pending</option>
+                            <option value="INPROGRESS">In Progress</option>
+                            <option value="COMPLETED">Completed</option>
+                        </select>
+                    </div>
+                </div>
+                <input type="file" #Q4Input class="file-input-hidden" (change)="onFileSelect($event, 'Q4')">
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="footer-buttons">
+            <button class="save-button" (click)="saveEdit()">Save</button>
+            <button class="cancel-button" (click)="cancelEdit()">Cancel</button>
+        </div>
+    </div>
+</div>

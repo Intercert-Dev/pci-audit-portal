@@ -1,0 +1,38 @@
+<div class="client-list-container">
+  <div class="client-list-box">
+    <div class="header-row">
+      <p>Total Certified Client List</p>
+      <div class="header-right">
+        <div class="search-box">
+          <img src="/assets/icons/magnifying-glass 2.png" alt="Search Icon">
+          <input type="text" placeholder="Search Certificates" [(ngModel)]="search_text" (input)="filter_list()">
+        </div>
+        <button class="export-btn" (click)="exportToExcel()"><span>Export to Excel</span></button>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Company</th>
+            <th>Certificate No.</th>
+            <th>Issue Date</th>
+            <th>Valid Date</th>
+            <th>Audit Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let row of filtered_list">
+            <td>{{ row.company }}</td>
+            <td>{{ row.certNo }}</td>
+            <td>{{ row.certificateIssueDate | date }}</td>
+            <td>{{ row.certificateExpiryDate | date }}</td>
+            <td>{{ row.auditStatus }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

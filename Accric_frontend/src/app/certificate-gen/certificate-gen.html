@@ -1,1 +1,174 @@
-<p>certificate-gen works!</p>
+<div class="certificate-box">
+  <div class="certificate-container" [class.expanded]="showCertificateForm">
+    <!-- Certificate input form -->
+    <form #certForm="ngForm" (ngSubmit)="generateCertificate(certForm)">
+      <div class="input-row">
+        <input type="text" name="certificateNo" ngModel required placeholder="Enter certificate number" />
+        <button class="certificate-btn" type="submit">
+          <span>Generate</span>
+        </button>
+      </div>
+      <div *ngIf="showCertificateForm && certificateData">
+        <p class="certificate-sub-heading">Select and Edit Certificate Fields</p>
+        <div class="edit-options">
+          <div class="fields-container">
+            <!-- Certificate No -->
+            <div class="field-row">
+              <input type="checkbox" [(ngModel)]="editFields.certificateNo" name="certificateNoCheck" />
+              <label>Certificate No</label>
+              <input type="text" [(ngModel)]="certificateData.certificateNo" name="certificateNo" />
+            </div>
+
+            <!-- Company Name -->
+            <div class="field-row">
+              <input type="checkbox" [(ngModel)]="editFields.companyName" name="companyNameCheck" />
+              <label>Company Name</label>
+              <input type="text" [(ngModel)]="certificateData.companyName" name="companyName" />
+            </div>
+
+            <!-- Full Address -->
+            <div class="field-row">
+              <input type="checkbox" [(ngModel)]="editFields.full_address" name="full_address_check" />
+              <label>Full Address</label>
+              <input type="text" [(ngModel)]="certificateData.full_address" name="full_address" (input)="splitAddress()"
+                placeholder="Street, City, State, Country, Zip" />
+            </div>
+
+            <!-- Date Issue -->
+            <div class="field-row">
+              <input type="checkbox" [(ngModel)]="editFields.dateIssue" name="dateIssueCheck" />
+              <label>Date Issue</label>
+              <input type="text" [(ngModel)]="certificateData.dateIssue" name="dateIssue" />
+            </div>
+
+            <!-- Date Valid -->
+            <div class="field-row">
+              <input type="checkbox" [(ngModel)]="editFields.dateValid" name="dateValidCheck" />
+              <label>Date Valid</label>
+              <input type="text" [(ngModel)]="certificateData.dateValid" name="dateValid" />
+            </div>
+            
+            <!-- Classification -->
+            <div class="field-row">
+              <input type="checkbox" [(ngModel)]="editFields.assessment_classification"
+                name="assessment_classification" />
+              <label>Assessment Classification</label>
+              <input type="text" [(ngModel)]="certificateData.assessment_classification"
+                name="assessment_classification" />
+            </div>
+
+            <!-- Version -->
+            <div class="field-row">
+              <input type="checkbox" [(ngModel)]="editFields.version" name="versionCheck" />
+              <label>Version</label>
+              <input type="text" [(ngModel)]="certificateData.version" name="version"
+                placeholder="Standard Version 4.0.1" />
+            </div>
+
+            <!-- Auditor Name -->
+            <div class="field-row">
+              <input type="checkbox" [(ngModel)]="editFields.auditor_name" name="auditorNameCheck" />
+              <label>Auditor Name</label>
+              <select [(ngModel)]="certificateData.auditor_name" name="auditor_name">
+                <option value="">-- Select Auditor --</option>
+                <option *ngFor="let auditor of auditorList" [value]="auditor">
+                  {{ auditor }}
+                </option>
+              </select>
+            </div>
+
+          </div>
+        </div>
+
+        <p class="certificate-sub-heading">Certification Options</p>
+        <div class="certification-options">
+          <div class="options-flex-container">
+            <!-- Company Name Font Size (16px-24px) -->
+            <div class="option-row">
+              <label>Company Font Size</label>
+              <select [(ngModel)]="certificateOptions.companyNameFontSize" name="companyNameFontSize" (change)="onOptionsChange()">
+                <option *ngFor="let size of companyNameFontSizes" [value]="size">{{size}}</option>
+              </select>
+            </div>
+            
+            <!-- Address Font Size (8px-16px) -->
+            <div class="option-row">
+              <label>Address Font Size</label>
+              <select [(ngModel)]="certificateOptions.addressFontSize" name="addressFontSize" (change)="onOptionsChange()">
+                <option *ngFor="let size of addressFontSizes" [value]="size">{{size}}</option>
+              </select>
+            </div>
+            
+            <!-- Version/Type Font Size (10px-16px) -->
+            <div class="option-row">
+              <label>Standard Font Size</label>
+              <select [(ngModel)]="certificateOptions.typeFontSize" name="typeFontSize" (change)="onOptionsChange()">
+                <option *ngFor="let size of typeFontSizes" [value]="size">{{size}}</option>
+              </select>
+            </div>
+            
+            <!-- Page Size -->
+            <!-- <div class="option-row">
+              <label>Page Size</label>
+              <select [(ngModel)]="certificateOptions.pageSize" name="pageSize" (change)="onOptionsChange()">
+                <option *ngFor="let size of pageSizes" [value]="size">{{size}}</option>
+              </select>
+            </div> -->
+
+
+            <!-- Certificate Format -->
+            <div class="option-row">
+              <label>Certificate Format</label>
+              <select [(ngModel)]="certificateOptions.formatType" name="formatType" (change)="onOptionsChange()">
+                <option value="Softcopy">Softcopy</option>
+                <option value="Printable">Printable</option>
+              </select>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="btn-certificate">
+          <button class="certificate-btn" type="button" (click)="generateCertificatePdf()" [disabled]="pdfGenerating">
+            <span *ngIf="!pdfGenerating">Generate Certificate</span>
+            <span *ngIf="pdfGenerating">Generating PDF...</span>
+          </button>
+          <!-- <button class="certificate-btn btn-reset" type="button" (click)="resetForm()">
+            <span>Reset Form</span>
+          </button> -->
+        </div>
+      </div>
+    </form>
+  </div>
+  
+  <!-- PDF Viewer Section (OUTSIDE the form) -->
+  <div *ngIf="showPdfViewer" #pdfViewer class="pdf-viewer-container">
+    <div class="pdf-viewer-header">
+      <h3>Certificate Preview</h3>
+      <div class="pdf-viewer-controls">
+        <button class="certificate-btn btn-download" (click)="downloadCurrentPDF()">
+          <span>Download PDF</span>
+        </button>
+        <button class="certificate-btn btn-pdf" (click)="printPDF()">
+          <span>Print PDF</span>
+        </button>
+        <button class="certificate-btn btn-close" (click)="closePdfViewer()">
+          <span>Close</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="pdf-viewer">
+      <iframe *ngIf="pdfUrl" [src]="pdfUrl" width="100%" height="600px"
+        style="border: 1px solid #ddd; border-radius: 4px;" title="Certificate PDF">
+        Your browser does not support PDF viewing.
+        Please <a href="javascript:void(0)" (click)="downloadCurrentPDF()">download the PDF</a> instead.
+      </iframe>
+
+      <div *ngIf="!pdfUrl" class="pdf-loading">
+        <p>Loading PDF...</p>
+      </div>
+    </div>
+  </div>
+</div>

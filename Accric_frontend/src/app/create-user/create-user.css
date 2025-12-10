@@ -1,0 +1,271 @@
+.create-user-container {
+  display: flex;
+  background-color: rgba(250, 251, 254, 1);
+  width: 100%;
+  padding-left: 55px;
+  padding-top: 38px;
+  min-height: 88vh;
+  padding-right: 51px;
+
+}
+
+.form-box {
+  width: 100%;
+  max-height: 650px;
+  background-color: rgba(255, 255, 255, 1);
+  border-radius: 25px;
+  padding-top: 2rem;
+  padding-left: 2rem;
+}
+
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 35px;
+}
+
+
+
+.form-group label {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  color: rgba(35, 35, 35, 1);
+}
+
+.form-group input {
+  width: 50%;
+  border-radius: 15px;
+  border: 1px solid rgba(223, 234, 242, 1);
+  padding-block: 16px;
+  padding-inline: 17px;
+}
+
+
+input::placeholder {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  color: rgba(113, 142, 191, 1);
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: rgba(223, 234, 242, 1);
+  box-shadow: none; 
+}
+
+
+.custom-select {
+  width: 50%;
+  position: relative;
+  border-radius: 15px;
+  background-color: #ffffff;
+  border: 1px solid rgba(223, 234, 242, 1);
+  padding: 16px 50px 16px 17px;
+  cursor: pointer;
+
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  color: rgba(113, 142, 191, 1);
+}
+
+/* Selected value text */
+.selected-value {
+  color: rgba(113, 142, 191, 1);
+}
+
+/* Arrow icon styling */
+.arrow-icon {
+  width: 20px;
+  position: absolute;
+  right: 20px;
+  top: 18px;
+  transform: rotate(90deg);
+  transition: 0.2s ease;
+}
+
+.arrow-icon.open {
+  transform: rotate(0deg);
+}
+
+/* Dropdown list */
+.dropdown-options {
+  position: absolute;
+  top: 105%;
+  left: 73%;
+  width: 154px;
+  background-color: white;
+  border: 1px solid rgba(223, 234, 242, 1);
+  border-radius: 22px;
+  z-index: 1000;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+
+}
+
+.option {
+  padding: 12px 17px;
+  color: rgba(113, 142, 191, 1);
+  cursor: pointer;
+  font-weight: 400;
+  font-size: 14px;
+  border-radius: 10px;
+  font-family: "Inter", sans-serif;
+  border-top-left-radius: 22px;
+  border-top-right-radius: 22px;
+}
+
+.option:hover {
+  background-color: rgba(198, 216, 247, 1);
+}
+
+
+.error {
+  color: #d9534f;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.btn {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 13rem;
+}
+
+.submit-btn {
+  width: 265px;
+  height: 48px;
+  border-radius: 15px;
+  padding: 12px 19px;
+  gap: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(57, 106, 255, 1);
+  border: none;
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submit-btn span {
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  color: rgba(245, 247, 250, 1);
+}
+
+
+/* ------------------- RESPONSIVE CSS ------------------- */
+
+/* For screens ≤ 1024px (Tablets) */
+@media (max-width: 1024px) {
+
+  .form-group input,
+  .custom-select {
+    width: 70%;
+  }
+
+  .btn {
+    padding-right: 5rem;
+    justify-content: flex-start;
+  }
+}
+
+/* For screens ≤ 768px (Large Mobile / Small Tablet) */
+@media (max-width: 768px) {
+
+  .create-user-container {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 25px;
+  }
+
+  .form-box {
+    padding-left: 1.5rem;
+    padding-top: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .form-group input,
+  .custom-select {
+    width: 100%;
+  }
+
+  .dropdown-options {
+    left: 0; 
+    width: 100%;
+  }
+
+  .btn {
+    padding-right: 0;
+    justify-content: flex-start;
+  }
+
+ 
+}
+
+/* For screens ≤ 480px (Mobile) */
+@media (max-width: 480px) {
+
+  .form-box{
+    margin-top: 1rem;
+  }
+
+  .form-group {
+    margin-bottom: 25px;
+  }
+
+  .custom-select {
+    padding: 14px 40px 14px 15px;
+  }
+
+  .arrow-icon {
+    right: 15px;
+    top: 15px;
+  }
+
+  .dropdown-options {
+    width: 100%;
+    height: auto;
+    max-height: 160px;
+    overflow-y: auto;
+    left: 0;
+  }
+
+  .btn {
+    padding-right: 0;
+  }
+
+  .submit-btn {
+    width: 100%;
+    height: 45px;
+  }
+}
+
+/* For very small devices ≤ 360px */
+@media (max-width: 360px) {
+
+  .create-user-container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .form-box {
+    padding-left: 1rem;
+    padding-top: 1rem;
+  }
+
+  .dropdown-options {
+    border-radius: 15px;
+  }
+
+  .option {
+    padding: 10px 14px;
+  }
+}

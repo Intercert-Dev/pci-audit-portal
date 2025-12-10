@@ -1,0 +1,264 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.upcoming-audit-list-container {
+  width: 100%;
+  background-color: rgba(250, 251, 254, 1);
+  min-height: 89vh;
+  padding-top: 1px;
+  display: flex;
+  justify-content: center;
+}
+
+.upcoming-audit-list-box {
+  width: 100%;
+  margin-left: 56px;
+  margin-top: 34px;
+  margin-right: 50px;
+}
+
+/* Header */
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 51px;
+}
+
+.header-row p {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  color: rgba(57, 106, 255, 1);
+}
+
+/* Search Box */
+.search-box {
+  width: 195px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 16px;
+  padding: 6px 12px;
+  border: 1px solid rgba(139, 163, 203, 1);
+}
+
+.search-box input {
+  width: 137px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  color: rgba(139, 163, 203, 1);
+  border: none;
+  outline: none;
+  height: 25px;
+  background: transparent;
+}
+
+.search-box input::placeholder {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  color: rgba(139, 163, 203, 1);
+}
+
+/* Export Button */
+.export-btn {
+  width: 170px;
+  height: 43px;
+  border: 1px solid rgba(57, 106, 255, 1);
+  border-radius: 50px;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.export-btn span {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  color: rgba(57, 106, 255, 1);
+}
+
+/* Table container */
+.table-wrapper {
+  margin-top: 1rem;
+  background: white;
+  border-radius: 20px;
+  padding: 1rem 0;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+/* Table with content-based sizing */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  table-layout: fixed;
+}
+
+thead {
+  font-weight: 600;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+thead tr th {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  color: rgba(113, 142, 191, 1);
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(230, 239, 245, 1);
+}
+
+tbody tr td {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  padding: 1rem 1.5rem;
+  color: rgba(35, 35, 35, 1);
+}
+
+tbody tr {
+  border-top: 1px solid #f0f0f0;
+}
+
+tbody tr:hover {
+  background-color: rgba(250, 251, 254, 0.5);
+}
+
+.view-btn {
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 1rem;
+  opacity: 1;
+  padding: 0.8rem 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  background-color: rgba(57, 106, 255, 1);
+  color: rgba(245, 247, 250, 1);
+}
+
+.view-btn span {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+}
+
+/* Empty state styling */
+tbody tr td[colspan] {
+  text-align: center;
+  padding: 40px 20px;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  color: rgba(113, 142, 191, 1);
+  font-style: italic;
+}
+
+/* ============================
+      RESPONSIVE (TABLET)
+   ============================ */
+@media (max-width: 1024px) {
+  .upcoming-audit-list-box {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  .header-right {
+    gap: 20px;
+  }
+
+  .search-box {
+    width: 190px;
+  }
+
+  .export-btn {
+    width: 150px;
+  }
+
+  thead tr th,
+  tbody tr td {
+    padding: 0.8rem 1rem;
+  }
+}
+
+/* ============================
+      RESPONSIVE (MOBILE)
+   ============================ */
+@media (max-width: 768px) {
+  .upcoming-audit-list-box {
+    margin-left: 15px;
+    margin-right: 15px;
+    padding: 2rem;
+  }
+
+  .header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .header-right {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .search-box {
+    width: 60%;
+  }
+
+  .export-btn {
+    width: 40%;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  thead tr th,
+  tbody tr td {
+    font-size: 12px;
+    padding: 0.7rem 1rem;
+  }
+}
+
+/* ============================
+      RESPONSIVE (SMALL MOBILE)
+   ============================ */
+@media (max-width: 480px) {
+  .header-right {
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .search-box {
+    width: 100%;
+  }
+
+  .export-btn {
+    width: 100%;
+  }
+
+  thead tr th,
+  tbody tr td {
+    padding: 0.6rem 0.8rem;
+  }
+}

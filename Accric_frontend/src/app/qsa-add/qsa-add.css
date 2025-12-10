@@ -1,0 +1,214 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", sans-serif;
+}
+
+.qsa-box {
+  width: 100%;
+  background-color: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  margin: 1rem 0;
+  box-shadow: 0 6px 35px rgba(0, 0, 0, 0.08);
+  /* REMOVE max-height and overflow from here */
+  /* The scrolling should be handled by parent (.settings-panels) */
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* Important for proper flexbox behavior */
+}
+
+/* Titles */
+.qsa-box h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #232323;
+  margin-bottom: 1rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* Take available space */
+  min-height: 0; /* Important for scrolling */
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.25rem;
+  flex-shrink: 0; /* Prevent form groups from shrinking */
+}
+
+.form-group label {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: rgba(35, 35, 35, 1);
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="file"] {
+  padding: 12px;
+  border-radius: 1rem;
+  border: 1px solid rgba(223, 234, 242, 1);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.form-group input::placeholder {
+  color: rgba(113, 142, 191, 1);
+}
+
+input:focus {
+  border-color: #396aff;
+}
+
+/* Error messages */
+.error {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+}
+
+/* ============================
+      SIGNATURE PREVIEW
+   ============================ */
+.preview-box {
+  border: 1px solid rgba(223, 234, 242, 1);
+  border-radius: 1rem;
+  padding: 1rem 1.2rem;
+  background: #fff;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex-shrink: 0; /* Prevent preview from shrinking */
+}
+
+.preview-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.preview-top strong {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #3949ff;
+}
+
+.remove-btn {
+  background-color: rgba(57, 106, 255, 1);
+  color: white;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 0.8rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.remove-btn:hover {
+  background-color: #2f55d4;
+}
+
+.preview-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.preview-img {
+  width: 180px;
+  height: auto;
+  max-height: 150px; /* Limit image height */
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  object-fit: contain;
+}
+
+.pdf-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pdf-icon {
+  width: 40px;
+  height: auto;
+}
+
+/* ============================
+      SUBMIT BUTTON
+   ============================ */
+button[type="submit"],
+.submit-btn {
+  background-color: rgba(57, 106, 255, 1);
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 1rem;
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  /* Make button stick to bottom */
+  margin-top: auto;
+  align-self: flex-start; /* Align to left, or use center for center alignment */
+}
+
+
+/* ============================
+      RESPONSIVE DESIGN
+   ============================ */
+@media (max-width: 1024px) {
+  .qsa-box {
+    padding: 1.5rem;
+    max-height: 85vh;
+  }
+}
+
+@media (max-width: 768px) {
+  .qsa-container {
+    padding: 1rem;
+  }
+
+  .qsa-box {
+    padding: 1.2rem;
+    margin: 0;
+    max-height: 80vh;
+  }
+
+  button[type="submit"] {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .qsa-box {
+    padding: 1rem 1.2rem;
+    max-height: 75vh;
+  }
+
+  input {
+    padding: 0 10px;
+  }
+
+  .preview-img {
+    max-width: 120px;
+    max-height: 80px;
+  }
+
+  button[type="submit"] {
+    width: 100%;
+    margin-top: 1rem;
+  }
+}

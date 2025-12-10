@@ -1,0 +1,24 @@
+<div class="qsa-container">
+
+  <!-- Tabs -->
+  <div class="tab-header">
+    <div class="tab" [class.active]="activeTab === 'add'" (click)="activeTab = 'add'">
+      Add QSA
+    </div>
+    <div class="tab" [class.active]="activeTab === 'list'" (click)="activeTab = 'list'">
+      QSA List
+    </div>
+  </div>
+
+
+  <!-- Add QSA Form -->
+  <div *ngIf="activeTab === 'add'">
+    <app-qsa-add></app-qsa-add>
+  </div>
+
+  <!-- QSA List -->
+  <div *ngIf="activeTab === 'list'">
+    <app-qsa-list></app-qsa-list>
+  </div>
+
+</div>

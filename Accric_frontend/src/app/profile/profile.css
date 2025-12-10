@@ -1,0 +1,230 @@
+/* ================================
+   Root Variables
+================================ */
+:root {
+  --primary-color: #007bff;
+  --secondary-color: #6c757d;
+  --background-color: #f8f9fa;
+  --card-background: #ffffff;
+  --border-radius: 10px;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --transition-speed: 0.3s;
+}
+
+/* ================================
+   Profile Container
+================================ */
+.profile-container {
+  padding: 20px;
+  font-family: 'Inter', sans-serif;
+  width: 100%;
+  min-height: 89vh;
+  background-color: rgba(250, 251, 254, 1);
+}
+
+/* ================================
+   Profile Header
+================================ */
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  padding: 30px;
+  background: linear-gradient(135deg, var(--primary-color), #0056b3);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 30px;
+}
+
+.avatar-wrapper {
+  position: relative;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid rgba(255, 255, 255, 0.9);
+}
+
+.profile-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.header-info h1 {
+  font-size: 2rem;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.header-info .title {
+  font-size: 1.1rem;
+  opacity: 0.95;
+  font-weight: 300;
+}
+
+/* ================================
+   Main Grid Layout
+================================ */
+.profile-main {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 25px;
+}
+
+/* ================================
+   Card Component
+================================ */
+.card {
+  background-color: var(--card-background);
+  padding: 25px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.section-title {
+  font-size: 1.4rem;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--background-color);
+  font-weight: 600;
+}
+
+/* ================================
+   Bio Section
+================================ */
+.bio-text {
+  line-height: 1.7;
+  font-size: 1rem;
+  color: #495057;
+}
+
+/* ================================
+   Skills Section (Tags)
+================================ */
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tag {
+  padding: 8px 15px;
+  background-color: #e9ecef;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color var(--transition-speed);
+}
+
+.tag:hover {
+  background-color: var(--primary-color);
+  color: #fff;
+}
+
+/* ================================
+   Contact Section
+================================ */
+.contact-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.contact-list li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  font-size: 0.95rem;
+  color: var(--secondary-color);
+}
+
+.contact-list a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color var(--transition-speed);
+}
+
+.contact-list a:hover {
+  text-decoration: underline;
+  color: #0056b3;
+}
+
+.icon {
+  margin-right: 12px;
+  width: 20px;
+  color: var(--primary-color);
+  text-align: center;
+}
+
+/* ================================
+   Social Links
+================================ */
+.social-links {
+  display: flex;
+  gap: 20px;
+}
+
+.social-link {
+  font-size: 1.6rem;
+  color: var(--secondary-color);
+  transition: transform var(--transition-speed), color var(--transition-speed);
+}
+
+.social-link:hover {
+  transform: scale(1.1);
+}
+
+.social-link.linkedin:hover {
+  color: #0077b5;
+}
+
+.social-link.github:hover {
+  color: #333;
+}
+
+.social-link.website:hover {
+  color: var(--primary-color);
+}
+
+/* ================================
+   Responsive Design
+================================ */
+@media (max-width: 992px) {
+  .profile-main {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
+
+  .avatar-wrapper {
+    width: 110px;
+    height: 110px;
+  }
+
+  .profile-main {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-title {
+    font-size: 1.2rem;
+  }
+
+  .bio-text {
+    font-size: 0.95rem;
+  }
+}

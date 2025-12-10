@@ -1,0 +1,396 @@
+/* Main Container */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.edit-client-container {
+  width: 100%;
+  background-color: rgba(250, 251, 254, 1);
+  min-height: 89vh;
+  padding-top: 1px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Edit Box */
+.edit-client-box {
+  background-color: white;
+  border-radius: 6px;
+  padding: 2rem;
+  width: 100%;
+  margin-left: 54px;
+  margin-right: 79px;
+  margin-top: 27px;
+}
+
+.edit-title {
+  margin-bottom: 24px;
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  color: rgba(57, 106, 255, 1);
+}
+
+/* Form Sections */
+.form-section {
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  display: flex;
+  gap: 2rem;
+}
+
+.form-section:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+/* Form Group */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.form-group label {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: rgba(139, 163, 203, 1);
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid rgba(139, 163, 203, 1);
+  border-radius: 12px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  color: rgba(139, 163, 203, 1);
+  transition: all 0.3s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: rgba(57, 106, 255, 1);
+  box-shadow: 0 0 0 3px rgba(57, 106, 255, 0.1);
+}
+
+/* Report Section Container */
+.report-section-container {
+  display: flex;
+  gap: 24px;
+  width: 100%;
+  align-items: flex-start;
+  border: 1px solid rgba(223, 234, 242, 1);
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+/* Report Upload Box */
+.report-upload-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* File Display Input */
+.file-display-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid rgba(139, 163, 203, 1);
+  border-radius: 12px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  color: rgba(139, 163, 203, 1);
+  cursor: not-allowed;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 1rem;
+  opacity: 1;
+  padding: 0.8rem 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.upload-btn {
+  background-color: rgba(57, 106, 255, 1);
+  color: rgba(245, 247, 250, 1);
+}
+
+.upload-btn:hover {
+  background-color: rgba(57, 106, 255, 0.9);
+}
+
+.preview-btn {
+  background-color: rgba(12, 50, 166, 1);
+  color: rgba(245, 247, 250, 1);
+}
+
+.preview-btn:hover {
+  background-color: rgba(12, 50, 166, 0.9);
+}
+
+.preview-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.download-btn {
+  background-color: rgba(198, 215, 246, 1);
+  color: rgba(52, 60, 106, 1);
+}
+
+.download-btn:hover {
+  background-color: rgba(198, 215, 246, 0.9);
+}
+
+.download-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Status Selector */
+.status-selector {
+  width: 150px;
+  min-width: 150px;
+}
+
+.status-dropdown {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid rgba(139, 163, 203, 1);
+  border-radius: 12px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  color: rgba(139, 163, 203, 1);
+  background: white;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23718ebf' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+
+/* Hidden File Input */
+.file-input-hidden {
+  display: none;
+}
+
+/* Footer Buttons */
+.footer-buttons {
+  padding: 24px 30px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  border-top: 1px solid rgba(230, 239, 245, 1);
+}
+
+.save-button,
+.cancel-button {
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 1rem;
+  opacity: 1;
+  padding: 0.8rem 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.save-button {
+  background-color: rgba(57, 106, 255, 1);
+  color: rgba(245, 247, 250, 1);
+}
+
+.cancel-button {
+  background-color: rgba(198, 215, 246, 1);
+  color: rgba(52, 60, 106, 1);
+}
+
+/* Custom scrollbar */
+.edit-client-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.edit-client-content::-webkit-scrollbar-track {
+  background: rgba(230, 239, 245, 1);
+  border-radius: 10px;
+}
+
+.edit-client-content::-webkit-scrollbar-thumb {
+  background: rgba(139, 163, 203, 1);
+  border-radius: 10px;
+}
+
+.edit-client-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(113, 142, 191, 1);
+}
+
+/* Smooth scroll behavior */
+.edit-client-content {
+  scroll-behavior: smooth;
+}
+
+/* ============================
+      RESPONSIVE (TABLET)
+   ============================ */
+@media (max-width: 1024px) {
+  .edit-client-container {
+    width: 95%;
+    max-height: 85vh;
+  }
+
+  .edit-client-content {
+    padding: 24px;
+  }
+
+  .edit-title-container {
+    padding: 20px 24px;
+  }
+
+  .footer-buttons {
+    padding: 20px 24px;
+  }
+
+  .report-section-container {
+    gap: 20px;
+  }
+
+  .status-selector {
+    width: 130px;
+    min-width: 130px;
+  }
+}
+
+/* ============================
+      RESPONSIVE (MOBILE)
+   ============================ */
+@media (max-width: 768px) {
+  .edit-client-container {
+    width: 100%;
+    max-height: 95vh;
+    border-radius: 16px;
+    padding: 0;
+  }
+
+  .edit-client-content {
+    padding: 20px;
+  }
+
+  .edit-title-container {
+    padding: 20px;
+  }
+
+  .edit-title {
+    font-size: 18px;
+  }
+
+  .report-section-container {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .status-selector {
+    width: 100%;
+  }
+
+  .status-dropdown {
+    min-height: 3rem;
+    width: 100%;
+  }
+
+  .footer-buttons {
+    flex-direction: column-reverse;
+    gap: 12px;
+    padding: 20px;
+  }
+
+  .save-button,
+  .cancel-button {
+    width: 100%;
+    padding: 14px 24px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .action-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* ============================
+   RESPONSIVE (SMALL MOBILE)
+   ============================ */
+@media (max-width: 480px) {
+  .edit-client-content {
+    padding: 16px;
+  }
+
+  .edit-title-container {
+    padding: 20px 16px;
+  }
+
+  .edit-title {
+    font-size: 16px;
+  }
+
+  .form-section {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+  }
+
+  .form-group label {
+    font-size: 13px;
+  }
+
+  .form-input,
+  .file-display-input,
+  .status-dropdown {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .footer-buttons {
+    padding: 20px 16px;
+  }
+
+  .save-button,
+  .cancel-button {
+    font-size: 14px;
+    padding: 12px 20px;
+  }
+}

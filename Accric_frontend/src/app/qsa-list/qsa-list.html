@@ -1,0 +1,146 @@
+<div class="qsa-list-container">
+  <div class="qsa-list-box">
+
+    <div class="qsa-table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>QSA Name</th>
+            <th>Email ID</th>
+            <th>Signature</th>
+            <th>Certificate Number</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <!-- QSA ROWS -->
+          <tr *ngFor="let qsa of qsaList">
+            <td>{{ qsa.qsa_name }}</td>
+            <td>{{ qsa.qsa_email }}</td>
+
+            <!-- Signature Image -->
+            <td>
+              <img *ngIf="qsa.signature" [src]="qsa.signature" alt="Signature" class="qsa-signature-img"
+                (error)="qsa.signature = null">
+              <span *ngIf="!qsa.signature">—</span>
+            </td>
+
+            <td>{{ qsa.certification_number || '—' }}</td>
+            <td>
+              <div class="qsa-action-box">
+                <img src="/assets/icons/edit.png" alt="edit" (click)="editQsa(qsa)">
+                <!-- <img src="/assets/icons/delete.png" alt="delete" (click)="deleteQsa(qsa)"> -->
+              </div>
+            </td>
+          </tr>
+
+          <!-- NO DATA -->
+          <tr *ngIf="!isLoading && qsaList.length === 0">
+            <td colspan="5" class="center-text">No QSA records found</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT POPUP -->
+<div class="qsa-edit-popup" *ngIf="showEditPopup">
+  <div class="qsa-popup-overlay" (click)="!isLoading && cancelEdit()"></div>
+
+  <div class="qsa-popup-content">
+    <div class="popup-header">
+      <h2>Edit QSA Details</h2>
+    </div>
+
+    <div class="popup-body">
+
+      <div class="qsa-form-row">
+        <div class="qsa-form-group">
+          <label>QSA Name <span class="required">*</span></label>
+          <input type="text" [(ngModel)]="editModel.qsa_name" placeholder="Enter QSA name" [disabled]="isLoading">
+          <!-- FIXED: No optional chaining needed -->
+          <div *ngIf="!editModel.qsa_name.trim()" class="validation-error">QSA Name is required</div>
+        </div>
+
+        <div class="qsa-form-group">
+          <label>Email <span class="required">*</span></label>
+          <input type="email" [(ngModel)]="editModel.qsa_email" placeholder="Enter email address"
+            [disabled]="isLoading">
+          <!-- FIXED: No optional chaining needed -->
+          <div *ngIf="!editModel.qsa_email.trim()" class="validation-error">Email is required</div>
+          <!-- FIXED: No optional chaining needed -->
+          <div *ngIf="editModel.qsa_email && !isValidEmail(editModel.qsa_email)" class="validation-error">Invalid email
+            format</div>
+        </div>
+      </div>
+
+      <div class="qsa-form-row">
+        <div class="qsa-form-group">
+          <label>Certificate Number</label>
+          <input type="text" [(ngModel)]="editModel.certification_number" placeholder="Enter certificate number"
+            [disabled]="isLoading">
+        </div>
+
+        <div class="qsa-form-group">
+          <label>Signature</label>
+          <div class="simple-file-upload" style="margin-top: -7px;">
+            <input type="file" id="signatureUpload" (change)="onSignatureUpload($event)"
+              accept="image/png,image/jpeg,image/jpg,image/svg+xml" hidden>
+
+            <div class="file-input-wrapper">
+              <button type="button" class="file-select-btn" (click)="triggerFileInput()" [disabled]="isLoading">
+                Choose File
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Current Signature Preview -->
+      <div *ngIf="editModel.signature && !newSignatureFile" class="signature-section">
+        <div class="section-header">
+          <h3>Current Signature</h3>
+          <button type="button" class="qsa-btn btn-remove" (click)="removeCurrentSignature()" [disabled]="isLoading">
+           <span>Remove</span> 
+          </button>
+        </div>
+        <div class="signature-preview">
+          <img [src]="editModel.signature" alt="Current Signature" class="preview-image"
+            (error)="removeCurrentSignature()">
+        </div>
+      </div>
+
+      <!-- New Signature Preview -->
+      <div *ngIf="newSignatureFile" class="signature-section">
+        <div class="section-header">
+          <h3>New Signature Preview</h3>
+          <button type="button" class="qsa-btn btn-remove" (click)="removeNewSignature()" [disabled]="isLoading">
+            <span>Remove</span>
+          </button>
+        </div>
+        <div class="signature-preview">
+          <img *ngIf="signaturePreview" [src]="signaturePreview" alt="New Signature Preview" class="preview-image">
+        </div>
+      </div>
+
+      <!-- No Signature Message -->
+      <div *ngIf="!editModel.signature && !newSignatureFile" class="no-signature">
+        <p>No signature uploaded</p>
+      </div>
+    </div>
+
+    <div class="popup-footer">
+      <div class="qsa-popup-buttons">
+        <button class="qsa-btn btn-cancel" (click)="cancelEdit()">
+          <span>Cancel</span>
+        </button>
+        <button class="qsa-btn btn-save" (click)="saveEdit()"
+          [disabled]="isLoading || !editModel.qsa_name.trim() || !editModel.qsa_email.trim() || !isValidEmail(editModel.qsa_email)">
+         <span>Save Changes</span> 
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

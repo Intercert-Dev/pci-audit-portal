@@ -40,6 +40,7 @@
   border: none;
   background: none;
 }
+
 .menu-btn img {
   width: 18px;
 }
@@ -48,13 +49,10 @@
   display: flex;
   align-items: center;
   color: rgba(100, 149, 237, 1);
+  width: 200px;
+  height: 80px;
 }
 
-.logo-img {
-  width: 125px;
-  height: 40px;
-
-}
 
 
 .header-right {
@@ -64,7 +62,6 @@
   justify-content: space-between;
   padding: 0.5rem;
   margin-left: 3.5rem;
-  margin-right: 2rem;
 
 }
 
@@ -139,21 +136,20 @@
 .layout-body {
   display: flex;
   flex: 1;
-  overflow: auto; /* allow scroll when content is larger */
-  height: auto; /* let it grow naturally */
+  overflow: hidden;
 }
 
-.sidebar {
+.sidebar-wrapper {
   width: 267px;
   background: white;
-  color:rgba(177, 177, 177, 1);
+  color: rgba(177, 177, 177, 1);
   overflow: hidden;
-  white-space: nowrap; 
-  transition: width 0.6s ease-in-out; 
-  padding-inline: 36px;
+  white-space: nowrap;
+  transition: width 0.6s ease-in-out;
+  padding-inline: 16px;
 }
 
-.sidebaar-box{
+.sidebaar-box {
   width: 196px;
 }
 
@@ -168,40 +164,6 @@
   padding: 0;
 }
 
-/* .sidebar nav ul li {
-  padding: 12px 20px;
-  display: flex;
-  align-items: center;
-  gap : 1.5rem;
-  cursor: pointer;
-}
-
-.sidebar nav ul li img {
-  width: 20px;
-  height: 20px;
-}
-
-.sidebar nav ul li span {
-  font-family: 'Inter', sans-serif;
-  font-weight: 500;
-  font-size: 18px;
-  transition: opacity 0.3s ease, width 0.3s ease;
-} */
-
-
-/* .sidebar.closed nav ul li span {
-  opacity: 0;
-  visibility: hidden;
-  width: 0;
-  overflow: hidden;
-}
-
-.sidebar.closed nav ul li {
-  justify-content: center;
-  padding: 12px 0;
-} */
-
-
 /* Remove padding when sidebar is closed */
 .sidebar {
   width: 267px;
@@ -210,27 +172,35 @@
   overflow: hidden;
   white-space: nowrap;
   transition: width 0.4s ease-in-out;
-  padding-inline: 16px; /* reduce default padding */
 }
 
-/* When sidebar is closed */
-.sidebar.closed {
-  width: 70px;
-  padding-inline: 0px !important; /* IMPORTANT FIX */
+.sidebar-wrapper.collapsed {
+  width: 60px;
+  padding-inline: 16px !important;
 }
 
-/* Fix inside container width */
-.sidebaar-box {
-  width: 100%; /* FIXED (no fixed width) */
+.main-layout.sidebar-collapsed .main-content {
+  margin-left: 60px !important;
+  transition: margin-left 0.8s ease;
 }
 
 /* Icon list */
 .sidebar nav ul li {
   padding: 12px 20px;
-  display: flex;
   align-items: center;
   gap: 1.5rem;
   cursor: pointer;
+}
+
+.submenu li span {
+  padding-left: 22px;
+}
+
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 /* When sidebar collapsed, icons stay centered */
@@ -260,7 +230,6 @@
 .sidebar nav ul li.active span,
 .sidebar nav ul li.active a {
   color: rgba(66, 133, 244, 1);
-  
 }
 
 .layout-body-box {
@@ -269,53 +238,108 @@
 }
 
 
-.main-layout.sidebar-collapsed .layout-body-box {
-  width: 100px;      
-  padding-left: 1.6rem; 
+.has-submenu .nav-item {
+  display: flex;
+  align-items: center;
+}
+
+
+.submenu nav ul li {
+  padding: 12px 20px;
+  gap: 1.5rem;
+  cursor: pointer;
+}
+
+.arrow-icon {
+  width: 12px;
+  height: 12px;
+  transition: transform 0.3s ease;
+  transform: rotate(-90deg);
+}
+
+.arrow-icon.rotate {
+  transform: rotate(0deg);
+}
+
+
+
+
+.main-layout.sidebar-wrapper-collapsed .layout-body-box {
+  width: 100px;
+  padding-left: 1.6rem;
   transition: all 0.9s ease;
 }
 
 
-
-
-/* ---------- Laptops (1025px–1439px) ---------- */
-@media (min-width: 1025px) and (max-width: 1439px) {
-  .topbar {
-    padding: 0.75rem 1.5rem;
-  }
-
-  .header-right {
-    width: 88%;
-    margin-left: 2.5rem;
-  }
-
-  .header-right p {
-    font-size: 1.8rem;
-  }
-
-  .search-box {
-    width: 320px;
-  }
-
-  .sidebar {
-    width: 210px;
-  }
-
-  .sidebar.closed {
-    width: 65px;
-  }
-
-  .sidebar nav ul li span {
-    font-size: 17px;
-  }
+.user-box {
+  width: 63px;
+  height: 63px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 }
+
+
+.arrow-icon {
+  width: 12px;
+  height: 12px;
+  transition: transform 0.2s ease;
+}
+
+
+
+.dropdown-menu {
+  width: 157px;
+  border-radius: 15px;
+  color: rgba(255, 255, 255, 1);
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(100, 149, 237, 0.34);
+  position: absolute;
+  border-top-left-radius: 17px;
+  border-top-right-radius: 17px;
+  text-align: center;
+  right: 8px;
+  top: 80px;
+
+
+}
+
+.dropdown-item {
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  color: rgba(0, 0, 0, 1);
+  cursor: pointer;
+  padding-left: 45px;
+  padding-right: 51px;
+  padding-block: 14px;
+
+}
+
+.dropdown-item:hover {
+  border-top-left-radius: 17px;
+  border-top-right-radius: 17px;
+  background-color: rgba(198, 216, 247, 1);
+
+}
+
+
+
+
+
 
 /* ----- Tablet and below ----- */
 @media (max-width: 1024px) {
-  
+
   .layout-body {
     flex-direction: column;
     margin-top: 7rem;
+  }
+
+  .main-content {
+    margin-top: 2rem;
   }
 
   .topbar {
@@ -324,26 +348,22 @@
     left: 0;
     width: 100%;
     background-color: white;
-    z-index: 200;
+    z-index: 9999 !important;
     display: flex;
-    flex-direction: column;
-    align-items: stretch;
     justify-content: flex-start;
     padding: 0.8rem 1rem;
     gap: 0.8rem;
-    height: auto;
+  }
+
+  .dropdown-menu {
+    top: 200px;
+    right: 1.5rem;
   }
 
   .topbar-left-items {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 100%;
-  }
-
-  .logo img {
-    width: 120px;
-    height: auto;
   }
 
   .header-right {
@@ -352,11 +372,13 @@
     align-items: stretch;
     width: 100%;
     gap: 0.6rem;
+    margin-top: 3rem;
     margin-left: 0;
+
   }
 
   .header-right p {
-    font-size: 1.2rem;
+    font-size: 2rem;
     text-align: left;
   }
 
@@ -370,13 +392,14 @@
 
   .search-box {
     flex: 1;
-    width: 100%;
+    width: 350px;
     display: flex;
     align-items: center;
-    background-color: white;
-    border-radius: 8px;
-    padding: 0.6rem 0.8rem;
-    gap: 0.5rem;
+    gap: 10px;
+    background-color: rgba(245, 247, 250, 1);
+    border: none;
+    border-radius: 2.5rem;
+    padding: 0.8rem;
   }
 
   .search-box input {
@@ -393,15 +416,20 @@
   }
 
   #user-icon {
-    width: 34px;
-    height: 34px;
     border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: block;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+    object-position: 90% 50%;
   }
 
   /* ---------- Sidebar Drawer ---------- */
   .sidebar {
     position: fixed;
-    top: 13rem; 
+    top: 13rem;
     left: 0;
     height: calc(100% - 7rem);
     width: 70%;
@@ -410,7 +438,7 @@
     z-index: 300;
     transform: translateX(-100%);
     transition: transform 0.3s ease-in-out;
-    
+
   }
 
   .sidebar.open {
@@ -440,22 +468,30 @@
   body {
     overflow-x: hidden;
   }
+
+  .bottom-line {
+    margin-top: 3rem;
+  }
 }
 
 /* ---------- Tablets portrait / Large Phones (481px–767px) ---------- */
 @media (min-width: 481px) and (max-width: 767px) {
   .topbar {
-    flex-direction: column;
-    align-items: flex-start;
-    height: auto;
+    width: 100%;
     padding: 0.75rem 1rem;
     gap: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    position: fixed !important;
+    height: auto;
+    z-index: 300;
+    align-items: start;
   }
 
-  .topbar-left-items {
-    width: 100%;
-    justify-content: space-between;
-    padding-inline: 1.5rem;
+  .dropdown-menu {
+    top: 200px;
+    right: 2.5rem;
   }
 
   .header-right {
@@ -463,12 +499,12 @@
     align-items: flex-start;
     width: 100%;
     margin-left: 0;
-    gap: 0.75rem;
-    padding-inline: 1.5rem;
+    gap: 1rem;
+    margin-top: 0;
   }
 
   .header-right p {
-    font-size: 1.4rem;
+    font-size: 1.7rem;
   }
 
   .search-box {
@@ -486,8 +522,8 @@
   }
 
   #user-icon {
-    width: 34px;
-    height: 34px;
+    width: 40px;
+    height: 40px;
   }
 
   .layout-body {
@@ -515,6 +551,14 @@
   .layout-body {
     overflow-x: hidden;
   }
+
+  .bottom-line {
+    margin-top: 6rem;
+  }
+
+  .main-content {
+    margin-top: 2rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -526,28 +570,39 @@
     gap: 0.7rem;
   }
 
+  .dropdown-menu {
+    top: 190px;
+    right: 1.5rem;
+    width: 140px;
+  }
+
   .topbar-left-items {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-inline: 1rem;
-  }
-
-  .logo img {
-    width: 110px;
-    height: auto;
   }
 
   .header-right {
     flex-direction: column;
     align-items: stretch;
     width: 100%;
-    gap: 0.6rem;
+    gap: 1rem;
+    margin-top: 0;
+    margin-left: 0;
   }
 
   .header-right p {
-    font-size: 1.1rem;
     text-align: left;
+    font-size: 1.7rem;
+  }
+  .notification-bell {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  #user-icon {
+    width: 40px;
+    height: 40px;
   }
 
   .header-right-items {
@@ -558,25 +613,9 @@
     width: 100%;
   }
 
-  .search-box {
-    width: 100%;
-    padding: 0.5rem 0.8rem;
-  }
 
-  .search-box input {
-    font-size: 13px;
-    width: 100%;
-  }
 
-  .notification-bell img {
-    width: 28px;
-    height: 28px;
-  }
 
-  #user-icon {
-    width: 32px;
-    height: 32px;
-  }
 
   /* Sidebar Mobile Drawer */
   .sidebar {
@@ -608,8 +647,82 @@
   .layout-body {
     flex-direction: column;
     overflow-x: hidden;
+    margin-top: 10rem;
+  }
+
+  .bottom-line {
+    margin-top: 1rem;
+  }
+
+  .main-content {
+    margin-top: 2rem;
   }
 }
 
+/* Extra Small Devices (max-width: 360px) */
+@media (max-width: 360px) {
 
+  .asv-audit-container {
+    margin-top: 8rem; /* Space for fixed topbar */
+    padding: 0.75rem;
+    min-height: calc(100vh - 60px);
+  }
 
+  .asv-audit-box {
+    padding: 0.75rem;
+    margin: 0;
+    border-radius: 0;
+    width: 100%;
+  }
+
+  .asv-audit-box h2 {
+    font-size: 1.15rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-section h3 {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+
+  input,
+  textarea {
+    font-size: 0.9rem;
+    padding: 0.6rem 0.75rem;
+    height: 2.5rem;
+  }
+
+  label {
+    font-size: 0.9rem;
+  }
+
+  .form-actions {
+    margin-top: 1rem;
+    padding-top: 0.5rem;
+    flex-direction: column;
+    width: 100%;
+    gap: 0.5rem;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    padding: 0.6rem 1rem;
+  }
+
+  .btn-primary span,
+  .btn-secondary span {
+    font-size: 0.95rem;
+  }
+
+  /* Dropdown responsiveness */
+  .search-dropdown-list {
+    max-height: 150px;
+  }
+
+  .dropdown-item {
+    padding: 0.6rem 0.6rem;
+    font-size: 0.85rem;
+  }
+
+}

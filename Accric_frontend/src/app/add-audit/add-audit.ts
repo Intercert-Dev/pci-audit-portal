@@ -13,7 +13,7 @@ interface DateErrors {
   nextAuditDueDate: string;
 }
 
-interface LegalEntity {  // Capitalized interface name
+interface LegalEntity { 
   id: number;
   name: string;
 }
@@ -74,7 +74,13 @@ export class AddAudit implements OnInit {
   };
 
   legalEntitySearch: string = '';
-  legalEntities: LegalEntity[] = [];
+  legalEntities: LegalEntity[] = [
+    { id: 1, name: "Intercert" },
+    { id: 2, name: "Tech Solutions" },
+    { id: 3, name: "SecureTech" },
+    { id: 4, name: "DataSafe Inc." },
+    { id: 5, name: "NetGuardians" } 
+  ];
   filteredLegalEntities: LegalEntity[] = [];
   selectedLegalEntityId: number | null = null;
   showLegalEntityDropdown: boolean = false;

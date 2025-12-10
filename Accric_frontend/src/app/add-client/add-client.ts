@@ -59,8 +59,8 @@ export class AddClient implements OnInit {
     primaryName: '',
     primaryDesignation: '',
     primaryEmail: '',
-    primaryPhone: '', 
-    phoneCountryCode: '+1', 
+    primaryPhone: '',
+    phoneCountryCode: '+1',
     technicalContact: '',
     informationSecurityOfficer: '',
     clientSignoff: '',
@@ -90,6 +90,20 @@ export class AddClient implements OnInit {
   showCountryDropdown: boolean = false;
   showStateDropdown: boolean = false;
   showCityDropdown: boolean = false;
+
+  toggleCountryDropdown() {
+    this.showCountryDropdown = !this.showCountryDropdown;
+  }
+
+  closeCountryDropdown() {
+    this.showCountryDropdown = false;
+  }
+  closeStateDropdown() {
+    this.showStateDropdown = false;
+  }
+  closeCityDropdown() {
+    this.showCityDropdown = false;
+  }
 
   tabRequiredFields: { [key: string]: string[] } = {
     "client-profile": ["legalEntityName", "country", "state", "city", "street", "zipCode", "typeOfBusiness"],
@@ -235,8 +249,6 @@ export class AddClient implements OnInit {
     return selectedCode?.flag || '🇺🇸';
   }
 
-  // ... rest of your existing methods for country, state, city remain exactly the same ...
-  // No changes needed to those methods
 
   // Open country dropdown
   openCountryDropdown(event: Event) {

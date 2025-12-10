@@ -1,8 +1,36 @@
 <div class="report-verification-container">
   <div class="report-verification-box">
     <h2>Audit Report Verification</h2>
-    
+
     <form #reportForm="ngForm" (ngSubmit)="onSubmit(reportForm)" class="report-form">
+      <div class="form-row">
+        <div class="form-group search-dropdown">
+          <label>Legal Entity Name</label>
+          <div class="search-input-wrapper">
+            <input style="width: 50%;" type="text" name="legalEntityName" [(ngModel)]="legalEntitySearch"
+              (input)="onLegalEntitySearch()" (focus)="showLegalEntityDropdown = true" (blur)="onLegalEntityBlur()"
+              placeholder="Search legal entity name" autocomplete="off" />
+          </div>
+
+          <!-- Dropdown list -->
+          <div class="search-dropdown-list" *ngIf="showLegalEntityDropdown && filteredLegalEntities.length > 0">
+            <div *ngFor="let entity of filteredLegalEntities" class="dropdown-item"
+              (mousedown)="selectLegalEntity(entity)" [class.selected]="entity.id === selectedLegalEntityId">
+              {{ entity.name }}
+            </div>
+          </div>
+
+          <div class="search-dropdown-list"
+            *ngIf="showLegalEntityDropdown && filteredLegalEntities.length === 0 && legalEntitySearch">
+            <div class="no-results">No legal entities found</div>
+          </div>
+
+          <!-- Hidden input to store the actual value -->
+          <input type="hidden" name="legalEntityId" [(ngModel)]="selectedLegalEntityId" />
+        </div>
+
+      </div>
+
       <div class="form-row">
         <div class="form-group">
           <label>Previous Report</label>
@@ -28,8 +56,7 @@
             <input type="text" [value]="currentReportFile ? currentReportFile.name : 'No file selected'" disabled />
             <div class="report-buttons">
               <button type="button" class="btn-upload" (click)="onUpload('current')"><span>Upload</span></button>
-              <button type="button" class="btn-preview" (click)="onPreview('current')"
-                [disabled]="!currentReportFile">
+              <button type="button" class="btn-preview" (click)="onPreview('current')" [disabled]="!currentReportFile">
                 <span>Preview</span>
               </button>
               <button type="button" class="btn-download" (click)="onDownload('current')"

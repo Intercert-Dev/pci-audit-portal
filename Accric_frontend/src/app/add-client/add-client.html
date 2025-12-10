@@ -37,7 +37,7 @@
                 class="dropdown-input" />
               <div class="dropdown-icon">▼</div>
 
-              <div class="dropdown-list" *ngIf="showCountryDropdown">
+              <div class="dropdown-list" *ngIf="showCountryDropdown" (mouseleave)="closeCountryDropdown()">
                 <div class="search-container" (click)="$event.stopPropagation()">
                   <input type="text" name="countrySearch" placeholder="Search country..." [(ngModel)]="countrySearch"
                     (ngModelChange)="filterCountries()" class="search-input" autocomplete="off" />
@@ -68,7 +68,7 @@
                 class="dropdown-input" [disabled]="!clientData.country" />
               <div class="dropdown-icon">▼</div>
 
-              <div class="dropdown-list" *ngIf="showStateDropdown && clientData.country">
+              <div class="dropdown-list" *ngIf="showStateDropdown && clientData.country" (mouseleave)="closeStateDropdown()">
                 <div class="search-container" (click)="$event.stopPropagation()">
                   <input type="text" name="stateSearch" placeholder="Search state..." [(ngModel)]="stateSearch"
                     (ngModelChange)="filterStates()" class="search-input" autocomplete="off" />
@@ -104,7 +104,7 @@
                 class="dropdown-input" [disabled]="!clientData.state" />
               <div class="dropdown-icon">▼</div>
 
-              <div class="dropdown-list" *ngIf="showCityDropdown && clientData.state">
+              <div class="dropdown-list" *ngIf="showCityDropdown && clientData.state" (mouseleave)="closeCityDropdown()">
                 <div class="search-container" (click)="$event.stopPropagation()">
                   <input type="text" name="citySearch" placeholder="Search city..." [(ngModel)]="citySearch"
                     (ngModelChange)="filterCities()" class="search-input" autocomplete="off" />

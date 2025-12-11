@@ -18,10 +18,12 @@ import { TotalClientList } from './total-client-list/total-client-list';
 import { SuspendedClientList } from './suspended-client-list/suspended-client-list';
 import { TotalCertificationList } from './total-certification-list/total-certification-list';
 import { AddAudit } from './add-audit/add-audit';
-import { AddAsvAudit } from './add-asv-audit/add-asv-audit';
 import { ReportVerification } from './report-verification/report-verification';
 import { QsaList } from './qsa-list/qsa-list';
 import { EditAsvClient } from './edit-asv-client/edit-asv-client';
+import { AddAsvAudit } from './add-asv-audit/add-asv-audit';
+import { AsvAuditClientList } from './asv-audit-client-list/asv-audit-client-list';
+import { AuditList } from './audit-list/audit-list';
 
 
 export const routes: Routes = [
@@ -53,7 +55,8 @@ export const routes: Routes = [
       { path: 'total-certificated-client-list', component: TotalCertificationList},
       { path: 'qsa-list', component: QsaList},
       { path: 'edit-asv-list', component: EditAsvClient},
-
+      { path: 'asv-audit-client-list',  component: AsvAuditClientList},
+      { path: 'audit-list',  component: AuditList},
     ],
   },
   { path: '**', redirectTo: 'dashboard' }

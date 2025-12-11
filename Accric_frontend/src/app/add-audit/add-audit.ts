@@ -285,46 +285,6 @@ export class AddAudit implements OnInit {
     };
   }
 
-  validateAllFields(): boolean {
-    console.log('🔄 Validating all fields...');
-    
-    let allValid = true;
-    
-    // 1. Validate client selection
-    if (!this.auditData.clientId || this.auditData.clientId.trim() === '') {
-      console.log('❌ Client validation failed');
-      allValid = false;
-    } else {
-      console.log('✅ Client validation passed');
-    }
-    
-    // 2. Validate required dates
-    if (!this.auditData.audit_start_date) {
-      console.log('❌ Audit start date required');
-      allValid = false;
-    } else {
-      console.log('✅ Audit start date provided');
-    }
-    
-    if (!this.auditData.audit_end_date) {
-      console.log('❌ Audit end date required');
-      allValid = false;
-    } else {
-      console.log('✅ Audit end date provided');
-    }
-    
-    // 3. Validate date logic
-    const datesValid = this.validateDates();
-    if (!datesValid) {
-      console.log('❌ Date validation failed');
-      allValid = false;
-    } else {
-      console.log('✅ Date validation passed');
-    }
-    
-    console.log(`🎯 Overall validation: ${allValid ? 'PASSED' : 'FAILED'}`);
-    return allValid;
-  }
 
   focusOnFirstError(): void {
     if (!this.auditData.clientId) {
@@ -367,9 +327,6 @@ export class AddAudit implements OnInit {
   }
 
   saveAndContinue() {
-    console.log('💾 Save and Continue for tab:', this.activeTab);
-    
-    // Validate based on current tab
     if (this.activeTab === 'assessment-summary') {
       const clientValid = !!this.auditData.clientId && this.auditData.clientId.trim() !== '';
       const startDateValid = !!this.auditData.audit_start_date && this.auditData.audit_start_date.trim() !== '';
@@ -445,31 +402,7 @@ export class AddAudit implements OnInit {
   }
 
   onSubmit() {
-    console.log('✅ Submitting audit...');
-    
-    // Validate all required fields
-    if (!this.validateAllFields()) {
-      console.log('❌ Validation failed');
-      this.showErrors = true;
-      this.focusOnFirstError();
-      
-      let errorMessage = 'Please fix the following errors:\n\n';
-      if (!this.auditData.clientId) errorMessage += '• Select a client\n';
-      if (!this.auditData.audit_start_date) errorMessage += '• Enter audit start date\n';
-      if (!this.auditData.audit_end_date) errorMessage += '• Enter audit end date\n';
-      
-      // Add date errors if any
-      Object.entries(this.dateErrors).forEach(([key, value]) => {
-        if (value) {
-          errorMessage += `• ${value}\n`;
-        }
-      });
-      
-      alert(errorMessage);
-      return;
-    }
 
-    console.log('✅ All validations passed, creating audit...');
     this.showErrors = false;
     this.createAudit();
   }
@@ -512,7 +445,6 @@ export class AddAudit implements OnInit {
   }
 
   private createAudit() {
-    console.log('Creating audit...');
     this.isLoading = true;
     
     const url = 'http://pci.accric.com/api/auth/add-audit-to-client';
@@ -529,12 +461,9 @@ export class AddAudit implements OnInit {
     });
 
     const payload = this.buildPayload();
-    
-    console.log('Payload:', JSON.stringify(payload, null, 2));
 
     this.http.post(url, payload, { headers }).subscribe({
       next: (response: any) => {
-        console.log('Audit created successfully:', response);
         this.isLoading = false;
         
         if (response && response.message) {
@@ -546,7 +475,7 @@ export class AddAudit implements OnInit {
         this.resetForm();
       },
       error: (error: any) => {
-        console.error('❌ Error creating audit:', error);
+        console.error(' Error creating audit:', error);
         this.isLoading = false;
         
         let errorMessage = 'Failed to create audit. ';

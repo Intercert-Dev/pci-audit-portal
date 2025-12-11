@@ -1,33 +1,45 @@
 <div class="profile-container">
+
+  <!-- ==========================
+       PROFILE HEADER
+  =========================== -->
   <header class="profile-header">
     <div class="avatar-wrapper">
-      <img [src]="userProfile.avatarUrl" [alt]="userProfile.name" class="profile-avatar">
+      <img src="https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
+           [alt]="userProfile.name" class="profile-avatar">
     </div>
+
     <div class="header-info">
       <h1>{{ userProfile.name }}</h1>
       <p class="title">{{ userProfile.title }}</p>
     </div>
+     
+    
+      <button class="edit-btn" (click)="openEditPopup()">Edit Profile</button>
   </header>
 
+    <!-- EDIT BUTTON -->
+
+  <!-- ==========================
+       MAIN CONTENT
+  =========================== -->
   <main class="profile-main">
-    <section class="card bio-section">
-      <h2 class="section-title">About Me</h2>
-      <p class="bio-text">{{ userProfile.bio }}</p>
-    </section>
 
-    
-
+    <!-- CONTACT BOX -->
     <section class="card contact-section">
       <h2 class="section-title">Contact & Location</h2>
+
       <ul class="contact-list">
         <li>
           <i class="icon fas fa-envelope"></i>
           <a [href]="'mailto:' + userProfile.email">{{ userProfile.email }}</a>
         </li>
+
         <li>
           <i class="icon fas fa-phone"></i>
           <span>{{ userProfile.phone }}</span>
         </li>
+
         <li>
           <i class="icon fas fa-map-marker-alt"></i>
           <span>{{ userProfile.location }}</span>
@@ -35,19 +47,65 @@
       </ul>
     </section>
 
+    <!-- SOCIAL LINKS BOX -->
     <section class="card social-section">
       <h2 class="section-title">Connect</h2>
+
       <div class="social-links">
+
         <a [href]="userProfile.social.linkedin" target="_blank" class="social-link linkedin">
           <i class="fab fa-linkedin"></i>
         </a>
+
         <a [href]="userProfile.social.github" target="_blank" class="social-link github">
           <i class="fab fa-github"></i>
         </a>
+
         <a [href]="userProfile.social.website" target="_blank" class="social-link website">
           <i class="fas fa-globe"></i>
         </a>
+
       </div>
     </section>
+
   </main>
+
+</div>
+
+<!-- ==========================
+       EDIT PROFILE POPUP
+=========================== -->
+<div class="modal-overlay" *ngIf="showPopup">
+
+  <div class="modal">
+
+    <h2>Edit Profile</h2>
+
+    <div class="modal-body">
+
+      <label>Name</label>
+      <input type="text" [(ngModel)]="tempData.name">
+
+      <label>Email</label>
+      <input type="email" [(ngModel)]="tempData.email">
+
+      <label>Phone</label>
+      <input type="text" [(ngModel)]="tempData.phone">
+
+      <label>Location</label>
+      <input type="text" [(ngModel)]="tempData.location">
+
+      <label>Profile Image</label>
+      <input type="file" (change)="onImageUpload($event)">
+      <img *ngIf="tempData.avatarUrl" [src]="tempData.avatarUrl" class="preview-avatar">
+
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-save" (click)="saveProfile()">Save</button>
+      <button class="btn-cancel" (click)="closeEditPopup()">Cancel</button>
+    </div>
+
+  </div>
+
 </div>

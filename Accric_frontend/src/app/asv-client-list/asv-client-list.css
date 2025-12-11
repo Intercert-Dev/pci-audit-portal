@@ -216,6 +216,11 @@ tbody tr {
 
 /* For mobile screens */
 @media (max-width: 768px) {
+
+  .client-list-container {
+    margin-top: 6rem;
+  }
+
   .report-file-box {
     padding: 0.8rem;
   }
@@ -237,6 +242,9 @@ tbody tr {
 
 /* For very small screens */
 @media (max-width: 480px) {
+   .client-list-container {
+    margin-top: 0.9rem;
+  }
   .report-section {
     gap: 0.5rem;
   }

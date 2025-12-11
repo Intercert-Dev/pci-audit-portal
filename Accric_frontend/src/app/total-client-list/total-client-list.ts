@@ -92,7 +92,7 @@ export class TotalClientList implements OnInit {
 
     this.http.get<any>(url, { headers }).subscribe({
       next: (res) => {
-        console.log("Raw API Data:", res.data);
+        console.log("Raw API Data from Total Client", res.data);
 
         this.clientList = res.data.map((item: any) => ({
           company: item.legal_entity_name || '',

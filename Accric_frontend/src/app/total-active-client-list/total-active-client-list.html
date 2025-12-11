@@ -5,7 +5,8 @@
       <div class="header-right">
         <div class="search-box">
           <img src="/assets/icons/magnifying-glass 2.png" alt="Search Icon">
-          <input type="text" placeholder="Search Certificates" [(ngModel)]="search_text" (input)="filter_list()">
+          <input type="text" placeholder="Search Clients"
+                 [(ngModel)]="search_text" (input)="filter_list()">
         </div>
         <button class="export-btn" (click)="exportToExcel()"><span>Export to Excel</span></button>
       </div>
@@ -15,33 +16,25 @@
       <table>
         <thead>
           <tr>
-            <th>Company</th>
-            <th>Certificate No.</th>
-            <th>Issue Date</th>
-            <th>Valid Date</th>
-            <th>Audit Status</th>
-            <th>Previous Report</th>
-            <th>Current Report</th>
+            <th>Company Name</th>
+            <th>Contact Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Country</th>
+            <th>Status</th>
+            <th>Created Date</th>
           </tr>
         </thead>
 
         <tbody>
-          <tr *ngFor="let row of filtered_list">
-            <td>{{ row.company }}</td>
-            <td>{{ row.certNo }}</td>
-            <td>{{ row.issueDate | date }}</td>
-            <td>{{ row.validDate | date }}</td>
-            <td>{{ row.status }}</td>
-            <td>
-              <button class="view-btn" (click)="viewPDF(row.previous_report)">
-               <span>View</span> 
-              </button>
-            </td>
-            <td>
-              <button class="view-btn" (click)="viewPDF(row.current_report)">
-                <span>View</span>
-              </button>
-            </td>
+          <tr *ngFor="let client of filtered_list">
+            <td>{{ client.legal_entity_name }}</td>
+            <td>{{ client.contact_name }}</td>
+            <td>{{ client.contact_email }}</td>
+            <td>{{ client.phone }}</td>
+            <td>{{ client.county_name }}</td>
+            <td>{{ client.client_status }}</td>
+            <td>{{ client.created_at | date:'shortDate' }}</td>
           </tr>
         </tbody>
       </table>

@@ -413,7 +413,7 @@ export class ReportVerification implements OnInit {
     }
     
     // Validate audit selection
-    if (!this.selectedAuditId) {
+    if (!this.selectedAuditId) { 
       alert('Please select an audit from the dropdown');
       return;
     }

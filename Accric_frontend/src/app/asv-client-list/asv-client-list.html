@@ -1,49 +1,55 @@
 <div class="client-list-container">
-    <div class="client-list-box">
-        <div class="header-row">
-            <p>ASV Client List</p>
-            <div class="header-right">
-                <div class="search-box">
-                    <img src="/assets/icons/magnifying-glass 2.png" alt="Search Icon">
-                    <input type="text" placeholder="Search Certificates" [(ngModel)]="serarch_text"
-                        (input)="filter_list()">
-                </div>
-                <button class="export-btn" (click)="exportToExcel()"><span>Export to Excel</span></button>
-            </div>
+  <div class="client-list-box">
+
+    <div class="header-row">
+      <p>ASV Client List</p>
+
+      <div class="header-right">
+        <div class="search-box">
+          <img src="/assets/icons/magnifying-glass 2.png" alt="Search Icon">
+          <input type="text" placeholder="Search Certificates"
+                 [(ngModel)]="serarch_text"
+                 (input)="filter_list()">
         </div>
 
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Company</th>
-                        <th>Q1</th>
-                        <th>Q2</th>
-                        <th>Q3</th>
-                        <th>Q4</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    <!-- Example Row -->
-                    <tr *ngFor="let row of filtered_list">
-                        <td>{{ row.company }}</td>
-                        <td>{{ row.Q1 }}</td>
-                        <td>{{ row.Q2 }}</td>
-                        <td>{{ row.Q3 }}</td>
-                        <td>{{ row.Q4 }}</td>
-                        <td>
-                            <div class="action-box">
-                                <img src="/assets/icons/edit.png" alt="Edit" (click)="editRow(row)">
-                                <img src="/assets/icons/delete.png" alt="Delete" (click)="deleteRow(row)">
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <button class="export-btn" (click)="exportToExcel()">
+          <span>Export to Excel</span>
+        </button>
+      </div>
     </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Company</th>
+            <th>Q1</th>
+            <th>Q2</th>
+            <th>Q3</th>
+            <th>Q4</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let row of filtered_list">
+            <td>{{ row.company }}</td>
+            <td>{{ row.Q1 }}</td>
+            <td>{{ row.Q2 }}</td>
+            <td>{{ row.Q3 }}</td>
+            <td>{{ row.Q4 }}</td>
+
+            <td>
+              <div class="action-box">
+                <img src="/assets/icons/edit.png" alt="Edit" (click)="editRow(row)">
+                <img src="/assets/icons/delete.png" alt="Delete" (click)="deleteRow(row)">
+              </div>
+            </td>
+          </tr>
+        </tbody>
+
+      </table>
+    </div>
+
+  </div>
 </div>
-
-

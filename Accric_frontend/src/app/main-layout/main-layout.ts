@@ -29,7 +29,7 @@ export class MainLayout implements OnInit {
         }
       });
   }
-
+ windowWidth: number = window.innerWidth;
   ngOnInit() {
     this.decodeJWTAndSetUserInfo();
   }
@@ -84,9 +84,6 @@ export class MainLayout implements OnInit {
       localStorage.setItem('userRole', this.userRole);
       localStorage.setItem('userEmail', this.userEmail);
       
-      console.log('User Information from JWT:');
-      console.log('Role:', this.userRole);
-      console.log('Email:', this.userEmail);
       
       if (decoded.exp) {
         const now = Math.floor(Date.now() / 1000);

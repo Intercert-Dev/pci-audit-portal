@@ -329,7 +329,7 @@
 /* ---------- 768px ---------- */
 @media (max-width: 768px) {
   .dashboard-container {
-    margin-top: 5rem;
+    margin-top: 6rem;
     padding-inline: 0.5rem;
   }
   

@@ -1,13 +1,17 @@
 <div class="client-list-container">
   <div class="client-list-box">
     <div class="header-row">
-      <p>Total Suspended Client List</p>
+      <p>Suspended Client List</p>
+
       <div class="header-right">
         <div class="search-box">
           <img src="/assets/icons/magnifying-glass 2.png" alt="Search Icon">
-          <input type="text" placeholder="Search Certificates" [(ngModel)]="search_text" (input)="filter_list()">
+          <input type="text" placeholder="Search Clients" [(ngModel)]="search_text" (input)="filter_list()">
         </div>
-        <button class="export-btn" (click)="exportToExcel()"><span>Export to Excel</span></button>
+
+        <button class="export-btn" (click)="exportToExcel()">
+          <span>Export to Excel</span>
+        </button>
       </div>
     </div>
 
@@ -15,16 +19,31 @@
       <table>
         <thead>
           <tr>
-            <th>Company</th>
-            <th>Certificate No.</th>
-            <th>Client Status</th>
+            <th>Company Name</th>
+            <th>Contact Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Country</th>
+            <th>Status</th>
+            <th>Created Date</th>
           </tr>
         </thead>
+
         <tbody>
-          <tr *ngFor="let row of filtered_list">
-            <td>{{row.company }}</td>
-            <td>{{row.certNo }}</td>
-            <td>{{row.client_status }}</td>
+          <tr *ngFor="let client of filtered_list">
+            <td>{{ client.company || 'N/A' }}</td>
+            <td>{{ client.contact_name || 'N/A' }}</td>
+            <td>{{ client.contact_email || 'N/A' }}</td>
+            <td>{{ client.phone || 'N/A' }}</td>
+            <td>{{ client.county_name || 'N/A' }}</td>
+
+            <td id="client-status">
+              <span class="status-badge suspended">
+                {{ client.client_status }}
+              </span>
+            </td>
+
+            <td>{{ (client.created_at | date:'shortDate') || 'N/A' }}</td>
           </tr>
         </tbody>
       </table>

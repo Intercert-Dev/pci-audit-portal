@@ -1,10 +1,24 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
-interface LegalEntity {
-  id: number;
-  name: string;
+interface Client {
+  id: string;
+  clientId: string;
+  legal_entity_name: string;
+  trading_name?: string;
+}
+
+interface Audit {
+  auditId: string;
+  id: string;
+  assessment_project_name: string;
+  client: {
+    clientId: string;
+    legal_entity_name: string;
+  };
 }
 
 @Component({
@@ -13,78 +27,282 @@ interface LegalEntity {
   templateUrl: './report-verification.html',
   styleUrls: ['./report-verification.css'],
 })
-export class ReportVerification {
+export class ReportVerification implements OnInit {
   previousReportFile: File | null = null;
   currentReportFile: File | null = null;
   
-  // Legal Entity Search Properties
+  // Client Search Properties
   legalEntitySearch: string = '';
-  filteredLegalEntities: LegalEntity[] = [];
-  showLegalEntityDropdown: boolean = false;
-  selectedLegalEntityId: number | null = null;
-  legalEntities: LegalEntity[] = [
-    { id: 1, name: 'ABC Corporation Ltd.' },
-    { id: 2, name: 'XYZ Technologies Inc.' },
-    { id: 3, name: 'Global Solutions Group' },
-    { id: 4, name: 'Innovate Digital Systems' },
-    { id: 5, name: 'Secure Network Partners' },
-    { id: 6, name: 'Data Analytics International' },
-    { id: 7, name: 'Cloud Computing Experts' },
-    { id: 8, name: 'Financial Services Group' },
-    { id: 9, name: 'Healthcare IT Solutions' },
-    { id: 10, name: 'Retail Systems Inc.' },
-  ];
+  filteredClients: Client[] = [];
+  showClientDropdown: boolean = false;
+  selectedClientId: string | null = null;
+  selectedClientName: string = '';
+  clients: Client[] = [];
   
+  // Audit Search Properties
+  auditSearch: string = '';
+  filteredAudits: Audit[] = [];
+  showAuditDropdown: boolean = false;
+  selectedAuditId: string | null = null;
+  selectedAuditName: string = '';
+  audits: Audit[] = [];
+  
+  // Loading states
+  isLoading: boolean = false;
+  isSubmitting: boolean = false;
+  showErrors: boolean = false;
+  
+  // Search subjects for debouncing
+  private clientSearchSubject = new Subject<string>();
+  private auditSearchSubject = new Subject<string>();
+  
+  // Hidden fields that will be auto-filled
   reportData = {
-    verificationNotes: '',
-    verificationStatus: '',
-    verifiedBy: '',
-    verificationDate: ''
+    associatedOrganization: '',
+    associatedApplication: ''
   };
 
-  constructor() {
-    // Initialize filtered list with all entities
-    this.filteredLegalEntities = [...this.legalEntities];
+  constructor(
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  ngOnInit() {
+    this.loadClients();
+    this.loadAudits();
+    
+    // Setup debounced search for clients
+    this.clientSearchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe(searchTerm => {
+      this.filterClients(searchTerm);
+    });
+    
+    // Setup debounced search for audits
+    this.auditSearchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe(searchTerm => {
+      this.filterAudits(searchTerm);
+    });
   }
 
-  // Legal Entity Search Methods
-  onLegalEntitySearch() {
-    const searchTerm = this.legalEntitySearch.toLowerCase().trim();
+  // Load clients from API
+  loadClients() {
+    this.isLoading = true;
+    const url = 'http://pci.accric.com/api/auth/client-list';
+    const token = localStorage.getItem("jwt");
     
-    if (searchTerm === '') {
-      this.filteredLegalEntities = [...this.legalEntities];
+    if (!token) {
+      alert('Please login first. No authentication token found.');
+      this.isLoading = false;
+      this.cdr.detectChanges();
+      return;
+    }
+    
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    this.http.get<{data: any[]}>(url, { headers }).subscribe({
+      next: (res) => {
+        // Transform API response to match Client interface
+        this.clients = res.data.map(client => ({
+          id: client.clientId || client.id,
+          clientId: client.clientId || client.id,
+          legal_entity_name: client.legal_entity_name || client.name || '',
+          trading_name: client.trading_name
+        }));
+        
+        this.filteredClients = [...this.clients];
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Failed to load clients:', err);
+        this.isLoading = false;
+        alert('Failed to load clients. Please try again.');
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  // Load audits from API
+  loadAudits() {
+    const url = 'http://pci.accric.com/api/auth/audit-list';
+    const token = localStorage.getItem("jwt");
+    
+    if (!token) {
+      console.error('No token found for loading audits');
+      return;
+    }
+    
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    this.http.get<{data: any[]}>(url, { headers }).subscribe({
+      next: (res) => {
+        // Transform API response to match Audit interface
+        this.audits = res.data.map(audit => ({
+          auditId: audit.auditId || audit.id,
+          id: audit.auditId || audit.id,
+          assessment_project_name: audit.assessment_project_name || audit.name || '',
+          client: audit.client || { clientId: '', legal_entity_name: '' }
+        }));
+        
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Failed to load audits:', err);
+      }
+    });
+  }
+
+  // CLIENT SEARCH METHODS
+  onClientSearch() {
+    this.clientSearchSubject.next(this.legalEntitySearch);
+  }
+
+  filterClients(searchTerm: string) {
+    if (!searchTerm.trim()) {
+      this.filteredClients = [...this.clients];
     } else {
-      this.filteredLegalEntities = this.legalEntities.filter(entity =>
-        entity.name.toLowerCase().includes(searchTerm)
+      const term = searchTerm.toLowerCase();
+      this.filteredClients = this.clients.filter(client =>
+        client.legal_entity_name.toLowerCase().includes(term) ||
+        (client.trading_name && client.trading_name.toLowerCase().includes(term)) ||
+        (client.clientId && client.clientId.toLowerCase().includes(term))
       );
     }
+    this.cdr.detectChanges();
   }
 
-  selectLegalEntity(entity: LegalEntity) {
-    this.legalEntitySearch = entity.name;
-    this.selectedLegalEntityId = entity.id;
-    this.showLegalEntityDropdown = false;
+  selectClient(client: Client) {
+    this.legalEntitySearch = client.legal_entity_name;
+    this.selectedClientId = client.clientId;
+    this.selectedClientName = client.legal_entity_name;
+    this.showClientDropdown = false;
+    
+    // Auto-fill associated organization from client
+    this.reportData.associatedOrganization = client.legal_entity_name;
+    
+    // Filter audits for the selected client
+    this.filterAuditsByClient(client.clientId);
+    
+    // Clear audit selection when client changes
+    this.auditSearch = '';
+    this.selectedAuditId = null;
+    this.selectedAuditName = '';
+    this.reportData.associatedApplication = '';
+    
+    this.cdr.detectChanges();
   }
 
-  onLegalEntityBlur() {
-    // Use setTimeout to allow click events to fire before hiding dropdown
+  onClientBlur() {
     setTimeout(() => {
-      this.showLegalEntityDropdown = false;
-      
-      // If search doesn't match any entity, reset selection
-      if (this.selectedLegalEntityId !== null) {
-        const selectedEntity = this.legalEntities.find(
-          entity => entity.id === this.selectedLegalEntityId
+      this.showClientDropdown = false;
+
+      // Auto-select if search matches exactly
+      if (!this.selectedClientId && this.legalEntitySearch) {
+        const matchedClient = this.clients.find(client =>
+          client.legal_entity_name.toLowerCase() === this.legalEntitySearch.toLowerCase() ||
+          (client.trading_name && client.trading_name.toLowerCase() === this.legalEntitySearch.toLowerCase())
         );
-        
-        if (selectedEntity && this.legalEntitySearch !== selectedEntity.name) {
-          this.selectedLegalEntityId = null;
+
+        if (matchedClient) {
+          this.selectClient(matchedClient);
+        } else {
+          // Clear if no match found
+          this.legalEntitySearch = '';
+          this.selectedClientId = null;
+          this.selectedClientName = '';
+          this.reportData.associatedOrganization = '';
         }
       }
+      
+      this.cdr.detectChanges();
     }, 200);
   }
 
-  // File Upload Methods
+  // AUDIT SEARCH METHODS
+  onAuditSearch() {
+    this.auditSearchSubject.next(this.auditSearch);
+  }
+
+  filterAudits(searchTerm: string) {
+    if (!searchTerm.trim()) {
+      // If no search term, show all audits for the selected client
+      if (this.selectedClientId) {
+        this.filteredAudits = this.audits.filter(audit => 
+          audit.client && audit.client.clientId === this.selectedClientId
+        );
+      } else {
+        this.filteredAudits = [];
+      }
+    } else {
+      const term = searchTerm.toLowerCase();
+      this.filteredAudits = this.audits.filter(audit => {
+        // Only show audits for the selected client
+        if (this.selectedClientId && (!audit.client || audit.client.clientId !== this.selectedClientId)) {
+          return false;
+        }
+        
+        return audit.assessment_project_name.toLowerCase().includes(term);
+      });
+    }
+    this.cdr.detectChanges();
+  }
+
+  filterAuditsByClient(clientId: string) {
+    if (!clientId) {
+      this.filteredAudits = [];
+    } else {
+      this.filteredAudits = this.audits.filter(audit => 
+        audit.client && audit.client.clientId === clientId
+      );
+    }
+    this.cdr.detectChanges();
+  }
+
+  selectAudit(audit: Audit) {
+    this.auditSearch = audit.assessment_project_name;
+    this.selectedAuditId = audit.auditId;
+    this.selectedAuditName = audit.assessment_project_name;
+    this.showAuditDropdown = false;
+    
+    // Auto-fill associated application from audit
+    this.reportData.associatedApplication = audit.assessment_project_name;
+    
+    this.cdr.detectChanges();
+  }
+
+  onAuditBlur() {
+    setTimeout(() => {
+      this.showAuditDropdown = false;
+
+      // Auto-select if search matches exactly
+      if (!this.selectedAuditId && this.auditSearch && this.selectedClientId) {
+        const matchedAudit = this.filteredAudits.find(audit =>
+          audit.assessment_project_name.toLowerCase() === this.auditSearch.toLowerCase()
+        );
+
+        if (matchedAudit) {
+          this.selectAudit(matchedAudit);
+        } else {
+          this.auditSearch = '';
+          this.selectedAuditId = null;
+          this.selectedAuditName = '';
+          this.reportData.associatedApplication = '';
+        }
+      }
+      
+      this.cdr.detectChanges();
+    }, 200);
+  }
+
+  // FILE UPLOAD METHODS
   onUpload(type: 'previous' | 'current') {
     const input = document.createElement('input');
     input.type = 'file';
@@ -127,6 +345,7 @@ export class ReportVerification {
         }
         
         console.log(`${type} report uploaded:`, file.name);
+        this.cdr.detectChanges();
       }
     };
     
@@ -183,70 +402,122 @@ export class ReportVerification {
     console.log(`${type} report downloaded:`, file.name);
   }
 
+  // FORM SUBMISSION
   onSubmit(form: NgForm) {
-    // Validate legal entity selection
-    if (!this.selectedLegalEntityId) {
-      alert('Please select a legal entity');
+    this.showErrors = true;
+    
+    // Validate client selection
+    if (!this.selectedClientId) {
+      alert('Please select a company from the dropdown');
       return;
     }
     
-    // Validate at least one report is uploaded
-    if (!this.previousReportFile && !this.currentReportFile) {
-      alert('Please upload at least one report file');
+    // Validate audit selection
+    if (!this.selectedAuditId) { 
+      alert('Please select an audit from the dropdown');
       return;
     }
     
-    if (form.valid) {
-      // Prepare submission data
-      const submissionData = {
-        legalEntityId: this.selectedLegalEntityId,
-        legalEntityName: this.legalEntitySearch,
-        previousReport: this.previousReportFile ? {
-          name: this.previousReportFile.name,
-          size: this.previousReportFile.size,
-          type: this.previousReportFile.type
-        } : null,
-        currentReport: this.currentReportFile ? {
-          name: this.currentReportFile.name,
-          size: this.currentReportFile.size,
-          type: this.currentReportFile.type
-        } : null,
-        ...this.reportData
-      };
-      
-      console.log('Report verification submitted:', submissionData);
-      
-      // Here you would typically send the data to a backend service
-      // this.verificationService.submitReport(submissionData).subscribe(...);
-      
-      // Reset form after successful submission
-      this.resetForm(form);
-      
-      alert('Report verification submitted successfully!');
-    } else {
-      alert('Please fill all required fields correctly');
+  
+    this.submitReportVerification(form);
+  }
+
+  submitReportVerification(form: NgForm) {
+    this.isSubmitting = true;
+    
+    const url = 'http://pci.accric.com/api/auth/create-report-verification';
+    const token = localStorage.getItem("jwt");
+    
+    if (!token) {
+      alert('Please login first. No authentication token found.');
+      this.isSubmitting = false;
+      this.cdr.detectChanges();
+      return;
     }
+    
+    // Prepare FormData for submission (matches your API format exactly)
+    const formData = new FormData();
+    
+    // Add required fields (matching your API format)
+    formData.append('client', this.selectedClientId!);
+    formData.append('audit', this.selectedAuditId!);
+    formData.append('associated_organization', this.reportData.associatedOrganization);
+    formData.append('associated_application', this.reportData.associatedApplication);
+    
+    // Add files (matching your API field names exactly)
+    if (this.previousReportFile) {
+      formData.append('previous_report_pdf', this.previousReportFile, this.previousReportFile.name);
+    }
+    
+    if (this.currentReportFile) {
+      formData.append('current_report_pdf', this.currentReportFile, this.currentReportFile.name);
+    }
+    
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    
+    this.http.post(url, formData, { headers }).subscribe({
+      next: (response: any) => {
+        this.isSubmitting = false;
+        
+        if (response && response.message) {
+          alert(`Success: ${response.message}`);
+        } else {
+          alert('Report verification submitted successfully!');
+        }
+        
+        this.resetForm(form);
+        this.cdr.detectChanges();
+      },
+      error: (error: any) => {
+        console.error('Error submitting report verification:', error);
+        this.isSubmitting = false;
+        
+        let errorMessage = 'Failed to submit report verification. ';
+        
+        if (error.error && error.error.message) {
+          errorMessage += error.error.message;
+        } else if (error.status === 401) {
+          errorMessage += 'Unauthorized. Please check your authentication token.';
+        } else if (error.status === 400) {
+          errorMessage += 'Bad request. Please check the data you entered.';
+        } else if (error.status === 404) {
+          errorMessage += 'API endpoint not found.';
+        } else if (error.status === 500) {
+          errorMessage += 'Server error. Please try again later.';
+        }
+        
+        alert(errorMessage);
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   resetForm(form: NgForm) {
     form.resetForm();
     this.legalEntitySearch = '';
-    this.selectedLegalEntityId = null;
+    this.auditSearch = '';
+    this.selectedClientId = null;
+    this.selectedClientName = '';
+    this.selectedAuditId = null;
+    this.selectedAuditName = '';
     this.previousReportFile = null;
     this.currentReportFile = null;
-    this.filteredLegalEntities = [...this.legalEntities];
+    this.filteredClients = [...this.clients];
+    this.filteredAudits = [];
     this.reportData = {
-      verificationNotes: '',
-      verificationStatus: '',
-      verifiedBy: '',
-      verificationDate: ''
+      associatedOrganization: '',
+      associatedApplication: ''
     };
+    this.showErrors = false;
+    this.cdr.detectChanges();
   }
 
-  // Helper method to get selected legal entity name
-  getSelectedLegalEntityName(): string {
-    if (!this.selectedLegalEntityId) return '';
-    const entity = this.legalEntities.find(e => e.id === this.selectedLegalEntityId);
-    return entity ? entity.name : '';
+  // Helper method to get selected client name
+  getSelectedClientName(): string {
+    if (!this.selectedClientId) return '';
+    const client = this.clients.find(c => c.clientId === this.selectedClientId);
+    return client ? client.legal_entity_name : '';
   }
 }

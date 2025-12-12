@@ -1,11 +1,5 @@
 <div class="add-audit-container">
   <div class="add-audit-box">
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" *ngIf="isLoading">
-      <div class="loading-spinner"></div>
-      <div class="loading-text">Creating audit...</div>
-    </div>
-
     <div class="tabs">
       <button class="tab" [class.active]="activeTab === 'assessment-summary'" (click)="switchTab('assessment-summary')">
         Assessment Summary

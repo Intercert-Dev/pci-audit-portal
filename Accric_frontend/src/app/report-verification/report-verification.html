@@ -3,74 +3,141 @@
     <h2>Audit Report Verification</h2>
 
     <form #reportForm="ngForm" (ngSubmit)="onSubmit(reportForm)" class="report-form">
-      <div class="form-row">
-        <div class="form-group search-dropdown">
-          <label>Legal Entity Name</label>
-          <div class="search-input-wrapper">
-            <input style="width: 50%;" type="text" name="legalEntityName" [(ngModel)]="legalEntitySearch"
-              (input)="onLegalEntitySearch()" (focus)="showLegalEntityDropdown = true" (blur)="onLegalEntityBlur()"
-              placeholder="Search legal entity name" autocomplete="off" />
-          </div>
+      <!-- Hidden fields that will be auto-filled -->
+      <input type="hidden" name="associated_organization" [(ngModel)]="reportData.associatedOrganization" />
+      <input type="hidden" name="associated_application" [(ngModel)]="reportData.associatedApplication" />
 
-          <!-- Dropdown list -->
-          <div class="search-dropdown-list" *ngIf="showLegalEntityDropdown && filteredLegalEntities.length > 0">
-            <div *ngFor="let entity of filteredLegalEntities" class="dropdown-item"
-              (mousedown)="selectLegalEntity(entity)" [class.selected]="entity.id === selectedLegalEntityId">
-              {{ entity.name }}
+      <div class="form-section">
+        <!-- Company Name Selection -->
+        <div class="form-row">
+          <div class="form-group search-dropdown full-width">
+            <label for="companySearch">Company Name <span class="required">*</span></label>
+            <div class="search-input-wrapper">
+              <input
+                style="width: 100%;"
+                id="companySearch"
+                type="text"
+                name="companyName"
+                [(ngModel)]="legalEntitySearch"
+                (input)="onClientSearch()"
+                (focus)="showClientDropdown = true"
+                (blur)="onClientBlur()"
+                placeholder="Search company name"
+                autocomplete="off"
+                [disabled]="isLoading"
+                required
+                #companyNameInput="ngModel" />
             </div>
-          </div>
 
-          <div class="search-dropdown-list"
-            *ngIf="showLegalEntityDropdown && filteredLegalEntities.length === 0 && legalEntitySearch">
-            <div class="no-results">No legal entities found</div>
-          </div>
+            <!-- Company Dropdown list -->
+            <div class="search-dropdown-list" *ngIf="showClientDropdown && filteredClients.length > 0">
+              <div
+                *ngFor="let client of filteredClients"
+                class="dropdown-item"
+                (mousedown)="selectClient(client)"
+                [class.selected]="client.clientId === selectedClientId">
+                {{ client.legal_entity_name }}
+              </div>
+            </div>
 
-          <!-- Hidden input to store the actual value -->
-          <input type="hidden" name="legalEntityId" [(ngModel)]="selectedLegalEntityId" />
+            <div class="search-dropdown-list" *ngIf="showClientDropdown && filteredClients.length === 0 && legalEntitySearch">
+              <div class="no-results">No companies found</div>
+            </div>
+
+            
+            <!-- Hidden input to store the client ID -->
+            <input type="hidden" name="client" [(ngModel)]="selectedClientId" />
+          </div>
+          <div class="form-group search-dropdown full-width">
+            <label for="auditSearch">Assessment / Project Name <span class="required">*</span></label>
+            <div class="search-input-wrapper">
+              <input
+                style="width: 100%;"
+                id="auditSearch"
+                type="text"
+                name="auditName"
+                [(ngModel)]="auditSearch"
+                (input)="onAuditSearch()"
+                (focus)="showAuditDropdown = true"
+                (blur)="onAuditBlur()"
+                placeholder="Search audit/project name"
+                autocomplete="off"
+                [disabled]="isLoading || !selectedClientId"
+                required
+                #auditNameInput="ngModel" />
+            </div>
+
+            <!-- Audit Dropdown list -->
+            <div class="search-dropdown-list" *ngIf="showAuditDropdown && filteredAudits.length > 0">
+              <div
+                *ngFor="let audit of filteredAudits"
+                class="dropdown-item"
+                (mousedown)="selectAudit(audit)"
+                [class.selected]="audit.auditId === selectedAuditId">
+                {{ audit.assessment_project_name }}
+              </div>
+            </div>
+
+            <div class="search-dropdown-list" *ngIf="showAuditDropdown && filteredAudits.length === 0 && auditSearch">
+              <div class="no-results" *ngIf="selectedClientId">No audits found for this company</div>
+              <div class="no-results" *ngIf="!selectedClientId">Please select a company first</div>
+            </div>
+
+            
+            
+            <!-- Hidden input to store the audit ID -->
+            <input type="hidden" name="audit" [(ngModel)]="selectedAuditId" />
+          </div>
         </div>
 
+        
       </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label>Previous Report</label>
-          <div class="report-file-box">
-            <input type="text" [value]="previousReportFile ? previousReportFile.name : 'No file selected'" disabled />
-            <div class="report-buttons">
-              <button type="button" class="btn-upload" (click)="onUpload('previous')"><span>Upload</span></button>
-              <button type="button" class="btn-preview" (click)="onPreview('previous')"
-                [disabled]="!previousReportFile">
-                <span>Preview</span>
-              </button>
-              <button type="button" class="btn-download" (click)="onDownload('previous')"
-                [disabled]="!previousReportFile">
-                <span>Download</span>
-              </button>
+      <!-- File Upload Section -->
+      <div class="form-section">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Previous Report </label>
+            <div class="report-file-box">
+              <input type="text" [value]="previousReportFile ? previousReportFile.name : 'No file selected'" disabled />
+              <div class="report-buttons">
+                <button type="button" class="btn-upload" (click)="onUpload('previous')"><span>Upload</span></button>
+                <button type="button" class="btn-preview" (click)="onPreview('previous')"
+                  [disabled]="!previousReportFile">
+                  <span>Preview</span>
+                </button>
+                <button type="button" class="btn-download" (click)="onDownload('previous')"
+                  [disabled]="!previousReportFile">
+                  <span>Download</span>
+                </button>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="form-group">
-          <label>Current Audit Report</label>
-          <div class="report-file-box">
-            <input type="text" [value]="currentReportFile ? currentReportFile.name : 'No file selected'" disabled />
-            <div class="report-buttons">
-              <button type="button" class="btn-upload" (click)="onUpload('current')"><span>Upload</span></button>
-              <button type="button" class="btn-preview" (click)="onPreview('current')" [disabled]="!currentReportFile">
-                <span>Preview</span>
-              </button>
-              <button type="button" class="btn-download" (click)="onDownload('current')"
-                [disabled]="!currentReportFile">
-                <span>Download</span>
-              </button>
+          <div class="form-group">
+            <label>Current Report</label>
+            <div class="report-file-box">
+              <input type="text" [value]="currentReportFile ? currentReportFile.name : 'No file selected'" disabled />
+              <div class="report-buttons">
+                <button type="button" class="btn-upload" (click)="onUpload('current')"><span>Upload</span></button>
+                <button type="button" class="btn-preview" (click)="onPreview('current')" [disabled]="!currentReportFile">
+                  <span>Preview</span>
+                </button>
+                <button type="button" class="btn-download" (click)="onDownload('current')"
+                  [disabled]="!currentReportFile">
+                  <span>Download</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
+      <!-- Submit Button -->
       <div class="form-actions">
-        <button type="submit" class="btn-primary">
-          <span>Submit</span>
+        <button type="submit" class="btn-primary" [disabled]="isSubmitting || isLoading">
+          <span *ngIf="!isSubmitting">Submit Verification</span>
+          <span *ngIf="isSubmitting">Submitting...</span>
         </button>
       </div>
     </form>

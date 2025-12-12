@@ -9,8 +9,9 @@
         <div class="form-row">
           <div class="form-group search-dropdown">
             <label for="legalEntitySearch">Legal Entity Name <span class="required">*</span></label>
-            <div  class="search-input-wrapper">
-              <input style="width: 100%;"
+            <div class="search-input-wrapper">
+              <input
+                style="width: 100%;"
                 id="legalEntitySearch"
                 type="text" 
                 name="legalEntityName" 
@@ -30,7 +31,7 @@
                 *ngFor="let client of filteredClients" 
                 class="dropdown-item"
                 (mousedown)="selectClient(client)" 
-                [class.selected]="client.id === selectedClientId">
+                [class.selected]="client.clientId === selectedClientId">
                 {{ client.legal_entity_name }}
               </div>
             </div>
@@ -52,6 +53,7 @@
             <label for="auditSearch">Assessment / Project Name <span class="required">*</span></label>
             <div class="search-input-wrapper">
               <input 
+                style="width: 100%;"
                 id="auditSearch"
                 type="text" 
                 name="audit" 
@@ -62,17 +64,8 @@
                 placeholder="Search Assessment Name" 
                 autocomplete="off"
                 required 
-                [disabled]="isLoading"
+                [disabled]="isLoading || !selectedClientId"
                 #auditInput="ngModel" />
-              <button 
-                type="button" 
-                class="clear-btn" 
-                (click)="clearAuditSearch()" 
-                *ngIf="auditSearch" 
-                [disabled]="isLoading"
-                aria-label="Clear search">
-                ×
-              </button>
             </div>
 
             <!-- Dropdown list -->
@@ -81,13 +74,14 @@
                 *ngFor="let audit of filteredAudits" 
                 class="dropdown-item" 
                 (mousedown)="selectAudit(audit)"
-                [class.selected]="audit.id === selectedAuditId">
-                {{ audit.name }}
+                [class.selected]="audit.auditId === selectedAuditId">
+                {{ audit.assessment_project_name }}
               </div>
             </div>
 
             <div class="search-dropdown-list" *ngIf="showAuditDropdown && filteredAudits.length === 0 && auditSearch">
-              <div class="no-results">No audits found</div>
+              <div class="no-results" *ngIf="selectedClientId">No audits found for this client</div>
+              <div class="no-results" *ngIf="!selectedClientId">Please select a client first</div>
             </div>
 
             <!-- Validation messages -->
@@ -114,8 +108,7 @@
               placeholder="Enter number of IP" 
               min="1" 
               required
-              (change)="onInputChange('numberOfIPs', asvData.numberOfIPs)" 
-              [disabled]="isSubmitting" />
+              [disabled]="isLoading" />
             <div *ngIf="showErrors && (!asvData.numberOfIPs || asvData.numberOfIPs < 1)" class="error">
               <small>Please enter a valid number (minimum 1)</small>
             </div>
@@ -131,7 +124,7 @@
               #associatedOrganization="ngModel" 
               placeholder="Enter Associated Organization" 
               required
-              [disabled]="isSubmitting" />
+              [disabled]="isLoading" />
             <div *ngIf="showErrors && !asvData.associatedOrganization.trim()" class="error">
               <small>Associated Organization is required</small>
             </div>
@@ -147,7 +140,7 @@
               #associatedApplication="ngModel" 
               placeholder="Enter application name" 
               required
-              [disabled]="isSubmitting" />
+              [disabled]="isLoading" />
             <div *ngIf="showErrors && !asvData.associatedApplication.trim()" class="error">
               <small>Associated Application is required</small>
             </div>
@@ -165,9 +158,8 @@
             [(ngModel)]="asvData.IPDetails" 
             #IPDetails="ngModel" 
             placeholder="Enter IP addresses (one per line or comma separated)"
-            (input)="onInputChange('IPDetails', asvData.IPDetails)"
             rows="3" 
-            [disabled]="isSubmitting"></textarea>
+            [disabled]="isLoading"></textarea>
           <div class="ip-info" *ngIf="getIPCountFromDetails() > 0">
             <small>Found {{ getIPCountFromDetails() }} valid IP address(es)</small>
           </div>
@@ -177,34 +169,14 @@
         </div>
       </div>
 
-      <!-- Preview Section (Optional) -->
-      <div class="form-section preview-section" *ngIf="isFormValid()">
-        <h3>Preview</h3>
-        <div class="preview-content">
-          <p><strong>Client:</strong> {{ legalEntitySearch }}</p>
-          <p><strong>Audit:</strong> {{ auditSearch }}</p>
-          <p><strong>Number of IPs:</strong> {{ asvData.numberOfIPs }}</p>
-          <p><strong>Organization:</strong> {{ asvData.associatedOrganization }}</p>
-          <p><strong>Application:</strong> {{ asvData.associatedApplication }}</p>
-          <p *ngIf="asvData.IPDetails"><strong>IP Details:</strong> {{ formatIPDetailsForDisplay() }}</p>
-        </div>
-      </div>
-
       <!-- SUBMIT BUTTON -->
       <div class="form-actions">
         <button 
           type="submit" 
           class="btn-primary" 
-          [disabled]="isSubmitting">
-          <span *ngIf="!isSubmitting">Submit ASV Audit</span>
-          <span *ngIf="isSubmitting">Submitting...</span>
-        </button>
-        <button 
-          type="button" 
-          class="btn-secondary" 
-          (click)="onReset(asvForm)" 
-          [disabled]="isSubmitting">
-          <span>Reset Form</span>
+          [disabled]="isLoading">
+          <span *ngIf="!isLoading">Submit ASV Audit</span>
+          <span *ngIf="isLoading">Loading...</span>
         </button>
       </div>
 

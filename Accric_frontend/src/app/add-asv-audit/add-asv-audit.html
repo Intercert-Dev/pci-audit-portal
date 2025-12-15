@@ -1,7 +1,7 @@
 <div class="asv-audit-container">
   <div class="asv-audit-box">
     <h2>Add ASV Audit</h2>
-    
+
     <form #asvForm="ngForm" (ngSubmit)="onSubmit(asvForm)" class="asv-form" [class.loading]="isLoading">
 
       <!-- SECTION 1 -->
@@ -10,33 +10,21 @@
           <div class="form-group search-dropdown">
             <label for="legalEntitySearch">Legal Entity Name <span class="required">*</span></label>
             <div class="search-input-wrapper">
-              <input
-                style="width: 100%;"
-                id="legalEntitySearch"
-                type="text" 
-                name="legalEntityName" 
-                [(ngModel)]="legalEntitySearch"
-                (input)="onLegalEntitySearch()" 
-                (focus)="showLegalEntityDropdown = true" 
-                (blur)="onLegalEntityBlur()"
-                placeholder="Search legal entity name" 
-                autocomplete="off" 
-                [disabled]="isLoading"
-                required
-                #legalEntityNameInput="ngModel" />
+              <input style="width: 100%;" id="legalEntitySearch" type="text" name="legalEntityName"
+                [(ngModel)]="legalEntitySearch" (input)="onLegalEntitySearch()" (focus)="showLegalEntityDropdown = true"
+                (blur)="onLegalEntityBlur()" placeholder="Search legal entity name" autocomplete="off"
+                [disabled]="isLoading" required #legalEntityNameInput="ngModel" />
             </div>
             <!-- Dropdown list -->
             <div class="search-dropdown-list" *ngIf="showLegalEntityDropdown && filteredClients.length > 0">
-              <div 
-                *ngFor="let client of filteredClients" 
-                class="dropdown-item"
-                (mousedown)="selectClient(client)" 
+              <div *ngFor="let client of filteredClients" class="dropdown-item" (mousedown)="selectClient(client)"
                 [class.selected]="client.clientId === selectedClientId">
                 {{ client.legal_entity_name }}
               </div>
             </div>
 
-            <div class="search-dropdown-list" *ngIf="showLegalEntityDropdown && filteredClients.length === 0 && legalEntitySearch">
+            <div class="search-dropdown-list"
+              *ngIf="showLegalEntityDropdown && filteredClients.length === 0 && legalEntitySearch">
               <div class="no-results">No clients found</div>
             </div>
 
@@ -44,7 +32,7 @@
             <div *ngIf="showErrors && (!legalEntitySearch.trim() || !selectedClientId)" class="error">
               <small>Please select a client from the dropdown</small>
             </div>
-            
+
             <!-- Hidden input to store the actual value -->
             <input type="hidden" name="clientId" [(ngModel)]="selectedClientId" />
           </div>
@@ -52,28 +40,15 @@
           <div class="form-group search-dropdown">
             <label for="auditSearch">Assessment / Project Name <span class="required">*</span></label>
             <div class="search-input-wrapper">
-              <input 
-                style="width: 100%;"
-                id="auditSearch"
-                type="text" 
-                name="audit" 
-                [(ngModel)]="auditSearch" 
-                (input)="onAuditSearch()"
-                (focus)="showAuditDropdown = true" 
-                (blur)="onAuditBlur()" 
-                placeholder="Search Assessment Name" 
-                autocomplete="off"
-                required 
-                [disabled]="isLoading || !selectedClientId"
-                #auditInput="ngModel" />
+              <input style="width: 100%;" id="auditSearch" type="text" name="audit" [(ngModel)]="auditSearch"
+                (input)="onAuditSearch()" (focus)="showAuditDropdown = true" (blur)="onAuditBlur()"
+                placeholder="Search Assessment Name" autocomplete="off" required
+                [disabled]="isLoading || !selectedClientId" #auditInput="ngModel" />
             </div>
 
             <!-- Dropdown list -->
             <div class="search-dropdown-list" *ngIf="showAuditDropdown && filteredAudits.length > 0">
-              <div 
-                *ngFor="let audit of filteredAudits" 
-                class="dropdown-item" 
-                (mousedown)="selectAudit(audit)"
+              <div *ngFor="let audit of filteredAudits" class="dropdown-item" (mousedown)="selectAudit(audit)"
                 [class.selected]="audit.auditId === selectedAuditId">
                 {{ audit.assessment_project_name }}
               </div>
@@ -99,16 +74,8 @@
         <div class="form-row">
           <div class="form-group">
             <label for="numberOfIPs">Number of IP <span class="required">*</span></label>
-            <input 
-              id="numberOfIPs"
-              type="number" 
-              name="numberOfIPs" 
-              [(ngModel)]="asvData.numberOfIPs" 
-              #numberOfIPs="ngModel"
-              placeholder="Enter number of IP" 
-              min="1" 
-              required
-              [disabled]="isLoading" />
+            <input id="numberOfIPs" type="number" name="numberOfIPs" [(ngModel)]="asvData.numberOfIPs"
+              #numberOfIPs="ngModel" placeholder="Enter number of IP" min="1" required [disabled]="isLoading" />
             <div *ngIf="showErrors && (!asvData.numberOfIPs || asvData.numberOfIPs < 1)" class="error">
               <small>Please enter a valid number (minimum 1)</small>
             </div>
@@ -116,15 +83,9 @@
 
           <div class="form-group">
             <label for="associatedOrganization">Associated Organization <span class="required">*</span></label>
-            <input 
-              id="associatedOrganization"
-              type="text" 
-              name="associatedOrganization" 
-              [(ngModel)]="asvData.associatedOrganization"
-              #associatedOrganization="ngModel" 
-              placeholder="Enter Associated Organization" 
-              required
-              [disabled]="isLoading" />
+            <input id="associatedOrganization" type="text" name="associatedOrganization"
+              [(ngModel)]="asvData.associatedOrganization" #associatedOrganization="ngModel"
+              placeholder="Enter Associated Organization" required [disabled]="isLoading" />
             <div *ngIf="showErrors && !asvData.associatedOrganization.trim()" class="error">
               <small>Associated Organization is required</small>
             </div>
@@ -132,15 +93,9 @@
 
           <div class="form-group">
             <label for="associatedApplication">Associated Application <span class="required">*</span></label>
-            <input 
-              id="associatedApplication"
-              type="text" 
-              name="associatedApplication" 
-              [(ngModel)]="asvData.associatedApplication"
-              #associatedApplication="ngModel" 
-              placeholder="Enter application name" 
-              required
-              [disabled]="isLoading" />
+            <input id="associatedApplication" type="text" name="associatedApplication"
+              [(ngModel)]="asvData.associatedApplication" #associatedApplication="ngModel"
+              placeholder="Enter application name" required [disabled]="isLoading" />
             <div *ngIf="showErrors && !asvData.associatedApplication.trim()" class="error">
               <small>Associated Application is required</small>
             </div>
@@ -152,29 +107,26 @@
       <div class="form-section">
         <div class="form-group">
           <label for="IPDetails">IP Details</label>
-          <textarea 
-            id="IPDetails"
-            name="IPDetails" 
-            [(ngModel)]="asvData.IPDetails" 
-            #IPDetails="ngModel" 
-            placeholder="Enter IP addresses (one per line or comma separated)"
-            rows="3" 
+          <textarea id="IPDetails" name="IPDetails" [(ngModel)]="asvData.IPDetails" #IPDetails="ngModel"
+            placeholder="Enter IP addresses (one per line or comma separated)" rows="3" required
             [disabled]="isLoading"></textarea>
+
+          <div *ngIf="showErrors && IPDetails.invalid" class="error">
+            <small>IP Details is required</small>
+          </div>
+
           <div class="ip-info" *ngIf="getIPCountFromDetails() > 0">
             <small>Found {{ getIPCountFromDetails() }} valid IP address(es)</small>
           </div>
           <div class="ip-info" *ngIf="asvData.IPDetails && getIPCountFromDetails() === 0">
-            <small class="error">No valid IP addresses found. Please enter valid IPs like: 192.168.1.1</small>
+            <small class="error">No valid IP addresses found. Please enter valid IPs</small>
           </div>
         </div>
       </div>
 
       <!-- SUBMIT BUTTON -->
       <div class="form-actions">
-        <button 
-          type="submit" 
-          class="btn-primary" 
-          [disabled]="isLoading">
+        <button type="submit" class="btn-primary" [disabled]="isLoading">
           <span *ngIf="!isLoading">Submit ASV Audit</span>
           <span *ngIf="isLoading">Loading...</span>
         </button>

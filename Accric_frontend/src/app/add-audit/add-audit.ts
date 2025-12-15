@@ -61,13 +61,7 @@ export class AddAudit implements OnInit {
     'assessor-info',
     'scope-env'
   ];
-  qsaList = [
-    'Milan',
-    'John Smith',
-    'Sarah Johnson',
-    'Robert Chen',
-    'Emma Wilson'
-  ];
+  qsaList = [];
 
   auditData = {
     clientId: '',
@@ -329,22 +323,14 @@ export class AddAudit implements OnInit {
   saveAndContinue() {
     if (this.activeTab === 'assessment-summary') {
       const clientValid = !!this.auditData.clientId && this.auditData.clientId.trim() !== '';
+      const projectNameValid = !!this.auditData.assessment_project_name && this.auditData.assessment_project_name.trim() !== '';
       const startDateValid = !!this.auditData.audit_start_date && this.auditData.audit_start_date.trim() !== '';
       const endDateValid = !!this.auditData.audit_end_date && this.auditData.audit_end_date.trim() !== '';
       const datesValid = this.validateDates();
       
-      if (!clientValid || !startDateValid || !endDateValid || !datesValid) {
+      if (!clientValid || !projectNameValid || !startDateValid || !endDateValid || !datesValid) {
         this.showErrors = true;
         this.focusOnFirstError();
-        
-        // Show appropriate error message
-        let errorMessage = '';
-        if (!clientValid) errorMessage = 'Please select a client.';
-        else if (!startDateValid) errorMessage = 'Audit Start Date is required.';
-        else if (!endDateValid) errorMessage = 'Audit End Date is required.';
-        else errorMessage = 'Please fix the date errors before continuing.';
-        
-        alert(errorMessage);
         return;
       }
     }
@@ -376,14 +362,6 @@ export class AddAudit implements OnInit {
         if (!clientValid || !startDateValid || !endDateValid || !datesValid) {
           this.showErrors = true;
           this.focusOnFirstError();
-          
-          let errorMessage = '';
-          if (!clientValid) errorMessage = 'Please select a client before switching tabs.';
-          else if (!startDateValid) errorMessage = 'Please enter audit start date before switching tabs.';
-          else if (!endDateValid) errorMessage = 'Please enter audit end date before switching tabs.';
-          else errorMessage = 'Please fix the date errors before switching tabs.';
-          
-          alert(errorMessage);
           return;
         }
       }

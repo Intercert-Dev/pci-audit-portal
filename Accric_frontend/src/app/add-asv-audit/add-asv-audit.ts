@@ -29,6 +29,10 @@ interface Audit {
 })
 export class AddAsvAudit implements OnInit {
 
+  private ipRegex =
+    /^(25[0-5]|2[0-4]\d|1?\d?\d)(\.(25[0-5]|2[0-4]\d|1?\d?\d)){3}$/;
+
+
   legalEntitySearch = '';
   auditSearch = '';
 
@@ -63,7 +67,7 @@ export class AddAsvAudit implements OnInit {
   constructor(
     private http: HttpClient,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // Load initial data from APIs
@@ -92,7 +96,7 @@ export class AddAsvAudit implements OnInit {
     this.isLoading = true;
     const url = 'http://pci.accric.com/api/auth/clients-for-audit';
     const token = localStorage.getItem('jwt');
-    
+
     if (!token) {
       alert('Please login first. No authentication token found.');
       this.isLoading = false;
@@ -105,7 +109,7 @@ export class AddAsvAudit implements OnInit {
     });
 
     this.http.get<{ data: Client[] }>(url, { headers }).subscribe({
-      next: (response) => {  
+      next: (response) => {
         // Map the response to match Client interface
         this.clients = response.data.map(client => ({
           id: client.clientId || client.id,
@@ -113,11 +117,9 @@ export class AddAsvAudit implements OnInit {
           legal_entity_name: client.legal_entity_name,
           trading_name: client.trading_name
         }));
-        
-        console.log("Clients loaded:", this.clients);
         this.filteredClients = [...this.clients];
         this.isLoading = false;
-        
+
         // Force UI update
         this.cdr.detectChanges();
       },
@@ -135,7 +137,7 @@ export class AddAsvAudit implements OnInit {
     this.isLoading = true;
     const url = 'http://pci.accric.com/api/auth/audit-list';
     const token = localStorage.getItem('jwt');
-    
+
     if (!token) {
       alert('Please login first. No authentication token found.');
       this.isLoading = false;
@@ -156,13 +158,11 @@ export class AddAsvAudit implements OnInit {
           assessment_project_name: audit.assessment_project_name,
           client: audit.client || { clientId: '', legal_entity_name: '' }
         }));
-        
-        console.log("All audits loaded:", this.allAudits);
-        
+
         // Initially show no audits until a client is selected
         this.filteredAudits = [];
         this.isLoading = false;
-        
+
         // Force UI update
         this.cdr.detectChanges();
       },
@@ -190,7 +190,7 @@ export class AddAsvAudit implements OnInit {
         (client.trading_name && client.trading_name.toLowerCase().includes(term))
       );
     }
-    
+
     // Force UI update for dropdown
     this.cdr.detectChanges();
   }
@@ -218,7 +218,7 @@ export class AddAsvAudit implements OnInit {
           this.filteredAudits = [];
         }
       }
-      
+
       // Force UI update
       this.cdr.detectChanges();
     }, 200);
@@ -226,32 +226,52 @@ export class AddAsvAudit implements OnInit {
 
   selectClient(client: Client) {
     this.legalEntitySearch = client.legal_entity_name;
+    this.asvData.associatedOrganization = client.legal_entity_name;
     this.selectedClientId = client.clientId;
     this.showLegalEntityDropdown = false;
-    
+
     // Filter audits based on selected client
     this.filterAuditsByClient(client.clientId);
-    
+
     // Clear audit selection when client changes
     this.auditSearch = '';
     this.selectedAuditId = null;
-    
+
     // Force UI update
     this.cdr.detectChanges();
   }
+
+  getValidIPs(): string[] {
+    if (!this.asvData.IPDetails) return [];
+
+    return this.asvData.IPDetails
+      .split(/[\s,]+/) // split by comma, space, newline
+      .map(ip => ip.trim())
+      .filter(ip => this.ipRegex.test(ip));
+  }
+
+  hasInvalidIPs(): boolean {
+    if (!this.asvData.IPDetails) return true;
+
+    const ips = this.asvData.IPDetails
+      .split(/[\s,]+/)
+      .map(ip => ip.trim())
+      .filter(ip => ip.length > 0);
+
+    return ips.some(ip => !this.ipRegex.test(ip));
+  }
+
 
   // Filter audits by client ID
   filterAuditsByClient(clientId: string): void {
     if (!clientId) {
       this.filteredAudits = [];
     } else {
-      this.filteredAudits = this.allAudits.filter(audit => 
+      this.filteredAudits = this.allAudits.filter(audit =>
         audit.client && audit.client.clientId === clientId
       );
     }
-    
-    console.log(`Filtered audits for client ${clientId}:`, this.filteredAudits);
-    
+
     // Force UI update
     this.cdr.detectChanges();
   }
@@ -265,7 +285,7 @@ export class AddAsvAudit implements OnInit {
     if (!searchTerm.trim()) {
       // If no search term, show all audits for the selected client
       if (this.selectedClientId) {
-        this.filteredAudits = this.allAudits.filter(audit => 
+        this.filteredAudits = this.allAudits.filter(audit =>
           audit.client && audit.client.clientId === this.selectedClientId
         );
       } else {
@@ -278,11 +298,11 @@ export class AddAsvAudit implements OnInit {
         if (this.selectedClientId && (!audit.client || audit.client.clientId !== this.selectedClientId)) {
           return false;
         }
-        
+
         return audit.assessment_project_name.toLowerCase().includes(term);
       });
     }
-    
+
     // Force UI update for dropdown
     this.cdr.detectChanges();
   }
@@ -305,7 +325,7 @@ export class AddAsvAudit implements OnInit {
           this.selectedAuditId = null;
         }
       }
-      
+
       // Force UI update
       this.cdr.detectChanges();
     }, 200);
@@ -313,72 +333,45 @@ export class AddAsvAudit implements OnInit {
 
   selectAudit(audit: Audit) {
     this.auditSearch = audit.assessment_project_name;
+    this.asvData.associatedApplication = audit.assessment_project_name;
     this.selectedAuditId = audit.auditId;
     this.showAuditDropdown = false;
-    
+
     // Force UI update
     this.cdr.detectChanges();
   }
 
-  // IP COUNT
   getIPCountFromDetails(): number {
-    if (!this.asvData.IPDetails) return 0;
-
-    const ipRegex = /\b((25[0-5]|2[0-4]\d|1?\d?\d)(\.|$)){4}\b/g;
-
-    const matches = this.asvData.IPDetails.match(ipRegex);
-    return matches ? matches.length : 0;
+    return this.getValidIPs().length;
   }
 
-  // SUBMIT
+
   onSubmit(form: NgForm) {
     this.showErrors = true;
 
-    // Validate required fields
-    if (!form.valid || !this.selectedClientId || !this.selectedAuditId) {
-      if (!this.selectedClientId) {
-        alert('Please select a client from the dropdown list.');
-        return;
-      }
-      if (!this.selectedAuditId) {
-        alert('Please select an audit from the dropdown list.');
-        return;
-      }
-      return;
-    }
-
-    // Validate numberOfIPs
-    if (!this.asvData.numberOfIPs || this.asvData.numberOfIPs < 1) {
-      alert('Please enter a valid number of IPs (minimum 1).');
-      return;
-    }
-
-    // Validate other required fields
-    if (!this.asvData.associatedOrganization.trim()) {
-      alert('Associated Organization is required.');
-      return;
-    }
-
-    if (!this.asvData.associatedApplication.trim()) {
-      alert('Associated Application is required.');
+    if (
+      form.invalid ||
+      !this.selectedClientId ||
+      !this.selectedAuditId ||
+      this.hasInvalidIPs()
+    ) {
       return;
     }
 
     const payload = {
       ...this.asvData,
+      validIPs: this.getValidIPs(),
       clientId: this.selectedClientId,
       auditId: this.selectedAuditId
     };
 
-    console.log('Submitting ASV Audit:', payload);
-    
-    // Here you would typically call an API to submit the data
-    // For now, just show success message
+    console.log('Submitting payload:', payload);
+
     alert('Form Submitted Successfully!');
-    
-    // Optionally reset the form after successful submission
-    // this.resetForm(form);
+    this.showErrors = false;
   }
+
+
 
   // Optional: Reset form after submission
   resetForm(form: NgForm): void {
@@ -390,18 +383,18 @@ export class AddAsvAudit implements OnInit {
     this.showErrors = false;
     this.showLegalEntityDropdown = false;
     this.showAuditDropdown = false;
-    
+
     this.asvData = {
       numberOfIPs: null,
       associatedOrganization: '',
       associatedApplication: '',
       IPDetails: ''
     };
-    
+
     // Reset filtered lists
     this.filteredClients = [...this.clients];
     this.filteredAudits = [];
-    
+
     // Force UI update
     this.cdr.detectChanges();
   }

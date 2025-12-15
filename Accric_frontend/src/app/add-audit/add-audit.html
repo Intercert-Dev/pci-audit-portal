@@ -20,8 +20,8 @@
           <div class="form-group search-dropdown">
             <label>Client (Legal Entity Name)*</label>
             <div class="search-input-wrapper">
-              <input style="width: 50%;" type="text" name="clientSearch" [(ngModel)]="clientSearch" (input)="onClientSearch()"
-                (focus)="showClientDropdown = true" (blur)="onClientBlur()"
+              <input style="width: 50%;" type="text" name="clientSearch" [(ngModel)]="clientSearch"
+                (input)="onClientSearch()" (focus)="showClientDropdown = true" (blur)="onClientBlur()"
                 placeholder="Search client name" autocomplete="off" required />
             </div>
 
@@ -30,8 +30,8 @@
 
             <!-- Dropdown list -->
             <div class="search-dropdown-list" *ngIf="showClientDropdown && filteredClients.length > 0">
-              <div *ngFor="let client of filteredClients" class="dropdown-item"
-                (mousedown)="selectClient(client)" [class.selected]="client.clientId === selectedClientId">
+              <div *ngFor="let client of filteredClients" class="dropdown-item" (mousedown)="selectClient(client)"
+                [class.selected]="client.clientId === selectedClientId">
                 {{ client.legal_entity_name }}
               </div>
             </div>
@@ -40,18 +40,20 @@
               *ngIf="showClientDropdown && filteredClients.length === 0 && clientSearch">
               <div class="no-results">No clients found</div>
             </div>
-
             <div class="error" *ngIf="clientId.invalid && (clientId.touched || showErrors)">
               <small>Please select a client.</small>
             </div>
           </div>
         </div>
-        
+
         <div class="form-row">
           <div class="form-group">
-            <label>Assessment / Project Name</label>
-            <input type="text" name="assessment_project_name" [(ngModel)]="auditData.assessment_project_name"
-              placeholder="Assessment / Project Name" />
+            <label>Assessment / Project Name <span class="required">*</span></label>
+            <input type="text" name="assessment_project_name" required [(ngModel)]="auditData.assessment_project_name"
+              #assessmentProjectName="ngModel" placeholder="Assessment / Project Name" />
+            <div class="error" *ngIf="assessmentProjectName.invalid && (assessmentProjectName.touched || showErrors)">
+              <small>Assessment / Project Name is required</small>
+            </div>
           </div>
           <div class="form-group">
             <label>Assessment Type</label>
@@ -86,8 +88,8 @@
         <div class="form-row">
           <div class="form-group">
             <label>Audit Start Date*</label>
-            <input type="date" name="audit_start_date" required [(ngModel)]="auditData.audit_start_date" (change)="validateDates()"
-              #auditStart="ngModel" />
+            <input type="date" name="audit_start_date" required [(ngModel)]="auditData.audit_start_date"
+              (change)="validateDates()" #auditStart="ngModel" />
             <div class="error" *ngIf="auditStart.invalid && (auditStart.touched || showErrors)">
               <small>Audit Start Date is required</small>
             </div>
@@ -97,8 +99,8 @@
           </div>
           <div class="form-group">
             <label>Audit End Date*</label>
-            <input type="date" name="audit_end_date" required [(ngModel)]="auditData.audit_end_date" (change)="validateDates()"
-              #auditEnd="ngModel" />
+            <input type="date" name="audit_end_date" required [(ngModel)]="auditData.audit_end_date"
+              (change)="validateDates()" #auditEnd="ngModel" />
             <div class="error" *ngIf="auditEnd.invalid && (auditEnd.touched || showErrors)">
               <small>Audit End Date is required</small>
             </div>
@@ -186,8 +188,8 @@
           </div>
           <div class="form-group">
             <label>QSA License/Certificate Number</label>
-            <input type="text" name="qsa_license_certificate_number" [(ngModel)]="auditData.qsa_license_certificate_number"
-              placeholder="QSA License/Certificate Number" />
+            <input type="text" name="qsa_license_certificate_number"
+              [(ngModel)]="auditData.qsa_license_certificate_number" placeholder="QSA License/Certificate Number" />
           </div>
           <div class="form-group">
             <label>Manager/Reviewer Name</label>

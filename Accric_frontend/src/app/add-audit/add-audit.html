@@ -181,10 +181,14 @@
         <div class="form-row">
           <div class="form-group">
             <label>Name of QSA</label>
-            <select name="name_of_qsa" [(ngModel)]="auditData.name_of_qsa">
-              <option value="" disabled selected>Select QSA</option>
-              <option *ngFor="let qsa of qsaList" [value]="qsa">{{qsa}}</option>
+            <select name="name_of_qsa" [(ngModel)]="auditData.name_of_qsa" (change)="onQsaChange($event)">
+              <option value="" disabled>Select QSA</option>
+
+              <option *ngFor="let qsa of qsaList" [value]="qsa.qsa_id">
+                {{ qsa.qsa_name }}
+              </option>
             </select>
+
           </div>
           <div class="form-group">
             <label>QSA License/Certificate Number</label>

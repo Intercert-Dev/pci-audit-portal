@@ -19,6 +19,7 @@ export class AsvClientList {
   clientList = [
     {
       company: "GLOBAL TECH INDUSTRIES",
+      assessment: "KJH-2023-004",
       Q1: "Completed",
       Q2: "Pending",
       Q3: "Inprogress",
@@ -26,6 +27,7 @@ export class AsvClientList {
     },
     {
       company: "BLUE OCEAN MANUFACTURING LTD",
+      assessment: "CSMD-2023-001",
       Q1: "Pending",
       Q2: "Completed",
       Q3: "Pending",

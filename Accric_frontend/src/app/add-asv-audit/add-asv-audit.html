@@ -106,7 +106,7 @@
       <!-- SECTION 2 -->
       <div class="form-section">
         <div class="form-group">
-          <label for="IPDetails">IP Details</label>
+          <label for="IPDetails">IP Details <span class="required">*</span></label>
           <textarea id="IPDetails" name="IPDetails" [(ngModel)]="asvData.IPDetails" #IPDetails="ngModel"
             placeholder="Enter IP addresses (one per line or comma separated)" rows="3" required
             [disabled]="isLoading"></textarea>

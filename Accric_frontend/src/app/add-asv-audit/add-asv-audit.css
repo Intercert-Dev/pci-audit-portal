@@ -345,6 +345,167 @@ textarea.ng-invalid.ng-touched {
   z-index: 1;
 }
 
+/* ================================
+   EDIT ASV CLIENT – SEARCH DROPDOWN
+================================ */
+
+.edit-client-container .search-dropdown {
+  position: relative;
+  z-index: 20;
+}
+
+.edit-client-container .search-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.edit-client-container .search-input-wrapper input {
+  padding-right: 2.5rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23718ebf' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 16px;
+}
+
+.edit-client-container .search-input-wrapper input:focus {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%234e77ff' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
+}
+
+/* ================================
+   DROPDOWN LIST
+================================ */
+
+.edit-client-container .search-dropdown-list {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid rgba(223, 234, 242, 1);
+  border-radius: 0.75rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  max-height: 280px;
+  overflow-y: auto;
+  z-index: 999;
+  animation: dropdownFadeIn 0.2s ease-out;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================================
+   DROPDOWN ITEMS
+================================ */
+
+.edit-client-container .dropdown-item {
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  color: rgba(35, 35, 35, 1);
+  border-bottom: 1px solid rgba(245, 247, 250, 1);
+  display: flex;
+  align-items: center;
+  min-height: 46px;
+  transition: all 0.2s ease;
+}
+
+.edit-client-container .dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.edit-client-container .dropdown-item:hover {
+  background-color: rgba(250, 251, 254, 1);
+  color: rgba(57, 106, 255, 1);
+}
+
+.edit-client-container .dropdown-item.selected {
+  background-color: rgba(57, 106, 255, 0.1);
+  color: rgba(57, 106, 255, 1);
+  font-weight: 500;
+  position: relative;
+}
+
+.edit-client-container .dropdown-item.selected::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background-color: rgba(57, 106, 255, 1);
+  border-radius: 0 3px 3px 0;
+}
+
+/* ================================
+   EMPTY STATE
+================================ */
+
+.edit-client-container .no-results {
+  padding: 1.25rem 1rem;
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: rgba(113, 142, 191, 0.8);
+}
+
+/* ================================
+   SCROLLBAR
+================================ */
+
+.edit-client-container .search-dropdown-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.edit-client-container .search-dropdown-list::-webkit-scrollbar-track {
+  background: rgba(245, 247, 250, 1);
+  border-radius: 3px;
+}
+
+.edit-client-container .search-dropdown-list::-webkit-scrollbar-thumb {
+  background: rgba(113, 142, 191, 0.5);
+  border-radius: 3px;
+}
+
+.edit-client-container .search-dropdown-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(113, 142, 191, 0.75);
+}
+
+/* ================================
+   MOBILE RESPONSIVE
+================================ */
+
+@media (max-width: 768px) {
+  .edit-client-container .search-dropdown-list {
+    max-height: 240px;
+  }
+
+  .edit-client-container .dropdown-item {
+    font-size: 0.9rem;
+    min-height: 42px;
+  }
+}
+
+@media (max-width: 480px) {
+  .edit-client-container .search-dropdown-list {
+    max-height: 200px;
+  }
+
+  .edit-client-container .dropdown-item {
+    font-size: 0.85rem;
+    padding: 0.65rem 0.85rem;
+  }
+}
+
+
 /* Responsive adjustments for dropdown */
 @media (max-width: 768px) {
   .search-dropdown-list {

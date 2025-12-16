@@ -356,7 +356,6 @@ input:required, select:required {
 @media (max-width: 1024px) {
   .add-audit-container {
     padding: 1rem;
-    margin-top: 6rem;
   }
 
   .add-audit-box {
@@ -398,6 +397,7 @@ input:required, select:required {
     margin: 0.5rem;
     border-radius: 0.5rem;
     width: calc(100% - 1rem);
+    margin-top: 7rem;
   }
 
   .tabs {
@@ -472,6 +472,7 @@ input:required, select:required {
     border-radius: 0;
     min-height: calc(100vh - 60px);
     width: 100%;
+    margin-top: 4rem;
   }
 
   .tabs {
@@ -577,5 +578,17 @@ input:required, select:required {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Fix dropdown width on mobile */
+@media (max-width: 768px) {
+  .search-dropdown-list {
+    width: 100%;
+  }
+}
+@media (max-width: 480px) {
+  .tab {
+    min-height: 44px; /* Google touch guideline */
   }
 }

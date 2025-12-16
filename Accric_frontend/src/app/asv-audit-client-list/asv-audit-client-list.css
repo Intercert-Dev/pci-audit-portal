@@ -1008,3 +1008,70 @@ input[type="number"]::-webkit-outer-spin-button {
   height: 20px;
   cursor: pointer;
 }
+
+
+/* =====================================
+   FINAL RESPONSIVE STABILITY FIXES
+   (NON-DESTRUCTIVE)
+===================================== */
+
+/* Improve table scrolling experience */
+@media (max-width: 768px) {
+  table {
+    min-width: 1000px; /* cap growth */
+  }
+}
+
+@media (max-width: 480px) {
+  table {
+    min-width: 950px;
+  }
+}
+
+@media (max-width: 360px) {
+  table {
+    min-width: 900px;
+  }
+}
+
+/* Prevent header overflow on very small screens */
+@media (max-width: 360px) {
+  .header-right {
+    align-items: stretch;
+  }
+
+  .search-box,
+  .export-btn {
+    height: 44px;
+  }
+}
+
+/* Improve action icon touch targets */
+@media (max-width: 768px) {
+  .action-box img {
+    padding: 10px;
+    border-radius: 8px;
+  }
+}
+
+/* Popup footer safety */
+@media (max-width: 360px) {
+  .popup-footer,
+  .modal-footer {
+    gap: 10px;
+  }
+
+  .btn-save span,
+  .btn-cancel span,
+  .btn-close span {
+    font-size: 16px;
+  }
+}
+
+/* Prevent accidental horizontal scroll */
+@media (max-width: 768px) {
+  .asv-audit-list-container,
+  .asv-audit-list-box {
+    overflow-x: hidden;
+  }
+}

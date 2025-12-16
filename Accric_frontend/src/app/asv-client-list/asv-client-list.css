@@ -571,3 +571,59 @@ tbody tr {
     gap: 1rem;
   }
 }
+
+
+/* =====================================
+   FINAL RESPONSIVE FIXES (NON-DESTRUCTIVE)
+===================================== */
+
+/* Fix table scroll clipping */
+@media (max-width: 768px) {
+  .table-wrapper {
+    overflow-x: auto;
+  }
+}
+
+/* Improve header button touch size */
+@media (max-width: 480px) {
+  .export-btn,
+  .search-box {
+    min-height: 44px;
+  }
+}
+
+/* Improve action icon touch targets */
+@media (max-width: 768px) {
+  .action-box img {
+    padding: 10px;
+    border-radius: 8px;
+  }
+}
+
+/* Popup centering safety for small screens */
+@media (max-width: 480px) {
+  .edit-popup {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+}
+
+/* Extra safety for very small phones */
+@media (max-width: 360px) {
+  .edit-popup {
+    width: 95%;
+    padding: 1.2rem;
+  }
+
+  .buttons {
+    flex-direction: column;
+  }
+
+  .save-btn,
+  .cancel-btn {
+    width: 100%;
+  }
+}

@@ -375,7 +375,7 @@
     align-items: stretch;
     width: 100%;
     gap: 0.6rem;
-    margin-top: 3rem;
+    /* margin-top: 3rem; */
     margin-left: 0;
 
   }
@@ -615,10 +615,6 @@
     gap: 0.5rem;
     width: 100%;
   }
-
-
-
-
 
   /* Sidebar Mobile Drawer */
   .sidebar {

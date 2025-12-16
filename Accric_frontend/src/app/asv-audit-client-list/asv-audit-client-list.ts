@@ -71,7 +71,6 @@ export class AsvAuditClientList implements OnInit {
     this.http.get<any>(this.apiUrl, { headers }).subscribe({
       next: (response) => {
         this.isLoading = false;
-        console.log("response",response);
         
         // Handle different response formats
         if (response && Array.isArray(response)) {

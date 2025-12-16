@@ -145,8 +145,8 @@ export class MainLayout implements OnInit {
   private isListsSubmenuRoute(url: string): boolean {
     const listsSubmenuRoutes = [
       '/client-list',
-      '/client', 
-      '/list'       
+      '/audit-list', // Changed from '/client' to '/audit-list'
+      '/asv-audit-client-list' // Changed from '/list' to '/asv-audit-client-list'
     ];
     return listsSubmenuRoutes.some(route => url.startsWith(route));
   }
@@ -166,11 +166,19 @@ export class MainLayout implements OnInit {
   toggleClientsMenu(event: Event) {
     event.stopPropagation();
     this.isClientsExpanded = !this.isClientsExpanded;
+    // Close other menu when opening this one
+    if (this.isClientsExpanded) {
+      this.isListExpanded = false;
+    }
   }
 
   toggleListsMenu(event: Event) {
     event.stopPropagation();
     this.isListExpanded = !this.isListExpanded;
+    // Close other menu when opening this one
+    if (this.isListExpanded) {
+      this.isClientsExpanded = false;
+    }
   }
 
   closeClientsMenu() {
@@ -188,11 +196,15 @@ export class MainLayout implements OnInit {
   }
 
   onSubmenuItemClick() {
+    // For Clients submenu items - only close dropdown, keep submenu open
     this.closeDropdown();
+    // Don't close the Clients submenu
   }
 
   onSubmenuItemListClick() {
+    // For Lists submenu items - only close dropdown, keep submenu open
     this.closeDropdown();
+    // Don't close the Lists submenu
   }
 
   goToProfile(event: Event) {

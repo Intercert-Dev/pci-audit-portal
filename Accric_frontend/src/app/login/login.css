@@ -17,7 +17,7 @@
   justify-content: center;
   overflow: hidden;
   object-fit: contain;
-  background: url('/assets/9750dcac592b58202d0ab8111bd3958d179f06f3.jpg') no-repeat center center;
+  background: url('https://accric-pci-web.s3.ap-south-1.amazonaws.com/accric/9750dcac592b58202d0ab8111bd3958d179f06f3.jpg') no-repeat center center;
   background-size: cover;
 }
 

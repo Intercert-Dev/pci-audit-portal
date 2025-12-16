@@ -182,9 +182,6 @@ export class EditAsvClient {
         break;
     }
 
-    console.log(`${quarter} status changed to: ${status}`);
-
-    // You can add additional logic here, like auto-saving or API calls
   }
 
   // Preview file

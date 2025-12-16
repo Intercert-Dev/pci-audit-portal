@@ -69,14 +69,39 @@
                 </li>
               </ul>
             </li>
+            <!-- Lists SUBMENU -->
+            <li class="has-submenu" [class.expanded]="isListExpanded">
+              <div class="submenu-header" (click)="toggleListsMenu($event)">
+                <div class="nav-item">
+                  <img src="assets/icons/calendar_view_week.png" alt="icon" class="nav-icon">
+                  <span class="nav-text">Lists</span>
+                  <img class="arrow-icon" [class.rotate]="isListExpanded" src="/assets/icons8-dropdown-50.png"
+                    alt="arrow">
+                </div>
+              </div>
+              <!-- SUBMENU ITEMS - DON'T close submenu when clicked -->
+              <ul class="submenu" *ngIf="isListExpanded">
+                <li routerLink="/client-list" routerLinkActive="active" (click)="onSubmenuItemListClick()">
+                  <span>Clients</span>
+                </li>
+                <li routerLink="/client" routerLinkActive="active" (click)="onSubmenuItemListClick()">
+                  <span>Audits</span>
+                </li>
+                <li routerLink="/list" routerLinkActive="active" (click)="onSubmenuItemListClick()">
+                  <span>ASV Audits</span>
+                </li>
+              </ul>
+            </li>
+
+
 
             <!-- MAIN MENU ITEMS - Close submenu when clicked -->
-            <li routerLink="/client-list" routerLinkActive="active" (click)="onMainMenuItemClick()">
+            <!-- <li routerLink="/client-list" routerLinkActive="active" (click)="onMainMenuItemClick()">
               <div class="nav-item">
                 <img src="assets/icons/calendar_view_week.png" alt="icon" class="nav-icon">
                 <span class="nav-text">Client List</span>
               </div>
-            </li>
+            </li> -->
             <li routerLink="/asv-dashboard" routerLinkActive="active" (click)="onMainMenuItemClick()">
               <div class="nav-item">
                 <img src="assets/icons/breaking_news_alt_1.png" alt="icon" class="nav-icon">

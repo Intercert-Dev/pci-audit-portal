@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 
@@ -14,22 +14,32 @@ export class MainLayout implements OnInit {
   isSidebarOpen = true;
   dropdownOpen = false;
   isClientsExpanded = false;
+  isListExpanded = false;
   userRole: string = '';
   userEmail: string = '';
+  windowWidth: number = window.innerWidth;
 
   constructor(private router: Router) {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         const currentUrl = event.urlAfterRedirects || event.url;
-        const isSubmenuRoute = this.isClientsSubmenuRoute(currentUrl);
+        const isClientsSubmenuRoute = this.isClientsSubmenuRoute(currentUrl);
+        const isListsSubmenuRoute = this.isListsSubmenuRoute(currentUrl);
 
-        if (!isSubmenuRoute) {
-          this.isClientsExpanded = false;
-        }
+        // Update Clients menu state
+        this.isClientsExpanded = isClientsSubmenuRoute;
+        
+        // Update Lists menu state
+        this.isListExpanded = isListsSubmenuRoute;
       });
   }
- windowWidth: number = window.innerWidth;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    this.windowWidth = window.innerWidth;
+  }
+
   ngOnInit() {
     this.decodeJWTAndSetUserInfo();
   }
@@ -129,8 +139,16 @@ export class MainLayout implements OnInit {
       '/add-asv-audit',
       '/report-verification'
     ];
-
     return clientsSubmenuRoutes.some(route => url.startsWith(route));
+  }
+
+  private isListsSubmenuRoute(url: string): boolean {
+    const listsSubmenuRoutes = [
+      '/client-list',
+      '/client', 
+      '/list'       
+    ];
+    return listsSubmenuRoutes.some(route => url.startsWith(route));
   }
 
   toggleSidebar() {
@@ -150,16 +168,30 @@ export class MainLayout implements OnInit {
     this.isClientsExpanded = !this.isClientsExpanded;
   }
 
+  toggleListsMenu(event: Event) {
+    event.stopPropagation();
+    this.isListExpanded = !this.isListExpanded;
+  }
+
   closeClientsMenu() {
     this.isClientsExpanded = false;
   }
 
+  closeListMenu() {
+    this.isListExpanded = false;
+  }
+
   onMainMenuItemClick() {
     this.closeClientsMenu();
+    this.closeListMenu();
     this.closeDropdown();
   }
 
   onSubmenuItemClick() {
+    this.closeDropdown();
+  }
+
+  onSubmenuItemListClick() {
     this.closeDropdown();
   }
 

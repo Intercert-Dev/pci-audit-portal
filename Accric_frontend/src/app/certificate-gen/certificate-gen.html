@@ -3,10 +3,46 @@
     <!-- Certificate input form -->
     <form #certForm="ngForm" (ngSubmit)="generateCertificate(certForm)">
       <div class="input-row">
-        <input type="text" name="certificateNo" ngModel required placeholder="Enter certificate number" />
-        <button class="certificate-btn" type="submit">
-          <span>Generate</span>
-        </button>
+        <!-- COMPANY & ASSESSMENT SELECTION -->
+        <div class="input-group">
+
+          <!-- COMPANY -->
+          <div class="search-dropdown">
+            <label>Company</label>
+            <input type="text" [(ngModel)]="companySearch" name="companySearch" (input)="onCompanySearch()"
+              (focus)="showCompanyDropdown = true" (blur)="onCompanyBlur()" placeholder="Search company"
+              autocomplete="off" />
+
+            <div class="search-dropdown-list" *ngIf="showCompanyDropdown && filteredCompanies.length">
+              <div class="dropdown-item" *ngFor="let c of filteredCompanies" (mousedown)="selectCompany(c)">
+                {{ c.legal_entity_name }}
+              </div>
+            </div>
+          </div>
+
+          <!-- ASSESSMENT -->
+          <div class="search-dropdown">
+            <label>Assessment</label>
+            <input type="text" [(ngModel)]="assessmentSearch" name="assessmentSearch" [disabled]="!selectedCompanyId"
+              (input)="onAssessmentSearch()" (focus)="showAssessmentDropdown = true" (blur)="onAssessmentBlur()"
+              placeholder="Search assessment" autocomplete="off" />
+
+            <div class="search-dropdown-list" *ngIf="showAssessmentDropdown && filteredAssessments.length">
+              <div class="dropdown-item" *ngFor="let a of filteredAssessments" (mousedown)="selectAssessment(a)">
+                {{ a.assessment_project_name }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="input-group">
+          <input type="text" name="certificateNo" [(ngModel)]="certificateInputValue" required
+            placeholder="Certificate number auto-filled" readonly />
+
+          <button class="certificate-btn" type="submit">
+            <span>Generate</span>
+          </button>
+        </div>
+
       </div>
       <div *ngIf="showCertificateForm && certificateData">
         <p class="certificate-sub-heading">Select and Edit Certificate Fields</p>
@@ -47,7 +83,7 @@
               <label>Date Valid</label>
               <input type="text" [(ngModel)]="certificateData.dateValid" name="dateValid" />
             </div>
-            
+
             <!-- Classification -->
             <div class="field-row">
               <input type="checkbox" [(ngModel)]="editFields.assessment_classification"
@@ -86,19 +122,21 @@
             <!-- Company Name Font Size (16px-24px) -->
             <div class="option-row">
               <label>Company Font Size</label>
-              <select [(ngModel)]="certificateOptions.companyNameFontSize" name="companyNameFontSize" (change)="onOptionsChange()">
+              <select [(ngModel)]="certificateOptions.companyNameFontSize" name="companyNameFontSize"
+                (change)="onOptionsChange()">
                 <option *ngFor="let size of companyNameFontSizes" [value]="size">{{size}}</option>
               </select>
             </div>
-            
+
             <!-- Address Font Size (8px-16px) -->
             <div class="option-row">
               <label>Address Font Size</label>
-              <select [(ngModel)]="certificateOptions.addressFontSize" name="addressFontSize" (change)="onOptionsChange()">
+              <select [(ngModel)]="certificateOptions.addressFontSize" name="addressFontSize"
+                (change)="onOptionsChange()">
                 <option *ngFor="let size of addressFontSizes" [value]="size">{{size}}</option>
               </select>
             </div>
-            
+
             <!-- Version/Type Font Size (10px-16px) -->
             <div class="option-row">
               <label>Standard Font Size</label>
@@ -106,7 +144,7 @@
                 <option *ngFor="let size of typeFontSizes" [value]="size">{{size}}</option>
               </select>
             </div>
-            
+
             <!-- Page Size -->
             <!-- <div class="option-row">
               <label>Page Size</label>
@@ -141,7 +179,7 @@
       </div>
     </form>
   </div>
-  
+
   <!-- PDF Viewer Section (OUTSIDE the form) -->
   <div *ngIf="showPdfViewer" #pdfViewer class="pdf-viewer-container">
     <div class="pdf-viewer-header">

@@ -33,6 +33,102 @@
   color: rgba(57, 106, 255, 1);
 }
 
+.searchbox {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  color: rgba(139, 163, 203, 1);
+  transition: all 0.3s;
+  display: flex;
+  gap: 1rem; /* Add gap between the two sections */
+}
+
+
+.company-search-section,
+.assessment-search-section {
+  flex: 1; /* Each takes 50% width */
+  min-width: 0; /* Prevents overflow */
+}
+
+/* Search Dropdown Styles */
+.search-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.search-dropdown .form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  color: rgba(139, 163, 203, 1);
+}
+
+.search-dropdown .form-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid rgba(139, 163, 203, 1);
+  border-radius: 12px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  color: rgba(139, 163, 203, 1);
+  transition: all 0.3s;
+}
+
+.search-dropdown .form-input:focus {
+  outline: none;
+  border-color: rgba(57, 106, 255, 1);
+  box-shadow: 0 0 0 3px rgba(57, 106, 255, 0.1);
+}
+
+/* Dropdown List */
+.dropdown-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid rgba(139, 163, 203, 1);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+  margin-top: 4px;
+}
+
+.dropdown-item {
+  padding: 10px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(230, 239, 245, 1);
+  transition: background-color 0.2s ease;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: rgba(52, 60, 106, 1);
+}
+
+.dropdown-item:hover {
+  background-color: rgba(245, 247, 250, 1);
+}
+
+.dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.dropdown-empty {
+  padding: 10px 16px;
+  text-align: center;
+  color: rgba(139, 163, 203, 1);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+}
+
+
 /* Form Sections */
 .form-section {
   margin-bottom: 32px;

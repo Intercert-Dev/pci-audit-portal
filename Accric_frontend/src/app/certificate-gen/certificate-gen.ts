@@ -1,8 +1,29 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
-import { Component, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
+import { Component, ChangeDetectorRef, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+
+
+
+interface Company {
+  clientId: string;
+  legal_entity_name: string;
+}
+
+interface Assessment {
+  auditId: string;
+  assessment_project_name: string;
+  client: {
+    clientId: string;
+    legal_entity_name?: string;
+  };
+}
+
+
+
 
 @Component({
   selector: 'app-certificate-gen',
@@ -11,7 +32,35 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
   templateUrl: './certificate-gen.html',
   styleUrls: ['./certificate-gen.css'],
 })
-export class CertificateGen {
+export class CertificateGen implements OnInit {
+
+  // Search text
+  companySearch = '';
+  assessmentSearch = '';
+
+  // Dropdown controls
+  showCompanyDropdown = false;
+  showAssessmentDropdown = false;
+
+  // Lists
+  companies: Company[] = [];
+  assessments: Assessment[] = [];
+  filteredCompanies: Company[] = [];
+  filteredAssessments: Assessment[] = [];
+
+  // Selected
+  selectedCompanyId: string | null = null;
+  selectedAssessmentId: string | null = null;
+
+  // Certificate input binding
+  certificateInputValue = '';
+
+  private companySearch$ = new Subject<string>();
+  private assessmentSearch$ = new Subject<string>();
+
+
+
+
   loading: boolean = false;
   showCertificateForm: boolean = false;
   showPdfViewer: boolean = false;
@@ -19,7 +68,7 @@ export class CertificateGen {
   pdfUrl: SafeResourceUrl | null = null;
   pdfBlob: Blob | null = null;
   pdfFileName: string = 'certificate.pdf';
-  pdfGenerating: boolean = false; 
+  pdfGenerating: boolean = false;
 
   @ViewChild('pdfViewer') pdfViewer!: ElementRef;
 
@@ -31,7 +80,7 @@ export class CertificateGen {
     dateValid: false,
     assessment_classification: false,
     version: false,
-    auditor_name: false 
+    auditor_name: false
   };
 
   auditorList = ['Milan John'];
@@ -48,15 +97,32 @@ export class CertificateGen {
   };
 
   // Font size arrays for dropdowns with specified ranges
-  companyNameFontSizes: string[] = ['4px','8px','16px', '20px', '24px']; // 16px-38px
+  companyNameFontSizes: string[] = ['4px', '8px', '16px', '20px', '24px']; // 16px-38px
   addressFontSizes: string[] = ['8px', '10px', '12px', '14px', '16px']; // 8px-16px
   typeFontSizes: string[] = ['10px', '12px', '14px', '16px']; // 10px-16px
   pageSizes: string[] = ['A4', 'Letter'];
   certificateTypes: string[] = [
-    'Internal', 
-    'External', 
+    'Internal',
+    'External',
     'Third Party',
   ];
+
+
+  ngOnInit() {
+    this.loadCompanies();
+    this.loadAssessments();
+
+    this.companySearch$.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe(v => this.filterCompanies(v));
+
+    this.assessmentSearch$.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe(v => this.filterAssessments(v));
+  }
+
 
   constructor(
     private http: HttpClient,
@@ -69,6 +135,137 @@ export class CertificateGen {
       this.editFields[key as keyof typeof this.editFields] = true;
     });
   }
+
+
+  onCompanyBlur() {
+    setTimeout(() => {
+      this.showCompanyDropdown = false;
+
+      // Auto select if exact match
+      if (!this.selectedCompanyId && this.companySearch) {
+        const match = this.companies.find(c =>
+          c.legal_entity_name.toLowerCase() === this.companySearch.toLowerCase()
+        );
+
+        if (match) {
+          this.selectCompany(match);
+        } else {
+          this.companySearch = '';
+          this.selectedCompanyId = null;
+          this.filteredAssessments = [];
+        }
+      }
+
+      this.cdr.detectChanges();
+    }, 200);
+  }
+
+  onAssessmentBlur() {
+    setTimeout(() => {
+      this.showAssessmentDropdown = false;
+
+      if (!this.selectedAssessmentId && this.assessmentSearch) {
+        const match = this.filteredAssessments.find(a =>
+          a.assessment_project_name.toLowerCase() === this.assessmentSearch.toLowerCase()
+        );
+
+        if (match) {
+          this.selectAssessment(match);
+        } else {
+          this.assessmentSearch = '';
+          this.selectedAssessmentId = null;
+        }
+      }
+
+      this.cdr.detectChanges();
+    }, 200);
+  }
+
+  onCompanySearch() {
+    this.companySearch$.next(this.companySearch);
+  }
+
+  onAssessmentSearch() {
+    this.assessmentSearch$.next(this.assessmentSearch);
+  }
+
+  filterCompanies(term: string) {
+    this.filteredCompanies = this.companies.filter(c =>
+      c.legal_entity_name.toLowerCase().includes(term.toLowerCase())
+    );
+  }
+
+  filterAssessments(term: string) {
+    this.filteredAssessments = this.assessments.filter(a =>
+      a.client?.clientId === this.selectedCompanyId &&
+      a.assessment_project_name.toLowerCase().includes(term.toLowerCase())
+    );
+  }
+
+  loadCompanies() {
+    const headers = this.getAuthHeaders();
+
+    this.http.get<{ data: Company[] }>(
+      'http://pci.accric.com/api/auth/clients-for-audit',
+      { headers }
+    ).subscribe(res => {
+      this.companies = res.data;
+      this.filteredCompanies = [...this.companies];
+    });
+  }
+  loadAssessments() {
+    const headers = this.getAuthHeaders();
+
+    this.http.get<{ data: Assessment[] }>(
+      'http://pci.accric.com/api/auth/audit-list',
+      { headers }
+    ).subscribe(res => {
+      this.assessments = res.data;
+      console.log("Certificate Data ", res.data);
+
+
+    });
+  }
+
+  selectCompany(company: Company) {
+    this.companySearch = company.legal_entity_name;
+    this.selectedCompanyId = company.clientId;
+
+    this.filteredAssessments = this.assessments.filter(
+      a => a.client?.clientId === company.clientId
+    );
+
+    this.assessmentSearch = '';
+    this.selectedAssessmentId = null;
+    this.certificateInputValue = '';
+    this.showCompanyDropdown = false;
+  }
+
+  selectAssessment(assessment: Assessment) {
+    this.assessmentSearch = assessment.assessment_project_name;
+    this.selectedAssessmentId = assessment.auditId;
+    this.showAssessmentDropdown = false;
+
+    // 🔥 CALL BACKEND TO GET CERTIFICATE NUMBER
+    this.fetchCertificateNumber();
+  }
+
+  fetchCertificateNumber() {
+    const headers = this.getAuthHeaders();
+
+    this.http.get<any>(
+      `http://pci.accric.com/api/auth/certificate-by-assessment?assessmentId=${this.selectedAssessmentId}`,
+      { headers }
+    ).subscribe(res => {
+      this.certificateInputValue = res.certificate_number;
+    });
+  }
+
+  private getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('jwt') || '';
+    return new HttpHeaders({ Authorization: `Bearer ${token}` });
+  }
+
 
   generateCertificate(form: NgForm) {
     const certNo = form.value.certificateNo?.trim();
@@ -85,6 +282,8 @@ export class CertificateGen {
       alert('JWT token not found! Please login first.');
       return;
     }
+
+
 
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
@@ -275,7 +474,7 @@ export class CertificateGen {
     this.http.post(
       'http://pci.accric.com/api/auth/generate-certificate-from-template',
       requestData,
-      { 
+      {
         headers: headers,
         responseType: 'blob',
         observe: 'response'
@@ -337,7 +536,7 @@ export class CertificateGen {
   // Add method to regenerate PDF when options change
   onOptionsChange() {
     console.log('Certificate options changed:', this.certificateOptions);
-    
+
     // If you want to auto-regenerate PDF when options change, uncomment the following:
     // if (this.showPdfViewer && this.pdfBlob) {
     //   this.generateCertificatePdf();
@@ -363,7 +562,7 @@ export class CertificateGen {
 
   closePdfViewer() {
     this.showPdfViewer = false;
-    
+
     // Clean up object URL if it exists
     if (this.pdfUrl) {
       // Get the actual string URL from SafeResourceUrl
@@ -372,7 +571,7 @@ export class CertificateGen {
         URL.revokeObjectURL(url);
       }
     }
-    
+
     this.pdfUrl = null;
     this.cdr.detectChanges();
   }
@@ -385,7 +584,7 @@ export class CertificateGen {
 
     const pdfUrl = URL.createObjectURL(this.pdfBlob);
     const printWindow = window.open(pdfUrl, '_blank');
-    
+
     if (printWindow) {
       printWindow.onload = () => {
         printWindow.focus();
@@ -398,7 +597,7 @@ export class CertificateGen {
     this.certificateData = null;
     this.showCertificateForm = false;
     this.showPdfViewer = false;
-    
+
     // Clean up object URL if it exists
     if (this.pdfUrl) {
       // Get the actual string URL from SafeResourceUrl
@@ -407,7 +606,7 @@ export class CertificateGen {
         URL.revokeObjectURL(url);
       }
     }
-    
+
     this.pdfUrl = null;
     this.pdfBlob = null;
     this.pdfGenerating = false;

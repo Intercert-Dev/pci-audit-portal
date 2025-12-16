@@ -30,9 +30,8 @@
     </div>
   </header>
   <div class="layout-body">
-    <div class="sidebar-wrapper" [class.collapsed]="!isSidebarOpen && windowWidth > 1024"
-      [class.open]="isSidebarOpen && windowWidth <= 1024">
-      <aside class="sidebar">
+    <div class="sidebar-wrapper" [class.collapsed]="!isSidebarOpen && windowWidth > 1024">
+      <aside class="sidebar" [class.open]="isSidebarOpen && windowWidth <= 1024">
         <nav class="sidebar-nav">
           <ul>
             <!-- MAIN MENU ITEMS - Close submenu when clicked -->
@@ -142,6 +141,9 @@
         </nav>
       </aside>
     </div>
+
+    <!-- MOBILE OVERLAY -->
+    <div class="sidebar-overlay" *ngIf="isSidebarOpen && windowWidth <= 1024" (click)="toggleSidebar()"></div>
 
     <main class="main-content">
       <router-outlet></router-outlet>

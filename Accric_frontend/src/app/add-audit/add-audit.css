@@ -209,16 +209,6 @@ select {
 }
 
 
-input.ng-invalid.ng-touched,
-select.ng-invalid.ng-touched {
-  border: 1px solid #d9534f !important;
-}
-
-input:required, select:required {
-  background-color: rgba(250, 251, 254, 1);
-}
-
-
 
 /* Legal Entity Search Dropdown Styles */
 .search-dropdown {

@@ -172,6 +172,7 @@
   overflow: hidden;
   white-space: nowrap;
   transition: width 0.4s ease-in-out;
+  z-index: 9999 !important;
 }
 
 .sidebar-wrapper.collapsed {
@@ -335,7 +336,7 @@
 
   .main-content {
     margin-top: 2rem;
-    
+
   }
 
   .layout-body {
@@ -479,6 +480,11 @@
 
 /* ---------- Tablets portrait / Large Phones (481px–767px) ---------- */
 @media (min-width: 481px) and (max-width: 767px) {
+
+  .main-layout.sidebar-collapsed .main-content {
+    margin-left: 0px !important;
+  }
+
   .topbar {
     width: 100%;
     padding: 0.75rem 1rem;
@@ -545,6 +551,7 @@
 
   .sidebar.open {
     transform: translateX(0);
+    margin-top: 3rem;
   }
 
   .sidebar.closed {
@@ -573,6 +580,10 @@
     gap: 0.7rem;
   }
 
+  .main-layout.sidebar-collapsed .main-content {
+    margin-left: 0px !important;
+  }
+
   .dropdown-menu {
     top: 190px;
     right: 1.5rem;
@@ -596,8 +607,8 @@
 
   .header-right p {
     text-align: left;
-    font-size: 1.7rem;
   }
+
   .notification-bell {
     width: 2.5rem;
     height: 2.5rem;
@@ -632,6 +643,7 @@
 
   .sidebar.open {
     transform: translateX(0);
+    margin-top: 38px;
   }
 
   .sidebar nav ul li {
@@ -639,9 +651,6 @@
     gap: 20px;
   }
 
-  .sidebar nav ul li span {
-    font-size: 15px;
-  }
 
   .layout-body {
     flex-direction: column;
@@ -662,9 +671,14 @@
 @media (max-width: 360px) {
 
   .asv-audit-container {
-    margin-top: 8rem; /* Space for fixed topbar */
+    margin-top: 8rem;
+    /* Space for fixed topbar */
     padding: 0.75rem;
     min-height: calc(100vh - 60px);
+  }
+
+  .main-layout.sidebar-collapsed .main-content {
+    margin-left: 0px !important;
   }
 
   .asv-audit-box {
@@ -675,7 +689,6 @@
   }
 
   .asv-audit-box h2 {
-    font-size: 1.15rem;
     margin-bottom: 0.5rem;
   }
 
@@ -686,14 +699,10 @@
 
   input,
   textarea {
-    font-size: 0.9rem;
     padding: 0.6rem 0.75rem;
     height: 2.5rem;
   }
 
-  label {
-    font-size: 0.9rem;
-  }
 
   .form-actions {
     margin-top: 1rem;
@@ -709,11 +718,6 @@
     padding: 0.6rem 1rem;
   }
 
-  .btn-primary span,
-  .btn-secondary span {
-    font-size: 0.95rem;
-  }
-
   /* Dropdown responsiveness */
   .search-dropdown-list {
     max-height: 150px;
@@ -721,8 +725,6 @@
 
   .dropdown-item {
     padding: 0.6rem 0.6rem;
-    font-size: 0.85rem;
   }
 
 }
-

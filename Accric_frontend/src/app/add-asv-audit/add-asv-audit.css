@@ -112,7 +112,7 @@ input:focus {
 }
 
 input::placeholder {
-  color: rgba(113, 142, 191, 1);
+  color: rgba(113, 142, 191, 0.7);
   opacity: 1;
 }
 
@@ -126,9 +126,6 @@ input[type="number"]::-webkit-inner-spin-button {
   margin: 0;
 }
 
-input.ng-invalid.ng-touched {
-  border: 1px solid #d9534f !important;
-}
 
 textarea {
   font-family: 'Inter', sans-serif;
@@ -150,7 +147,7 @@ textarea:focus {
 }
 
 textarea::placeholder {
-  color: rgba(113, 142, 191, 1);
+   color: rgba(113, 142, 191, 0.7);
   opacity: 1;
 }
 
@@ -395,9 +392,7 @@ textarea.ng-invalid.ng-touched {
   background: rgba(113, 142, 191, 0.7);
 }
 
-/* ================================
-   Z-INDEX ADJUSTMENTS
-================================ */
+
 
 .add-audit-box {
   position: relative;
@@ -408,9 +403,6 @@ textarea.ng-invalid.ng-touched {
   z-index: 20;
 }
 
-/* ================================
-   TABLET (max-width: 1024px)
-================================ */
 
 @media (max-width: 1024px) {
   .asv-audit-container {
@@ -447,9 +439,7 @@ textarea.ng-invalid.ng-touched {
   }
 }
 
-/* ================================
-   MOBILE (max-width: 768px)
-================================ */
+
 
 @media (max-width: 768px) {
   .asv-audit-container {
@@ -527,9 +517,7 @@ textarea.ng-invalid.ng-touched {
   }
 }
 
-/* ================================
-   SMALL MOBILE (max-width: 480px)
-================================ */
+
 
 @media (max-width: 480px) {
   .asv-audit-container {
@@ -598,9 +586,6 @@ textarea.ng-invalid.ng-touched {
   }
 }
 
-/* ================================
-   EXTRA SMALL DEVICES (max-width: 360px)
-================================ */
 
 @media (max-width: 360px) {
   .asv-audit-container {

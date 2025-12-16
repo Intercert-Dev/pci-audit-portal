@@ -112,7 +112,7 @@ input {
 }
 
 input::placeholder {
-  color: rgba(113, 142, 191, 1);
+  color: rgba(113, 142, 191, 0.7);
   opacity: 1;
 }
 
@@ -170,12 +170,6 @@ input::placeholder {
   font-size: 1rem;
   margin-top: 5px;
   display: block;
-}
-
-
-input.ng-invalid.ng-touched,
-select.ng-invalid.ng-touched {
-  border: 1px solid #d9534f !important;
 }
 
 /* Custom Dropdown Styles */
@@ -307,11 +301,6 @@ select.ng-invalid.ng-touched {
   background: rgba(113, 142, 191, 0.7);
 }
 
-/* Error states */
-.dropdown-input.ng-invalid.ng-touched {
-  border: 1px solid #d9534f !important;
-}
-
 /* Make sure dropdown stays above other elements */
 .custom-dropdown {
   z-index: 10;
@@ -433,9 +422,7 @@ select.ng-invalid.ng-touched {
   border-color: rgba(57, 106, 255, 1);
 }
 
-.phone-number-input.ng-invalid.ng-touched {
-  border: 1px solid #d9534f !important;
-}
+
 
 
 .form-group .error {

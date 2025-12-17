@@ -111,6 +111,17 @@ export class AuditList implements OnInit {
     return localStorage.getItem('jwt');
   }
 
+  // Convert YYYY-MM-DD to ISO 8601 (required by backend)
+private toIsoDate(date: string | null | undefined): string | null {
+  if (!date || date.trim() === '') return null;
+
+  const parsed = new Date(date);
+  if (isNaN(parsed.getTime())) return null;
+
+  return parsed.toISOString();
+}
+
+
   // Create HTTP headers with JWT
   private getHeaders(): HttpHeaders {
     const token = this.getJwtToken();
@@ -243,47 +254,55 @@ export class AuditList implements OnInit {
 
   // Save edited audit
   saveAudit() {
-    if (!this.editingAudit) return;
+  if (!this.editingAudit) return;
 
-    if (!this.validateAuditForm()) {
-      return;
-    }
+  if (!this.validateAuditForm()) return;
 
-    this.isLoading = true;
+  this.isLoading = true;
 
-    // Prepare audit data for saving
-    const auditToSave = { ...this.editingAudit };
-    const url='http://pci.accric.com/api/auth/update-audit';
-    // Note: You need to check your actual API endpoint for update
-    const headers = this.getHeaders();
-    const updateUrl = `${url}/${this.editingAudit.auditId}`;
-    console.log("url", this.editingAudit.auditId);
+  const url = 'http://pci.accric.com/api/auth/update-audit';
+  const headers = this.getHeaders();
+  const updateUrl = `${url}/${this.editingAudit.auditId}`;
 
+  const auditToSave = {
+    ...this.editingAudit,
 
-    this.http.put(updateUrl, auditToSave, { headers }).subscribe({
-      next: (response) => {
-        this.isLoading = false;
-        console.log('Update response:', response);
+    audit_start_date: this.toIsoDate(this.editingAudit.audit_start_date),
+    audit_end_date: this.toIsoDate(this.editingAudit.audit_end_date),
+    date_of_report_submission: this.toIsoDate(this.editingAudit.date_of_report_submission),
 
-        // Update local data
-        const index = this.auditList.findIndex(a => a.auditId === this.originalAudit?.auditId);
-        if (index !== -1) {
-          this.auditList[index] = { ...auditToSave } as Audit;
-          this.filtered_list = [...this.auditList];
-        }
-        this.cdr.detectChanges();
-        // Show success message
-        alert('Audit updated successfully!');
-        this.cancelEdit();
-      },
-      error: (error) => {
-        this.isLoading = false;
-        console.error('Error updating audit:', error);
-        this.cdr.detectChanges();
-        alert(`Failed to update audit: ${error.message || 'Unknown error'}`);
+    certificate_issue_date: this.toIsoDate(this.editingAudit.certificate_issue_date),
+    certificate_expiry_date: this.toIsoDate(this.editingAudit.certificate_expiry_date),
+    next_audit_due_date: this.toIsoDate(this.editingAudit.next_audit_due_date),
+  };
+
+  console.log('Sending payload:', auditToSave); // 🔍 Debug
+
+  this.http.put(updateUrl, auditToSave, { headers }).subscribe({
+    next: (response) => {
+      this.isLoading = false;
+
+      const index = this.auditList.findIndex(
+        a => a.auditId === this.originalAudit?.auditId
+      );
+
+      if (index !== -1) {
+        this.auditList[index] = { ...auditToSave } as Audit;
+        this.filtered_list = [...this.auditList];
       }
-    });
-  }
+
+      this.cdr.detectChanges();
+      alert('Audit updated successfully!');
+      this.cancelEdit();
+    },
+    error: (error) => {
+      this.isLoading = false;
+      console.error('Error updating audit:', error);
+      alert(error.error?.message || 'Failed to update audit');
+    }
+  });
+}
+
 
   // Validate audit form
   private validateAuditForm(): boolean {

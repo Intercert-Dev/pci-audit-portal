@@ -25,6 +25,7 @@
   margin-top: 27px;
 }
 
+
 .edit-title {
   margin-bottom: 24px;
   font-family: "Inter", sans-serif;
@@ -364,7 +365,6 @@
 @media (max-width: 1024px) {
   .edit-client-container {
     width: 95%;
-    max-height: 85vh;
   }
 
   .edit-client-content {
@@ -395,7 +395,6 @@
 @media (max-width: 768px) {
   .edit-client-container {
     width: 100%;
-    max-height: 95vh;
     border-radius: 16px;
     padding: 0;
   }
@@ -452,6 +451,13 @@
    RESPONSIVE (SMALL MOBILE)
    ============================ */
 @media (max-width: 480px) {
+
+  .searchbox {
+    display: flex;
+    flex-direction: column;
+    
+
+  }
   .edit-client-content {
     padding: 16px;
   }
@@ -459,6 +465,10 @@
   .edit-title-container {
     padding: 20px 16px;
   }
+  .edit-client-box {
+    padding: 1rem;
+    margin: 0;
+}
 
   .edit-title {
     font-size: 16px;
@@ -467,6 +477,7 @@
   .form-section {
     margin-bottom: 24px;
     padding-bottom: 20px;
+    flex-wrap: wrap;
   }
 
   .form-group label {
@@ -486,7 +497,6 @@
 
   .save-button,
   .cancel-button {
-    font-size: 14px;
-    padding: 12px 20px;
+    justify-content: center;
   }
 }

@@ -78,6 +78,7 @@
   min-width: 250px;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 /* ================================
@@ -238,13 +239,13 @@ textarea.ng-invalid.ng-touched {
 }
 
 /* ================================
-   SEARCH DROPDOWN
+   SEARCH DROPDOWN - CRITICAL FIX
 ================================ */
 
 .search-dropdown,
 .edit-client-container .search-dropdown {
   position: relative;
-  z-index: 100;
+  z-index: 9998;
 }
 
 .search-input-wrapper,
@@ -287,7 +288,7 @@ textarea.ng-invalid.ng-touched {
   top: calc(100% + 6px);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
   max-height: 280px;
-  z-index: 999;
+  z-index: 99999;
 }
 
 @keyframes dropdownFadeIn {
@@ -400,7 +401,7 @@ textarea.ng-invalid.ng-touched {
 }
 
 .edit-client-container .search-dropdown {
-  z-index: 20;
+  z-index: 9998;
 }
 
 
@@ -436,6 +437,11 @@ textarea.ng-invalid.ng-touched {
   .form-actions {
     justify-content: flex-start;
     gap: 1rem;
+  }
+  
+  .search-dropdown-list,
+  .edit-client-container .search-dropdown-list {
+    z-index: 99999;
   }
 }
 
@@ -499,10 +505,12 @@ textarea.ng-invalid.ng-touched {
   .edit-client-container .search-dropdown-list {
     max-height: 250px;
     border-radius: 0.5rem;
+    z-index: 99999;
   }
 
   .edit-client-container .search-dropdown-list {
     max-height: 240px;
+    z-index: 99999;
   }
   
   .dropdown-item,
@@ -576,6 +584,7 @@ textarea.ng-invalid.ng-touched {
   .search-dropdown-list,
   .edit-client-container .search-dropdown-list {
     max-height: 200px;
+    z-index: 99999;
   }
   
   .dropdown-item,
@@ -659,6 +668,7 @@ textarea.ng-invalid.ng-touched {
   .edit-client-container .search-dropdown-list {
     max-height: 180px;
     border-radius: 0.5rem;
+    z-index: 99999;
   }
 
   .dropdown-item,

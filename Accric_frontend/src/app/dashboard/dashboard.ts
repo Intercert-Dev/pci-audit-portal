@@ -69,7 +69,6 @@ export class Dashboard implements OnInit {
 
     this.http.get(url, { headers }).subscribe({
       next: (res: any) => {
-        console.log("Login Response API Data:", res);
 
         this.loginData = res;
         

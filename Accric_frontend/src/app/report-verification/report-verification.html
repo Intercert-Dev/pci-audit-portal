@@ -13,66 +13,41 @@
           <div class="form-group search-dropdown full-width">
             <label for="companySearch">Company Name <span class="required">*</span></label>
             <div class="search-input-wrapper">
-              <input
-                style="width: 100%;"
-                id="companySearch"
-                type="text"
-                name="companyName"
-                [(ngModel)]="legalEntitySearch"
-                (input)="onClientSearch()"
-                (focus)="showClientDropdown = true"
-                (blur)="onClientBlur()"
-                placeholder="Search company name"
-                autocomplete="off"
-                [disabled]="isLoading"
-                required
-                #companyNameInput="ngModel" />
+              <input style="width: 100%;" id="companySearch" type="text" name="companyName"
+                [(ngModel)]="legalEntitySearch" (input)="onClientSearch()" (focus)="showClientDropdown = true"
+                (blur)="onClientBlur()" placeholder="Search company name" autocomplete="off" [disabled]="isLoading"
+                required #companyNameInput="ngModel" />
             </div>
 
             <!-- Company Dropdown list -->
             <div class="search-dropdown-list" *ngIf="showClientDropdown && filteredClients.length > 0">
-              <div
-                *ngFor="let client of filteredClients"
-                class="dropdown-item"
-                (mousedown)="selectClient(client)"
+              <div *ngFor="let client of filteredClients" class="dropdown-item" (mousedown)="selectClient(client)"
                 [class.selected]="client.clientId === selectedClientId">
                 {{ client.legal_entity_name }}
               </div>
             </div>
 
-            <div class="search-dropdown-list" *ngIf="showClientDropdown && filteredClients.length === 0 && legalEntitySearch">
+            <div class="search-dropdown-list"
+              *ngIf="showClientDropdown && filteredClients.length === 0 && legalEntitySearch">
               <div class="no-results">No companies found</div>
             </div>
 
-            
+
             <!-- Hidden input to store the client ID -->
             <input type="hidden" name="client" [(ngModel)]="selectedClientId" />
           </div>
           <div class="form-group search-dropdown full-width">
             <label for="auditSearch">Assessment / Project Name <span class="required">*</span></label>
             <div class="search-input-wrapper">
-              <input
-                style="width: 100%;"
-                id="auditSearch"
-                type="text"
-                name="auditName"
-                [(ngModel)]="auditSearch"
-                (input)="onAuditSearch()"
-                (focus)="showAuditDropdown = true"
-                (blur)="onAuditBlur()"
-                placeholder="Search audit/project name"
-                autocomplete="off"
-                [disabled]="isLoading || !selectedClientId"
-                required
-                #auditNameInput="ngModel" />
+              <input style="width: 100%;" id="auditSearch" type="text" name="auditName" [(ngModel)]="auditSearch"
+                (input)="onAuditSearch()" (focus)="showAuditDropdown = true" (blur)="onAuditBlur()"
+                placeholder="Search audit/project name" autocomplete="off" [disabled]="isLoading || !selectedClientId"
+                required #auditNameInput="ngModel" />
             </div>
 
             <!-- Audit Dropdown list -->
             <div class="search-dropdown-list" *ngIf="showAuditDropdown && filteredAudits.length > 0">
-              <div
-                *ngFor="let audit of filteredAudits"
-                class="dropdown-item"
-                (mousedown)="selectAudit(audit)"
+              <div *ngFor="let audit of filteredAudits" class="dropdown-item" (mousedown)="selectAudit(audit)"
                 [class.selected]="audit.auditId === selectedAuditId">
                 {{ audit.assessment_project_name }}
               </div>
@@ -83,55 +58,122 @@
               <div class="no-results" *ngIf="!selectedClientId">Please select a company first</div>
             </div>
 
-            
-            
+
+
             <!-- Hidden input to store the audit ID -->
             <input type="hidden" name="audit" [(ngModel)]="selectedAuditId" />
           </div>
         </div>
-
-        
       </div>
 
       <!-- File Upload Section -->
       <div class="form-section">
-        <div class="form-row">
-          <div class="form-group">
-            <label>Previous Report </label>
-            <div class="report-file-box">
-              <input type="text" [value]="previousReportFile ? previousReportFile.name : 'No file selected'" disabled />
-              <div class="report-buttons">
-                <button type="button" class="btn-upload" (click)="onUpload('previous')"><span>Upload</span></button>
-                <button type="button" class="btn-preview" (click)="onPreview('previous')"
-                  [disabled]="!previousReportFile">
-                  <span>Preview</span>
-                </button>
-                <button type="button" class="btn-download" (click)="onDownload('previous')"
-                  [disabled]="!previousReportFile">
-                  <span>Download</span>
-                </button>
-              </div>
-            </div>
-          </div>
 
-          <div class="form-group">
-            <label>Current Report</label>
-            <div class="report-file-box">
-              <input type="text" [value]="currentReportFile ? currentReportFile.name : 'No file selected'" disabled />
-              <div class="report-buttons">
-                <button type="button" class="btn-upload" (click)="onUpload('current')"><span>Upload</span></button>
-                <button type="button" class="btn-preview" (click)="onPreview('current')" [disabled]="!currentReportFile">
-                  <span>Preview</span>
-                </button>
-                <button type="button" class="btn-download" (click)="onDownload('current')"
-                  [disabled]="!currentReportFile">
-                  <span>Download</span>
-                </button>
+        <!-- ================= PREVIOUS REPORT ================= -->
+        <div class="form-group full-width">
+          <p class="report-heading">Previous Report</p>
+
+          <div class="form-row">
+
+            <!-- AOC REPORT -->
+            <div class="form-group">
+              <label class="sub-label">AOC Report</label>
+              <div class="report-file-box">
+                <input type="text" [value]="previousAocReportFile ? previousAocReportFile.name : 'No file selected'"
+                  disabled />
+                <div class="report-buttons single-btn">
+                  <button type="button" class="btn-upload" (click)="onUpload('previousAoc')">
+                    <span>Upload</span>
+                  </button>
+                </div>
               </div>
             </div>
+
+            <!-- ROC REPORT -->
+            <div class="form-group">
+              <label class="sub-label">ROC Report</label>
+              <div class="report-file-box">
+                <input type="text" [value]="previousRocReportFile ? previousRocReportFile.name : 'No file selected'"
+                  disabled />
+                <div class="report-buttons single-btn">
+                  <button type="button" class="btn-upload" (click)="onUpload('previousRoc')">
+                    <span>Upload</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- FINAL REPORT -->
+            <div class="form-group">
+              <label class="sub-label">Final Report</label>
+              <div class="report-file-box">
+                <input type="text" [value]="previousFinalReportFile ? previousFinalReportFile.name : 'No file selected'"
+                  disabled />
+                <div class="report-buttons single-btn">
+                  <button type="button" class="btn-upload" (click)="onUpload('previousFinal')">
+                    <span>Upload</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
+
+        <!-- ================= CURRENT REPORT ================= -->
+        <div class="form-group full-width">
+          <p class="report-heading" id="current-report">Current Report</p>
+
+          <div class="form-row">
+
+            <!-- AOC REPORT -->
+            <div class="form-group">
+              <label class="sub-label">AOC Report</label>
+              <div class="report-file-box">
+                <input type="text" [value]="currentAocReportFile ? currentAocReportFile.name : 'No file selected'"
+                  disabled />
+                <div class="report-buttons single-btn">
+                  <button type="button" class="btn-upload" (click)="onUpload('currentAoc')">
+                    <span>Upload</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ROC REPORT -->
+            <div class="form-group">
+              <label class="sub-label">ROC Report</label>
+              <div class="report-file-box">
+                <input type="text" [value]="currentRocReportFile ? currentRocReportFile.name : 'No file selected'"
+                  disabled />
+                <div class="report-buttons single-btn">
+                  <button type="button" class="btn-upload" (click)="onUpload('currentRoc')">
+                    <span>Upload</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- FINAL REPORT -->
+            <div class="form-group">
+              <label class="sub-label">Final Report</label>
+              <div class="report-file-box">
+                <input type="text" [value]="currentFinalReportFile ? currentFinalReportFile.name : 'No file selected'"
+                  disabled />
+                <div class="report-buttons single-btn">
+                  <button type="button" class="btn-upload" (click)="onUpload('currentFinal')">
+                    <span>Upload</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
       </div>
+
+
 
       <!-- Submit Button -->
       <div class="form-actions">

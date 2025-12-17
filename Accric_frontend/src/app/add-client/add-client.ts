@@ -625,10 +625,6 @@ export class AddClient implements OnInit {
           }
         });
       }
-      
-      if (missingFields.length > 0) {
-        alert(`Please fill all required fields:\n\n${missingFields.join('\n')}`);
-      }
       return;
     }
 

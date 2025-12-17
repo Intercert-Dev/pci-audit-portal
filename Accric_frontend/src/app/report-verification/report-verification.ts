@@ -28,8 +28,15 @@ interface Audit {
   styleUrls: ['./report-verification.css'],
 })
 export class ReportVerification implements OnInit {
-  previousReportFile: File | null = null;
-  currentReportFile: File | null = null;
+  // PREVIOUS REPORT FILES
+  previousAocReportFile: File | null = null;
+  previousRocReportFile: File | null = null;
+  previousFinalReportFile: File | null = null;
+  
+  // CURRENT REPORT FILES
+  currentAocReportFile: File | null = null;
+  currentRocReportFile: File | null = null;
+  currentFinalReportFile: File | null = null;
   
   // Client Search Properties
   legalEntitySearch: string = '';
@@ -302,11 +309,11 @@ export class ReportVerification implements OnInit {
     }, 200);
   }
 
-  // FILE UPLOAD METHODS
-  onUpload(type: 'previous' | 'current') {
+  // FILE UPLOAD METHODS (Updated for 6 files)
+  onUpload(type: 'previousAoc' | 'previousRoc' | 'previousFinal' | 'currentAoc' | 'currentRoc' | 'currentFinal') {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg';
+    input.accept = '.pdf';
     input.multiple = false;
     
     input.onchange = (event: Event) => {
@@ -317,17 +324,10 @@ export class ReportVerification implements OnInit {
         // Validate file type
         const validTypes = [
           'application/pdf',
-          'application/msword',
-          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-          'application/vnd.ms-excel',
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-          'image/png',
-          'image/jpeg',
-          'image/jpg'
         ];
         
         if (!validTypes.includes(file.type)) {
-          alert('Please upload a valid file (PDF, Word, Excel, or Image)');
+          alert('Please upload a valid pdf file');
           return;
         }
         
@@ -338,10 +338,26 @@ export class ReportVerification implements OnInit {
           return;
         }
         
-        if (type === 'previous') {
-          this.previousReportFile = file;
-        } else {
-          this.currentReportFile = file;
+        // Assign file to the correct property based on type
+        switch (type) {
+          case 'previousAoc':
+            this.previousAocReportFile = file;
+            break;
+          case 'previousRoc':
+            this.previousRocReportFile = file;
+            break;
+          case 'previousFinal':
+            this.previousFinalReportFile = file;
+            break;
+          case 'currentAoc':
+            this.currentAocReportFile = file;
+            break;
+          case 'currentRoc':
+            this.currentRocReportFile = file;
+            break;
+          case 'currentFinal':
+            this.currentFinalReportFile = file;
+            break;
         }
         
         console.log(`${type} report uploaded:`, file.name);
@@ -352,55 +368,6 @@ export class ReportVerification implements OnInit {
     input.click();
   }
 
-  onPreview(type: 'previous' | 'current') {
-    const file = type === 'previous' ? this.previousReportFile : this.currentReportFile;
-    
-    if (!file) {
-      alert(`No ${type} report file uploaded`);
-      return;
-    }
-    
-    const url = URL.createObjectURL(file);
-    
-    // For PDF files, open in new tab
-    if (file.type === 'application/pdf') {
-      window.open(url, '_blank');
-    } else {
-      // For other file types, create a download link
-      const a = document.createElement('a');
-      a.href = url;
-      a.target = '_blank';
-      a.download = file.name;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    }
-    
-    // Clean up URL object after some time
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  }
-
-  onDownload(type: 'previous' | 'current') {
-    const file = type === 'previous' ? this.previousReportFile : this.currentReportFile;
-    
-    if (!file) {
-      alert(`No ${type} report file uploaded`);
-      return;
-    }
-    
-    const url = URL.createObjectURL(file);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = file.name;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    
-    // Clean up URL object
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-    
-    console.log(`${type} report downloaded:`, file.name);
-  }
 
   // FORM SUBMISSION
   onSubmit(form: NgForm) {
@@ -418,7 +385,6 @@ export class ReportVerification implements OnInit {
       return;
     }
     
-  
     this.submitReportVerification(form);
   }
 
@@ -435,22 +401,39 @@ export class ReportVerification implements OnInit {
       return;
     }
     
-    // Prepare FormData for submission (matches your API format exactly)
+    // Prepare FormData for submission
     const formData = new FormData();
     
-    // Add required fields (matching your API format)
+    // Add required fields
     formData.append('client', this.selectedClientId!);
     formData.append('audit', this.selectedAuditId!);
     formData.append('associated_organization', this.reportData.associatedOrganization);
     formData.append('associated_application', this.reportData.associatedApplication);
     
-    // Add files (matching your API field names exactly)
-    if (this.previousReportFile) {
-      formData.append('previous_report_pdf', this.previousReportFile, this.previousReportFile.name);
+    // Add PREVIOUS report files with appropriate field names
+    if (this.previousAocReportFile) {
+      formData.append('previous_aoc_report', this.previousAocReportFile, this.previousAocReportFile.name);
     }
     
-    if (this.currentReportFile) {
-      formData.append('current_report_pdf', this.currentReportFile, this.currentReportFile.name);
+    if (this.previousRocReportFile) {
+      formData.append('previous_roc_report', this.previousRocReportFile, this.previousRocReportFile.name);
+    }
+    
+    if (this.previousFinalReportFile) {
+      formData.append('previous_final_report', this.previousFinalReportFile, this.previousFinalReportFile.name);
+    }
+    
+    // Add CURRENT report files with appropriate field names
+    if (this.currentAocReportFile) {
+      formData.append('current_aoc_report', this.currentAocReportFile, this.currentAocReportFile.name);
+    }
+    
+    if (this.currentRocReportFile) {
+      formData.append('current_roc_report', this.currentRocReportFile, this.currentRocReportFile.name);
+    }
+    
+    if (this.currentFinalReportFile) {
+      formData.append('current_final_report', this.currentFinalReportFile, this.currentFinalReportFile.name);
     }
     
     const headers = new HttpHeaders({
@@ -502,8 +485,15 @@ export class ReportVerification implements OnInit {
     this.selectedClientName = '';
     this.selectedAuditId = null;
     this.selectedAuditName = '';
-    this.previousReportFile = null;
-    this.currentReportFile = null;
+    
+    // Reset all file properties
+    this.previousAocReportFile = null;
+    this.previousRocReportFile = null;
+    this.previousFinalReportFile = null;
+    this.currentAocReportFile = null;
+    this.currentRocReportFile = null;
+    this.currentFinalReportFile = null;
+    
     this.filteredClients = [...this.clients];
     this.filteredAudits = [];
     this.reportData = {

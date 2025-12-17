@@ -383,6 +383,9 @@ tbody tr {
     padding: 3px 10px;
     font-size: 11px;
   }
+  .header-row{
+    padding-inline: 1rem;
+  }
 }
 
 /* Extra small devices */
@@ -394,6 +397,10 @@ tbody tr {
 
   .header-row p {
     font-size: 16px;
+  }
+
+  .header-row{
+    padding-inline: 1rem;
   }
 
   .search-box input,
@@ -706,6 +713,7 @@ textarea::placeholder {
   }
 
   .popup-content {
+    margin-top: 10.5rem;
     padding: 16px;
   }
 
@@ -750,6 +758,7 @@ textarea::placeholder {
 
   .btn-save,
   .btn-cancel {
+    justify-content: center;
     font-size: 14px;
     padding: 12px 20px;
   }

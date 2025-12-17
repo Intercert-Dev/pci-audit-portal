@@ -407,11 +407,16 @@
 @media (max-width: 480px) {
     .card-bottom-items {
         width: 100%;
+        justify-content: flex-start;
+        gap: 1.3rem;
     }
 
     .bottom-list {
         gap: 12px;
         flex-wrap: wrap;
+    }
+    .card-right-content{
+        padding-left: 1rem;
     }
 }
 

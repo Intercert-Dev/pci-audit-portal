@@ -84,6 +84,7 @@ select {
   flex: 1;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .form-group.wide {
@@ -213,7 +214,7 @@ input::placeholder {
   border: 1px solid rgba(223, 234, 242, 1);
   border-radius: 1rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
+  z-index: 9999;
   margin-top: 4px;
   max-height: 250px;
   overflow: hidden;
@@ -301,21 +302,20 @@ input::placeholder {
   background: rgba(113, 142, 191, 0.7);
 }
 
-/* Make sure dropdown stays above other elements */
-.custom-dropdown {
-  z-index: 10;
-}
-
+/* CRITICAL: Phone input container must have relative positioning */
 .phone-input-container {
   display: flex;
   gap: 8px;
   align-items: center;
   width: 100%;
+  position: relative;
 }
 
+/* CRITICAL: Country code dropdown with highest z-index */
 .country-code-dropdown {
   position: relative;
   flex-shrink: 0;
+  z-index: 9998;
 }
 
 .country-code-selector {
@@ -330,6 +330,8 @@ input::placeholder {
   cursor: pointer;
   min-width: 90px;
   transition: border-color 0.3s;
+  position: relative;
+  z-index: 1;
 }
 
 .country-code-selector:hover {
@@ -348,6 +350,7 @@ input::placeholder {
   font-weight: 500;
 }
 
+/* CRITICAL: Country code list with maximum z-index */
 .country-code-list {
   position: absolute;
   top: 100%;
@@ -357,10 +360,10 @@ input::placeholder {
   background: white;
   border: 1px solid rgb(154, 175, 190);
   border-radius: 1rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 1001;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  z-index: 99999;
   margin-top: 4px;
-  overflow: hidden;
+  overflow-y: auto;
 }
 
 .country-code-item {
@@ -429,11 +432,6 @@ input::placeholder {
   margin-top: 5px;
 }
 
-.custom-dropdown {
-  position: relative;
-  z-index: 100;
-}
-
 
 /* ---------- 1024px ---------- */
 @media (max-width: 1024px) {
@@ -498,17 +496,18 @@ input::placeholder {
     width: 100%;
     min-width: 250px;
     max-height: 300px;
-    z-index: 1000;
   }
 
   .dropdown-list {
     position: absolute;
     left: 0;
     right: 0;
+    z-index: 9999;
   }
 
   .country-code-list {
     position: absolute;
+    z-index: 99999;
   }
 
   .form-actions {
@@ -592,8 +591,15 @@ input::placeholder {
       width: 100%;
       max-height: 280px;
       position: absolute;
-      z-index: 1001;
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+    
+    .dropdown-list {
+      z-index: 9999;
+    }
+    
+    .country-code-list {
+      z-index: 99999;
     }
 
     .search-container {
@@ -647,13 +653,20 @@ input::placeholder {
     position: fixed !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
-    top: 50% !important;
+    top: 70% !important;
     transform: translateX(-50%) translateY(-50%) !important;
     width: 90vw !important;
     max-width: 400px !important;
     max-height: 70vh !important;
-    z-index: 9999 !important;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  }
+  
+  .dropdown-list {
+    z-index: 99998 !important;
+  }
+  
+  .country-code-list {
+    z-index: 99999 !important;
   }
 
   .dropdown-overlay {
@@ -781,7 +794,14 @@ input::placeholder {
     width: 100%;
     max-height: 260px;
     border-radius: 0.8rem;
-    z-index: 1002;
+  }
+  
+  .dropdown-list {
+    z-index: 99998;
+  }
+  
+  .country-code-list {
+    z-index: 99999;
   }
 
   .country-code-item {
@@ -888,6 +908,14 @@ input::placeholder {
   .dropdown-list {
     max-height: 240px;
   }
+  
+  .dropdown-list {
+    z-index: 99998;
+  }
+  
+  .country-code-list {
+    z-index: 99999;
+  }
 
   .country-code-item {
     padding: 0.5rem 0.6rem;
@@ -946,4 +974,3 @@ input::placeholder {
     font-size: 0.8rem;
   }
 }
-

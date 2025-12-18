@@ -79,11 +79,18 @@
             <div class="form-group">
               <label class="sub-label">AOC Report</label>
               <div class="report-file-box">
-                <input type="text" [value]="previousAocReportFile ? previousAocReportFile.name : 'No file selected'"
-                  disabled />
+                <div style="margin-bottom: 10px;">
+                  <div *ngFor="let file of previousAocReportFiles; let i = index" class="file-item" style="display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid #eee;">
+                    <span style="font-size: 12px;">{{ file.name }}</span>
+                    <button type="button" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px; line-height: 1;" (click)="removeFile('previousAoc', i)">×</button>
+                  </div>
+                  <div *ngIf="previousAocReportFiles.length === 0" style="color: #666; font-style: italic; padding: 5px 0;">
+                    No files selected
+                  </div>
+                </div>
                 <div class="report-buttons single-btn">
                   <button type="button" class="btn-upload" (click)="onUpload('previousAoc')">
-                    <span>Upload</span>
+                    <span>Upload PDF(s)</span>
                   </button>
                 </div>
               </div>
@@ -93,11 +100,18 @@
             <div class="form-group">
               <label class="sub-label">ROC Report</label>
               <div class="report-file-box">
-                <input type="text" [value]="previousRocReportFile ? previousRocReportFile.name : 'No file selected'"
-                  disabled />
+                <div style="margin-bottom: 10px;">
+                  <div *ngFor="let file of previousRocReportFiles; let i = index" class="file-item" style="display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid #eee;">
+                    <span style="font-size: 12px;">{{ file.name }}</span>
+                    <button type="button" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px; line-height: 1;" (click)="removeFile('previousRoc', i)">×</button>
+                  </div>
+                  <div *ngIf="previousRocReportFiles.length === 0" style="color: #666; font-style: italic; padding: 5px 0;">
+                    No files selected
+                  </div>
+                </div>
                 <div class="report-buttons single-btn">
                   <button type="button" class="btn-upload" (click)="onUpload('previousRoc')">
-                    <span>Upload</span>
+                    <span>Upload PDF(s)</span>
                   </button>
                 </div>
               </div>
@@ -107,11 +121,18 @@
             <div class="form-group">
               <label class="sub-label">Final Report</label>
               <div class="report-file-box">
-                <input type="text" [value]="previousFinalReportFile ? previousFinalReportFile.name : 'No file selected'"
-                  disabled />
+                <div style="margin-bottom: 10px;">
+                  <div *ngFor="let file of previousFinalReportFiles; let i = index" class="file-item" style="display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid #eee;">
+                    <span style="font-size: 12px;">{{ file.name }}</span>
+                    <button type="button" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px; line-height: 1;" (click)="removeFile('previousFinal', i)">×</button>
+                  </div>
+                  <div *ngIf="previousFinalReportFiles.length === 0" style="color: #666; font-style: italic; padding: 5px 0;">
+                    No files selected
+                  </div>
+                </div>
                 <div class="report-buttons single-btn">
                   <button type="button" class="btn-upload" (click)="onUpload('previousFinal')">
-                    <span>Upload</span>
+                    <span>Upload PDF(s)</span>
                   </button>
                 </div>
               </div>
@@ -130,11 +151,18 @@
             <div class="form-group">
               <label class="sub-label">AOC Report</label>
               <div class="report-file-box">
-                <input type="text" [value]="currentAocReportFile ? currentAocReportFile.name : 'No file selected'"
-                  disabled />
+                <div style="margin-bottom: 10px;">
+                  <div *ngFor="let file of currentAocReportFiles; let i = index" class="file-item" style="display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid #eee;">
+                    <span style="font-size: 12px;">{{ file.name }}</span>
+                    <button type="button" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px; line-height: 1;" (click)="removeFile('currentAoc', i)">×</button>
+                  </div>
+                  <div *ngIf="currentAocReportFiles.length === 0" style="color: #666; font-style: italic; padding: 5px 0;">
+                    No files selected
+                  </div>
+                </div>
                 <div class="report-buttons single-btn">
                   <button type="button" class="btn-upload" (click)="onUpload('currentAoc')">
-                    <span>Upload</span>
+                    <span>Upload PDF(s)</span>
                   </button>
                 </div>
               </div>
@@ -144,11 +172,18 @@
             <div class="form-group">
               <label class="sub-label">ROC Report</label>
               <div class="report-file-box">
-                <input type="text" [value]="currentRocReportFile ? currentRocReportFile.name : 'No file selected'"
-                  disabled />
+                <div style="margin-bottom: 10px;">
+                  <div *ngFor="let file of currentRocReportFiles; let i = index" class="file-item" style="display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid #eee;">
+                    <span style="font-size: 12px;">{{ file.name }}</span>
+                    <button type="button" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px; line-height: 1;" (click)="removeFile('currentRoc', i)">×</button>
+                  </div>
+                  <div *ngIf="currentRocReportFiles.length === 0" style="color: #666; font-style: italic; padding: 5px 0;">
+                    No files selected
+                  </div>
+                </div>
                 <div class="report-buttons single-btn">
                   <button type="button" class="btn-upload" (click)="onUpload('currentRoc')">
-                    <span>Upload</span>
+                    <span>Upload PDF(s)</span>
                   </button>
                 </div>
               </div>
@@ -158,11 +193,18 @@
             <div class="form-group">
               <label class="sub-label">Final Report</label>
               <div class="report-file-box">
-                <input type="text" [value]="currentFinalReportFile ? currentFinalReportFile.name : 'No file selected'"
-                  disabled />
+                <div style="margin-bottom: 10px;">
+                  <div *ngFor="let file of currentFinalReportFiles; let i = index" class="file-item" style="display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid #eee;">
+                    <span style="font-size: 12px;">{{ file.name }}</span>
+                    <button type="button" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px; line-height: 1;" (click)="removeFile('currentFinal', i)">×</button>
+                  </div>
+                  <div *ngIf="currentFinalReportFiles.length === 0" style="color: #666; font-style: italic; padding: 5px 0;">
+                    No files selected
+                  </div>
+                </div>
                 <div class="report-buttons single-btn">
                   <button type="button" class="btn-upload" (click)="onUpload('currentFinal')">
-                    <span>Upload</span>
+                    <span>Upload PDF(s)</span>
                   </button>
                 </div>
               </div>
@@ -172,8 +214,6 @@
         </div>
 
       </div>
-
-
 
       <!-- Submit Button -->
       <div class="form-actions">

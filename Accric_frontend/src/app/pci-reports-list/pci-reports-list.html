@@ -1,0 +1,210 @@
+<div class="pci-reports-list-container">
+  <div class="pci-reports-list-box">
+    <div class="header-row">
+      <p>PCI Report Verification List</p>
+      <div class="header-right">
+        <div class="search-box">
+          <img src="/assets/icons/magnifying-glass 2.png" alt="Search Icon">
+          <input type="text" placeholder="Search Reports" [(ngModel)]="search_text" (input)="filter_list()">
+        </div>
+        <button class="export-btn" (click)="exportToExcel()"><span>Export to Excel</span></button>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Company Name</th>
+            <th>Assessment/Project</th>
+            <th>Previous Reports</th>
+            <th>Current Reports</th>
+            <th>Verification Status</th>
+            <th>Submitted Date</th>
+            <th>Verified Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let report of filtered_list">
+            <td>{{ report.associated_organization || 'N/A' }}</td>
+            <td>{{ report.associated_application || 'N/A' }}</td>
+            <td>
+              <div class="file-count-badge" *ngIf="report.previous_files_count > 0">
+                <span>{{ report.previous_files_count }} files</span>
+              </div>
+              <span *ngIf="report.previous_files_count === 0">No files</span>
+            </td>
+            <td>
+              <div class="file-count-badge" *ngIf="report.current_files_count > 0">
+                <span>{{ report.current_files_count }} files</span>
+              </div>
+              <span *ngIf="report.current_files_count === 0">No files</span>
+            </td>
+            <td>
+              <span class="status-badge" [ngClass]="getStatusClass(report.verification_status)">
+                {{ getStatusLabel(report.verification_status) || 'Pending' }}
+              </span>
+            </td>
+            <td>{{ formatDate(report.created_at) }}</td>
+            <td>{{ formatDate(report.verified_at) || 'Not Verified' }}</td>
+            <td class="sticky-action">
+              <div class="action-box">
+                <img src="/assets/icons/view.png" alt="View" (click)="viewReport(report)" title="View Details">
+                <img src="/assets/icons/edit.png" alt="Edit" (click)="editReport(report)" title="Edit Report">
+                <img src="/assets/icons/verify.png" alt="Verify" (click)="verifyReport(report)" title="Verify Report" *ngIf="report.verification_status !== 'VERIFIED'">
+                <img src="/assets/icons/download.png" alt="Download" (click)="downloadReport(report)" title="Download Reports">
+              </div>
+            </td>
+          </tr>
+          
+          <!-- Loading State -->
+          <tr *ngIf="isLoading && filtered_list.length === 0">
+            <td colspan="8" style="text-align: center; padding: 20px;">
+              Loading reports...
+            </td>
+          </tr>
+          
+          <!-- Empty State -->
+          <tr *ngIf="!isLoading && filtered_list.length === 0">
+            <td colspan="8" style="text-align: center; padding: 20px;">
+              No reports found.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- View Report Popup -->
+<div class="view-report-popup-overlay" *ngIf="viewingReport">
+  <div class="view-report-popup">
+    <div class="popup-header">
+      <h2>Report Details</h2>
+      <button class="close-btn" (click)="closeView()">&times;</button>
+    </div>
+
+    <div class="popup-content">
+      <div class="popup-section">
+        <h3 class="section-title">Report Information</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Company:</label>
+            <span>{{ viewingReport.associated_organization || 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <label>Assessment/Project:</label>
+            <span>{{ viewingReport.associated_application || 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <label>Submitted Date:</label>
+            <span>{{ formatDate(viewingReport.created_at) }}</span>
+          </div>
+          <div class="info-item">
+            <label>Status:</label>
+            <span class="status-badge" [ngClass]="getStatusClass(viewingReport.verification_status)">
+              {{ getStatusLabel(viewingReport.verification_status) || 'Pending' }}
+            </span>
+          </div>
+          <div class="info-item" *ngIf="viewingReport.verified_at">
+            <label>Verified Date:</label>
+            <span>{{ formatDate(viewingReport.verified_at) }}</span>
+          </div>
+          <div class="info-item" *ngIf="viewingReport.verified_by">
+            <label>Verified By:</label>
+            <span>{{ viewingReport.verified_by || 'N/A' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="popup-section">
+        <h3 class="section-title">Previous Reports</h3>
+        <div class="file-list" *ngIf="viewingReport.previous_files && viewingReport.previous_files.length > 0">
+          <div class="file-item" *ngFor="let file of viewingReport.previous_files">
+            <div class="file-info">
+              <span class="file-name">{{ file.file_name || 'Unnamed file' }}</span>
+              <span class="file-type">{{ file.file_type || 'PDF' }}</span>
+            </div>
+            <button class="download-file-btn" (click)="downloadFile(file)">
+              <img src="/assets/icons/download-small.png" alt="Download">
+            </button>
+          </div>
+        </div>
+        <div class="no-files" *ngIf="!viewingReport.previous_files || viewingReport.previous_files.length === 0">
+          No previous reports uploaded
+        </div>
+      </div>
+
+      <div class="popup-section">
+        <h3 class="section-title">Current Reports</h3>
+        <div class="file-list" *ngIf="viewingReport.current_files && viewingReport.current_files.length > 0">
+          <div class="file-item" *ngFor="let file of viewingReport.current_files">
+            <div class="file-info">
+              <span class="file-name">{{ file.file_name || 'Unnamed file' }}</span>
+              <span class="file-type">{{ file.file_type || 'PDF' }}</span>
+            </div>
+            <button class="download-file-btn" (click)="downloadFile(file)">
+              <img src="/assets/icons/download-small.png" alt="Download">
+            </button>
+          </div>
+        </div>
+        <div class="no-files" *ngIf="!viewingReport.current_files || viewingReport.current_files.length === 0">
+          No current reports uploaded
+        </div>
+      </div>
+    </div>
+
+    <div class="popup-footer">
+      <button class="btn-cancel" (click)="closeView()"><span>Close</span></button>
+      <button class="btn-verify" (click)="verifyReport(viewingReport)" *ngIf="viewingReport.verification_status !== 'VERIFIED'">
+        <span>Verify Report</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Verify Report Popup -->
+<div class="verify-report-popup-overlay" *ngIf="verifyingReport">
+  <div class="verify-report-popup">
+    <div class="popup-header">
+      <h2>Verify Report</h2>
+      <button class="close-btn" (click)="cancelVerify()">&times;</button>
+    </div>
+
+    <div class="popup-content">
+      <form #verifyForm="ngForm">
+        <div class="popup-section">
+          <div class="form-group">
+            <label>Verification Status*</label>
+            <select name="verification_status" required [(ngModel)]="verificationData.status">
+              <option value="" disabled>Select Status</option>
+              <option value="VERIFIED">Verified</option>
+              <option value="REJECTED">Rejected</option>
+              <option value="PENDING_REVIEW">Pending Review</option>
+              <option value="NEEDS_REVISION">Needs Revision</option>
+            </select>
+          </div>
+
+          <div class="form-group full-width">
+            <label>Verification Notes</label>
+            <textarea name="verification_notes" [(ngModel)]="verificationData.notes"
+              placeholder="Add any verification notes or comments..." rows="4"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Verified By</label>
+            <input type="text" name="verified_by" [(ngModel)]="verificationData.verified_by"
+              placeholder="Enter your name">
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="popup-footer">
+      <button class="btn-cancel" (click)="cancelVerify()"><span>Cancel</span></button>
+      <button class="btn-save" (click)="submitVerification()"><span>Submit Verification</span></button>
+    </div>
+  </div>
+</div>

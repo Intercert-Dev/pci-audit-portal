@@ -28,15 +28,15 @@ interface Audit {
   styleUrls: ['./report-verification.css'],
 })
 export class ReportVerification implements OnInit {
-  // PREVIOUS REPORT FILES
-  previousAocReportFile: File | null = null;
-  previousRocReportFile: File | null = null;
-  previousFinalReportFile: File | null = null;
+  // PREVIOUS REPORT FILES (now arrays for multiple files)
+  previousAocReportFiles: File[] = [];
+  previousRocReportFiles: File[] = [];
+  previousFinalReportFiles: File[] = [];
   
-  // CURRENT REPORT FILES
-  currentAocReportFile: File | null = null;
-  currentRocReportFile: File | null = null;
-  currentFinalReportFile: File | null = null;
+  // CURRENT REPORT FILES (now arrays for multiple files)
+  currentAocReportFiles: File[] = [];
+  currentRocReportFiles: File[] = [];
+  currentFinalReportFiles: File[] = [];
   
   // Client Search Properties
   legalEntitySearch: string = '';
@@ -309,65 +309,108 @@ export class ReportVerification implements OnInit {
     }, 200);
   }
 
-  // FILE UPLOAD METHODS (Updated for 6 files)
-  onUpload(type: 'previousAoc' | 'previousRoc' | 'previousFinal' | 'currentAoc' | 'currentRoc' | 'currentFinal') {
+  // FILE UPLOAD METHODS (Updated for multiple files)
+  onUpload(
+    type: 'previousAoc' | 'previousRoc' | 'previousFinal' | 'currentAoc' | 'currentRoc' | 'currentFinal'
+  ) {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.pdf';
-    input.multiple = false;
+    input.accept = '.pdf,application/pdf';
+    input.multiple = true; // Enable multiple file selection
     
     input.onchange = (event: Event) => {
       const target = event.target as HTMLInputElement;
-      const file = target.files?.[0];
+      const files = target.files;
       
-      if (file) {
-        // Validate file type
-        const validTypes = [
-          'application/pdf',
-        ];
+      if (files && files.length > 0) {
+        const maxFiles = 10; // Maximum number of files allowed per field
+        const maxSizePerFile = 10 * 1024 * 1024; // 10MB per file
+        const validFiles: File[] = [];
+        const invalidFiles: string[] = [];
         
-        if (!validTypes.includes(file.type)) {
-          alert('Please upload a valid pdf file');
-          return;
+        // Validate each file
+        for (let i = 0; i < Math.min(files.length, maxFiles); i++) {
+          const file = files[i];
+          
+          // Validate file type
+          const isPDF = file.type === 'application/pdf' || 
+                       file.name.toLowerCase().endsWith('.pdf');
+          
+          if (!isPDF) {
+            invalidFiles.push(`${file.name} - Only PDF files are allowed`);
+            continue;
+          }
+          
+          // Validate file size
+          if (file.size > maxSizePerFile) {
+            invalidFiles.push(`${file.name} - File size exceeds 10MB limit`);
+            continue;
+          }
+          
+          validFiles.push(file);
         }
         
-        // Validate file size (10MB limit)
-        const maxSize = 10 * 1024 * 1024; // 10MB in bytes
-        if (file.size > maxSize) {
-          alert('File size should not exceed 10MB');
-          return;
+        // Show error messages for invalid files
+        if (invalidFiles.length > 0) {
+          alert(`The following files were rejected:\n\n${invalidFiles.join('\n')}`);
         }
         
-        // Assign file to the correct property based on type
-        switch (type) {
-          case 'previousAoc':
-            this.previousAocReportFile = file;
-            break;
-          case 'previousRoc':
-            this.previousRocReportFile = file;
-            break;
-          case 'previousFinal':
-            this.previousFinalReportFile = file;
-            break;
-          case 'currentAoc':
-            this.currentAocReportFile = file;
-            break;
-          case 'currentRoc':
-            this.currentRocReportFile = file;
-            break;
-          case 'currentFinal':
-            this.currentFinalReportFile = file;
-            break;
+        // Assign valid files to the correct property based on type
+        if (validFiles.length > 0) {
+          switch (type) {
+            case 'previousAoc':
+              this.previousAocReportFiles = [...this.previousAocReportFiles, ...validFiles];
+              break;
+            case 'previousRoc':
+              this.previousRocReportFiles = [...this.previousRocReportFiles, ...validFiles];
+              break;
+            case 'previousFinal':
+              this.previousFinalReportFiles = [...this.previousFinalReportFiles, ...validFiles];
+              break;
+            case 'currentAoc':
+              this.currentAocReportFiles = [...this.currentAocReportFiles, ...validFiles];
+              break;
+            case 'currentRoc':
+              this.currentRocReportFiles = [...this.currentRocReportFiles, ...validFiles];
+              break;
+            case 'currentFinal':
+              this.currentFinalReportFiles = [...this.currentFinalReportFiles, ...validFiles];
+              break;
+          }
+          
+          console.log(`${type} reports uploaded:`, validFiles.map(f => f.name).join(', '));
+          this.cdr.detectChanges();
         }
-        
-        console.log(`${type} report uploaded:`, file.name);
-        this.cdr.detectChanges();
       }
     };
     
     input.click();
   }
 
+  // Remove file from array
+  removeFile(type: 'previousAoc' | 'previousRoc' | 'previousFinal' | 'currentAoc' | 'currentRoc' | 'currentFinal', index: number) {
+    switch (type) {
+      case 'previousAoc':
+        this.previousAocReportFiles.splice(index, 1);
+        break;
+      case 'previousRoc':
+        this.previousRocReportFiles.splice(index, 1);
+        break;
+      case 'previousFinal':
+        this.previousFinalReportFiles.splice(index, 1);
+        break;
+      case 'currentAoc':
+        this.currentAocReportFiles.splice(index, 1);
+        break;
+      case 'currentRoc':
+        this.currentRocReportFiles.splice(index, 1);
+        break;
+      case 'currentFinal':
+        this.currentFinalReportFiles.splice(index, 1);
+        break;
+    }
+    this.cdr.detectChanges();
+  }
 
   // FORM SUBMISSION
   onSubmit(form: NgForm) {
@@ -382,6 +425,20 @@ export class ReportVerification implements OnInit {
     // Validate audit selection
     if (!this.selectedAuditId) { 
       alert('Please select an audit from the dropdown');
+      return;
+    }
+    
+    // Validate at least one file is uploaded
+    const totalFiles = 
+      this.previousAocReportFiles.length +
+      this.previousRocReportFiles.length +
+      this.previousFinalReportFiles.length +
+      this.currentAocReportFiles.length +
+      this.currentRocReportFiles.length +
+      this.currentFinalReportFiles.length;
+    
+    if (totalFiles === 0) {
+      alert('Please upload at least one report file');
       return;
     }
     
@@ -410,31 +467,32 @@ export class ReportVerification implements OnInit {
     formData.append('associated_organization', this.reportData.associatedOrganization);
     formData.append('associated_application', this.reportData.associatedApplication);
     
-    // Add PREVIOUS report files with appropriate field names
-    if (this.previousAocReportFile) {
-      formData.append('previous_aoc_report', this.previousAocReportFile, this.previousAocReportFile.name);
-    }
+    // Add PREVIOUS report files with EXACT field names from your image
+    // Multiple files can be appended with the same field name
+    this.previousAocReportFiles.forEach((file) => {
+      formData.append('prev_aoc_report', file, file.name);
+    });
     
-    if (this.previousRocReportFile) {
-      formData.append('previous_roc_report', this.previousRocReportFile, this.previousRocReportFile.name);
-    }
+    this.previousRocReportFiles.forEach((file) => {
+      formData.append('prev_roc_report', file, file.name);
+    });
     
-    if (this.previousFinalReportFile) {
-      formData.append('previous_final_report', this.previousFinalReportFile, this.previousFinalReportFile.name);
-    }
+    this.previousFinalReportFiles.forEach((file) => {
+      formData.append('prev_final_report', file, file.name);
+    });
     
-    // Add CURRENT report files with appropriate field names
-    if (this.currentAocReportFile) {
-      formData.append('current_aoc_report', this.currentAocReportFile, this.currentAocReportFile.name);
-    }
+    // Add CURRENT report files with EXACT field names from your image
+    this.currentAocReportFiles.forEach((file) => {
+      formData.append('current_aoc_report', file, file.name);
+    });
     
-    if (this.currentRocReportFile) {
-      formData.append('current_roc_report', this.currentRocReportFile, this.currentRocReportFile.name);
-    }
+    this.currentRocReportFiles.forEach((file) => {
+      formData.append('current_roc_report', file, file.name);
+    });
     
-    if (this.currentFinalReportFile) {
-      formData.append('current_final_report', this.currentFinalReportFile, this.currentFinalReportFile.name);
-    }
+    this.currentFinalReportFiles.forEach((file) => {
+      formData.append('current_final_report', file, file.name);
+    });
     
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
@@ -446,6 +504,8 @@ export class ReportVerification implements OnInit {
         
         if (response && response.message) {
           alert(`Success: ${response.message}`);
+        } else if (response && response.success) {
+          alert('Report verification submitted successfully!');
         } else {
           alert('Report verification submitted successfully!');
         }
@@ -461,10 +521,16 @@ export class ReportVerification implements OnInit {
         
         if (error.error && error.error.message) {
           errorMessage += error.error.message;
+        } else if (error.error && error.error.errors) {
+          // Handle validation errors from backend
+          const errors = error.error.errors;
+          errorMessage += Object.values(errors).flat().join(', ');
         } else if (error.status === 401) {
           errorMessage += 'Unauthorized. Please check your authentication token.';
         } else if (error.status === 400) {
           errorMessage += 'Bad request. Please check the data you entered.';
+        } else if (error.status === 413) {
+          errorMessage += 'File size too large. Please reduce file sizes.';
         } else if (error.status === 404) {
           errorMessage += 'API endpoint not found.';
         } else if (error.status === 500) {
@@ -486,13 +552,13 @@ export class ReportVerification implements OnInit {
     this.selectedAuditId = null;
     this.selectedAuditName = '';
     
-    // Reset all file properties
-    this.previousAocReportFile = null;
-    this.previousRocReportFile = null;
-    this.previousFinalReportFile = null;
-    this.currentAocReportFile = null;
-    this.currentRocReportFile = null;
-    this.currentFinalReportFile = null;
+    // Reset all file arrays
+    this.previousAocReportFiles = [];
+    this.previousRocReportFiles = [];
+    this.previousFinalReportFiles = [];
+    this.currentAocReportFiles = [];
+    this.currentRocReportFiles = [];
+    this.currentFinalReportFiles = [];
     
     this.filteredClients = [...this.clients];
     this.filteredAudits = [];

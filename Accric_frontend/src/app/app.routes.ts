@@ -24,6 +24,7 @@ import { EditAsvClient } from './edit-asv-client/edit-asv-client';
 import { AddAsvAudit } from './add-asv-audit/add-asv-audit';
 import { AsvAuditClientList } from './asv-audit-client-list/asv-audit-client-list';
 import { AuditList } from './audit-list/audit-list';
+import { PciReportsList } from './pci-reports-list/pci-reports-list';
 
 
 export const routes: Routes = [
@@ -57,6 +58,7 @@ export const routes: Routes = [
       { path: 'edit-asv-list', component: EditAsvClient},
       { path: 'asv-audit-client-list',  component: AsvAuditClientList},
       { path: 'audit-list',  component: AuditList},
+      { path: 'pci-reports-list',  component: PciReportsList},
     ],
   },
   { path: '**', redirectTo: 'dashboard' }

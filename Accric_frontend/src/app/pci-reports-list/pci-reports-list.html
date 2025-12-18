@@ -19,9 +19,7 @@
             <th>Assessment/Project</th>
             <th>Previous Reports</th>
             <th>Current Reports</th>
-            <th>Verification Status</th>
-            <th>Submitted Date</th>
-            <th>Verified Date</th>
+           
             <th>Action</th>
           </tr>
         </thead>
@@ -42,19 +40,12 @@
               </div>
               <span *ngIf="report.current_files_count === 0">No files</span>
             </td>
-            <td>
-              <span class="status-badge" [ngClass]="getStatusClass(report.verification_status)">
-                {{ getStatusLabel(report.verification_status) || 'Pending' }}
-              </span>
-            </td>
-            <td>{{ formatDate(report.created_at) }}</td>
-            <td>{{ formatDate(report.verified_at) || 'Not Verified' }}</td>
+          
+      
             <td class="sticky-action">
               <div class="action-box">
-                <img src="/assets/icons/view.png" alt="View" (click)="viewReport(report)" title="View Details">
+                <img id="view-img" src="/assets/icons/report-view-icon.jpg" alt="View" (click)="viewReport(report)" title="View Details">
                 <img src="/assets/icons/edit.png" alt="Edit" (click)="editReport(report)" title="Edit Report">
-                <img src="/assets/icons/verify.png" alt="Verify" (click)="verifyReport(report)" title="Verify Report" *ngIf="report.verification_status !== 'VERIFIED'">
-                <img src="/assets/icons/download.png" alt="Download" (click)="downloadReport(report)" title="Download Reports">
               </div>
             </td>
           </tr>

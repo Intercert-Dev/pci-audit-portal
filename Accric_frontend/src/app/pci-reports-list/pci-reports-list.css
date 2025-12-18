@@ -224,6 +224,12 @@ tbody tr {
   transition: opacity 0.3s;
 }
 
+#view-img{
+  width: 30px;
+  height: 30px;
+  text-align: center;
+}
+
 .action-box img:hover {
   opacity: 0.7;
 }

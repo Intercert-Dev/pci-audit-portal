@@ -5,7 +5,8 @@
   font-family: 'Inter', sans-serif;
 }
 
-html, body {
+html,
+body {
   overflow-x: hidden;
   width: 100%;
 }
@@ -21,6 +22,7 @@ html, body {
 .certificate-container {
   width: 100%;
   max-width: 1200px;
+  min-height: 175px;
   margin: 32px auto 0;
   padding: 20px 25px;
   background: #fff;

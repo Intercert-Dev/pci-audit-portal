@@ -1,0 +1,174 @@
+
+:root {
+  /* Typography */
+  --font-family-sans:"Inter", sans-serif;
+  --text-color: rgba(35, 35, 35, 1);
+  --muted-color: rgba(113, 142, 191, 1);
+
+  /* Sizes */
+  --fs-base: 1rem; /* 16px */
+  --fs-sm: 0.875rem; /* 14px */
+  --fs-xs: 0.8rem; /* 13px-ish */
+
+  /* Inputs */
+  --control-height: 2.5rem; /* consistent height for inputs */
+  --control-padding: 10px 14px;
+  --control-radius: 1rem;
+  --control-border: rgba(223, 234, 242, 1);
+  --control-focus: rgba(57, 106, 255, 1);
+  --control-placeholder: rgba(113, 142, 191, 1);
+
+  /* Colors */
+  --primary: rgba(57, 106, 255, 1);
+  --secondary-bg: rgba(198, 215, 246, 1);
+  --danger: #d9534f;
+  --surface: #ffffff;
+  --page-bg: rgba(250, 251, 254, 1);
+}
+
+/* Typography reset for the project */
+html, body {
+  font-family: var(--font-family-sans);
+  color: var(--text-color);
+}
+
+/* Form labels */
+.form-label,
+label {
+  display: inline-block;
+  font-size: var(--fs-sm);
+  color: rgba(107, 124, 147, 1);
+  margin-bottom: 6px;
+}
+
+/* Global form controls */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+input[type="search"],
+select,
+textarea,
+.dropdown-input {
+  box-sizing: border-box;
+  height: var(--control-height);
+  padding: var(--control-padding);
+  border-radius: var(--control-radius);
+  border: 1px solid var(--control-border);
+  background-color: var(--surface);
+  font-size: var(--fs-xs);
+  color: var(--muted-color);
+  outline: none;
+  transition: border-color 0.18s ease-in-out, box-shadow 0.18s ease-in-out;
+}
+
+textarea {
+  min-height: calc(var(--control-height) * 2.5);
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+/* Placeholder styling */
+input::placeholder,
+textarea::placeholder,
+select::placeholder {
+  color: var(--control-placeholder);
+  opacity: 1;
+}
+
+/* Focus state */
+input:focus,
+select:focus,
+textarea:focus,
+.dropdown-input:focus {
+  border-color: var(--control-focus);
+  /* box-shadow: 0 0 0 3px rgba(57, 106, 255, 0.08); */
+}
+
+
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: none;
+  padding: 0.65rem 1.25rem;
+  border-radius: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: var(--fs-base);
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.btn-secondary {
+  background: var(--secondary-bg);
+  color: rgba(52, 60, 106, 1);
+}
+
+.btn:disabled,
+.btn[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Small helpers */
+.form-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.error-text,
+.error {
+  color: var(--danger);
+  font-size: 0.95rem;
+  margin-top: 6px;
+}
+
+/* Dropdown & custom control baseline */
+.custom-dropdown {
+  position: relative;
+}
+
+.dropdown-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--control-border);
+  border-radius: 0.75rem;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  z-index: 1000;
+  max-height: 260px;
+  overflow: auto;
+}
+
+/* Make it easy to reuse form tokens in component-level css */
+.control-small { height: 2rem; padding: 6px 10px; font-size: var(--fs-xs); }
+.control-large { height: 3rem; padding: 12px 16px; font-size: var(--fs-base); }
+
+/* Utility: visually hidden (for accessibility) */
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0);
+  border: 0;
+}
+
+/* Page-level background */
+body {
+  background-color: var(--page-bg);
+}

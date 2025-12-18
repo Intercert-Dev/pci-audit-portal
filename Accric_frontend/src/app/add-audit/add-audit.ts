@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 import { QSA } from '../qsa-list/qsa-list';
 
 interface DateErrors {
@@ -118,7 +119,7 @@ export class AddAudit implements OnInit {
   showClientDropdown: boolean = false;
   private searchSubject = new Subject<string>();
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) { }
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef, private toastr: ToastrService) { }
 
   ngOnInit() {
     this.loadClients();

@@ -4,6 +4,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 // Define interfaces for better typing
 interface Country {
@@ -38,7 +39,7 @@ export class AddClient implements OnInit {
   showErrors = false;
   isLoading = false;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private toastr: ToastrService) { }
 
   tabs = [
     'client-profile',
@@ -443,7 +444,7 @@ export class AddClient implements OnInit {
     
     if (!token) {
       console.error('No JWT token found');
-      alert('Please login first. No authentication token found.');
+      this.toastr.error('Please login first. No authentication token found.', 'Error');
       this.isLoading = false;
       return;
     }
@@ -458,9 +459,9 @@ export class AddClient implements OnInit {
         this.isLoading = false;
         
         if (response && response.message) {
-          alert(`Success: ${response.message}`);
+          this.toastr.success(response.message, 'Success');
         } else {
-          alert('Client created successfully!');
+          this.toastr.success('Client created successfully!', 'Success');
         }
         
         this.resetForm();
@@ -483,7 +484,7 @@ export class AddClient implements OnInit {
           errorMessage += 'Network error. Please check your internet connection.';
         }
         
-        alert(errorMessage);
+        this.toastr.error(errorMessage, 'Error');
       }
     });
   }

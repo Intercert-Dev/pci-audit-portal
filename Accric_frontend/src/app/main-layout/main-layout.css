@@ -301,7 +301,7 @@
   border-top-right-radius: 17px;
   text-align: center;
   right: 8px;
-  top: 80px;
+  top: 90px;
 
 
 }
@@ -339,6 +339,10 @@
 
   }
 
+  .main-layout.sidebar-collapsed .main-content {
+    margin-left: 0px !important;
+  }
+
   .layout-body {
     flex-direction: column;
     margin-top: 7rem;
@@ -360,8 +364,8 @@
   }
 
   .dropdown-menu {
-    top: 200px;
-    right: 1.5rem;
+    top: 110px;
+    right: 10px;
   }
 
   .topbar-left-items {
@@ -499,8 +503,7 @@
   }
 
   .dropdown-menu {
-    top: 200px;
-    right: 2.5rem;
+    top: 250px;
   }
 
   .header-right {
@@ -585,9 +588,7 @@
   }
 
   .dropdown-menu {
-    top: 190px;
-    right: 1.5rem;
-    width: 140px;
+    top: 240px;
   }
 
   .topbar-left-items {

@@ -19,6 +19,9 @@ body {
   overflow-x: hidden;
 }
 
+
+
+
 .certificate-container {
   width: 100%;
   max-width: 1200px;
@@ -722,4 +725,8 @@ body {
   .btn-certificate {
     gap: 10px;
   }
+}
+
+.date-input {
+  color: rgba(113, 142, 191, 1);
 }

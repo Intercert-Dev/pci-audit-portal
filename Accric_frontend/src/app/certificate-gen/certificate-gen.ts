@@ -7,8 +7,6 @@ import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ToastService } from '../service/toast-service';
 
-
-
 interface Company {
   clientId: string;
   legal_entity_name: string;
@@ -21,10 +19,28 @@ interface Assessment {
     clientId: string;
     legal_entity_name?: string;
   };
+  certificate_number?: string;
 }
 
-
-
+interface CertificateData {
+  certificateNo: string;
+  companyName: string;
+  full_address: string;
+  street_name: string;
+  city_name: string;
+  state_name: string;
+  county_name: string;
+  zip_name: string;
+  dateIssue: string;
+  dateValid: string;
+  assessment_classification: string;
+  legal_entity_name: string;
+  certificate_issue_date: string;
+  certificate_expiry_date: string;
+  certificate_number_unique_id: string;
+  version: string;
+  auditor_name: string;
+}
 
 @Component({
   selector: 'app-certificate-gen',
@@ -34,7 +50,6 @@ interface Assessment {
   styleUrls: ['./certificate-gen.css'],
 })
 export class CertificateGen implements OnInit {
-
   // Search text
   companySearch = '';
   assessmentSearch = '';
@@ -55,23 +70,22 @@ export class CertificateGen implements OnInit {
 
   // Certificate input binding
   certificateInputValue = '';
+  manualCertificateInput = false;
 
   private companySearch$ = new Subject<string>();
   private assessmentSearch$ = new Subject<string>();
 
-
-
-
   loading: boolean = false;
   showCertificateForm: boolean = false;
   showPdfViewer: boolean = false;
-  certificateData: any = null;
+  certificateData: CertificateData | null = null;
   pdfUrl: SafeResourceUrl | null = null;
   pdfBlob: Blob | null = null;
   pdfFileName: string = 'certificate.pdf';
   pdfGenerating: boolean = false;
 
   @ViewChild('pdfViewer') pdfViewer!: ElementRef;
+  @ViewChild('certForm') certForm!: NgForm;
 
   editFields = {
     certificateNo: false,
@@ -87,9 +101,9 @@ export class CertificateGen implements OnInit {
   auditorList = ['Milan John'];
 
   certificateOptions = {
-    companyNameFontSize: '20px', // Default: 20px (range: 16px-24px)
-    addressFontSize: '12px',     // Default: 12px (range: 8px-16px)
-    typeFontSize: '12px',        // Default: 16px (range: 10px-16px)
+    companyNameFontSize: '20px',
+    addressFontSize: '12px',
+    typeFontSize: '12px',
     pageSize: 'A4',
     formatType: 'Softcopy',
     includeLineBreak: false,
@@ -98,16 +112,15 @@ export class CertificateGen implements OnInit {
   };
 
   // Font size arrays for dropdowns with specified ranges
-  companyNameFontSizes: string[] = ['4px', '8px', '16px', '20px', '24px']; // 16px-38px
-  addressFontSizes: string[] = ['8px', '10px', '12px', '14px', '16px']; // 8px-16px
-  typeFontSizes: string[] = ['10px', '12px', '14px', '16px']; // 10px-16px
+  companyNameFontSizes: string[] = ['4px', '8px', '16px', '20px', '24px'];
+  addressFontSizes: string[] = ['8px', '10px', '12px', '14px', '16px'];
+  typeFontSizes: string[] = ['10px', '12px', '14px', '16px'];
   pageSizes: string[] = ['A4', 'Letter'];
   certificateTypes: string[] = [
     'Internal',
     'External',
     'Third Party',
   ];
-
 
   ngOnInit() {
     this.loadCompanies();
@@ -124,12 +137,11 @@ export class CertificateGen implements OnInit {
     ).subscribe(v => this.filterAssessments(v));
   }
 
-
   constructor(
     private http: HttpClient,
     private cdr: ChangeDetectorRef,
     private sanitizer: DomSanitizer,
-    private toast : ToastService
+    private toast: ToastService
   ) { }
 
   private enableAllEditFields() {
@@ -137,7 +149,6 @@ export class CertificateGen implements OnInit {
       this.editFields[key as keyof typeof this.editFields] = true;
     });
   }
-
 
   onCompanyBlur() {
     setTimeout(() => {
@@ -210,22 +221,35 @@ export class CertificateGen implements OnInit {
     this.http.get<{ data: Company[] }>(
       'http://pci.accric.com/api/auth/clients-for-audit',
       { headers }
-    ).subscribe(res => {
-      this.companies = res.data;
-      this.filteredCompanies = [...this.companies];
+    ).subscribe({
+      next: (res) => {
+        console.log("companies Data", res.data);
+
+        this.companies = res.data;
+        this.filteredCompanies = [...this.companies];
+      },
+      error: (err) => {
+        this.toast.error('Failed to load companies');
+        console.error('Error loading companies:', err);
+      }
     });
   }
+
   loadAssessments() {
     const headers = this.getAuthHeaders();
 
     this.http.get<{ data: Assessment[] }>(
       'http://pci.accric.com/api/auth/audit-list',
       { headers }
-    ).subscribe(res => {
-      this.assessments = res.data;
-      console.log("Certificate Data ", res.data);
-
-
+    ).subscribe({
+      next: (res) => {
+        this.assessments = res.data;
+        console.log("Assessments loaded:", res.data);
+      },
+      error: (err) => {
+        this.toast.error('Failed to load assessments');
+        console.error('Error loading assessments:', err);
+      }
     });
   }
 
@@ -240,74 +264,93 @@ export class CertificateGen implements OnInit {
     this.assessmentSearch = '';
     this.selectedAssessmentId = null;
     this.certificateInputValue = '';
+    this.manualCertificateInput = false;
     this.showCompanyDropdown = false;
+
+    // Clear certificate form if any
+    this.certificateData = null;
+    this.showCertificateForm = false;
   }
 
   selectAssessment(assessment: Assessment) {
     this.assessmentSearch = assessment.assessment_project_name;
-    this.selectedAssessmentId = assessment.auditId;
+    this.selectedAssessmentId = assessment.client?.clientId;
     this.showAssessmentDropdown = false;
+    this.manualCertificateInput = false;
 
-    // 🔥 CALL BACKEND TO GET CERTIFICATE NUMBER
-    this.fetchCertificateNumber();
+    // Get certificate details using assessment ID
+    this.fetchCertificateByAssessment();
   }
 
-  fetchCertificateNumber() {
+  fetchCertificateByAssessment() {
     const headers = this.getAuthHeaders();
 
     this.http.get<any>(
-      `http://pci.accric.com/api/auth/certificate-by-assessment?assessmentId=${this.selectedAssessmentId}`,
+      `http://pci.accric.com/api/auth/client-audit-details/${this.selectedAssessmentId}`,
       { headers }
-    ).subscribe(res => {
-      this.certificateInputValue = res.certificate_number;
+    ).subscribe({
+      next: (res) => {
+        console.log('Assessment details:', res);
+        const certificateNo =
+          res?.data?.audits?.length > 0
+            ? res.data.audits[0].certificate_number_unique_id
+            : null;
+
+        if (certificateNo) {
+          this.certificateInputValue = certificateNo;
+        } else {
+          this.toast.warning('No certificate number found for this assessment');
+        }
+      },
+      error: (err) => {
+        this.toast.error('Failed to fetch assessment details');
+        console.error('Error fetching assessment details:', err);
+      }
     });
   }
 
-  private getAuthHeaders(): HttpHeaders {
-    const token = localStorage.getItem('jwt') || '';
-    return new HttpHeaders({ Authorization: `Bearer ${token}` });
+  toggleManualInput() {
+    this.manualCertificateInput = !this.manualCertificateInput;
+    if (this.manualCertificateInput) {
+      this.companySearch = '';
+      this.selectedCompanyId = null;
+      this.assessmentSearch = '';
+      this.selectedAssessmentId = null;
+      this.certificateInputValue = '';
+      this.filteredAssessments = [];
+    }
+    this.cdr.detectChanges();
   }
 
-
-  generateCertificate(form: NgForm) {
-    const certNo = form.value.certificateNo?.trim();
-
-    if (!certNo) {
+  generateCertificateFromInput() {
+    if (!this.certificateInputValue.trim()) {
       this.toast.warning('Please enter a certificate number!');
-      this.showCertificateForm = false;
-      this.certificateData = null;
       return;
     }
 
-    const token = localStorage.getItem('jwt');
-    if (!token) {
-      this.toast.error('JWT token not found! Please login first.');
-      return;
-    }
+    this.fetchCertificateDetails(this.certificateInputValue.trim());
+  }
 
-
-
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-    });
-
-    const url = `http://pci.accric.com/api/auth/client-by-certificate?certificateNo=${certNo}`;
-
+  fetchCertificateDetails(certificateNumber: string) {
+    const headers = this.getAuthHeaders();
     this.loading = true;
     this.showCertificateForm = false;
     this.certificateData = null;
     this.showPdfViewer = false;
 
-    this.http.get(url, { headers }).subscribe({
-      next: (res: any) => {
+    this.http.get<any>(
+      `http://pci.accric.com/api/auth/certificate-audit-details/${certificateNumber}`,
+      { headers }
+    ).subscribe({
+      next: (res) => {
         this.loading = false;
-        console.log('Certificate fetched:', res);
+        console.log('Certificate details:', res);
 
         const apiData = res.data || res;
         this.certificateData = this.initializeCertificateData();
         this.mapApiDataToCertificate(apiData);
 
-        this.certificateData.certificateNo = certNo;
+        this.certificateData.certificateNo = certificateNumber;
         this.setFullAddress();
         this.enableAllEditFields();
         this.showCertificateForm = true;
@@ -319,7 +362,7 @@ export class CertificateGen implements OnInit {
         this.certificateData = null;
 
         if (err.status === 404) {
-         this.toast.error('Certificate not found! Please check the certificate number.');
+          this.toast.error('Certificate not found! Please check the certificate number.');
         } else if (err.status === 401) {
           this.toast.error('Invalid or expired token! Please login again.');
         } else {
@@ -330,7 +373,7 @@ export class CertificateGen implements OnInit {
     });
   }
 
-  private initializeCertificateData() {
+  private initializeCertificateData(): CertificateData {
     return {
       certificateNo: '',
       companyName: '',
@@ -353,26 +396,51 @@ export class CertificateGen implements OnInit {
   }
 
   private mapApiDataToCertificate(apiData: any) {
-    this.certificateData.legal_entity_name = apiData.legal_entity_name || '';
-    this.certificateData.street_name = apiData.street_name || '';
-    this.certificateData.city_name = apiData.city_name || '';
-    this.certificateData.state_name = apiData.state_name || '';
-    this.certificateData.county_name = apiData.county_name || '';
-    this.certificateData.zip_name = apiData.zip_name || '';
-    this.certificateData.certificate_issue_date = apiData.certificate_issue_date || '';
-    this.certificateData.certificate_expiry_date = apiData.certificate_expiry_date || '';
-    this.certificateData.certificate_number_unique_id = apiData.certificate_number_unique_id || '';
-    this.certificateData.assessment_classification = apiData.assessment_classification || '';
-    this.certificateData.companyName = apiData.legal_entity_name || '';
-    this.certificateData.dateIssue = this.formatDateForInput(apiData.certificate_issue_date);
-    this.certificateData.dateValid = this.formatDateForInput(apiData.certificate_expiry_date);
-    this.certificateData.version = apiData.version || 'Standard Version 4.0.1';
-    this.certificateData.auditor_name = apiData.auditor_name || 'Milan John';
+    const client = apiData.client || {};
+
+    // Company & Address
+    this.certificateData!.legal_entity_name = client.legal_entity_name || '';
+    this.certificateData!.companyName = client.legal_entity_name || '';
+
+    this.certificateData!.street_name = client.street_name || '';
+    this.certificateData!.city_name = client.city_name || '';
+    this.certificateData!.state_name = client.state_name || '';
+    this.certificateData!.county_name = client.county_name || '';
+    this.certificateData!.zip_name = client.zip_name || '';
+
+    // Certificate details
+    this.certificateData!.certificate_issue_date =
+      apiData.certificate_issue_date || '';
+
+    this.certificateData!.certificate_expiry_date =
+      apiData.certificate_expiry_date || '';
+
+    this.certificateData!.certificate_number_unique_id =
+      apiData.certificate_number_unique_id || '';
+
+    // Classification (BACKEND sends `classification`, not `assessment_classification`)
+    this.certificateData!.assessment_classification =
+      apiData.classification || '';
+
+    // Dates formatted for input fields
+    this.certificateData!.dateIssue =
+      this.formatDateForInput(apiData.certificate_issue_date);
+
+    this.certificateData!.dateValid =
+      this.formatDateForInput(apiData.certificate_expiry_date);
+
+    // Static / optional fields
+    this.certificateData!.version =
+      apiData.version || 'Standard Version 4.0.1';
+
+    this.certificateData!.auditor_name =
+      apiData.auditor_name || 'Milan John';
   }
 
+
   private setFullAddress() {
-    const d = this.certificateData;
-    this.certificateData.full_address =
+    const d = this.certificateData!;
+    this.certificateData!.full_address =
       `${d.street_name || ''}, ${d.city_name || ''}, ${d.state_name || ''}, ${d.county_name || ''}, ${d.zip_name || ''}`
         .replace(/,\s*,/g, ',')
         .replace(/^,|,$/g, '')
@@ -380,7 +448,7 @@ export class CertificateGen implements OnInit {
   }
 
   splitAddress() {
-    if (!this.certificateData.full_address) return;
+    if (!this.certificateData?.full_address) return;
 
     const parts = this.certificateData.full_address.split(',');
 
@@ -403,9 +471,9 @@ export class CertificateGen implements OnInit {
     }
   }
 
-  // Prepare data for PDF generation API - UPDATED with font size ranges
   preparePdfData() {
-    // Extract font size numbers within specified ranges
+    if (!this.certificateData) return null;
+
     const companyNameSize = this.extractFontSizeNumber(this.certificateOptions.companyNameFontSize);
     const addressSize = this.extractFontSizeNumber(this.certificateOptions.addressFontSize);
     const typeSize = this.extractFontSizeNumber(this.certificateOptions.typeFontSize);
@@ -419,16 +487,14 @@ export class CertificateGen implements OnInit {
       certificateNumber: this.certificateData.certificateNo || this.certificateData.certificate_number_unique_id || '',
       classification: this.certificateData.assessment_classification || '',
       validTill: this.certificateData.dateValid || this.certificateData.certificate_expiry_date || '',
-      // Font sizes with validation to ensure they're within specified ranges
-      companyNameSize: this.clampFontSize(companyNameSize, 16, 24),      // 16px-24px range
-      addressSize: this.clampFontSize(addressSize, 8, 16),              // 8px-16px range
-      typeSize: this.clampFontSize(typeSize, 10, 16),                   // 10px-16px range
+      companyNameSize: this.clampFontSize(companyNameSize, 16, 24),
+      addressSize: this.clampFontSize(addressSize, 8, 16),
+      typeSize: this.clampFontSize(typeSize, 10, 16),
       name: this.certificateData.auditor_name || 'Milan John',
-      // Add page size and other options
       pageSize: this.certificateOptions.pageSize,
       includeLineBreak: this.certificateOptions.includeLineBreak,
       showValidityLine: this.certificateOptions.showValidityLine,
-      formatType: this.certificateOptions.formatType || 'Internal'
+      formatType: this.certificateOptions.formatType
     };
   }
 
@@ -438,30 +504,24 @@ export class CertificateGen implements OnInit {
     return match ? parseInt(match[1], 10) : 12;
   }
 
-  // Clamp font size to ensure it's within the specified range
   private clampFontSize(size: number, min: number, max: number): number {
     return Math.max(min, Math.min(max, size));
   }
 
   generateCertificatePdf() {
-    if (!this.certificateData || !this.certificateData.certificate_number_unique_id) {
-      this.toast.error('No certificate data to generate! Please add a certificate first.');
+    if (!this.certificateData || !this.certificateData.certificateNo) {
+      this.toast.error('No certificate data to generate! Please fetch certificate first.');
       return;
     }
 
-    // Prepare the request data according to backend requirements
     const requestData = this.preparePdfData();
-
-    const token = localStorage.getItem('jwt');
-    if (!token) {
-      this.toast.error('JWT token not found! Please login first.');
+    if (!requestData) {
+      this.toast.error('Failed to prepare PDF data');
       return;
     }
 
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Accept': 'application/pdf',
-    });
+    const headers = this.getAuthHeaders();
+    headers.append('Accept', 'application/pdf');
 
     this.pdfGenerating = true;
     this.showPdfViewer = false;
@@ -493,11 +553,10 @@ export class CertificateGen implements OnInit {
           if (fileNameMatch && fileNameMatch[1]) {
             this.pdfFileName = fileNameMatch[1];
           } else {
-            // Generate filename based on certificate number
-            this.pdfFileName = `certificate-${this.certificateData.certificateNo || this.certificateData.certificate_number_unique_id}.pdf`;
+            this.pdfFileName = `certificate-${this.certificateData!.certificateNo}.pdf`;
           }
         } else {
-          this.pdfFileName = `certificate-${this.certificateData.certificateNo || this.certificateData.certificate_number_unique_id}.pdf`;
+          this.pdfFileName = `certificate-${this.certificateData!.certificateNo}.pdf`;
         }
 
         this.showPdfViewer = true;
@@ -526,14 +585,8 @@ export class CertificateGen implements OnInit {
     });
   }
 
-  // Add method to regenerate PDF when options change
   onOptionsChange() {
     console.log('Certificate options changed:', this.certificateOptions);
-
-    // If you want to auto-regenerate PDF when options change, uncomment the following:
-    // if (this.showPdfViewer && this.pdfBlob) {
-    //   this.generateCertificatePdf();
-    // }
   }
 
   downloadCurrentPDF() {
@@ -556,9 +609,7 @@ export class CertificateGen implements OnInit {
   closePdfViewer() {
     this.showPdfViewer = false;
 
-    // Clean up object URL if it exists
     if (this.pdfUrl) {
-      // Get the actual string URL from SafeResourceUrl
       const url = (this.pdfUrl as any).changingThisBreaksApplicationSecurity || '';
       if (url) {
         URL.revokeObjectURL(url);
@@ -587,13 +638,17 @@ export class CertificateGen implements OnInit {
   }
 
   resetForm() {
+    this.companySearch = '';
+    this.selectedCompanyId = null;
+    this.assessmentSearch = '';
+    this.selectedAssessmentId = null;
+    this.certificateInputValue = '';
+    this.manualCertificateInput = false;
     this.certificateData = null;
     this.showCertificateForm = false;
     this.showPdfViewer = false;
 
-    // Clean up object URL if it exists
     if (this.pdfUrl) {
-      // Get the actual string URL from SafeResourceUrl
       const url = (this.pdfUrl as any).changingThisBreaksApplicationSecurity || '';
       if (url) {
         URL.revokeObjectURL(url);
@@ -608,11 +663,10 @@ export class CertificateGen implements OnInit {
       this.editFields[key as keyof typeof this.editFields] = false;
     });
 
-    // Reset to default font sizes
     this.certificateOptions = {
       companyNameFontSize: '20px',
       addressFontSize: '12px',
-      typeFontSize: '16px',
+      typeFontSize: '12px',
       pageSize: 'A4',
       formatType: 'Softcopy',
       includeLineBreak: false,
@@ -620,7 +674,16 @@ export class CertificateGen implements OnInit {
       type: '',
     };
 
+    if (this.certForm) {
+      this.certForm.resetForm();
+    }
+
     this.cdr.detectChanges();
+  }
+
+  private getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('jwt') || '';
+    return new HttpHeaders({ Authorization: `Bearer ${token}` });
   }
 
   get hasEditedFields(): boolean {

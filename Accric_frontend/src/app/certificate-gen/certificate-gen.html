@@ -1,17 +1,16 @@
 <div class="certificate-box">
   <div class="certificate-container" [class.expanded]="showCertificateForm">
     <!-- Certificate input form -->
-    <form #certForm="ngForm" (ngSubmit)="generateCertificate(certForm)">
+    <form #certForm="ngForm" (ngSubmit)="generateCertificateFromInput()">
       <div class="input-row">
         <!-- COMPANY & ASSESSMENT SELECTION -->
-        <div class="input-group">
-
+        <div class="input-group" *ngIf="!manualCertificateInput">
           <!-- COMPANY -->
           <div class="search-dropdown">
             <label>Company</label>
             <input type="text" [(ngModel)]="companySearch" name="companySearch" (input)="onCompanySearch()"
               (focus)="showCompanyDropdown = true" (blur)="onCompanyBlur()" placeholder="Search company"
-              autocomplete="off" />
+              autocomplete="off" required />
 
             <div class="search-dropdown-list" *ngIf="showCompanyDropdown && filteredCompanies.length">
               <div class="dropdown-item" *ngFor="let c of filteredCompanies" (mousedown)="selectCompany(c)">
@@ -25,7 +24,7 @@
             <label>Assessment</label>
             <input type="text" [(ngModel)]="assessmentSearch" name="assessmentSearch" [disabled]="!selectedCompanyId"
               (input)="onAssessmentSearch()" (focus)="showAssessmentDropdown = true" (blur)="onAssessmentBlur()"
-              placeholder="Search assessment" autocomplete="off" />
+              placeholder="Search assessment" autocomplete="off" required />
 
             <div class="search-dropdown-list" *ngIf="showAssessmentDropdown && filteredAssessments.length">
               <div class="dropdown-item" *ngFor="let a of filteredAssessments" (mousedown)="selectAssessment(a)">
@@ -34,16 +33,20 @@
             </div>
           </div>
         </div>
-        <div class="input-group">
-          <input type="text" name="certificateNo" [(ngModel)]="certificateInputValue" required
-            placeholder="Certificate number auto-filled" readonly />
 
-          <button class="certificate-btn" type="submit">
-            <span>Generate</span>
+        <!-- MANUAL CERTIFICATE INPUT -->
+        <div class="input-group">
+          <input type="text" name="certificateNo" [(ngModel)]="certificateInputValue" 
+            [placeholder]="manualCertificateInput ? 'Enter certificate number manually' : 'Certificate number auto-filled'"
+            [readonly]="!manualCertificateInput && selectedAssessmentId" required />
+
+          <button class="certificate-btn" type="submit" [disabled]="loading">
+            <span *ngIf="!loading">Generate</span>
+            <span *ngIf="loading">Loading...</span>
           </button>
         </div>
-
       </div>
+       <!-- CERTIFICATE FORM SECTION -->
       <div *ngIf="showCertificateForm && certificateData">
         <p class="certificate-sub-heading">Select and Edit Certificate Fields</p>
         <div class="edit-options">
@@ -52,36 +55,41 @@
             <div class="field-row">
               <input type="checkbox" [(ngModel)]="editFields.certificateNo" name="certificateNoCheck" />
               <label>Certificate No</label>
-              <input type="text" [(ngModel)]="certificateData.certificateNo" name="certificateNo" />
+              <input type="text" [(ngModel)]="certificateData.certificateNo" name="certificateNo" 
+                     [disabled]="!editFields.certificateNo" />
             </div>
 
             <!-- Company Name -->
             <div class="field-row">
               <input type="checkbox" [(ngModel)]="editFields.companyName" name="companyNameCheck" />
               <label>Company Name</label>
-              <input type="text" [(ngModel)]="certificateData.companyName" name="companyName" />
+              <input type="text" [(ngModel)]="certificateData.companyName" name="companyName" 
+                     [disabled]="!editFields.companyName" />
             </div>
 
             <!-- Full Address -->
             <div class="field-row">
               <input type="checkbox" [(ngModel)]="editFields.full_address" name="full_address_check" />
               <label>Full Address</label>
-              <input type="text" [(ngModel)]="certificateData.full_address" name="full_address" (input)="splitAddress()"
-                placeholder="Street, City, State, Country, Zip" />
+              <input type="text" [(ngModel)]="certificateData.full_address" name="full_address" 
+                     [disabled]="!editFields.full_address" (input)="splitAddress()"
+                     placeholder="Street, City, State, Country, Zip" />
             </div>
 
             <!-- Date Issue -->
             <div class="field-row">
               <input type="checkbox" [(ngModel)]="editFields.dateIssue" name="dateIssueCheck" />
               <label>Date Issue</label>
-              <input type="text" [(ngModel)]="certificateData.dateIssue" name="dateIssue" />
+              <input class="date-input" type="date" [(ngModel)]="certificateData.dateIssue" name="dateIssue" 
+                     [disabled]="!editFields.dateIssue" />
             </div>
 
             <!-- Date Valid -->
             <div class="field-row">
               <input type="checkbox" [(ngModel)]="editFields.dateValid" name="dateValidCheck" />
               <label>Date Valid</label>
-              <input type="text" [(ngModel)]="certificateData.dateValid" name="dateValid" />
+              <input class="date-input" type="date" [(ngModel)]="certificateData.dateValid" name="dateValid" 
+                     [disabled]="!editFields.dateValid" />
             </div>
 
             <!-- Classification -->
@@ -90,7 +98,7 @@
                 name="assessment_classification" />
               <label>Assessment Classification</label>
               <input type="text" [(ngModel)]="certificateData.assessment_classification"
-                name="assessment_classification" />
+                name="assessment_classification" [disabled]="!editFields.assessment_classification" />
             </div>
 
             <!-- Version -->
@@ -98,21 +106,21 @@
               <input type="checkbox" [(ngModel)]="editFields.version" name="versionCheck" />
               <label>Version</label>
               <input type="text" [(ngModel)]="certificateData.version" name="version"
-                placeholder="Standard Version 4.0.1" />
+                placeholder="Standard Version 4.0.1" [disabled]="!editFields.version" />
             </div>
 
             <!-- Auditor Name -->
             <div class="field-row">
               <input type="checkbox" [(ngModel)]="editFields.auditor_name" name="auditorNameCheck" />
               <label>Auditor Name</label>
-              <select [(ngModel)]="certificateData.auditor_name" name="auditor_name">
+              <select [(ngModel)]="certificateData.auditor_name" name="auditor_name" 
+                      [disabled]="!editFields.auditor_name">
                 <option value="">-- Select Auditor --</option>
                 <option *ngFor="let auditor of auditorList" [value]="auditor">
                   {{ auditor }}
                 </option>
               </select>
             </div>
-
           </div>
         </div>
 
@@ -145,15 +153,6 @@
               </select>
             </div>
 
-            <!-- Page Size -->
-            <!-- <div class="option-row">
-              <label>Page Size</label>
-              <select [(ngModel)]="certificateOptions.pageSize" name="pageSize" (change)="onOptionsChange()">
-                <option *ngFor="let size of pageSizes" [value]="size">{{size}}</option>
-              </select>
-            </div> -->
-
-
             <!-- Certificate Format -->
             <div class="option-row">
               <label>Certificate Format</label>
@@ -162,7 +161,6 @@
                 <option value="Printable">Printable</option>
               </select>
             </div>
-
           </div>
         </div>
 
@@ -172,15 +170,15 @@
             <span *ngIf="!pdfGenerating">Generate Certificate</span>
             <span *ngIf="pdfGenerating">Generating PDF...</span>
           </button>
-          <!-- <button class="certificate-btn btn-reset" type="button" (click)="resetForm()">
+          <button class="certificate-btn btn-reset" type="button" (click)="resetForm()">
             <span>Reset Form</span>
-          </button> -->
+          </button>
         </div>
       </div>
     </form>
   </div>
 
-  <!-- PDF Viewer Section (OUTSIDE the form) -->
+  <!-- PDF Viewer Section -->
   <div *ngIf="showPdfViewer" #pdfViewer class="pdf-viewer-container">
     <div class="pdf-viewer-header">
       <h3>Certificate Preview</h3>

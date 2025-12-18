@@ -1,5 +1,6 @@
 @import 'ngx-toastr/toastr';
 @import './styles/global-forms.css';
+@import './styles/toast-custom.css';
 
 /* You can add global styles to this file, and also import other style files */
 html, body {

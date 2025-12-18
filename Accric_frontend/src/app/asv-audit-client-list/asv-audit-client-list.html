@@ -15,11 +15,9 @@
       <table>
         <thead>
           <tr>
-            <th>Company Name</th>
-            <th>Project Name</th>
-            <th>Number of IP</th>
             <th>Associated Organization</th>
             <th>Associated Application</th>
+            <th>Number of IP</th>
             <th>IP Details</th>
             <th>Status</th>
             <th>Created Date</th>
@@ -28,34 +26,39 @@
         </thead>
 
         <tbody>
-          <!-- In your HTML template, update the table rows like this: -->
           <tr *ngFor="let audit of filtered_list">
-            <td>{{ audit.company_name || 'N/A' }}</td>
-            <td>{{ audit.project_name || 'N/A' }}</td>
-            <td>{{ audit.number_ip || 0 }}</td>
             <td>{{ audit.associated_organization || 'N/A' }}</td>
             <td>{{ audit.associated_application || 'N/A' }}</td>
+            <td>{{ audit.number_ip || 0 }}</td>
             <td>
               <span class="ip-details" *ngIf="audit.ip_details" (click)="viewAuditDetails(audit)">
                 {{ (audit.ip_details.length > 50) ? (audit.ip_details | slice:0:50) + '...' : audit.ip_details }}
               </span>
               <span *ngIf="!audit.ip_details">N/A</span>
             </td>
-            <td id="audit-status">
-              <span class="status-badge" [class.in-progress]="audit.status === 'IN_PROGRESS'"
-                [class.completed]="audit.status === 'COMPLETED'" [class.pending]="audit.status === 'PENDING'"
-                [class.failed]="audit.status === 'FAILED'">
+            <td>
                 {{ getStatusLabel(audit.status) || 'N/A' }}
-              </span>
             </td>
             <td>{{ formatDate(audit.created_at) }}</td>
             <td class="sticky-action">
               <div class="action-box">
                 <img src="/assets/icons/edit.png" alt="Edit" (click)="editAudit(audit)">
-                <img src="/assets/icons/delete.png" alt="Delete" (click)="deleteAudit(audit)">
-                <img src="/assets/icons/view.png" alt="View Details" (click)="viewAuditDetails(audit)"
-                  style="margin-left: 8px;">
+                <!-- <img src="/assets/icons/delete.png" alt="Delete" (click)="deleteAudit(audit)"> -->
               </div>
+            </td>
+          </tr>
+          
+          <!-- Loading State -->
+          <tr *ngIf="isLoading && filtered_list.length === 0">
+            <td colspan="9" style="text-align: center; padding: 20px;">
+              Loading ASV audits...
+            </td>
+          </tr>
+          
+          <!-- Empty State -->
+          <tr *ngIf="!isLoading && filtered_list.length === 0">
+            <td colspan="9" style="text-align: center; padding: 20px;">
+              No ASV audits found.
             </td>
           </tr>
         </tbody>
@@ -80,34 +83,27 @@
           <h3 class="section-title">Basic Information</h3>
           <div class="form-grid">
 
-            <div class="form-group">
-              <label>Company Name*</label>
-              <input type="text" name="company_name" required [(ngModel)]="editingAudit.company_name"
-                placeholder="Company Name" />
-            </div>
+          
 
-            <div class="form-group">
-              <label>Project Name*</label>
-              <input type="text" name="project_name" required [(ngModel)]="editingAudit.project_name"
-                placeholder="Project Name" />
-            </div>
-
-            <div class="form-group">
-              <label>Number of IP*</label>
-              <input type="number" name="number_ip" required [(ngModel)]="editingAudit.number_ip"
-                placeholder="Number of IP" min="0" />
-            </div>
+       
 
             <div class="form-group">
               <label>Associated Organization</label>
               <input type="text" name="associated_organization" [(ngModel)]="editingAudit.associated_organization"
-                placeholder="Associated Organization" />
+                placeholder="Associated Organization" readonly />
             </div>
 
             <div class="form-group">
               <label>Associated Application</label>
               <input type="text" name="associated_application" [(ngModel)]="editingAudit.associated_application"
-                placeholder="Associated Application" />
+                placeholder="Associated Application" readonly />
+            </div>
+
+                 <div class="form-group">
+              <label>Number of IP*</label>
+              <input type="number" name="number_ip" required [(ngModel)]="editingAudit.number_ip"
+                placeholder="Number of IP" min="0" readonly />
+              <small class="hint-text">Auto-calculated from IP details</small>
             </div>
 
             <div class="form-group full-width">
@@ -129,45 +125,14 @@
               <label>Audit Status*</label>
               <select name="status" required [(ngModel)]="editingAudit.status">
                 <option value="" disabled>Select Status</option>
-                <option value="PENDING">Pending</option>
-                <option value="IN_PROGRESS">In Progress</option>
+                <option value="INPROGRESS">In Progress</option>
                 <option value="COMPLETED">Completed</option>
-                <option value="FAILED">Failed</option>
+                <option value="NOTSTARTED">Not Started</option>
+                <option value="PENDING">Pending</option>
               </select>
             </div>
 
-            <div class="form-group">
-              <label>Start Date</label>
-              <input type="date" name="start_date" [(ngModel)]="editingAudit.start_date" />
-            </div>
-
-            <div class="form-group">
-              <label>End Date</label>
-              <input type="date" name="end_date" [(ngModel)]="editingAudit.end_date" />
-            </div>
-
-            <div class="form-group">
-              <label>Auditor Name</label>
-              <input type="text" name="auditor_name" [(ngModel)]="editingAudit.auditor_name"
-                placeholder="Auditor Name" />
-            </div>
-
-            <div class="form-group">
-              <label>Audit Type</label>
-              <select name="audit_type" [(ngModel)]="editingAudit.audit_type">
-                <option value="" disabled>Select Audit Type</option>
-                <option value="PCI_ASV">PCI ASV</option>
-                <option value="INTERNAL">Internal</option>
-                <option value="EXTERNAL">External</option>
-                <option value="VULNERABILITY">Vulnerability</option>
-              </select>
-            </div>
-
-            <div class="form-group full-width">
-              <label>Findings / Notes</label>
-              <textarea name="findings_notes" [(ngModel)]="editingAudit.findings_notes"
-                placeholder="Enter any findings or notes" rows="3"></textarea>
-            </div>
+        
 
           </div>
         </div>
@@ -178,31 +143,6 @@
     <div class="popup-footer">
       <button class="btn-cancel" (click)="cancelEdit()"><span>Cancel</span></button>
       <button class="btn-save" (click)="saveAudit()"><span>Save Changes</span></button>
-    </div>
-  </div>
-</div>
-
-<!-- View IP Details Modal -->
-<div class="ip-details-modal-overlay" *ngIf="viewingIpDetails">
-  <div class="ip-details-modal">
-    <div class="modal-header">
-      <h2>IP Details - {{ selectedAudit?.project_name }}</h2>
-      <button class="close-btn" (click)="closeIpDetails()">&times;</button>
-    </div>
-
-    <div class="modal-content">
-      <div class="ip-list">
-        <h3>Total IPs: {{ ipList.length || 0 }}</h3>
-        <div class="ip-items">
-          <div *ngFor="let ip of ipList" class="ip-item">
-            {{ ip }}
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="modal-footer">
-      <button class="btn-close" (click)="closeIpDetails()"><span>Close</span></button>
     </div>
   </div>
 </div>

@@ -3,6 +3,7 @@ import { Component, HostListener, ElementRef, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { ToastService } from '../service/toast-service';
 
 export enum Role {
   SUPER_ADMIN = 'SUPER_ADMIN',
@@ -28,7 +29,8 @@ export class CreateUser {
   messageType: 'success' | 'error' = 'success';
   formSubmitted = false;
 
-  constructor(private http: HttpClient, private router: Router, private el: ElementRef) { }
+  constructor(private http: HttpClient, private toast:ToastService,
+    private router: Router, private el: ElementRef) { }
 
   toggleDropdown() {
     this.dropdownOpen = !this.dropdownOpen;
@@ -93,16 +95,13 @@ export class CreateUser {
     // Get JWT token from localStorage
     const token = localStorage.getItem('jwt');
     if (!token) {
-      this.message = 'Authentication token not found. Please login again.';
-      this.messageType = 'error';
-      this.isLoading = false;
+      this.toast.error('Authentication token not found. Please login again.')
       return;
     }
 
     // Set headers
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
     });
 
     // Make API call
@@ -112,9 +111,8 @@ export class CreateUser {
       { headers }
     ).subscribe({
       next: (response: any) => {
-        console.log('User created successfully:', response);
-        this.message = 'User created successfully!';
-        this.messageType = 'success';
+        
+        this.toast.success('User created successfully')
         this.isLoading = false;
 
         // Properly reset form + validation + submitted state
@@ -132,8 +130,7 @@ export class CreateUser {
       },
       error: (error) => {
         console.error('Error creating user:', error);
-        this.message = error.error?.message || 'Failed to create user. Please try again.';
-        this.messageType = 'error';
+        this.toast.error(error.message || 'Failed to create user. Please try again.')
         this.isLoading = false;
       }
     });

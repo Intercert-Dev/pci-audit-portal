@@ -4,6 +4,7 @@ import { saveAs } from 'file-saver';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ToastService } from '../service/toast-service';
 
 interface Client {
   // Client Profile Fields (from API)
@@ -51,7 +52,9 @@ export class ClientList implements OnInit {
   filtered_list: Client[] = [];
   isLoading: boolean = false;
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) { }
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef,
+    private toast:ToastService
+  ) { }
 
   ngOnInit() {
     this.getClientList();
@@ -63,7 +66,7 @@ export class ClientList implements OnInit {
     const token = localStorage.getItem("jwt");
     
     if (!token) {
-      alert('Please login first. No authentication token found.');
+      this.toast.error('Please login first. No authentication token found.');
       this.isLoading = false;
       return;
     }
@@ -89,7 +92,7 @@ export class ClientList implements OnInit {
       error: (err) => {
         console.error('Failed to fetch client list:', err);
         this.isLoading = false;
-        alert('Failed to load clients. Please try again.');
+        this.toast.error('Failed to load clients. Please try again.');
       }
     });
   }
@@ -193,7 +196,7 @@ export class ClientList implements OnInit {
     const token = localStorage.getItem("jwt");
     
     if (!token) {
-      alert('Please login first. No authentication token found.');
+      this.toast.warning('Please login first. No authentication token found.');
       this.isLoading = false;
       return;
     }
@@ -246,7 +249,7 @@ export class ClientList implements OnInit {
         
         this.cancelEdit();
         this.isLoading = false;
-        alert('Client updated successfully!');
+        this.toast.success('Client updated successfully!');
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -264,7 +267,7 @@ export class ClientList implements OnInit {
         }
         
         this.isLoading = false;
-        alert(errorMessage);
+        this.toast.error(errorMessage || 'Something went wrong');
       }
     });
   }
@@ -283,7 +286,7 @@ export class ClientList implements OnInit {
     const token = localStorage.getItem("jwt");
     
     if (!token) {
-      alert('Please login first. No authentication token found.');
+      this.toast.error('Please login first. No authentication token found.');
       this.isLoading = false;
       return;
     }
@@ -301,7 +304,7 @@ export class ClientList implements OnInit {
         this.filtered_list = this.filtered_list.filter(item => item.clientId !== client.clientId);
         
         this.isLoading = false;
-        alert('Client deleted successfully!');
+        this.toast.success('Client deleted successfully!');
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -315,7 +318,7 @@ export class ClientList implements OnInit {
           errorMessage += 'Client not found.';
         }
         
-        alert(errorMessage);
+        this.toast.error(errorMessage || 'Something went wrong');
       }
     });
   }

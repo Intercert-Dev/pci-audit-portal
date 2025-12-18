@@ -5,6 +5,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { ToastService } from '../service/toast-service';
 
 
 
@@ -127,7 +128,8 @@ export class CertificateGen implements OnInit {
   constructor(
     private http: HttpClient,
     private cdr: ChangeDetectorRef,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private toast : ToastService
   ) { }
 
   private enableAllEditFields() {
@@ -271,7 +273,7 @@ export class CertificateGen implements OnInit {
     const certNo = form.value.certificateNo?.trim();
 
     if (!certNo) {
-      alert('Please enter a certificate number!');
+      this.toast.warning('Please enter a certificate number!');
       this.showCertificateForm = false;
       this.certificateData = null;
       return;
@@ -279,7 +281,7 @@ export class CertificateGen implements OnInit {
 
     const token = localStorage.getItem('jwt');
     if (!token) {
-      alert('JWT token not found! Please login first.');
+      this.toast.error('JWT token not found! Please login first.');
       return;
     }
 
@@ -315,14 +317,13 @@ export class CertificateGen implements OnInit {
         this.loading = false;
         this.showCertificateForm = false;
         this.certificateData = null;
-        console.error('Error fetching certificate:', err);
 
         if (err.status === 404) {
-          alert('Certificate not found! Please check the certificate number.');
+         this.toast.error('Certificate not found! Please check the certificate number.');
         } else if (err.status === 401) {
-          alert('Invalid or expired token! Please login again.');
+          this.toast.error('Invalid or expired token! Please login again.');
         } else {
-          alert('Error fetching certificate! Please try again.');
+          this.toast.error('Error fetching certificate! Please try again.');
         }
         this.cdr.detectChanges();
       },
@@ -444,22 +445,16 @@ export class CertificateGen implements OnInit {
 
   generateCertificatePdf() {
     if (!this.certificateData || !this.certificateData.certificate_number_unique_id) {
-      alert('No certificate data to generate! Please generate a certificate first.');
+      this.toast.error('No certificate data to generate! Please add a certificate first.');
       return;
     }
 
     // Prepare the request data according to backend requirements
     const requestData = this.preparePdfData();
-    console.log('PDF Request Data:', requestData);
-    console.log('Selected Font Sizes:', {
-      companyName: this.certificateOptions.companyNameFontSize,
-      address: this.certificateOptions.addressFontSize,
-      type: this.certificateOptions.typeFontSize
-    });
 
     const token = localStorage.getItem('jwt');
     if (!token) {
-      alert('JWT token not found! Please login first.');
+      this.toast.error('JWT token not found! Please login first.');
       return;
     }
 
@@ -484,7 +479,7 @@ export class CertificateGen implements OnInit {
         this.pdfGenerating = false;
         const pdfBlob = response.body;
         if (!pdfBlob) {
-          alert('No PDF received from server!');
+          this.toast.error('No PDF received from server!');
           return;
         }
 
@@ -514,19 +509,17 @@ export class CertificateGen implements OnInit {
           }
         }, 100);
 
-        console.log('PDF loaded successfully with selected font sizes');
       },
       error: (err) => {
         this.pdfGenerating = false;
-        console.error('Error generating PDF:', err);
         if (err.status === 404) {
-          alert('PDF generation service not found!');
+          this.toast.error('PDF generation service not found!');
         } else if (err.status === 401) {
-          alert('Invalid or expired token! Please login again.');
+          this.toast.error('Invalid or expired token! Please login again.');
         } else if (err.status === 400) {
-          alert('Bad request. Please check the certificate data.');
+          this.toast.error('Bad request. Please check the certificate data.');
         } else {
-          alert('Error generating PDF! Please try again.');
+          this.toast.error('Error generating PDF! Please try again.');
         }
         this.cdr.detectChanges();
       }
@@ -545,7 +538,7 @@ export class CertificateGen implements OnInit {
 
   downloadCurrentPDF() {
     if (!this.pdfBlob) {
-      alert('No PDF available to download!');
+      this.toast.error('No PDF available to download!');
       return;
     }
 
@@ -578,7 +571,7 @@ export class CertificateGen implements OnInit {
 
   printPDF() {
     if (!this.pdfBlob) {
-      alert('No PDF available to print!');
+      this.toast.error('No PDF available to print!');
       return;
     }
 

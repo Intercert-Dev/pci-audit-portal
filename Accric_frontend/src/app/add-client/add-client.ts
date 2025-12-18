@@ -5,6 +5,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import { ToastService } from '../service/toast-service';
 
 // Define interfaces for better typing
 interface Country {
@@ -39,7 +40,7 @@ export class AddClient implements OnInit {
   showErrors = false;
   isLoading = false;
 
-  constructor(private http: HttpClient, private toastr: ToastrService) { }
+  constructor(private http: HttpClient, private toast:ToastService) { }
 
   tabs = [
     'client-profile',
@@ -443,8 +444,7 @@ export class AddClient implements OnInit {
     const token = localStorage.getItem('jwt');
     
     if (!token) {
-      console.error('No JWT token found');
-      this.toastr.error('Please login first. No authentication token found.', 'Error');
+      this.toast.error('Please login first. No authentication token found.', 'Error');
       this.isLoading = false;
       return;
     }
@@ -455,13 +455,12 @@ export class AddClient implements OnInit {
 
     this.http.post(url, payload, { headers }).subscribe({
       next: (response: any) => {
-        console.log('API Response:', response);
         this.isLoading = false;
         
         if (response && response.message) {
-          this.toastr.success(response.message, 'Success');
+          this.toast.success(response.message, 'Success');
         } else {
-          this.toastr.success('Client created successfully!', 'Success');
+          this.toast.success('Client created successfully!', 'Success');
         }
         
         this.resetForm();
@@ -484,7 +483,7 @@ export class AddClient implements OnInit {
           errorMessage += 'Network error. Please check your internet connection.';
         }
         
-        this.toastr.error(errorMessage, 'Error');
+        this.toast.error(errorMessage, 'Something wrong');
       }
     });
   }

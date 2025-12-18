@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
-import { ToastrService } from 'ngx-toastr';
 import { QSA } from '../qsa-list/qsa-list';
+import { ToastService } from '../service/toast-service';
 
 interface DateErrors {
   auditStart: string;
@@ -119,7 +119,7 @@ export class AddAudit implements OnInit {
   showClientDropdown: boolean = false;
   private searchSubject = new Subject<string>();
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef, private toastr: ToastrService) { }
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef, private toast: ToastService) { }
 
   ngOnInit() {
     this.loadClients();
@@ -138,7 +138,7 @@ export class AddAudit implements OnInit {
     const token = localStorage.getItem("jwt");
 
     if (!token) {
-      alert('Please login first. No authentication token found.');
+      this.toast.error('Please login first. No authentication token found.');
       this.isLoading = false;
       return;
     }
@@ -154,9 +154,8 @@ export class AddAudit implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Failed to load clients:', err);
         this.isLoading = false;
-        alert('Failed to load clients. Please try again.');
+        this.toast.error('Failed to load clients. Please try again.');
       }
     });
   }
@@ -477,7 +476,7 @@ onQsaChange(event: Event) {
     const token = localStorage.getItem("jwt");
 
     if (!token) {
-      alert('Please login first. No authentication token found.');
+      this.toast.error('Please login first. No authentication token found.')
       this.isLoading = false;
       return;
     }
@@ -493,9 +492,9 @@ onQsaChange(event: Event) {
         this.isLoading = false;
 
         if (response && response.message) {
-          alert(`Success: ${response.message}`);
+          this.toast.success(`Success: ${response.message}`);
         } else {
-          alert('Audit created successfully!');
+          this.toast.success('Audit created successfully!')
         }
 
         this.resetForm();
@@ -518,7 +517,7 @@ onQsaChange(event: Event) {
           errorMessage += 'Server error. Please try again later.';
         }
 
-        alert(errorMessage);
+        this.toast.error(errorMessage || 'Somthing went wrong');
       }
     });
   }

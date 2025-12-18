@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, HostListener } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { ToastService } from '../service/toast-service';
 
 @Component({
   imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
@@ -19,7 +20,7 @@ export class MainLayout implements OnInit {
   userEmail: string = '';
   windowWidth: number = window.innerWidth;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private toast : ToastService) {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
@@ -68,7 +69,6 @@ export class MainLayout implements OnInit {
       
       return JSON.parse(jsonPayload);
     } catch (error) {
-      console.error('Error decoding JWT:', error);
       return null;
     }
   }
@@ -77,9 +77,9 @@ export class MainLayout implements OnInit {
     const token = localStorage.getItem('jwt');
     
     if (!token) {
-      console.warn('No JWT token found in localStorage');
       this.userRole = '';
       this.userEmail = '';
+      this.toast.warning('No JWT token found in localStorage');
       return;
     }
 
@@ -98,12 +98,9 @@ export class MainLayout implements OnInit {
       if (decoded.exp) {
         const now = Math.floor(Date.now() / 1000);
         if (decoded.exp < now) {
-          console.warn('WARNING: JWT token has EXPIRED!');
+          this.toast.warning('WARNING: JWT token has EXPIRED!');
           // You might want to handle token expiration here
           // For example, redirect to login or refresh the token
-        } else {
-          console.log('✓ Token is valid');
-          console.log('Expires At:', new Date(decoded.exp * 1000).toLocaleString());
         }
       }
     } else {
@@ -113,7 +110,6 @@ export class MainLayout implements OnInit {
     }
   }
 
-  // Optional: Add a method to get user info anytime
   getUserInfo() {
     return {
       role: this.userRole,

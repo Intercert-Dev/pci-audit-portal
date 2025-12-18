@@ -1,385 +1,391 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ToastService } from '../service/toast-service';
+import * as XLSX from 'xlsx';
+
+interface AsvAuditResponse {
+  asv_id: string;
+  associated_application: string;
+  associated_organization: string;
+  audit: {
+    assessment_project_name: string;
+    auditId: string;
+    [key: string]: any;
+  };
+  client: {
+    legal_entity_name: string;
+    trading_name: string;
+    clientId: string;
+    [key: string]: any;
+  };
+  created_at: string;
+  ip_details: Array<{ ip: string }>;
+  number_of_ip: number;
+  q1: string;
+  q2: string;
+  q3: string;
+  q4: string;
+  status: string;
+  updated_at: string;
+}
+
+interface AsvAuditDisplay {
+  id: string;
+  asv_id: string;
+  company_name: string;
+  project_name: string;
+  number_ip: number;
+  associated_organization: string;
+  associated_application: string;
+  ip_details: string;
+  ip_details_array: string[];
+  status: string;
+  created_at: string;
+  updated_at: string;
+  raw_audit?: AsvAuditResponse;
+}
 
 @Component({
   selector: 'app-asv-audit-client-list',
-  imports: [CommonModule, FormsModule],
   templateUrl: './asv-audit-client-list.html',
-  styleUrl: './asv-audit-client-list.css',
-  providers: [DatePipe]
+  styleUrls: ['./asv-audit-client-list.css'],
+  imports: [CommonModule, FormsModule]
 })
 export class AsvAuditClientList implements OnInit {
-  // API Configuration
-  private apiUrl = 'http://pci.accric.com/api/auth/asv-list';
-  
-  // Data arrays
-  auditList: any[] = [];
-  filtered_list: any[] = [];
-  
-  // Search
+  all_audits: AsvAuditDisplay[] = [];
+  filtered_list: AsvAuditDisplay[] = [];
   search_text: string = '';
   
-  // Edit modal
-  editingAudit: any = null;
-  originalAudit: any = null;
+  // Edit Modal
+  editingAudit: AsvAuditDisplay | null = null;
+  editAuditBackup: AsvAuditDisplay | null = null;
   
-  // IP Details modal
+  // IP Details Modal
   viewingIpDetails: boolean = false;
-  selectedAudit: any = null;
+  selectedAudit: AsvAuditDisplay | null = null;
   ipList: string[] = [];
   
-  // Loading state
   isLoading: boolean = false;
-  errorMessage: string = '';
-
+  
   constructor(
     private http: HttpClient,
-    private datePipe: DatePipe
+    private toast: ToastService,
+    private cdr: ChangeDetectorRef
   ) {}
 
-  ngOnInit() {
-    this.fetchAuditList();
+  ngOnInit(): void {
+    this.loadAsvAudits();
   }
 
-  // Get JWT token from localStorage
-  private getJwtToken(): string | null {
-    return  localStorage.getItem('jwt');
-  }
-
-  // Create HTTP headers with JWT
-  private getHeaders(): HttpHeaders {
-    const token = this.getJwtToken();
-    let headers = new HttpHeaders({
-    });
+  // Load ASV Audits from API
+  loadAsvAudits(): void {
+    this.isLoading = true;
+    const url = 'http://pci.accric.com/api/auth/asv-list';
+    const token = localStorage.getItem('jwt');
     
-    if (token) {
-      headers = headers.set('Authorization', `Bearer ${token}`);
+    if (!token) {
+      this.toast.error('Please login first. No authentication token found.');
+      this.isLoading = false;
+      this.cdr.detectChanges();
+      return;
     }
     
-    return headers;
-  }
-
-  // Fetch audit list from API
-  fetchAuditList() {
-    this.isLoading = true;
-    this.errorMessage = '';
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
     
-    const headers = this.getHeaders();
-    
-    this.http.get<any>(this.apiUrl, { headers }).subscribe({
+    this.http.get<{ data: AsvAuditResponse[] }>(url, { headers }).subscribe({
       next: (response) => {
         this.isLoading = false;
-        
-        // Handle different response formats
-        if (response && Array.isArray(response)) {
-          this.auditList = response;
-          this.filtered_list = [...response];
-        } else if (response && response.data && Array.isArray(response.data)) {
-          this.auditList = response.data;
-          this.filtered_list = [...response.data];
-        } else if (response && response.success && response.data && Array.isArray(response.data)) {
-          this.auditList = response.data;
-          this.filtered_list = [...response.data];
-        } else {
-          this.auditList = [];
-          this.filtered_list = [];
-          console.warn('Unexpected response format:', response);
-        }
-        
-        console.log('Fetched audit list:', this.auditList);
+        // Map API response to display format
+        this.all_audits = response.data.map(audit => this.mapAuditToDisplay(audit));
+        this.filtered_list = [...this.all_audits];
+        this.cdr.detectChanges();
       },
       error: (error) => {
         this.isLoading = false;
-        console.error('Error fetching audit list:', error);
-        
-        if (error.status === 401) {
-          this.errorMessage = 'Authentication failed. Please login again.';
-        } else if (error.status === 403) {
-          this.errorMessage = 'You do not have permission to access this resource.';
-        } else if (error.status === 404) {
-          this.errorMessage = 'API endpoint not found.';
-        } else {
-          this.errorMessage = `Failed to load audit list: ${error.message || 'Unknown error'}`;
-        }
-        
+        console.error('Error loading ASV audits:', error);
+        this.toast.error('Failed to load ASV audits. Please try again.');
+        this.cdr.detectChanges();
       }
     });
   }
-
+  
+  // Map API response to display format
+  private mapAuditToDisplay(audit: AsvAuditResponse): AsvAuditDisplay {
+    const ipStrings = audit.ip_details.map(item => item.ip);
+    
+    return {
+      id: audit.asv_id,
+      asv_id: audit.asv_id,
+      company_name: audit.client?.legal_entity_name || audit.client?.trading_name || 'N/A',
+      project_name: audit.audit?.assessment_project_name || 'N/A',
+      number_ip: audit.number_of_ip || 0,
+      associated_organization: audit.associated_organization || 'N/A',
+      associated_application: audit.associated_application || 'N/A',
+      ip_details: ipStrings.join(', '),
+      ip_details_array: ipStrings,
+      status: audit.status || 'PENDING',
+      created_at: audit.created_at,
+      updated_at: audit.updated_at,
+      raw_audit: audit
+    };
+  }
+  
   // Filter list based on search text
-  filter_list() {
+  filter_list(): void {
     if (!this.search_text.trim()) {
-      this.filtered_list = [...this.auditList];
-      return;
-    }
-    
-    const searchTerm = this.search_text.toLowerCase().trim();
-    this.filtered_list = this.auditList.filter(audit => {
-      return (
-        (audit.company_name && audit.company_name.toLowerCase().includes(searchTerm)) ||
-        (audit.project_name && audit.project_name.toLowerCase().includes(searchTerm)) ||
-        (audit.associated_organization && audit.associated_organization.toLowerCase().includes(searchTerm)) ||
-        (audit.associated_application && audit.associated_application.toLowerCase().includes(searchTerm)) ||
-        (audit.auditor_name && audit.auditor_name.toLowerCase().includes(searchTerm)) ||
-        (audit.audit_type && audit.audit_type.toLowerCase().includes(searchTerm)) ||
-        (audit.status && audit.status.toLowerCase().includes(searchTerm))
-      );
-    });
-  }
-
-  // Edit audit
-  editAudit(audit: any) {
-    // Create a deep copy of the audit object to edit
-    this.editingAudit = JSON.parse(JSON.stringify(audit));
-    this.originalAudit = audit;
-    
-    // Convert dates to proper format for date inputs
-    if (this.editingAudit.start_date) {
-      this.editingAudit.start_date = this.formatDateForInput(this.editingAudit.start_date);
-    }
-    if (this.editingAudit.end_date) {
-      this.editingAudit.end_date = this.formatDateForInput(this.editingAudit.end_date);
-    }
-  }
-
-  // Save edited audit
-  saveAudit() {
-    if (!this.validateAuditForm()) {
-      return;
-    }
-
-    this.isLoading = true;
-    
-    // Convert dates back to proper format
-    const auditToSave = { ...this.editingAudit };
-    
-    // Send PUT request to update audit
-    const headers = this.getHeaders();
-    const updateUrl = `${this.apiUrl}/${this.editingAudit.id}`;
-    
-    this.http.put(updateUrl, auditToSave, { headers }).subscribe({
-      next: (response) => {
-        this.isLoading = false;
-        
-        // Update local data
-        const index = this.auditList.findIndex(a => a.id === this.originalAudit.id);
-        if (index !== -1) {
-          this.auditList[index] = { ...auditToSave };
-          this.filtered_list = [...this.auditList];
-        }
-        
-        // Show success message
-        alert('Audit updated successfully!');
-        this.cancelEdit();
-      },
-      error: (error) => {
-        this.isLoading = false;
-        console.error('Error updating audit:', error);
-        alert('Failed to update audit. Please try again.');
-      }
-    });
-  }
-
-  // Validate audit form
-  private validateAuditForm(): boolean {
-    if (!this.editingAudit.company_name?.trim()) {
-      alert('Company Name is required');
-      return false;
-    }
-    
-    if (!this.editingAudit.project_name?.trim()) {
-      alert('Project Name is required');
-      return false;
-    }
-    
-    if (this.editingAudit.number_ip === null || this.editingAudit.number_ip === undefined || this.editingAudit.number_ip < 0) {
-      alert('Number of IP must be a non-negative number');
-      return false;
-    }
-    
-    if (!this.editingAudit.ip_details?.trim()) {
-      alert('IP Details are required');
-      return false;
-    }
-    
-    if (!this.editingAudit.status?.trim()) {
-      alert('Audit Status is required');
-      return false;
-    }
-    
-    return true;
-  }
-
-  // Cancel edit
-  cancelEdit() {
-    this.editingAudit = null;
-    this.originalAudit = null;
-  }
-
-  // Delete audit
-  deleteAudit(audit: any) {
-    if (confirm(`Are you sure you want to delete the audit "${audit.project_name}"?`)) {
-      this.isLoading = true;
-      
-      const headers = this.getHeaders();
-      const deleteUrl = `${this.apiUrl}/${audit.id}`;
-      
-      this.http.delete(deleteUrl, { headers }).subscribe({
-        next: () => {
-          this.isLoading = false;
-          
-          // Remove from local data
-          this.auditList = this.auditList.filter(a => a.id !== audit.id);
-          this.filtered_list = this.filtered_list.filter(a => a.id !== audit.id);
-          
-          alert('Audit deleted successfully!');
-        },
-        error: (error) => {
-          this.isLoading = false;
-          console.error('Error deleting audit:', error);
-          alert('Failed to delete audit. Please try again.');
-        }
-      });
-    }
-  }
-
-  // View IP details
-  viewAuditDetails(audit: any) {
-    this.selectedAudit = audit;
-    this.viewingIpDetails = true;
-    
-    // Parse IP details string into array
-    if (audit.ip_details) {
-      // Split by commas, newlines, or spaces and clean up
-      this.ipList = audit.ip_details
-        .split(/[, \n]+/)
-        .map((ip: string) => ip.trim())
-        .filter((ip: string) => ip.length > 0);
+      this.filtered_list = [...this.all_audits];
     } else {
-      this.ipList = [];
+      const searchTerm = this.search_text.toLowerCase().trim();
+      this.filtered_list = this.all_audits.filter(audit => 
+        audit.company_name.toLowerCase().includes(searchTerm) ||
+        audit.project_name.toLowerCase().includes(searchTerm) ||
+        audit.associated_organization.toLowerCase().includes(searchTerm) ||
+        audit.associated_application.toLowerCase().includes(searchTerm) ||
+        audit.ip_details.toLowerCase().includes(searchTerm) ||
+        audit.status.toLowerCase().includes(searchTerm)
+      );
     }
+    this.cdr.detectChanges();
   }
-
-  // Close IP details modal
-  closeIpDetails() {
-    this.viewingIpDetails = false;
-    this.selectedAudit = null;
-    this.ipList = [];
+  
+  // Get status label for display
+  getStatusLabel(status: string): string {
+    const statusMap: { [key: string]: string } = {
+      'PENDING': 'Pending',
+      'INPROGRESS': 'In Progress',
+      'COMPLETED': 'Completed',
+      'REVIEW': 'Report In Review',
+      'NOTSTARTED':'Not Started'
+    };
+    return statusMap[status] || status;
   }
-
-  // Export to Excel
-  exportToExcel() {
-    try {
-      // Prepare data for export
-      const exportData = this.filtered_list.map(audit => ({
-        'Company Name': audit.company_name || 'N/A',
-        'Project Name': audit.project_name || 'N/A',
-        'Number of IP': audit.number_ip || 0,
-        'Associated Organization': audit.associated_organization || 'N/A',
-        'Associated Application': audit.associated_application || 'N/A',
-        'IP Details': audit.ip_details || 'N/A',
-        'Status': audit.status || 'N/A',
-        'Created Date': audit.created_at ? this.formatDate(audit.created_at) : 'N/A',
-        'Start Date': audit.start_date ? this.formatDate(audit.start_date) : 'N/A',
-        'End Date': audit.end_date ? this.formatDate(audit.end_date) : 'N/A',
-        'Auditor Name': audit.auditor_name || 'N/A',
-        'Audit Type': this.getAuditTypeLabel(audit.audit_type) || 'N/A'
-      }));
-
-      // Convert to CSV
-      const csvContent = this.convertToCSV(exportData);
-      
-      // Create and trigger download
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
-      const url = URL.createObjectURL(blob);
-      
-      link.setAttribute('href', url);
-      link.setAttribute('download', `asv-audit-list-${new Date().toISOString().split('T')[0]}.csv`);
-      link.style.visibility = 'hidden';
-      
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      
-      console.log('Export successful:', exportData.length, 'records exported');
-    } catch (error) {
-      console.error('Error exporting to Excel:', error);
-      alert('Failed to export data. Please try again.');
-    }
-  }
-
-  // Convert array to CSV
-  private convertToCSV(data: any[]): string {
-    if (!data.length) return '';
-    
-    const headers = Object.keys(data[0]);
-    const csvRows = [];
-    
-    // Add headers
-    csvRows.push(headers.join(','));
-    
-    // Add data rows
-    for (const row of data) {
-      const values = headers.map(header => {
-        const value = row[header];
-        // Escape quotes and wrap in quotes if contains comma
-        const escaped = ('' + value).replace(/"/g, '""');
-        return escaped.includes(',') ? `"${escaped}"` : escaped;
-      });
-      csvRows.push(values.join(','));
-    }
-    
-    return csvRows.join('\n');
-  }
-
+  
   // Format date for display
   formatDate(dateString: string): string {
     if (!dateString) return 'N/A';
     
     try {
       const date = new Date(dateString);
-      return this.datePipe.transform(date, 'shortDate') || 'N/A';
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
     } catch (error) {
       return dateString;
     }
   }
-
-  // Format date for date input field
-  formatDateForInput(dateString: string): string {
-    if (!dateString) return '';
+  
+  // View audit details
+  viewAuditDetails(audit: AsvAuditDisplay): void {
+    this.selectedAudit = audit;
+    this.ipList = audit.ip_details_array || [];
+    this.viewingIpDetails = true;
+    this.cdr.detectChanges();
+  }
+  
+  // Close IP details modal
+  closeIpDetails(): void {
+    this.viewingIpDetails = false;
+    this.selectedAudit = null;
+    this.ipList = [];
+    this.cdr.detectChanges();
+  }
+  
+  // Edit audit
+  editAudit(audit: AsvAuditDisplay): void {
+    // Create a deep copy for editing
+    this.editingAudit = {
+      ...audit,
+      ip_details_array: [...audit.ip_details_array]
+    };
+    this.editAuditBackup = { ...audit };
+    this.cdr.detectChanges();
+  }
+  
+  // Cancel edit
+  cancelEdit(): void {
+    if (this.editAuditBackup) {
+      const index = this.all_audits.findIndex(a => a.id === this.editAuditBackup!.id);
+      if (index !== -1) {
+        this.all_audits[index] = this.editAuditBackup;
+      }
+    }
+    this.editingAudit = null;
+    this.editAuditBackup = null;
+    this.filtered_list = [...this.all_audits];
+    this.cdr.detectChanges();
+  }
+  
+  // Save edited audit
+  saveAudit(): void {
+    if (!this.editingAudit) return;
     
-    try {
-      const date = new Date(dateString);
-      return date.toISOString().split('T')[0];
-    } catch (error) {
-      return '';
+    // Validation
+    if (!this.editingAudit.company_name || !this.editingAudit.project_name || 
+        !this.editingAudit.ip_details || this.editingAudit.number_ip < 0) {
+      this.toast.error('Please fill all required fields correctly.');
+      return;
+    }
+    
+    // Convert IP details string to array
+    const ipArray = this.editingAudit.ip_details
+      .split(/[\s,]+/)
+      .map(ip => ip.trim())
+      .filter(ip => ip.length > 0);
+    
+    if (ipArray.length === 0) {
+      this.toast.error('Please enter at least one valid IP address.');
+      return;
+    }
+    
+    this.editingAudit.ip_details_array = ipArray;
+    this.editingAudit.number_ip = ipArray.length;
+    
+    // Update the audit in the list
+    const index = this.all_audits.findIndex(a => a.id === this.editingAudit!.id);
+    if (index !== -1) {
+      this.all_audits[index] = { ...this.editingAudit };
+      this.filtered_list = [...this.all_audits];
+      
+      // Here you would call your API to update the audit
+      this.updateAuditOnServer(this.editingAudit);
+    }
+    
+    this.editingAudit = null;
+    this.editAuditBackup = null;
+    this.cdr.detectChanges();
+  }
+  
+  // Update audit on server
+  private updateAuditOnServer(audit: AsvAuditDisplay): void {
+    this.isLoading = true;
+    const url=`http://pci.accric.com/api/auth/update-asv/${audit.asv_id}` // Update with your actual endpoint
+    const token = localStorage.getItem('jwt');
+    
+    if (!token) {
+      this.toast.error('Please login first. No authentication token found.');
+      this.isLoading = false;
+      this.cdr.detectChanges();
+      return;
+    }
+    
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+    });
+    
+    // Prepare payload according to your API format
+    const payload = {
+      number_of_ip: audit.number_ip,
+      associated_organization: audit.associated_organization,
+      associated_application: audit.associated_application,
+      ip_details: audit.ip_details_array.map(ip => ({ ip })),
+      status: audit.status
+    };
+    
+    this.http.put<any>(url, payload, { headers }).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        this.toast.success(response.message || 'Audit updated successfully!');
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        this.isLoading = false;
+        console.error('Error updating audit:', error);
+        this.toast.error(error.error?.message || 'Failed to update audit. Please try again.');
+        this.cdr.detectChanges();
+      }
+    });
+  }
+  
+  // Delete audit
+  deleteAudit(audit: AsvAuditDisplay): void {
+    if (confirm(`Are you sure you want to delete ASV audit for ${audit.project_name}?`)) {
+      this.isLoading = true;
+      const url = `http://pci.accric.com/api/auth/delete-asv-audit/${audit.asv_id}`; // Update with your actual endpoint
+      const token = localStorage.getItem('jwt');
+      
+      if (!token) {
+        this.toast.error('Please login first. No authentication token found.');
+        this.isLoading = false;
+        this.cdr.detectChanges();
+        return;
+      }
+      
+      const headers = new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      });
+      
+      this.http.delete<any>(url, { headers }).subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          // Remove from local list
+          this.all_audits = this.all_audits.filter(a => a.id !== audit.id);
+          this.filtered_list = [...this.all_audits];
+          this.toast.success(response.message || 'Audit deleted successfully!');
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          this.isLoading = false;
+          console.error('Error deleting audit:', error);
+          this.toast.error(error.error?.message || 'Failed to delete audit. Please try again.');
+          this.cdr.detectChanges();
+        }
+      });
     }
   }
-
-  // Get audit type label
-  getAuditTypeLabel(type: string): string {
-    const typeMap: { [key: string]: string } = {
-      'PCI_ASV': 'PCI ASV',
-      'INTERNAL': 'Internal',
-      'EXTERNAL': 'External',
-      'VULNERABILITY': 'Vulnerability'
-    };
+  
+  // Export to Excel
+  exportToExcel(): void {
+    if (this.filtered_list.length === 0) {
+      this.toast.error('No data to export.');
+      return;
+    }
     
-    return typeMap[type] || type;
+    try {
+      // Prepare data for Excel
+      const exportData = this.filtered_list.map(audit => ({
+        'Company Name': audit.company_name,
+        'Project Name': audit.project_name,
+        'Number of IP': audit.number_ip,
+        'Associated Organization': audit.associated_organization,
+        'Associated Application': audit.associated_application,
+        'IP Details': audit.ip_details,
+        'Status': this.getStatusLabel(audit.status),
+        'Created Date': this.formatDate(audit.created_at),
+        'Last Updated': this.formatDate(audit.updated_at)
+      }));
+      
+      // Create worksheet
+      const worksheet = XLSX.utils.json_to_sheet(exportData);
+      
+      // Create workbook
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'ASV Audits');
+      
+      // Generate Excel file
+      const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+      this.saveAsExcelFile(excelBuffer, 'asv_audits');
+      
+      this.toast.success('Data exported to Excel successfully!');
+    } catch (error) {
+      console.error('Error exporting to Excel:', error);
+      this.toast.error('Failed to export data to Excel.');
+    }
   }
-
-  // Get status label
-  getStatusLabel(status: string): string {
-    const statusMap: { [key: string]: string } = {
-      'PENDING': 'Pending',
-      'IN_PROGRESS': 'In Progress',
-      'COMPLETED': 'Completed',
-      'FAILED': 'Failed'
-    };
-    
-    return statusMap[status] || status;
+  
+  // Save Excel file
+  private saveAsExcelFile(buffer: any, fileName: string): void {
+    const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = window.URL.createObjectURL(data);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${fileName}_${new Date().getTime()}.xlsx`;
+    link.click();
+    window.URL.revokeObjectURL(url);
   }
 }

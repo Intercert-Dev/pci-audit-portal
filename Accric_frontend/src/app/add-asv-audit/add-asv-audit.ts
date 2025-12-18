@@ -3,12 +3,20 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import { ToastService } from '../service/toast-service';
 
 interface Client {
   id: string;
   clientId: string;
   legal_entity_name: string;
   trading_name?: string;
+}
+
+interface AsvFormData {
+  numberOfIPs: number | null;
+  associatedOrganization: string;
+  associatedApplication: string;
+  IPDetails: string;
 }
 
 interface Audit {
@@ -21,6 +29,22 @@ interface Audit {
   };
 }
 
+interface IpDetail {
+  ip: string;
+}
+
+interface AsvAuditPayload {
+  client: string;
+  audit: string;
+  number_of_ip: number;
+  associated_organization: string;
+  associated_application: string;
+  ip_details: IpDetail[];
+  q1: string;
+  q2: string;
+  status: string;
+}
+
 @Component({
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   selector: 'app-add-asv-audit',
@@ -31,7 +55,6 @@ export class AddAsvAudit implements OnInit {
 
   private ipRegex =
     /^(25[0-5]|2[0-4]\d|1?\d?\d)(\.(25[0-5]|2[0-4]\d|1?\d?\d)){3}$/;
-
 
   legalEntitySearch = '';
   auditSearch = '';
@@ -52,8 +75,9 @@ export class AddAsvAudit implements OnInit {
 
   showErrors = false;
   isLoading = false;
+  isSubmitting = false;
 
-  asvData = {
+  asvData: AsvFormData = {
     numberOfIPs: null,
     associatedOrganization: '',
     associatedApplication: '',
@@ -66,7 +90,8 @@ export class AddAsvAudit implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private toast: ToastService
   ) { }
 
   ngOnInit(): void {
@@ -98,7 +123,7 @@ export class AddAsvAudit implements OnInit {
     const token = localStorage.getItem('jwt');
 
     if (!token) {
-      alert('Please login first. No authentication token found.');
+      this.toast.error('Please login first. No authentication token found.');
       this.isLoading = false;
       this.cdr.detectChanges();
       return;
@@ -124,9 +149,8 @@ export class AddAsvAudit implements OnInit {
         this.cdr.detectChanges();
       },
       error: (error) => {
-        console.error('Failed to load clients:', error);
         this.isLoading = false;
-        alert('Failed to load clients. Please try again.');
+        this.toast.error('Failed to load clients. Please try again.');
         this.cdr.detectChanges();
       }
     });
@@ -139,7 +163,7 @@ export class AddAsvAudit implements OnInit {
     const token = localStorage.getItem('jwt');
 
     if (!token) {
-      alert('Please login first. No authentication token found.');
+      this.toast.error('Please login first. No authentication token found.');
       this.isLoading = false;
       this.cdr.detectChanges();
       return;
@@ -167,9 +191,8 @@ export class AddAsvAudit implements OnInit {
         this.cdr.detectChanges();
       },
       error: (error) => {
-        console.error('Failed to load audits:', error);
         this.isLoading = false;
-        alert('Failed to load audit list. Please try again.');
+        this.toast.error('Failed to load audit list. Please try again.');
         this.cdr.detectChanges();
       }
     });
@@ -250,6 +273,11 @@ export class AddAsvAudit implements OnInit {
       .filter(ip => this.ipRegex.test(ip));
   }
 
+  getIpDetailsArray(): IpDetail[] {
+    const validIPs = this.getValidIPs();
+    return validIPs.map(ip => ({ ip }));
+  }
+
   hasInvalidIPs(): boolean {
     if (!this.asvData.IPDetails) return true;
 
@@ -260,7 +288,6 @@ export class AddAsvAudit implements OnInit {
 
     return ips.some(ip => !this.ipRegex.test(ip));
   }
-
 
   // Filter audits by client ID
   filterAuditsByClient(clientId: string): void {
@@ -345,7 +372,6 @@ export class AddAsvAudit implements OnInit {
     return this.getValidIPs().length;
   }
 
-
   onSubmit(form: NgForm) {
     this.showErrors = true;
 
@@ -355,23 +381,101 @@ export class AddAsvAudit implements OnInit {
       !this.selectedAuditId ||
       this.hasInvalidIPs()
     ) {
+      this.toast.error('Please fill all required fields correctly.');
       return;
     }
 
-    const payload = {
-      ...this.asvData,
-      validIPs: this.getValidIPs(),
-      clientId: this.selectedClientId,
-      auditId: this.selectedAuditId
+    // Get the number of IPs from the details
+    const ipCount = this.getIPCountFromDetails();
+    if (ipCount === 0) {
+      this.toast.error('Please enter at least one valid IP address.');
+      return;
+    }
+
+    // Prepare payload with exact API format
+    const payload: AsvAuditPayload = {
+      client: this.selectedClientId,
+      audit: this.selectedAuditId,
+      number_of_ip: ipCount, // Changed from numberOfIPs to number_of_ip
+      associated_organization: this.asvData.associatedOrganization,
+      associated_application: this.asvData.associatedApplication,
+      ip_details: this.getIpDetailsArray(), // Changed from IPDetails to ip_details array
+      q1: "PENDING",
+      q2: "PENDING",
+      status: "PENDING"
     };
 
+    // Log payload for debugging
     console.log('Submitting payload:', payload);
 
-    alert('Form Submitted Successfully!');
-    this.showErrors = false;
+    // Call the submit function
+    this.submitAsvAudit(payload, form);
   }
 
+  submitAsvAudit(payload: AsvAuditPayload, form: NgForm): void {
+    this.isSubmitting = true;
+    
+    const url = 'http://pci.accric.com/api/auth/add-asv-audit-to-client';
+    const token = localStorage.getItem('jwt');
 
+    if (!token) {
+      this.toast.error('Please login first. No authentication token found.');
+      this.isSubmitting = false;
+      this.cdr.detectChanges();
+      return;
+    }
+
+    // Prepare headers with JWT token
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+
+    // Make POST request
+    this.http.post<any>(url, payload, { headers }).subscribe({
+      next: (response) => {
+        this.isSubmitting = false;
+        
+        // Check response structure based on your API
+        if (response.success || response.message) {
+          this.toast.success(response.message || 'ASV Audit added successfully!');
+          
+          // Reset form after successful submission
+          this.resetForm(form);
+        } else {
+          this.toast.success('ASV Audit added successfully!');
+          this.resetForm(form);
+        }
+        
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        this.isSubmitting = false;
+        
+        // Log error for debugging
+        console.error('Error submitting ASV Audit:', error);
+        
+        // Handle different error scenarios
+        if (error.status === 401) {
+          this.toast.error('Session expired. Please login again.');
+        } else if (error.status === 400) {
+          // Show the detailed error message from API
+          const errorMessage = error.error?.message || 'Invalid data. Please check your inputs.';
+          this.toast.error(errorMessage);
+        } else if (error.status === 409) {
+          this.toast.error(error.error?.message || 'ASV Audit already exists for this client.');
+        } else if (error.status === 404) {
+          this.toast.error('Resource not found. Please check the endpoint.');
+        } else if (error.status === 500) {
+          this.toast.error('Server error. Please try again later.');
+        } else {
+          this.toast.error(error.error?.message || 'Failed to add ASV Audit. Please try again.');
+        }
+        
+        this.cdr.detectChanges();
+      }
+    });
+  }
 
   // Optional: Reset form after submission
   resetForm(form: NgForm): void {

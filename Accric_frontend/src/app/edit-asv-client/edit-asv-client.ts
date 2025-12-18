@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastService } from '../service/toast-service';
 
 interface Company {
   id: string;
@@ -64,7 +65,7 @@ export class EditAsvClient {
   // Temporary storage for file data
   private fileDataMap: Map<string, { file: File, dataUrl: string }> = new Map();
 
-  constructor(private router: Router) {
+  constructor(private router: Router,private toast:ToastService) {
   }
 
   selectCompany(company: Company) {
@@ -190,7 +191,7 @@ export class EditAsvClient {
     const file = this.getFileByQuarter(quarter);
 
     if (!file && !fileInfo) {
-      alert('No file available for preview');
+      this.toast.error('No file available for preview');
       return;
     }
 
@@ -307,7 +308,7 @@ export class EditAsvClient {
     }
     // For other file types - download instead
     else {
-      alert('Preview not available for this file type. Please download the file.');
+      this.toast.warning('Preview not available for this file type. Please download the file.');
       this.downloadFile(dataUrl, fileName);
     }
   }
@@ -318,7 +319,7 @@ export class EditAsvClient {
     const file = this.getFileByQuarter(quarter);
 
     if (!file && !fileInfo) {
-      alert('No file available for download');
+      this.toast.warning('No file available for download');
       return;
     }
 
@@ -375,13 +376,12 @@ export class EditAsvClient {
       };
       this.cancelEdit();
     } catch (error) {
-      console.error('Error saving data:', error);
+      this.toast.error('Error saving data')
     }
   }
 
   // Cancel edit
   cancelEdit() {
-    console.log('Edit cancelled');
     this.router.navigate(['/asv-client-list']);
 
   }

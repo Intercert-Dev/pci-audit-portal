@@ -22,21 +22,18 @@ export class Login implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log("Login component initialized");
     
     // Check if we have a token in URL (direct OAuth callback to login page)
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
     
     if (token) {
-      console.log("Found token in URL, processing...");
       this.handleToken(token);
       return;
     }
 
     // First, check if user is already logged in
     if (this.authService.isLoggedIn()) {
-      console.log("User already logged in, redirecting to dashboard");
       this.router.navigate(['/dashboard']);
       return;
     }
@@ -55,8 +52,6 @@ export class Login implements OnInit {
     // Clean URL
     const cleanUrl = window.location.origin + window.location.pathname;
     window.history.replaceState({}, document.title, cleanUrl);
-    
-    console.log("Token processed, redirecting to dashboard");
     this.router.navigate(['/dashboard']);
   }
 

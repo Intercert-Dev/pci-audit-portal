@@ -4,6 +4,8 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
+import { ToastService } from '../service/toast-service';
 
 // Define interfaces for better typing
 interface Country {
@@ -38,7 +40,7 @@ export class AddClient implements OnInit {
   showErrors = false;
   isLoading = false;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private toast:ToastService) { }
 
   tabs = [
     'client-profile',
@@ -442,8 +444,7 @@ export class AddClient implements OnInit {
     const token = localStorage.getItem('jwt');
     
     if (!token) {
-      console.error('No JWT token found');
-      alert('Please login first. No authentication token found.');
+      this.toast.error('Please login first. No authentication token found.', 'Error');
       this.isLoading = false;
       return;
     }
@@ -454,13 +455,12 @@ export class AddClient implements OnInit {
 
     this.http.post(url, payload, { headers }).subscribe({
       next: (response: any) => {
-        console.log('API Response:', response);
         this.isLoading = false;
         
         if (response && response.message) {
-          alert(`Success: ${response.message}`);
+          this.toast.success(response.message, 'Success');
         } else {
-          alert('Client created successfully!');
+          this.toast.success('Client created successfully!', 'Success');
         }
         
         this.resetForm();
@@ -483,7 +483,7 @@ export class AddClient implements OnInit {
           errorMessage += 'Network error. Please check your internet connection.';
         }
         
-        alert(errorMessage);
+        this.toast.error(errorMessage, 'Something wrong');
       }
     });
   }
@@ -624,10 +624,6 @@ export class AddClient implements OnInit {
             missingFields.push(`${fieldDisplayName} (${tabDisplayName})`);
           }
         });
-      }
-      
-      if (missingFields.length > 0) {
-        alert(`Please fill all required fields:\n\n${missingFields.join('\n')}`);
       }
       return;
     }

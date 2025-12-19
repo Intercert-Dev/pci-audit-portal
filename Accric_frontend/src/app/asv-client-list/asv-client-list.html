@@ -23,6 +23,7 @@
         <thead>
           <tr>
             <th>Company</th>
+            <th>Assessment</th>
             <th>Q1</th>
             <th>Q2</th>
             <th>Q3</th>
@@ -34,6 +35,7 @@
         <tbody>
           <tr *ngFor="let row of filtered_list">
             <td>{{ row.company }}</td>
+            <td>{{ row.assessment }}</td>
             <td>{{ row.Q1 }}</td>
             <td>{{ row.Q2 }}</td>
             <td>{{ row.Q3 }}</td>

@@ -30,15 +30,14 @@
     </div>
   </header>
   <div class="layout-body">
-    <div class="sidebar-wrapper" [class.collapsed]="!isSidebarOpen && windowWidth > 1024"
-      [class.open]="isSidebarOpen && windowWidth <= 1024">
-      <aside class="sidebar">
+    <div class="sidebar-wrapper" [class.collapsed]="!isSidebarOpen && windowWidth > 1024">
+      <aside class="sidebar" [class.open]="isSidebarOpen && windowWidth <= 1024">
         <nav class="sidebar-nav">
           <ul>
             <!-- MAIN MENU ITEMS - Close submenu when clicked -->
             <li routerLink="/dashboard" routerLinkActive="active" (click)="onMainMenuItemClick()">
               <div style="padding-left: 4px; gap: 1.2rem;" class="nav-item">
-                <img src="assets/icons/home.png" alt="icon" class="nav-icon">
+                <img src="/assets/icons/home.png" alt="icon" class="nav-icon">
                 <span class="nav-text">Dashboard</span>
               </div>
             </li>
@@ -69,31 +68,59 @@
                 </li>
               </ul>
             </li>
+            <!-- Lists SUBMENU -->
+            <li class="has-submenu" [class.expanded]="isListExpanded">
+              <div class="submenu-header" (click)="toggleListsMenu($event)">
+                <div class="nav-item">
+                  <img src="/assets/icons/calendar_view_week.png" alt="icon" class="nav-icon">
+                  <span class="nav-text">Lists</span>
+                  <img class="arrow-icon" [class.rotate]="isListExpanded" src="/assets/icons8-dropdown-50.png"
+                    alt="arrow">
+                </div>
+              </div>
+              <!-- SUBMENU ITEMS - DON'T close submenu when clicked -->
+              <ul class="submenu" *ngIf="isListExpanded">
+                <li routerLink="/client-list" routerLinkActive="active" (click)="onSubmenuItemListClick()">
+                  <span>Clients</span>
+                </li>
+                <li routerLink="/audit-list" routerLinkActive="active" (click)="onSubmenuItemListClick()">
+                  <span>Audits</span>
+                </li>
+                <li routerLink="/asv-audit-client-list" routerLinkActive="active" (click)="onSubmenuItemListClick()">
+                  <span>ASV Audits</span>
+                </li>
+                <li routerLink="/pci-reports-list" routerLinkActive="active" (click)="onSubmenuItemListClick()">
+                  <span>PCI Reports</span>
+                </li>
+              </ul>
+            </li>
+
+
 
             <!-- MAIN MENU ITEMS - Close submenu when clicked -->
-            <li routerLink="/client-list" routerLinkActive="active" (click)="onMainMenuItemClick()">
+            <!-- <li routerLink="/client-list" routerLinkActive="active" (click)="onMainMenuItemClick()">
               <div class="nav-item">
-                <img src="assets/icons/calendar_view_week.png" alt="icon" class="nav-icon">
+                <img src="/assets/icons/calendar_view_week.png" alt="icon" class="nav-icon">
                 <span class="nav-text">Client List</span>
               </div>
-            </li>
+            </li> -->
             <li routerLink="/asv-dashboard" routerLinkActive="active" (click)="onMainMenuItemClick()">
               <div class="nav-item">
-                <img src="assets/icons/breaking_news_alt_1.png" alt="icon" class="nav-icon">
+                <img src="/assets/icons/breaking_news_alt_1.png" alt="icon" class="nav-icon">
                 <span class="nav-text">ASV</span>
               </div>
             </li>
 
             <li routerLink="/asv-client-list" routerLinkActive="active" (click)="onMainMenuItemClick()">
               <div class="nav-item">
-                <img src="assets/icons/calendar_view_week.png" alt="icon" class="nav-icon">
+                <img src="/assets/icons/calendar_view_week.png" alt="icon" class="nav-icon">
                 <span class="nav-text">ASV Client List</span>
               </div>
             </li>
 
             <li routerLink="/certificate-gen" routerLinkActive="active" (click)="onMainMenuItemClick()">
               <div class="nav-item">
-                <img src="assets/icons/card_membership.png" alt="icon" class="nav-icon">
+                <img src="/assets/icons/card_membership.png" alt="icon" class="nav-icon">
                 <span class="nav-text">Certificate Gen.</span>
               </div>
             </li>
@@ -101,7 +128,7 @@
             <li *ngIf="userRole === 'SUPER_ADMIN'" routerLink="/create-user" routerLinkActive="active"
               (click)="onMainMenuItemClick()">
               <div class="nav-item">
-                <img src="assets/icons/person_add.png" alt="icon" class="nav-icon">
+                <img src="/assets/icons/person_add.png" alt="icon" class="nav-icon">
                 <span class="nav-text">Create User</span>
               </div>
             </li>
@@ -109,7 +136,7 @@
 
             <li routerLink="/user-settings" routerLinkActive="active" (click)="onMainMenuItemClick()">
               <div class="nav-item">
-                <img src="assets/icons/settings solid 1.png" alt="icon" class="nav-icon">
+                <img src="/assets/icons/settings solid 1.png" alt="icon" class="nav-icon">
                 <span class="nav-text">Settings</span>
               </div>
             </li>
@@ -117,6 +144,9 @@
         </nav>
       </aside>
     </div>
+
+    <!-- MOBILE OVERLAY -->
+    <div class="sidebar-overlay" *ngIf="isSidebarOpen && windowWidth <= 1024" (click)="toggleSidebar()"></div>
 
     <main class="main-content">
       <router-outlet></router-outlet>

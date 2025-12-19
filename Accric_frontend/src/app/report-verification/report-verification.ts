@@ -3,6 +3,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import { ToastService } from '../service/toast-service';
 
 interface Client {
   id: string;
@@ -28,8 +29,15 @@ interface Audit {
   styleUrls: ['./report-verification.css'],
 })
 export class ReportVerification implements OnInit {
-  previousReportFile: File | null = null;
-  currentReportFile: File | null = null;
+  // PREVIOUS REPORT FILES (now arrays for multiple files)
+  previousAocReportFiles: File[] = [];
+  previousRocReportFiles: File[] = [];
+  previousFinalReportFiles: File[] = [];
+  
+  // CURRENT REPORT FILES (now arrays for multiple files)
+  currentAocReportFiles: File[] = [];
+  currentRocReportFiles: File[] = [];
+  currentFinalReportFiles: File[] = [];
   
   // Client Search Properties
   legalEntitySearch: string = '';
@@ -64,7 +72,8 @@ export class ReportVerification implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private toast:ToastService
   ) {}
 
   ngOnInit() {
@@ -95,7 +104,7 @@ export class ReportVerification implements OnInit {
     const token = localStorage.getItem("jwt");
     
     if (!token) {
-      alert('Please login first. No authentication token found.');
+      this.toast.warning('Please login first. No authentication token found.');
       this.isLoading = false;
       this.cdr.detectChanges();
       return;
@@ -122,7 +131,7 @@ export class ReportVerification implements OnInit {
       error: (err) => {
         console.error('Failed to load clients:', err);
         this.isLoading = false;
-        alert('Failed to load clients. Please try again.');
+        this.toast.error('Failed to load clients. Please try again.');
         this.cdr.detectChanges();
       }
     });
@@ -302,104 +311,107 @@ export class ReportVerification implements OnInit {
     }, 200);
   }
 
-  // FILE UPLOAD METHODS
-  onUpload(type: 'previous' | 'current') {
+  // FILE UPLOAD METHODS (Updated for multiple files)
+  onUpload(
+    type: 'previousAoc' | 'previousRoc' | 'previousFinal' | 'currentAoc' | 'currentRoc' | 'currentFinal'
+  ) {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg';
-    input.multiple = false;
+    input.accept = '.pdf,application/pdf';
+    input.multiple = true; // Enable multiple file selection
     
     input.onchange = (event: Event) => {
       const target = event.target as HTMLInputElement;
-      const file = target.files?.[0];
+      const files = target.files;
       
-      if (file) {
-        // Validate file type
-        const validTypes = [
-          'application/pdf',
-          'application/msword',
-          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-          'application/vnd.ms-excel',
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-          'image/png',
-          'image/jpeg',
-          'image/jpg'
-        ];
+      if (files && files.length > 0) {
+        const maxFiles = 10; // Maximum number of files allowed per field
+        const maxSizePerFile = 10 * 1024 * 1024; // 10MB per file
+        const validFiles: File[] = [];
+        const invalidFiles: string[] = [];
         
-        if (!validTypes.includes(file.type)) {
-          alert('Please upload a valid file (PDF, Word, Excel, or Image)');
-          return;
+        // Validate each file
+        for (let i = 0; i < Math.min(files.length, maxFiles); i++) {
+          const file = files[i];
+          
+          // Validate file type
+          const isPDF = file.type === 'application/pdf' || 
+                       file.name.toLowerCase().endsWith('.pdf');
+          
+          if (!isPDF) {
+            invalidFiles.push(`${file.name} - Only PDF files are allowed`);
+            continue;
+          }
+          
+          // Validate file size
+          if (file.size > maxSizePerFile) {
+            invalidFiles.push(`${file.name} - File size exceeds 10MB limit`);
+            continue;
+          }
+          
+          validFiles.push(file);
         }
         
-        // Validate file size (10MB limit)
-        const maxSize = 10 * 1024 * 1024; // 10MB in bytes
-        if (file.size > maxSize) {
-          alert('File size should not exceed 10MB');
-          return;
+        // Show error messages for invalid files
+        if (invalidFiles.length > 0) {
+          this.toast.error(`The following files were rejected:\n\n${invalidFiles.join('\n')}`);
         }
         
-        if (type === 'previous') {
-          this.previousReportFile = file;
-        } else {
-          this.currentReportFile = file;
+        // Assign valid files to the correct property based on type
+        if (validFiles.length > 0) {
+          switch (type) {
+            case 'previousAoc':
+              this.previousAocReportFiles = [...this.previousAocReportFiles, ...validFiles];
+              break;
+            case 'previousRoc':
+              this.previousRocReportFiles = [...this.previousRocReportFiles, ...validFiles];
+              break;
+            case 'previousFinal':
+              this.previousFinalReportFiles = [...this.previousFinalReportFiles, ...validFiles];
+              break;
+            case 'currentAoc':
+              this.currentAocReportFiles = [...this.currentAocReportFiles, ...validFiles];
+              break;
+            case 'currentRoc':
+              this.currentRocReportFiles = [...this.currentRocReportFiles, ...validFiles];
+              break;
+            case 'currentFinal':
+              this.currentFinalReportFiles = [...this.currentFinalReportFiles, ...validFiles];
+              break;
+          }
+          
+          console.log(`${type} reports uploaded:`, validFiles.map(f => f.name).join(', '));
+          this.cdr.detectChanges();
         }
-        
-        console.log(`${type} report uploaded:`, file.name);
-        this.cdr.detectChanges();
       }
     };
     
     input.click();
   }
 
-  onPreview(type: 'previous' | 'current') {
-    const file = type === 'previous' ? this.previousReportFile : this.currentReportFile;
-    
-    if (!file) {
-      alert(`No ${type} report file uploaded`);
-      return;
+  // Remove file from array
+  removeFile(type: 'previousAoc' | 'previousRoc' | 'previousFinal' | 'currentAoc' | 'currentRoc' | 'currentFinal', index: number) {
+    switch (type) {
+      case 'previousAoc':
+        this.previousAocReportFiles.splice(index, 1);
+        break;
+      case 'previousRoc':
+        this.previousRocReportFiles.splice(index, 1);
+        break;
+      case 'previousFinal':
+        this.previousFinalReportFiles.splice(index, 1);
+        break;
+      case 'currentAoc':
+        this.currentAocReportFiles.splice(index, 1);
+        break;
+      case 'currentRoc':
+        this.currentRocReportFiles.splice(index, 1);
+        break;
+      case 'currentFinal':
+        this.currentFinalReportFiles.splice(index, 1);
+        break;
     }
-    
-    const url = URL.createObjectURL(file);
-    
-    // For PDF files, open in new tab
-    if (file.type === 'application/pdf') {
-      window.open(url, '_blank');
-    } else {
-      // For other file types, create a download link
-      const a = document.createElement('a');
-      a.href = url;
-      a.target = '_blank';
-      a.download = file.name;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    }
-    
-    // Clean up URL object after some time
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  }
-
-  onDownload(type: 'previous' | 'current') {
-    const file = type === 'previous' ? this.previousReportFile : this.currentReportFile;
-    
-    if (!file) {
-      alert(`No ${type} report file uploaded`);
-      return;
-    }
-    
-    const url = URL.createObjectURL(file);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = file.name;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    
-    // Clean up URL object
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-    
-    console.log(`${type} report downloaded:`, file.name);
+    this.cdr.detectChanges();
   }
 
   // FORM SUBMISSION
@@ -408,17 +420,27 @@ export class ReportVerification implements OnInit {
     
     // Validate client selection
     if (!this.selectedClientId) {
-      alert('Please select a company from the dropdown');
       return;
     }
     
     // Validate audit selection
     if (!this.selectedAuditId) { 
-      alert('Please select an audit from the dropdown');
       return;
     }
     
-  
+    // Validate at least one file is uploaded
+    const totalFiles = 
+      this.previousAocReportFiles.length +
+      this.previousRocReportFiles.length +
+      this.previousFinalReportFiles.length +
+      this.currentAocReportFiles.length +
+      this.currentRocReportFiles.length +
+      this.currentFinalReportFiles.length;
+    
+    if (totalFiles === 0) {
+      return;
+    }
+    
     this.submitReportVerification(form);
   }
 
@@ -429,29 +451,47 @@ export class ReportVerification implements OnInit {
     const token = localStorage.getItem("jwt");
     
     if (!token) {
-      alert('Please login first. No authentication token found.');
+      this.toast.warning('Please login first. No authentication token found.');
       this.isSubmitting = false;
       this.cdr.detectChanges();
       return;
     }
     
-    // Prepare FormData for submission (matches your API format exactly)
+    // Prepare FormData for submission
     const formData = new FormData();
     
-    // Add required fields (matching your API format)
+    // Add required fields
     formData.append('client', this.selectedClientId!);
     formData.append('audit', this.selectedAuditId!);
     formData.append('associated_organization', this.reportData.associatedOrganization);
     formData.append('associated_application', this.reportData.associatedApplication);
     
-    // Add files (matching your API field names exactly)
-    if (this.previousReportFile) {
-      formData.append('previous_report_pdf', this.previousReportFile, this.previousReportFile.name);
-    }
+    // Add PREVIOUS report files with EXACT field names from your image
+    // Multiple files can be appended with the same field name
+    this.previousAocReportFiles.forEach((file) => {
+      formData.append('prev_aoc_report', file, file.name);
+    });
     
-    if (this.currentReportFile) {
-      formData.append('current_report_pdf', this.currentReportFile, this.currentReportFile.name);
-    }
+    this.previousRocReportFiles.forEach((file) => {
+      formData.append('prev_roc_report', file, file.name);
+    });
+    
+    this.previousFinalReportFiles.forEach((file) => {
+      formData.append('prev_final_report', file, file.name);
+    });
+    
+    // Add CURRENT report files with EXACT field names from your image
+    this.currentAocReportFiles.forEach((file) => {
+      formData.append('current_aoc_report', file, file.name);
+    });
+    
+    this.currentRocReportFiles.forEach((file) => {
+      formData.append('current_roc_report', file, file.name);
+    });
+    
+    this.currentFinalReportFiles.forEach((file) => {
+      formData.append('current_final_report', file, file.name);
+    });
     
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
@@ -462,9 +502,11 @@ export class ReportVerification implements OnInit {
         this.isSubmitting = false;
         
         if (response && response.message) {
-          alert(`Success: ${response.message}`);
+          this.toast.success(`Success: ${response.message}`);
+        } else if (response && response.success) {
+          this.toast.success('Report verification submitted successfully!');
         } else {
-          alert('Report verification submitted successfully!');
+          this.toast.success('Report verification submitted successfully!');
         }
         
         this.resetForm(form);
@@ -478,17 +520,23 @@ export class ReportVerification implements OnInit {
         
         if (error.error && error.error.message) {
           errorMessage += error.error.message;
+        } else if (error.error && error.error.errors) {
+          // Handle validation errors from backend
+          const errors = error.error.errors;
+          errorMessage += Object.values(errors).flat().join(', ');
         } else if (error.status === 401) {
           errorMessage += 'Unauthorized. Please check your authentication token.';
         } else if (error.status === 400) {
           errorMessage += 'Bad request. Please check the data you entered.';
+        } else if (error.status === 413) {
+          errorMessage += 'File size too large. Please reduce file sizes.';
         } else if (error.status === 404) {
           errorMessage += 'API endpoint not found.';
         } else if (error.status === 500) {
           errorMessage += 'Server error. Please try again later.';
         }
         
-        alert(errorMessage);
+        this.toast.error(errorMessage);
         this.cdr.detectChanges();
       }
     });
@@ -502,8 +550,15 @@ export class ReportVerification implements OnInit {
     this.selectedClientName = '';
     this.selectedAuditId = null;
     this.selectedAuditName = '';
-    this.previousReportFile = null;
-    this.currentReportFile = null;
+    
+    // Reset all file arrays
+    this.previousAocReportFiles = [];
+    this.previousRocReportFiles = [];
+    this.previousFinalReportFiles = [];
+    this.currentAocReportFiles = [];
+    this.currentRocReportFiles = [];
+    this.currentFinalReportFiles = [];
+    
     this.filteredClients = [...this.clients];
     this.filteredAudits = [];
     this.reportData = {

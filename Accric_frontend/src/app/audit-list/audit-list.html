@@ -11,15 +11,30 @@
       </div>
     </div>
 
-    <div class="table-wrapper">
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-container">
+      <div class="loading-spinner"></div>
+      <p>Loading audit data...</p>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="error-container">
+      <p>{{ errorMessage }}</p>
+      <button (click)="fetchAuditList()">Retry</button>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && !errorMessage && filtered_list.length === 0" class="empty-state">
+      <p>No audits found</p>
+    </div>
+
+    <!-- Audit Table -->
+    <div class="table-wrapper" *ngIf="!isLoading && !errorMessage && filtered_list.length > 0">
       <table>
         <thead>
           <tr>
             <th>Company Name</th>
             <th>Assessment / Project Name</th>
-            <th>Assessment Type</th>
-            <th>Assessment Category</th>
-            <th>Assessment Year</th>
             <th>Audit Status</th>
             <th>Audit Start Date</th>
             <th>Audit End Date</th>
@@ -29,26 +44,18 @@
 
         <tbody>
           <tr *ngFor="let audit of filtered_list">
-            <td>{{ audit.company_name || 'N/A' }}</td>
+            <!-- Access nested client data -->
+            <td>{{ audit.client.legal_entity_name || audit.client.trading_name || 'N/A' }}</td>
             <td>{{ audit.assessment_project_name || 'N/A' }}</td>
-            <td>{{ audit.assessment_type || 'N/A' }}</td>
-            <td>{{ audit.assessment_category || 'N/A' }}</td>
-            <td>{{ audit.assessment_year || 'N/A' }}</td>
-            <td id="audit-status">
-              <span class="status-badge" 
-                [class.report-in-review]="audit.audit_status === 'REPORT_IN_REVIEW'"
-                [class.completed]="audit.audit_status === 'COMPLETED'"
-                [class.in-progress]="audit.audit_status === 'IN_PROGRESS'"
-                [class.not-started]="audit.audit_status === 'NOT_STARTED'">
-                {{ getStatusLabel(audit.audit_status) || 'N/A' }}
-              </span>
+            <td>
+              {{audit.audit_status}}
             </td>
             <td>{{ formatDate(audit.audit_start_date) || 'N/A' }}</td>
             <td>{{ formatDate(audit.audit_end_date) || 'N/A' }}</td>
             <td class="sticky-action">
               <div class="action-box">
-                <img src="/assets/icons/edit.png" alt="Edit" (click)="editAudit(audit)">
-                <img src="/assets/icons/delete.png" alt="Delete" (click)="deleteAudit(audit)">
+                <img src="/assets/icons/edit.png" alt="Edit" (click)="editAudit(audit)" title="Edit Audit">
+                <img src="/assets/icons/delete.png" alt="Delete" (click)="deleteAudit(audit)" title="Delete Audit">
               </div>
             </td>
           </tr>
@@ -62,7 +69,7 @@
 <div class="edit-audit-popup-overlay" *ngIf="editingAudit">
   <div class="edit-audit-popup">
     <div class="popup-header">
-      <h2>Edit Audit</h2>
+      <h2>Edit Audit - {{ editingAudit.assessment_project_name || 'Audit' }}</h2>
       <button class="close-btn" (click)="cancelEdit()">&times;</button>
     </div>
 
@@ -74,15 +81,15 @@
           <h3 class="section-title">Assessment Summary</h3>
           <div class="form-grid">
             <div class="form-group">
-              <label>Company Name*</label>
-              <input type="text" name="company_name" required [(ngModel)]="editingAudit.company_name"
-                placeholder="Company Name" />
+              <label>Company Name</label>
+              <input type="text" readonly
+                [value]="editingAudit.client.legal_entity_name || editingAudit.client.trading_name || 'N/A'" />
             </div>
 
             <div class="form-group">
-              <label>Assessment / Project Name</label>
-              <input type="text" name="assessment_project_name" [(ngModel)]="editingAudit.assessment_project_name"
-                placeholder="Assessment / Project Name" />
+              <label>Assessment / Project Name*</label>
+              <input type="text" name="assessment_project_name" required
+                [(ngModel)]="editingAudit.assessment_project_name" placeholder="Assessment / Project Name" />
             </div>
 
             <div class="form-group">
@@ -105,8 +112,8 @@
 
             <div class="form-group">
               <label>PCI DSS Version Applicable</label>
-              <input type="text" name="pci_dss_version_application" [(ngModel)]="editingAudit.pci_dss_version_application"
-                placeholder="PCI DSS Version Applicable" />
+              <input type="text" name="pci_dss_version_application"
+                [(ngModel)]="editingAudit.pci_dss_version_application" placeholder="PCI DSS Version Applicable" />
             </div>
 
             <div class="form-group">
@@ -127,7 +134,8 @@
 
             <div class="form-group">
               <label>Date of Report Submission</label>
-              <input type="date" name="date_of_report_submission" [(ngModel)]="editingAudit.date_of_report_submission" />
+              <input type="date" name="date_of_report_submission"
+                [(ngModel)]="editingAudit.date_of_report_submission" />
             </div>
 
             <div class="form-group">
@@ -153,8 +161,8 @@
 
             <div class="form-group">
               <label>Certificate Number / Unique ID</label>
-              <input type="text" name="certificate_number_unique_id" [(ngModel)]="editingAudit.certificate_number_unique_id"
-                placeholder="Enter Certificate Number" />
+              <input type="text" name="certificate_number_unique_id"
+                [(ngModel)]="editingAudit.certificate_number_unique_id" placeholder="Enter Certificate Number" />
             </div>
 
             <div class="form-group">
@@ -177,21 +185,28 @@
             <div class="form-group">
               <label>Name of QSA</label>
               <select name="name_of_qsa" [(ngModel)]="editingAudit.name_of_qsa">
-                <option value="" disabled selected>Select QSA</option>
-                <option *ngFor="let qsa of qsaList" [value]="qsa">{{qsa}}</option>
+                <option [ngValue]="null">Select QSA</option>
+
+                <option *ngFor="let qsa of qsaList" [ngValue]="qsa.qsa_id">
+                  {{ qsa.qsa_name }}
+                </option>
               </select>
+
+
+
             </div>
 
             <div class="form-group">
               <label>QSA License/Certificate Number</label>
-              <input type="text" name="qsa_license_certificate_number" [(ngModel)]="editingAudit.qsa_license_certificate_number"
+              <input type="text" name="qsa_license_certificate_number"
+                [(ngModel)]="editingAudit.qsa_license_certificate_number"
                 placeholder="QSA License/Certificate Number" />
             </div>
 
             <div class="form-group">
               <label>Manager/Reviewer Name</label>
-              <input type="text" name="audit_manager_reviewer_name" [(ngModel)]="editingAudit.audit_manager_reviewer_name"
-                placeholder="Audit Manager Reviewer Name" />
+              <input type="text" name="audit_manager_reviewer_name"
+                [(ngModel)]="editingAudit.audit_manager_reviewer_name" placeholder="Audit Manager Reviewer Name" />
             </div>
           </div>
         </div>
@@ -219,7 +234,10 @@
 
     <div class="popup-footer">
       <button class="btn-cancel" (click)="cancelEdit()"><span>Cancel</span></button>
-      <button class="btn-save" (click)="saveAudit()"><span>Save Changes</span></button>
+      <button class="btn-save" (click)="saveAudit()" [disabled]="isLoading">
+        <span *ngIf="!isLoading">Save Changes</span>
+        <span *ngIf="isLoading">Saving...</span>
+      </button>
     </div>
   </div>
 </div>

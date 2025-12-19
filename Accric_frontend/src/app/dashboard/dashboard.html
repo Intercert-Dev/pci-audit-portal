@@ -163,8 +163,7 @@
       <div class="upcoming-box">
         <div>
           <p id="upcoming-box-text">Total Upcoming Audits</p>
-          <p class="upcoming-count">{{ upcomingAudits.length }}</p>
-
+          <p class="upcoming-count">{{ fullList.length }}</p>
         </div>
         <div class="upcoming-box-percentage-div">
           <p id="upcoming-box-percentage">12.7%</p>
@@ -190,14 +189,17 @@
               <p class="code">{{ audit.certificate_number_unique_id || 'N/A' }}</p>
 
               <!-- client name -->
-              <p class="client">{{ audit.legal_entity_name || 'Unknown Client' }}</p>
+              <p class="client">{{ audit.client?.legal_entity_name || 'Unknown Client' }}</p>
 
               <!-- audit start date -->
               <p class="date">
                 {{ audit.audit_start_date | date:'MMM dd, yyyy' }}
               </p>
+              <p class="date">
+                {{ audit.audit_end_date | date:'MMM dd, yyyy' }}
+              </p>
 
-              <a class="view-details" href="/upcoming-audit-list">View Details</a>
+              <!-- <a class="view-details" href="/upcoming-audit-list">View Details</a> -->
             </div>
           </div>
         </div>

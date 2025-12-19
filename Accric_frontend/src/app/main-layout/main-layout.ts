@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { ToastService } from '../service/toast-service';
 
 @Component({
   imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
@@ -14,22 +15,32 @@ export class MainLayout implements OnInit {
   isSidebarOpen = true;
   dropdownOpen = false;
   isClientsExpanded = false;
+  isListExpanded = false;
   userRole: string = '';
   userEmail: string = '';
+  windowWidth: number = window.innerWidth;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private toast : ToastService) {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         const currentUrl = event.urlAfterRedirects || event.url;
-        const isSubmenuRoute = this.isClientsSubmenuRoute(currentUrl);
+        const isClientsSubmenuRoute = this.isClientsSubmenuRoute(currentUrl);
+        const isListsSubmenuRoute = this.isListsSubmenuRoute(currentUrl);
 
-        if (!isSubmenuRoute) {
-          this.isClientsExpanded = false;
-        }
+        // Update Clients menu state
+        this.isClientsExpanded = isClientsSubmenuRoute;
+        
+        // Update Lists menu state
+        this.isListExpanded = isListsSubmenuRoute;
       });
   }
- windowWidth: number = window.innerWidth;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    this.windowWidth = window.innerWidth;
+  }
+
   ngOnInit() {
     this.decodeJWTAndSetUserInfo();
   }
@@ -58,7 +69,6 @@ export class MainLayout implements OnInit {
       
       return JSON.parse(jsonPayload);
     } catch (error) {
-      console.error('Error decoding JWT:', error);
       return null;
     }
   }
@@ -67,9 +77,9 @@ export class MainLayout implements OnInit {
     const token = localStorage.getItem('jwt');
     
     if (!token) {
-      console.warn('No JWT token found in localStorage');
       this.userRole = '';
       this.userEmail = '';
+      this.toast.warning('No JWT token found in localStorage');
       return;
     }
 
@@ -88,12 +98,9 @@ export class MainLayout implements OnInit {
       if (decoded.exp) {
         const now = Math.floor(Date.now() / 1000);
         if (decoded.exp < now) {
-          console.warn('WARNING: JWT token has EXPIRED!');
+          this.toast.warning('WARNING: JWT token has EXPIRED!');
           // You might want to handle token expiration here
           // For example, redirect to login or refresh the token
-        } else {
-          console.log('✓ Token is valid');
-          console.log('Expires At:', new Date(decoded.exp * 1000).toLocaleString());
         }
       }
     } else {
@@ -103,7 +110,6 @@ export class MainLayout implements OnInit {
     }
   }
 
-  // Optional: Add a method to get user info anytime
   getUserInfo() {
     return {
       role: this.userRole,
@@ -129,8 +135,16 @@ export class MainLayout implements OnInit {
       '/add-asv-audit',
       '/report-verification'
     ];
-
     return clientsSubmenuRoutes.some(route => url.startsWith(route));
+  }
+
+  private isListsSubmenuRoute(url: string): boolean {
+    const listsSubmenuRoutes = [
+      '/client-list',
+      '/audit-list', // Changed from '/client' to '/audit-list'
+      '/asv-audit-client-list' // Changed from '/list' to '/asv-audit-client-list'
+    ];
+    return listsSubmenuRoutes.some(route => url.startsWith(route));
   }
 
   toggleSidebar() {
@@ -148,19 +162,45 @@ export class MainLayout implements OnInit {
   toggleClientsMenu(event: Event) {
     event.stopPropagation();
     this.isClientsExpanded = !this.isClientsExpanded;
+    // Close other menu when opening this one
+    if (this.isClientsExpanded) {
+      this.isListExpanded = false;
+    }
+  }
+
+  toggleListsMenu(event: Event) {
+    event.stopPropagation();
+    this.isListExpanded = !this.isListExpanded;
+    // Close other menu when opening this one
+    if (this.isListExpanded) {
+      this.isClientsExpanded = false;
+    }
   }
 
   closeClientsMenu() {
     this.isClientsExpanded = false;
   }
 
+  closeListMenu() {
+    this.isListExpanded = false;
+  }
+
   onMainMenuItemClick() {
     this.closeClientsMenu();
+    this.closeListMenu();
     this.closeDropdown();
   }
 
   onSubmenuItemClick() {
+    // For Clients submenu items - only close dropdown, keep submenu open
     this.closeDropdown();
+    // Don't close the Clients submenu
+  }
+
+  onSubmenuItemListClick() {
+    // For Lists submenu items - only close dropdown, keep submenu open
+    this.closeDropdown();
+    // Don't close the Lists submenu
   }
 
   goToProfile(event: Event) {

@@ -19,7 +19,6 @@
   margin-left: 56px;
   margin-top: 34px;
   margin-right: 50px;
-  overflow: hidden;
 }
 
 .header-row {
@@ -384,6 +383,9 @@ tbody tr {
     padding: 3px 10px;
     font-size: 11px;
   }
+  .header-row{
+    padding-inline: 1rem;
+  }
 }
 
 /* Extra small devices */
@@ -395,6 +397,10 @@ tbody tr {
 
   .header-row p {
     font-size: 16px;
+  }
+
+  .header-row{
+    padding-inline: 1rem;
   }
 
   .search-box input,
@@ -543,7 +549,7 @@ tbody tr {
 .form-group input,
 .form-group select,
 .form-group textarea {
-  padding: 12px 16px;
+  padding: 10px 16px;
   border: 1px solid rgba(139, 163, 203, 1);
   border-radius: 12px;
   font-family: 'Inter', sans-serif;
@@ -707,6 +713,7 @@ textarea::placeholder {
   }
 
   .popup-content {
+    margin-top: 10.5rem;
     padding: 16px;
   }
 
@@ -751,6 +758,7 @@ textarea::placeholder {
 
   .btn-save,
   .btn-cancel {
+    justify-content: center;
     font-size: 14px;
     padding: 12px 20px;
   }

@@ -84,6 +84,7 @@ select {
   flex: 1;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .form-group.wide {
@@ -112,7 +113,7 @@ input {
 }
 
 input::placeholder {
-  color: rgba(113, 142, 191, 1);
+  color: rgba(113, 142, 191, 0.7);
   opacity: 1;
 }
 
@@ -172,12 +173,6 @@ input::placeholder {
   display: block;
 }
 
-
-input.ng-invalid.ng-touched,
-select.ng-invalid.ng-touched {
-  border: 1px solid #d9534f !important;
-}
-
 /* Custom Dropdown Styles */
 .custom-dropdown {
   position: relative;
@@ -219,7 +214,7 @@ select.ng-invalid.ng-touched {
   border: 1px solid rgba(223, 234, 242, 1);
   border-radius: 1rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
+  z-index: 9999;
   margin-top: 4px;
   max-height: 250px;
   overflow: hidden;
@@ -307,26 +302,20 @@ select.ng-invalid.ng-touched {
   background: rgba(113, 142, 191, 0.7);
 }
 
-/* Error states */
-.dropdown-input.ng-invalid.ng-touched {
-  border: 1px solid #d9534f !important;
-}
-
-/* Make sure dropdown stays above other elements */
-.custom-dropdown {
-  z-index: 10;
-}
-
+/* CRITICAL: Phone input container must have relative positioning */
 .phone-input-container {
   display: flex;
   gap: 8px;
   align-items: center;
   width: 100%;
+  position: relative;
 }
 
+/* CRITICAL: Country code dropdown with highest z-index */
 .country-code-dropdown {
   position: relative;
   flex-shrink: 0;
+  z-index: 9998;
 }
 
 .country-code-selector {
@@ -341,6 +330,8 @@ select.ng-invalid.ng-touched {
   cursor: pointer;
   min-width: 90px;
   transition: border-color 0.3s;
+  position: relative;
+  z-index: 1;
 }
 
 .country-code-selector:hover {
@@ -359,6 +350,7 @@ select.ng-invalid.ng-touched {
   font-weight: 500;
 }
 
+/* CRITICAL: Country code list with maximum z-index */
 .country-code-list {
   position: absolute;
   top: 100%;
@@ -368,10 +360,10 @@ select.ng-invalid.ng-touched {
   background: white;
   border: 1px solid rgb(154, 175, 190);
   border-radius: 1rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 1001;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  z-index: 99999;
   margin-top: 4px;
-  overflow: hidden;
+  overflow-y: auto;
 }
 
 .country-code-item {
@@ -417,7 +409,7 @@ select.ng-invalid.ng-touched {
 
 .phone-number-input {
   flex: 1;
-  min-width: 0; 
+  min-width: 0;
   height: 2.5rem;
   padding: 0 12px;
   border: 1px solid rgba(223, 234, 242, 1);
@@ -433,28 +425,13 @@ select.ng-invalid.ng-touched {
   border-color: rgba(57, 106, 255, 1);
 }
 
-.phone-number-input.ng-invalid.ng-touched {
-  border: 1px solid #d9534f !important;
-}
+
 
 
 .form-group .error {
   margin-top: 5px;
 }
 
-.custom-dropdown {
-  position: relative;
-  z-index: 100;
-}
- 
-
-/* ---------- Desktop (min-width: 1025px) ---------- */
-@media (min-width: 1025px) {
-  .add-client-box {
-    max-width: 1200px;
-    margin: 27px auto;
-  }
-}
 
 /* ---------- 1024px ---------- */
 @media (max-width: 1024px) {
@@ -462,88 +439,91 @@ select.ng-invalid.ng-touched {
     min-height: 85vh;
     padding: 0.5rem;
   }
-  
+
   .add-client-box {
     margin: 20px 30px;
     padding: 1.75rem;
     max-width: 100%;
+    margin-top: 3rem;
   }
-  
+
   .tabs {
     gap: 0.75rem;
     margin-bottom: 1.75rem;
   }
-  
+
   .tab {
     font-size: 0.95rem;
     padding: 0.5rem 0.4rem;
   }
-  
+
   .form-row {
     margin-top: 1.75rem;
     gap: 1rem;
   }
-  
+
   .form-group {
     flex: 1 1 calc(50% - 0.5rem);
     min-width: calc(50% - 0.5rem);
   }
-  
+
   .form-group.wide {
     flex: 2 1 100%;
     width: 100%;
   }
-  
+
   label {
     font-size: 0.95rem;
   }
-  
-  input, select {
+
+  input,
+  select {
     height: 2.25rem;
     font-size: 0.85rem;
   }
-  
+
   .phone-input-container {
     gap: 0.75rem;
   }
-  
+
   .country-code-selector {
     min-width: 95px;
     height: 2.25rem;
   }
-  
+
   .country-code-list,
   .dropdown-list {
     width: 100%;
     min-width: 250px;
     max-height: 300px;
-    z-index: 1000;
   }
-  
+
   .dropdown-list {
     position: absolute;
     left: 0;
     right: 0;
+    z-index: 9999;
   }
-  
+
   .country-code-list {
     position: absolute;
+    z-index: 99999;
   }
-  
+
   .form-actions {
     margin-top: 2rem;
     gap: 1rem;
   }
-  
+
   .btn-primary {
     padding: 0.7rem 1.5rem;
     min-width: 180px;
   }
-  
+
   .btn-primary span {
     font-size: 1.1rem;
   }
-  
+
   .go-back-btn {
     width: 45px;
     height: 45px;
@@ -551,106 +531,203 @@ select.ng-invalid.ng-touched {
   }
 }
 
-/* ---------- 768px ---------- */
+/* ---------- Dropdown Positioning Fixes ---------- */
 @media (max-width: 768px) {
-  .add-client-container {
-    min-height: 82vh;
-    padding: 0.5rem;
+
+  
+    .add-client-container {
+      min-height: 82vh;
+      padding: 0.5rem;
+    }
+
+    .add-client-box {
+      margin: 15px;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-top: 7rem;
+    }
+
+    .tabs {
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .tab {
+      flex: 1 1 calc(33.333% - 0.5rem);
+      font-size: 0.9rem;
+      padding: 0.4rem 0.3rem;
+      min-width: 120px;
+    }
+
+    .tab.active {
+      border-bottom-width: 4px;
+    }
+
+    .form-row {
+      flex-direction: column;
+      margin-top: 1.5rem;
+      gap: 1.25rem;
+    }
+
+    .form-group,
+    .form-group.wide {
+      flex: 1 1 100%;
+      width: 100%;
+    }
+
+    .phone-input-container {
+      gap: 0.75rem;
+    }
+
+    .country-code-selector {
+      min-width: 90px;
+      height: 2.25rem;
+      padding: 0 8px;
+    }
+
+    .country-code-list,
+    .dropdown-list {
+      width: 100%;
+      max-height: 280px;
+      position: absolute;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+    
+    .dropdown-list {
+      z-index: 9999;
+    }
+    
+    .country-code-list {
+      z-index: 99999;
+    }
+
+    .search-container {
+      padding: 10px;
+    }
+
+    .search-input {
+      padding: 0.6rem 0.75rem !important;
+      font-size: 0.85rem;
+    }
+
+    .dropdown-items {
+      max-height: 220px;
+    }
+
+    .dropdown-item,
+    .country-code-item {
+      padding: 0.75rem 1rem;
+      font-size: 0.85rem;
+    }
+
+    .form-actions {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 2rem;
+      gap: 1rem;
+    }
+
+    .btn-primary {
+      padding: 0.6rem 1.25rem;
+      min-width: 160px;
+    }
+
+    .btn-primary span {
+      font-size: 1rem;
+    }
+
+    .go-back-btn {
+      width: 40px;
+      height: 40px;
+      padding: 8px;
+    }
+
+  .custom-dropdown {
+    position: static;
+  }
+
+  .dropdown-list,
+  .country-code-list {
+    position: fixed !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    top: 70% !important;
+    transform: translateX(-50%) translateY(-50%) !important;
+    width: 90vw !important;
+    max-width: 400px !important;
+    max-height: 70vh !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
   }
   
-  .add-client-box {
-    margin: 15px;
-    padding: 1.5rem;
-    border-radius: 8px;
-  }
-  
-  .tabs {
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-  }
-  
-  .tab {
-    flex: 1 1 calc(33.333% - 0.5rem);
-    font-size: 0.9rem;
-    padding: 0.4rem 0.3rem;
-    min-width: 120px;
-  }
-  
-  .tab.active {
-    border-bottom-width: 4px;
-  }
-  
-  .form-row {
-    flex-direction: column;
-    margin-top: 1.5rem;
-    gap: 1.25rem;
-  }
-  
-  .form-group, .form-group.wide {
-    flex: 1 1 100%;
-    width: 100%;
-  }
-  
-  .phone-input-container {
-    gap: 0.75rem;
-  }
-  
-  .country-code-selector {
-    min-width: 90px;
-    height: 2.25rem;
-    padding: 0 8px;
-  }
-  
-  .country-code-list,
   .dropdown-list {
+    z-index: 99998 !important;
+  }
+  
+  .country-code-list {
+    z-index: 99999 !important;
+  }
+
+  .dropdown-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    max-height: 280px;
-    position: absolute;
-    z-index: 1001;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9998;
+    display: none;
   }
-  
-  .search-container {
-    padding: 10px;
+
+  .dropdown-overlay.active {
+    display: block;
   }
-  
-  .search-input {
-    padding: 0.6rem 0.75rem !important;
-    font-size: 0.85rem;
+
+  .dropdown-items,
+  .country-code-list .dropdown-items {
+    max-height: calc(70vh - 120px);
   }
-  
-  .dropdown-items {
-    max-height: 220px;
+
+  .add-client-container {
+    overflow-x: hidden;
   }
-  
+
+  .add-client-box {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .form-row {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
   .dropdown-item,
   .country-code-item {
-    padding: 0.75rem 1rem;
-    font-size: 0.85rem;
-  }
-  
-  .form-actions {
-    flex-direction: row;
-    justify-content: space-between;
+    min-height: 44px;
+    display: flex;
     align-items: center;
-    margin-top: 2rem;
-    gap: 1rem;
   }
-  
+
+  .tab {
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  input,
+  select,
+  .country-code-selector,
+  .phone-number-input {
+    min-height: 44px;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
   .btn-primary {
-    padding: 0.6rem 1.25rem;
-    min-width: 160px;
-  }
-  
-  .btn-primary span {
-    font-size: 1rem;
-  }
-  
-  .go-back-btn {
-    width: 40px;
-    height: 40px;
-    padding: 8px;
+    min-height: 44px;
   }
 }
 
@@ -660,103 +737,112 @@ select.ng-invalid.ng-touched {
     min-height: 80vh;
     padding: 0.25rem;
   }
-  
+
   .add-client-box {
     margin: 10px;
     padding: 1.25rem;
+    margin-top: 4rem;
   }
-  
+
   .tabs {
     gap: 0.4rem;
     margin-bottom: 1.25rem;
   }
-  
+
   .tab {
     flex: 1 1 calc(50% - 0.4rem);
     font-size: 0.85rem;
     padding: 0.35rem 0.25rem;
     min-width: 100px;
   }
-  
+
   .form-row {
     margin-top: 1.25rem;
     gap: 1rem;
   }
-  
+
   label {
     font-size: 0.9rem;
     margin-bottom: 0.4rem;
   }
-  
-  input, select {
+
+  input,
+  select {
     height: 2rem;
     font-size: 0.8rem;
     padding: 0 0.75rem;
     border-radius: 0.8rem;
   }
-  
+
   .phone-input-container {
     gap: 0.5rem;
   }
-  
+
   .country-code-selector {
     min-width: 85px;
     height: 2rem;
     padding: 0 6px;
     border-radius: 0.8rem;
   }
-  
+
   .country-code-value {
     font-size: 0.8rem;
   }
-  
+
   .country-code-list,
   .dropdown-list {
     width: 100%;
     max-height: 260px;
     border-radius: 0.8rem;
-    z-index: 1002;
   }
   
+  .dropdown-list {
+    z-index: 99998;
+  }
+  
+  .country-code-list {
+    z-index: 99999;
+  }
+
   .country-code-item {
     padding: 0.6rem 0.8rem;
     gap: 0.5rem;
   }
-  
+
   .phone-number-input {
     height: 2rem;
     padding: 0 0.75rem;
     font-size: 0.8rem;
     border-radius: 0.8rem;
   }
-  
+
   .dropdown-item {
     padding: 0.6rem 0.8rem;
     font-size: 0.85rem;
   }
-  
+
   .form-actions {
     gap: 0.75rem;
     margin-top: 1.75rem;
   }
-  
+
   .btn-primary {
     padding: 0.5rem 1rem;
     min-width: 150px;
     border-radius: 0.8rem;
   }
-  
+
   .btn-primary span {
     font-size: 0.9rem;
   }
-  
+
   .go-back-btn {
     width: 35px;
     height: 35px;
     padding: 6px;
     border-radius: 0.8rem;
   }
-  
+
   .error {
     font-size: 0.85rem;
   }
@@ -768,229 +854,123 @@ select.ng-invalid.ng-touched {
     padding: 1rem;
     margin: 8px;
   }
-  
+
   .tabs {
     gap: 0.3rem;
     margin-bottom: 1rem;
   }
-  
+
   .tab {
     font-size: 0.8rem;
     padding: 0.3rem 0.2rem;
     min-width: 90px;
   }
-  
+
   .tab.active {
     border-bottom-width: 3px;
   }
-  
+
   .form-row {
     gap: 0.75rem;
     margin-top: 1rem;
   }
-  
+
   label {
     font-size: 0.85rem;
   }
-  
-  input, select {
+
+  input,
+  select {
     height: 1.75rem;
     font-size: 0.75rem;
     padding: 0 0.6rem;
   }
-  
+
   .phone-input-container {
     gap: 0.4rem;
   }
-  
+
   .country-code-selector {
     min-width: 75px;
     height: 1.75rem;
     padding: 0 0.4rem;
   }
-  
+
   .country-code-flag {
     font-size: 0.9rem;
   }
-  
+
   .country-code-value {
     font-size: 0.75rem;
   }
-  
+
   .country-code-list,
   .dropdown-list {
     max-height: 240px;
   }
   
+  .dropdown-list {
+    z-index: 99998;
+  }
+  
+  .country-code-list {
+    z-index: 99999;
+  }
+
   .country-code-item {
     padding: 0.5rem 0.6rem;
   }
-  
+
   .country-code-item .country-code-name {
     font-size: 0.8rem;
   }
-  
+
   .country-code-item .country-code-value {
     font-size: 0.75rem;
   }
-  
+
   .phone-number-input {
     height: 1.75rem;
     padding: 0 0.6rem;
     font-size: 0.75rem;
   }
-  
+
   .dropdown-item {
     padding: 0.5rem 0.6rem;
     font-size: 0.8rem;
   }
-  
+
   .form-actions {
     gap: 0.5rem;
     margin-top: 1.5rem;
   }
-  
+
   .btn-primary {
     padding: 0.4rem 0.8rem;
     min-width: 130px;
   }
-  
+
   .btn-primary span {
     font-size: 0.85rem;
   }
-  
+
   .btn-primary img {
     width: 14px;
     height: 14px;
   }
-  
+
   .go-back-btn {
     width: 32px;
     height: 32px;
     padding: 5px;
   }
-  
+
   .go-back-btn img {
     width: 16px;
     height: 16px;
   }
-  
+
   .error {
     font-size: 0.8rem;
-  }
-}
-
-/* ---------- Dropdown Positioning Fixes ---------- */
-@media (max-width: 768px) {
-  .custom-dropdown {
-    position: static;
-  }
-  
-  .dropdown-list,
-  .country-code-list {
-    position: fixed !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    top: 50% !important;
-    transform: translateX(-50%) translateY(-50%) !important;
-    width: 90vw !important;
-    max-width: 400px !important;
-    max-height: 70vh !important;
-    z-index: 9999 !important;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-  }
-  
-  .dropdown-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 9998;
-    display: none;
-  }
-  
-  .dropdown-overlay.active {
-    display: block;
-  }
-  
-  .dropdown-items,
-  .country-code-list .dropdown-items {
-    max-height: calc(70vh - 120px);
-  }
-}
-
-/* ---------- Prevent Horizontal Scroll ---------- */
-@media (max-width: 768px) {
-  .add-client-container {
-    overflow-x: hidden;
-  }
-  
-  .add-client-box {
-    max-width: 100%;
-    overflow-x: hidden;
-  }
-  
-  .form-row {
-    max-width: 100%;
-    overflow-x: hidden;
-  }
-}
-
-/* ---------- Touch-Friendly Improvements ---------- */
-@media (max-width: 768px) {
-  .dropdown-item,
-  .country-code-item {
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-  }
-  
-  .tab {
-    min-height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  input, select, .country-code-selector, .phone-number-input {
-    min-height: 44px;
-    -webkit-appearance: none;
-    appearance: none;
-  }
-  
-  .btn-primary {
-    min-height: 44px;
-  }
-}
-
-/* ---------- Landscape Mode ---------- */
-@media (max-height: 600px) and (orientation: landscape) {
-  .add-client-container {
-    min-height: auto;
-    padding-bottom: 2rem;
-  }
-  
-  .country-code-list,
-  .dropdown-list {
-    max-height: 50vh;
-    top: 40% !important;
-  }
-  
-  .dropdown-items {
-    max-height: calc(50vh - 120px);
-  }
-}
-
-/* ---------- Large Desktop (1440px and above) ---------- */
-@media (min-width: 1440px) {
-  .add-client-box {
-    max-width: 1400px;
-    margin: 27px auto;
-  }
-  
-  .form-row {
-    max-width: 100%;
   }
 }

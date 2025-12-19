@@ -2,9 +2,21 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastService } from '../service/toast-service';
 
+interface Company {
+  id: string;
+  name: string;
+}
+
+interface Assessment {
+  id: string;
+  name: string;
+  companyId: string;
+}
 interface ClientData {
   company: string;
+  assessment: string;
   Q1File?: File;
   Q1Status: string;
   Q2File?: File;
@@ -22,13 +34,28 @@ interface ClientData {
   styleUrl: './edit-asv-client.css',
 })
 export class EditAsvClient {
+
+  companySearch = '';
+  assessmentSearch = '';
+  isCompanyOpen = false;
+  isAssessmentOpen = false;
+
+  companies: Company[] = [];
+  assessments: Assessment[] = [];
+  filteredAssessments: Assessment[] = [];
+
+  // Selected
+  selectedCompany?: Company;
+  selectedAssessment?: Assessment;
+
   @ViewChild('Q1Input') Q1Input!: ElementRef<HTMLInputElement>;
   @ViewChild('Q2Input') Q2Input!: ElementRef<HTMLInputElement>;
   @ViewChild('Q3Input') Q3Input!: ElementRef<HTMLInputElement>;
   @ViewChild('Q4Input') Q4Input!: ElementRef<HTMLInputElement>;
 
   editingRow: ClientData = {
-    company: 'Sample Company',
+    company: '',
+    assessment: '',
     Q1Status: 'PENDING',
     Q2Status: 'PENDING',
     Q3Status: 'PENDING',
@@ -38,7 +65,41 @@ export class EditAsvClient {
   // Temporary storage for file data
   private fileDataMap: Map<string, { file: File, dataUrl: string }> = new Map();
 
-  constructor(private router: Router  ) {
+  constructor(private router: Router,private toast:ToastService) {
+  }
+
+  selectCompany(company: Company) {
+    this.selectedCompany = company;
+    this.editingRow.company = company.name;
+
+    this.companySearch = company.name;
+    this.isCompanyOpen = false;
+
+    // Reset assessment
+    this.selectedAssessment = undefined;
+    this.assessmentSearch = '';
+    this.filteredAssessments = this.assessments.filter(
+      a => a.companyId === company.id
+    );
+  }
+
+  selectAssessment(assessment: Assessment) {
+    this.selectedAssessment = assessment;
+    this.assessmentSearch = assessment.name;
+    this.isAssessmentOpen = false;
+  }
+
+
+  get filteredCompanies() {
+    return this.companies.filter(c =>
+      c.name.toLowerCase().includes(this.companySearch.toLowerCase())
+    );
+  }
+
+  get filteredAssessmentList() {
+    return this.filteredAssessments.filter(a =>
+      a.name.toLowerCase().includes(this.assessmentSearch.toLowerCase())
+    );
   }
 
   // Method to trigger file input click
@@ -64,7 +125,7 @@ export class EditAsvClient {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
-      
+
       // Store file reference in editingRow
       switch (quarter) {
         case 'Q1':
@@ -83,7 +144,7 @@ export class EditAsvClient {
 
       // Read file and store data URL for preview
       this.readAndStoreFile(file, quarter);
-      
+
       // Reset the input to allow selecting the same file again
       input.value = '';
     }
@@ -92,15 +153,15 @@ export class EditAsvClient {
   // Read file and store as data URL
   private readAndStoreFile(file: File, quarter: string) {
     const reader = new FileReader();
-    
+
     reader.onload = (e) => {
       const dataUrl = e.target?.result as string;
       this.fileDataMap.set(quarter, { file, dataUrl });
-      
+
       // Auto-update status to INPROGRESS when a file is uploaded
       this.onStatusChange(quarter, 'INPROGRESS');
     };
-    
+
     reader.readAsDataURL(file);
   }
 
@@ -122,18 +183,15 @@ export class EditAsvClient {
         break;
     }
 
-    console.log(`${quarter} status changed to: ${status}`);
-    
-    // You can add additional logic here, like auto-saving or API calls
   }
 
   // Preview file
   onPreview(quarter: string) {
     const fileInfo = this.fileDataMap.get(quarter);
     const file = this.getFileByQuarter(quarter);
-    
+
     if (!file && !fileInfo) {
-      alert('No file available for preview');
+      this.toast.error('No file available for preview');
       return;
     }
 
@@ -147,13 +205,13 @@ export class EditAsvClient {
 
   private readAndPreviewFile(file: File, quarter: string) {
     const reader = new FileReader();
-    
+
     reader.onload = (e) => {
       const dataUrl = e.target?.result as string;
       this.fileDataMap.set(quarter, { file, dataUrl });
       this.openFilePreview(dataUrl, file.name, file.type);
     };
-    
+
     reader.readAsDataURL(file);
   }
 
@@ -178,7 +236,7 @@ export class EditAsvClient {
           </html>
         `);
       }
-    } 
+    }
     // For image files
     else if (fileType.startsWith('image/')) {
       const imageWindow = window.open('');
@@ -250,7 +308,7 @@ export class EditAsvClient {
     }
     // For other file types - download instead
     else {
-      alert('Preview not available for this file type. Please download the file.');
+      this.toast.warning('Preview not available for this file type. Please download the file.');
       this.downloadFile(dataUrl, fileName);
     }
   }
@@ -259,9 +317,9 @@ export class EditAsvClient {
   onDownload(quarter: string) {
     const fileInfo = this.fileDataMap.get(quarter);
     const file = this.getFileByQuarter(quarter);
-    
+
     if (!file && !fileInfo) {
-      alert('No file available for download');
+      this.toast.warning('No file available for download');
       return;
     }
 
@@ -275,13 +333,13 @@ export class EditAsvClient {
 
   private readAndDownloadFile(file: File, quarter: string) {
     const reader = new FileReader();
-    
+
     reader.onload = (e) => {
       const dataUrl = e.target?.result as string;
       this.fileDataMap.set(quarter, { file, dataUrl });
       this.downloadFile(dataUrl, file.name);
     };
-    
+
     reader.readAsDataURL(file);
   }
 
@@ -307,7 +365,7 @@ export class EditAsvClient {
 
   // Save edits
   saveEdit() {
-  
+
     try {
       const clientData = {
         company: this.editingRow.company,
@@ -318,13 +376,12 @@ export class EditAsvClient {
       };
       this.cancelEdit();
     } catch (error) {
-      console.error('Error saving data:', error);
+      this.toast.error('Error saving data')
     }
   }
 
   // Cancel edit
   cancelEdit() {
-    console.log('Edit cancelled');
     this.router.navigate(['/asv-client-list']);
 
   }
@@ -345,7 +402,7 @@ export class EditAsvClient {
         this.editingRow.Q4File = undefined;
         break;
     }
-    
+
     this.fileDataMap.delete(quarter);
     console.log(`Cleared ${quarter} file`);
   }

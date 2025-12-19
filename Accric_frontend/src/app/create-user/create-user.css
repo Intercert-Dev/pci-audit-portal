@@ -131,7 +131,6 @@ input::placeholder {
 .btn {
   width: 100%;
   display: flex;
-  justify-content: flex-end;
   align-items: center;
   padding-right: 13rem;
 }
@@ -190,6 +189,7 @@ input::placeholder {
     padding-left: 1.5rem;
     padding-top: 1.5rem;
     padding-right: 1.5rem;
+    margin-top: 6rem;
   }
 
   .form-group input,
@@ -214,7 +214,7 @@ input::placeholder {
 @media (max-width: 480px) {
 
   .form-box{
-    margin-top: 1rem;
+    margin-top: 3rem;
   }
 
   .form-group {

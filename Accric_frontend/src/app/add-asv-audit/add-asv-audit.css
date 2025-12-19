@@ -1,18 +1,23 @@
+/* ================================
+   BASE STYLES
+================================ */
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+/* ================================
+   CONTAINER & BOX
+================================ */
+
 .asv-audit-container {
   background-color: rgba(250, 251, 254, 1);
   width: 100%;
   min-height: 88vh;
-  padding-top: 1px;
+  padding: 2rem 3rem;
   display: flex;
-  padding-left: 3rem;
-  padding-top: 2rem;
-  padding-right: 3rem;
 }
 
 .asv-audit-box {
@@ -21,7 +26,7 @@
   padding: 2rem;
   width: 100%;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-   animation: fadeIn 0.3s ease-in-out;
+  animation: fadeIn 0.3s ease-in-out;
 }
 
 .asv-audit-box h2 {
@@ -32,6 +37,10 @@
   font-weight: 600;
   font-size: 1.5rem;
 }
+
+/* ================================
+   FORM STRUCTURE
+================================ */
 
 .asv-form {
   display: flex;
@@ -69,7 +78,12 @@
   min-width: 250px;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
+
+/* ================================
+   FORM INPUTS & LABELS
+================================ */
 
 label {
   font-family: 'Inter', sans-serif;
@@ -84,7 +98,7 @@ input {
   font-family: 'Inter', sans-serif;
   font-weight: 400;
   font-size: 0.9rem;
-  color: rgba(35, 35, 35, 1);
+  color: rgba(113, 142, 191, 1);
   height: 2.5rem;
   padding: 0 12px;
   border: 1px solid rgba(223, 234, 242, 1);
@@ -99,11 +113,10 @@ input:focus {
 }
 
 input::placeholder {
-  color: rgba(113, 142, 191, 1);
+  color: rgba(113, 142, 191, 0.7);
   opacity: 1;
 }
 
-/* Number input specific styles */
 input[type="number"] {
   -moz-appearance: textfield;
 }
@@ -113,6 +126,39 @@ input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+
+textarea {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 0.9rem;
+  color: rgba(35, 35, 35, 1);
+  padding: 12px;
+  border: 1px solid rgba(223, 234, 242, 1);
+  border-radius: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+  background-color: white;
+  resize: vertical;
+  min-height: 90px;
+}
+
+textarea:focus {
+  border-color: #4e77ff;
+}
+
+textarea::placeholder {
+   color: rgba(113, 142, 191, 0.7);
+  opacity: 1;
+}
+
+textarea.ng-invalid.ng-touched {
+  border: 1px solid #d9534f !important;
+}
+
+/* ================================
+   FORM ACTIONS & BUTTONS
+================================ */
 
 .form-actions {
   display: flex;
@@ -175,6 +221,10 @@ input[type="number"]::-webkit-inner-spin-button {
   color: rgba(35, 35, 35, 1);
 }
 
+/* ================================
+   ERROR MESSAGES
+================================ */
+
 .error {
   color: #d9534f !important;
   font-size: 0.85rem;
@@ -188,51 +238,24 @@ input[type="number"]::-webkit-inner-spin-button {
   font-size: 0.85rem;
 }
 
-input.ng-invalid.ng-touched {
-  border: 1px solid #d9534f !important;
-}
+/* ================================
+   SEARCH DROPDOWN - CRITICAL FIX
+================================ */
 
-
-textarea {
-  font-family: 'Inter', sans-serif;
-  font-weight: 400;
-  font-size: 0.9rem;
-  color: rgba(35, 35, 35, 1);
-  padding: 12px;
-  border: 1px solid rgba(223, 234, 242, 1);
-  border-radius: 1rem;
-  outline: none;
-  transition: border-color 0.3s;
-  background-color: white;
-  resize: vertical; /* allow vertical resizing only */
-  min-height: 90px;
-}
-
-textarea:focus {
-  border-color: #4e77ff;
-}
-
-textarea::placeholder {
-  color: rgba(113, 142, 191, 1);
-  opacity: 1;
-}
-
-textarea.ng-invalid.ng-touched {
-  border: 1px solid #d9534f !important;
-}
-
-/* Legal Entity Search Dropdown Styles */
-.search-dropdown {
+.search-dropdown,
+.edit-client-container .search-dropdown {
   position: relative;
-  z-index: 100;
+  z-index: 9998;
 }
 
-.search-input-wrapper {
+.search-input-wrapper,
+.edit-client-container .search-input-wrapper {
   position: relative;
   width: 100%;
 }
 
-.search-input-wrapper input {
+.search-input-wrapper input,
+.edit-client-container .search-input-wrapper input {
   padding-right: 2.5rem;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23718ebf' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
@@ -240,11 +263,13 @@ textarea.ng-invalid.ng-touched {
   background-size: 16px;
 }
 
-.search-input-wrapper input:focus {
+.search-input-wrapper input:focus,
+.edit-client-container .search-input-wrapper input:focus {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%234e77ff' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
 }
 
-.search-dropdown-list {
+.search-dropdown-list,
+.edit-client-container .search-dropdown-list {
   position: absolute;
   top: calc(100% + 4px);
   left: 0;
@@ -259,6 +284,13 @@ textarea.ng-invalid.ng-touched {
   animation: dropdownFadeIn 0.2s ease-out;
 }
 
+.edit-client-container .search-dropdown-list {
+  top: calc(100% + 6px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  max-height: 280px;
+  z-index: 99999;
+}
+
 @keyframes dropdownFadeIn {
   from {
     opacity: 0;
@@ -270,7 +302,8 @@ textarea.ng-invalid.ng-touched {
   }
 }
 
-.dropdown-item {
+.dropdown-item,
+.edit-client-container .dropdown-item {
   padding: 0.875rem 1rem;
   cursor: pointer;
   font-family: 'Inter', sans-serif;
@@ -283,23 +316,32 @@ textarea.ng-invalid.ng-touched {
   min-height: 48px;
 }
 
-.dropdown-item:last-child {
+.edit-client-container .dropdown-item {
+  padding: 0.85rem 1rem;
+  min-height: 46px;
+}
+
+.dropdown-item:last-child,
+.edit-client-container .dropdown-item:last-child {
   border-bottom: none;
 }
 
-.dropdown-item:hover {
+.dropdown-item:hover,
+.edit-client-container .dropdown-item:hover {
   background-color: rgba(250, 251, 254, 1);
   color: rgba(57, 106, 255, 1);
 }
 
-.dropdown-item.selected {
+.dropdown-item.selected,
+.edit-client-container .dropdown-item.selected {
   background-color: rgba(57, 106, 255, 0.1);
   color: rgba(57, 106, 255, 1);
   font-weight: 500;
   position: relative;
 }
 
-.dropdown-item.selected::before {
+.dropdown-item.selected::before,
+.edit-client-container .dropdown-item.selected::before {
   content: '';
   position: absolute;
   left: 0;
@@ -310,7 +352,8 @@ textarea.ng-invalid.ng-touched {
   border-radius: 0 3px 3px 0;
 }
 
-.no-results {
+.no-results,
+.edit-client-container .no-results {
   padding: 1.5rem 1rem;
   text-align: center;
   font-family: 'Inter', sans-serif;
@@ -320,69 +363,55 @@ textarea.ng-invalid.ng-touched {
   border-radius: 0.75rem;
 }
 
-/* Scrollbar styling for dropdown */
-.search-dropdown-list::-webkit-scrollbar {
+.edit-client-container .no-results {
+  padding: 1.25rem 1rem;
+}
+
+/* ================================
+   SCROLLBAR STYLING
+================================ */
+
+.search-dropdown-list::-webkit-scrollbar,
+.edit-client-container .search-dropdown-list::-webkit-scrollbar {
   width: 6px;
 }
 
-.search-dropdown-list::-webkit-scrollbar-track {
+.search-dropdown-list::-webkit-scrollbar-track,
+.edit-client-container .search-dropdown-list::-webkit-scrollbar-track {
   background: rgba(245, 247, 250, 1);
   border-radius: 3px;
 }
 
-.search-dropdown-list::-webkit-scrollbar-thumb {
+.search-dropdown-list::-webkit-scrollbar-thumb,
+.edit-client-container .search-dropdown-list::-webkit-scrollbar-thumb {
   background: rgba(113, 142, 191, 0.5);
   border-radius: 3px;
 }
 
-.search-dropdown-list::-webkit-scrollbar-thumb:hover {
+.search-dropdown-list::-webkit-scrollbar-thumb:hover,
+.edit-client-container .search-dropdown-list::-webkit-scrollbar-thumb:hover {
   background: rgba(113, 142, 191, 0.7);
 }
 
-/* Ensure dropdown appears above other content */
+
+
 .add-audit-box {
   position: relative;
   z-index: 1;
 }
 
-/* Responsive adjustments for dropdown */
-@media (max-width: 768px) {
-  .search-dropdown-list {
-    max-height: 250px;
-    border-radius: 0.5rem;
-  }
-  
-  .dropdown-item {
-    padding: 0.75rem 1rem;
-    font-size: 0.9rem;
-    min-height: 44px;
-  }
-}
-
-@media (max-width: 480px) {
-  .search-dropdown-list {
-    max-height: 200px;
-  }
-  
-  .dropdown-item {
-    padding: 0.625rem 0.875rem;
-    min-height: 40px;
-  }
+.edit-client-container .search-dropdown {
+  z-index: 9998;
 }
 
 
-
-/* Responsive Design */
-/* Tablet (max-width: 1024px) */
 @media (max-width: 1024px) {
   .asv-audit-container {
     padding: 1rem;
   }
   
   .asv-audit-box {
-    margin-left: 1rem;
-    margin-right: 1rem;
-    margin-top: 1rem;
+    margin: 1rem;
     padding: 1.5rem;
     width: calc(100% - 2rem);
   }
@@ -409,13 +438,18 @@ textarea.ng-invalid.ng-touched {
     justify-content: flex-start;
     gap: 1rem;
   }
+  
+  .search-dropdown-list,
+  .edit-client-container .search-dropdown-list {
+    z-index: 99999;
+  }
 }
 
-/* Mobile (max-width: 768px) */
-@media (max-width: 768px) {
 
+
+@media (max-width: 768px) {
   .asv-audit-container {
-    margin-top: 7rem;
+    margin-top: 6rem;
   }
   
   .asv-audit-box {
@@ -465,9 +499,34 @@ textarea.ng-invalid.ng-touched {
   .btn-secondary span {
     font-size: 1.1rem;
   }
+
+  /* Dropdown adjustments */
+  .search-dropdown-list,
+  .edit-client-container .search-dropdown-list {
+    max-height: 250px;
+    border-radius: 0.5rem;
+    z-index: 99999;
+  }
+
+  .edit-client-container .search-dropdown-list {
+    max-height: 240px;
+    z-index: 99999;
+  }
+  
+  .dropdown-item,
+  .edit-client-container .dropdown-item {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    min-height: 44px;
+  }
+
+  .edit-client-container .dropdown-item {
+    min-height: 42px;
+  }
 }
 
-/* Small Mobile (max-width: 480px) */
+
+
 @media (max-width: 480px) {
   .asv-audit-container {
     min-height: calc(100vh - 60px);
@@ -519,5 +578,109 @@ textarea.ng-invalid.ng-touched {
   
   .error small {
     font-size: 0.8rem;
+  }
+
+  /* Dropdown adjustments */
+  .search-dropdown-list,
+  .edit-client-container .search-dropdown-list {
+    max-height: 200px;
+    z-index: 99999;
+  }
+  
+  .dropdown-item,
+  .edit-client-container .dropdown-item {
+    padding: 0.625rem 0.875rem;
+    font-size: 0.85rem;
+    min-height: 40px;
+  }
+}
+
+
+@media (max-width: 360px) {
+  .asv-audit-container {
+    padding: 0.5rem;
+    margin-top: 6.5rem;
+  }
+
+  .asv-audit-box {
+    padding: 0.75rem;
+    border-radius: 0;
+    width: 100%;
+    min-height: calc(100vh - 56px);
+  }
+
+  .asv-audit-box h2 {
+    font-size: 1.15rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .form-section h3 {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+
+  label {
+    font-size: 0.85rem;
+    margin-bottom: 0.35rem;
+  }
+
+  input,
+  textarea {
+    height: 2.5rem;
+    font-size: 0.9rem;
+    padding: 0 0.75rem;
+    border-radius: 0.75rem;
+  }
+
+  textarea {
+    min-height: 80px;
+    padding: 0.75rem;
+  }
+
+  .form-row {
+    gap: 0.75rem;
+  }
+
+  .form-actions {
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    gap: 0.6rem;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    padding: 0.65rem 0.9rem;
+    border-radius: 0.75rem;
+  }
+
+  .btn-primary span,
+  .btn-secondary span {
+    font-size: 0.95rem;
+  }
+
+  .error,
+  .error small {
+    font-size: 0.75rem;
+  }
+
+  /* Dropdown adjustments */
+  .search-dropdown-list,
+  .edit-client-container .search-dropdown-list {
+    max-height: 180px;
+    border-radius: 0.5rem;
+    z-index: 99999;
+  }
+
+  .dropdown-item,
+  .edit-client-container .dropdown-item {
+    font-size: 0.8rem;
+    padding: 0.6rem 0.75rem;
+    min-height: 36px;
+  }
+
+  .no-results,
+  .edit-client-container .no-results {
+    font-size: 0.8rem;
+    padding: 1rem 0.75rem;
   }
 }

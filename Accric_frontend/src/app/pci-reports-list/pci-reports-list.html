@@ -1,0 +1,119 @@
+<div class="pci-reports-list-container">
+  <div class="pci-reports-list-box">
+    <div class="header-row">
+      <p>PCI Report Verification List</p>
+      <div class="header-right">
+        <div class="search-box">
+          <img src="/assets/icons/magnifying-glass 2.png" alt="Search Icon">
+          <input type="text" placeholder="Search Reports" [(ngModel)]="search_text" (input)="filter_list()">
+        </div>
+        <button class="export-btn" (click)="exportToExcel()"><span>Export to Excel</span></button>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th rowspan="2">Company Name</th>
+            <th rowspan="2">Assessment/Project</th>
+            <th colspan="3">Previous Reports</th>
+            <th colspan="3">Current Reports</th>
+            <th rowspan="2">Action</th>
+          </tr>
+          <tr>
+            <!-- Previous Reports sub-headers -->
+            <th>AOC</th>
+            <th>ROC</th>
+            <th>Final</th>
+            <!-- Current Reports sub-headers -->
+            <th>AOC</th>
+            <th>ROC</th>
+            <th>Final</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let report of filtered_list">
+            <!-- Company Name -->
+            <td>{{ report.associated_organization || 'N/A' }}</td>
+            
+            <!-- Assessment/Project -->
+            <td>{{ report.associated_application || 'N/A' }}</td>
+            
+            <!-- Previous Reports: AOC -->
+            <td>
+              <div class="file-count-badge" *ngIf="getReportFileCount(report, 'prev_aoc_report') > 0">
+                <span>{{ getReportFileCount(report, 'prev_aoc_report') }} files</span>
+              </div>
+              <span *ngIf="getReportFileCount(report, 'prev_aoc_report') === 0">No files</span>
+            </td>
+            
+            <!-- Previous Reports: ROC -->
+            <td>
+              <div class="file-count-badge" *ngIf="getReportFileCount(report, 'prev_roc_report') > 0">
+                <span>{{ getReportFileCount(report, 'prev_roc_report') }} files</span>
+              </div>
+              <span *ngIf="getReportFileCount(report, 'prev_roc_report') === 0">No files</span>
+            </td>
+            
+            <!-- Previous Reports: Final -->
+            <td>
+              <div class="file-count-badge" *ngIf="getReportFileCount(report, 'prev_final_report') > 0">
+                <span>{{ getReportFileCount(report, 'prev_final_report') }} files</span>
+              </div>
+              <span *ngIf="getReportFileCount(report, 'prev_final_report') === 0">No files</span>
+            </td>
+            
+            <!-- Current Reports: AOC -->
+            <td>
+              <div class="file-count-badge" *ngIf="getReportFileCount(report, 'current_aoc_report') > 0">
+                <span>{{ getReportFileCount(report, 'current_aoc_report') }} files</span>
+              </div>
+              <span *ngIf="getReportFileCount(report, 'current_aoc_report') === 0">No files</span>
+            </td>
+            
+            <!-- Current Reports: ROC -->
+            <td>
+              <div class="file-count-badge" *ngIf="getReportFileCount(report, 'current_roc_report') > 0">
+                <span>{{ getReportFileCount(report, 'current_roc_report') }} files</span>
+              </div>
+              <span *ngIf="getReportFileCount(report, 'current_roc_report') === 0">No files</span>
+            </td>
+            
+            <!-- Current Reports: Final -->
+            <td>
+              <div class="file-count-badge" *ngIf="getReportFileCount(report, 'current_final_report') > 0">
+                <span>{{ getReportFileCount(report, 'current_final_report') }} files</span>
+              </div>
+              <span *ngIf="getReportFileCount(report, 'current_final_report') === 0">No files</span>
+            </td>
+            
+            
+            <!-- Action column -->
+            <td class="sticky-action">
+              <div class="action-box">
+                <img id="view-img" src="/assets/icons/report-view-icon.jpg" alt="View" (click)="viewReport(report)" title="View Details">
+                <img src="/assets/icons/edit.png" alt="Edit" (click)="editReport(report)" title="Edit Report">
+              </div>
+            </td>
+          </tr>
+          
+          <!-- Loading State -->
+          <tr *ngIf="isLoading && filtered_list.length === 0">
+            <td colspan="10" style="text-align: center; padding: 20px;">
+              Loading reports...
+            </td>
+          </tr>
+          
+          <!-- Empty State -->
+          <tr *ngIf="!isLoading && filtered_list.length === 0">
+            <td colspan="10" style="text-align: center; padding: 20px;">
+              No reports found.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -2,12 +2,61 @@
     <div class="edit-client-box">
         <p class="edit-title">Edit ASV Client</p>
 
+        <div class="searchbox">
+             <div class="company-search-section">
+
+                <!-- COMPANY SEARCH DROPDOWN -->
+                <div class="form-group search-dropdown">
+                    <label class="form-label">Company</label>
+
+                    <input type="text" class="form-input" placeholder="Search Company" [(ngModel)]="companySearch"
+                        (focus)="isCompanyOpen = true" (input)="isCompanyOpen = true" />
+
+                    <div class="dropdown-list" *ngIf="isCompanyOpen">
+                        <div class="dropdown-item" *ngFor="let c of filteredCompanies" (click)="selectCompany(c)">
+                            {{ c.name }}
+                        </div>
+
+                        <div class="dropdown-empty" *ngIf="filteredCompanies.length === 0">
+                            No companies found
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+             <div class="assessment-search-section">
+
+                <!-- ASSESSMENT SEARCH DROPDOWN -->
+                <div class="form-group search-dropdown">
+                    <label class="form-label">Assessment</label>
+
+                    <input type="text" class="form-input" placeholder="Search Assessment" [(ngModel)]="assessmentSearch"
+                        [disabled]="!selectedCompany" (focus)="isAssessmentOpen = true"
+                        (input)="isAssessmentOpen = true" />
+
+                    <div class="dropdown-list" *ngIf="isAssessmentOpen && selectedCompany">
+                        <div class="dropdown-item" *ngFor="let a of filteredAssessmentList"
+                            (click)="selectAssessment(a)">
+                            {{ a.name }}
+                        </div>
+
+                        <div class="dropdown-empty" *ngIf="filteredAssessmentList.length === 0">
+                            No assessments found
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
         <!-- Company Name Section -->
         <div class="form-section">
-            <div class="form-group">
-                <label class="form-label">Company</label>
-                <input type="text" class="form-input" [(ngModel)]="editingRow.company">
-            </div>
+            
+           
+
         </div>
 
         <!-- Q1 Report Section -->

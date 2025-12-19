@@ -8,12 +8,7 @@
       <div class="header-right">
         <div class="search-box">
           <img src="/assets/icons/magnifying-glass 2.png" alt="Search Icon">
-          <input
-            type="text"
-            placeholder="Search Audits"
-            [(ngModel)]="search_text"
-            (input)="filter_list()"
-          >
+          <input type="text" placeholder="Search Audits" [(ngModel)]="search_text" (input)="filter_list()">
         </div>
 
         <button class="export-btn" (click)="exportToExcel()">
@@ -31,24 +26,16 @@
             <th>Certificate Number</th>
             <th>Audit Start </th>
             <th>Audit End </th>
-            <th>Details</th>
           </tr>
         </thead>
 
         <tbody>
           <tr *ngFor="let audit of filtered_list">
-            <td>{{ audit.legal_entity_name || 'N/A' }}</td>
+            <td>{{ audit.client?.legal_entity_name || 'N/A' }}</td>
             <td>{{ audit.certificate_number_unique_id || 'N/A' }}</td>
             <td>{{ audit.audit_start_date ? (audit.audit_start_date | date) : 'N/A' }}</td>
             <td>{{ audit.audit_end_date ? (audit.audit_end_date | date) : 'N/A' }}</td>
-
-            <td>
-              <button class="view-btn" (click)="viewDetails(audit)">
-                <span>View Details</span>
-              </button>
-            </td>
           </tr>
-
           <!-- show friendly message when list empty -->
           <tr *ngIf="filtered_list.length === 0">
             <td colspan="5" style="text-align:center; padding: 20px;">No audits found.</td>

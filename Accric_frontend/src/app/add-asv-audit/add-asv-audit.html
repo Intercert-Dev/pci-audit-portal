@@ -83,7 +83,7 @@
 
           <div class="form-group">
             <label for="associatedOrganization">Associated Organization <span class="required">*</span></label>
-            <input id="associatedOrganization" type="text" name="associatedOrganization"
+            <input readonly id="associatedOrganization" type="text" name="associatedOrganization"
               [(ngModel)]="asvData.associatedOrganization" #associatedOrganization="ngModel"
               placeholder="Enter Associated Organization" required [disabled]="isLoading" />
             <div *ngIf="showErrors && !asvData.associatedOrganization.trim()" class="error">
@@ -93,7 +93,7 @@
 
           <div class="form-group">
             <label for="associatedApplication">Associated Application <span class="required">*</span></label>
-            <input id="associatedApplication" type="text" name="associatedApplication"
+            <input readonly id="associatedApplication" type="text" name="associatedApplication"
               [(ngModel)]="asvData.associatedApplication" #associatedApplication="ngModel"
               placeholder="Enter application name" required [disabled]="isLoading" />
             <div *ngIf="showErrors && !asvData.associatedApplication.trim()" class="error">

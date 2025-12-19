@@ -19,6 +19,8 @@ export class Dashboard implements OnInit {
   actualSuspendedClients: number = 0;
   actualTotalCertificates: number = 0;
   upcomingAudits: any[] = [];
+  fullList: any[] = [];
+  filtered_list: any[] = [];
   
   // Animated values (displayed values)
   totalClients: number = 0;
@@ -52,10 +54,12 @@ export class Dashboard implements OnInit {
         });
 
         this.fetchLoginDetails(token);
+        this.fetchTotalUpcomingAudits(token);
       } else {
         const savedToken = localStorage.getItem('jwt');
         if (savedToken) {
           this.fetchLoginDetails(savedToken);
+          this.fetchTotalUpcomingAudits(savedToken);
         }
       }
     });
@@ -77,7 +81,6 @@ export class Dashboard implements OnInit {
         this.actualActiveClients = res.activeClientsCount || 0;
         this.actualSuspendedClients = res.suspendedClientsCount || 0;
         this.actualTotalCertificates = res.clientsWithCertificateCount || 0;
-        this.upcomingAudits = res.activeOldCertificates || [];
         
         // Reset animated values to 0
         this.totalClients = 0;
@@ -93,6 +96,30 @@ export class Dashboard implements OnInit {
       error: (err) => {
         console.error("Login Response API Failed:", err);
         this.cdr.detectChanges();
+      }
+    });
+  }
+
+  fetchTotalUpcomingAudits(token: string): void {
+    const url = "http://pci.accric.com/api/auth/upcoming-expiry-clients";
+    const headers = new HttpHeaders({ "Authorization": `Bearer ${token}` });
+
+    this.http.get(url, { headers }).subscribe({
+      next: (res: any) => {
+        // Using the safe check we discussed
+        this.fullList = Array.isArray(res.data) ? res.data : [];
+        this.upcomingAudits=this.fullList.slice(0,1);
+        console.log("res data",res.data);
+        
+        
+        // Initialize filtered list for your UI search/filter needs
+        this.filtered_list = [...this.upcomingAudits];
+
+        console.log("Upcoming Audits Loaded:", this.upcomingAudits.length);
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error("Failed to fetch total upcoming audits...", err);
       }
     });
   }

@@ -3,6 +3,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import { ToastService } from '../service/toast-service';
 
 interface Client {
   id: string;
@@ -71,7 +72,8 @@ export class ReportVerification implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private toast:ToastService
   ) {}
 
   ngOnInit() {
@@ -102,7 +104,7 @@ export class ReportVerification implements OnInit {
     const token = localStorage.getItem("jwt");
     
     if (!token) {
-      alert('Please login first. No authentication token found.');
+      this.toast.warning('Please login first. No authentication token found.');
       this.isLoading = false;
       this.cdr.detectChanges();
       return;
@@ -129,7 +131,7 @@ export class ReportVerification implements OnInit {
       error: (err) => {
         console.error('Failed to load clients:', err);
         this.isLoading = false;
-        alert('Failed to load clients. Please try again.');
+        this.toast.error('Failed to load clients. Please try again.');
         this.cdr.detectChanges();
       }
     });
@@ -352,7 +354,7 @@ export class ReportVerification implements OnInit {
         
         // Show error messages for invalid files
         if (invalidFiles.length > 0) {
-          alert(`The following files were rejected:\n\n${invalidFiles.join('\n')}`);
+          this.toast.error(`The following files were rejected:\n\n${invalidFiles.join('\n')}`);
         }
         
         // Assign valid files to the correct property based on type
@@ -418,13 +420,11 @@ export class ReportVerification implements OnInit {
     
     // Validate client selection
     if (!this.selectedClientId) {
-      alert('Please select a company from the dropdown');
       return;
     }
     
     // Validate audit selection
     if (!this.selectedAuditId) { 
-      alert('Please select an audit from the dropdown');
       return;
     }
     
@@ -438,7 +438,6 @@ export class ReportVerification implements OnInit {
       this.currentFinalReportFiles.length;
     
     if (totalFiles === 0) {
-      alert('Please upload at least one report file');
       return;
     }
     
@@ -452,7 +451,7 @@ export class ReportVerification implements OnInit {
     const token = localStorage.getItem("jwt");
     
     if (!token) {
-      alert('Please login first. No authentication token found.');
+      this.toast.warning('Please login first. No authentication token found.');
       this.isSubmitting = false;
       this.cdr.detectChanges();
       return;
@@ -503,11 +502,11 @@ export class ReportVerification implements OnInit {
         this.isSubmitting = false;
         
         if (response && response.message) {
-          alert(`Success: ${response.message}`);
+          this.toast.success(`Success: ${response.message}`);
         } else if (response && response.success) {
-          alert('Report verification submitted successfully!');
+          this.toast.success('Report verification submitted successfully!');
         } else {
-          alert('Report verification submitted successfully!');
+          this.toast.success('Report verification submitted successfully!');
         }
         
         this.resetForm(form);
@@ -537,7 +536,7 @@ export class ReportVerification implements OnInit {
           errorMessage += 'Server error. Please try again later.';
         }
         
-        alert(errorMessage);
+        this.toast.error(errorMessage);
         this.cdr.detectChanges();
       }
     });

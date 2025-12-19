@@ -6,11 +6,14 @@ import * as XLSX from 'xlsx';
 
 interface AuditRow {
   certificate_number_unique_id?: string;
-  legal_entity_name?: string;
   audit_start_date?: string;
   audit_end_date?: string;
+  // The API puts the name inside this object
+  client?: {
+    legal_entity_name?: string;
+    clientId?: string;
+  };
 }
-
 @Component({
   selector: 'app-total-upcoming-audit-list',
   imports: [CommonModule, FormsModule],
@@ -28,7 +31,7 @@ export class TotalUpcomingAuditList implements OnInit {
   constructor(
     private http: HttpClient,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const token = localStorage.getItem('jwt'); // ensure same key as where token is stored
@@ -42,7 +45,7 @@ export class TotalUpcomingAuditList implements OnInit {
 
   /** Fetch Data */
   fetchTotalUpcomingAudits(token: string): void {
-    const url = "http://pci.accric.com/api/auth/login-response";
+    const url = "http://pci.accric.com/api/auth/upcoming-expiry-clients";
 
     const headers = new HttpHeaders({
       "Authorization": `Bearer ${token}`
@@ -51,10 +54,10 @@ export class TotalUpcomingAuditList implements OnInit {
     this.http.get(url, { headers }).subscribe({
       next: (res: any) => {
         // Keep defensive: if API returns object, check key
-        console.log("res api",res.activeOldCertificates);
-        
-        this.upcomingAudits = Array.isArray(res.activeOldCertificates)
-          ? res.activeOldCertificates
+        console.log("res api", res);
+
+        this.upcomingAudits = Array.isArray(res.data)
+          ? res.data
           : [];
 
         // Initialize filtered list
@@ -69,7 +72,6 @@ export class TotalUpcomingAuditList implements OnInit {
     });
   }
 
-  /** Search Filter */
   filter_list() {
     const text = (this.search_text || '').toLowerCase().trim();
 
@@ -79,12 +81,12 @@ export class TotalUpcomingAuditList implements OnInit {
     }
 
     this.filtered_list = this.upcomingAudits.filter(row =>
-      (row.legal_entity_name || '').toLowerCase().includes(text) ||
+      // Search inside the nested client object
+      (row.client?.legal_entity_name || '').toLowerCase().includes(text) ||
       (row.certificate_number_unique_id || '').toLowerCase().includes(text) ||
       (row.audit_start_date || '').toLowerCase().includes(text)
     );
   }
-
   /** View Details */
   viewDetails(row: AuditRow) {
     // implement navigation or modal as needed. For now, show alert
@@ -94,11 +96,12 @@ export class TotalUpcomingAuditList implements OnInit {
 
   /** Export to Excel */
   exportToExcel() {
-    // map to friendly column headers if desired
     const exportData = this.filtered_list.map(item => ({
-      Company: item.legal_entity_name || '',
-      CertificateNumber: item.certificate_number_unique_id || '',
-      AuditDate: item.audit_start_date || ''
+      // Access nested property for Excel export
+      Company: item.client?.legal_entity_name || 'N/A',
+      CertificateNumber: item.certificate_number_unique_id || 'N/A',
+      AuditStartDate: item.audit_start_date || 'N/A',
+      AuditEndDate: item.audit_end_date || 'N/A'
     }));
 
     const ws = XLSX.utils.json_to_sheet(exportData);

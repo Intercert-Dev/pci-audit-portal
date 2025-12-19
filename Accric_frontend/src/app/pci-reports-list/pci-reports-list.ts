@@ -11,10 +11,12 @@ interface PCIReport {
   audit: string;
   associated_organization: string;
   associated_application: string;
-  previous_files_count: number;
-  current_files_count: number;
-  previous_files?: ReportFile[];
-  current_files?: ReportFile[];
+  prev_aoc_report: any[];
+  prev_roc_report: any[];
+  prev_final_report: any[];
+  current_aoc_report: any[];
+  current_roc_report: any[];
+  current_final_report: any[];
   verification_status: string;
   created_at: string;
   updated_at: string;
@@ -25,11 +27,12 @@ interface PCIReport {
 
 interface ReportFile {
   id: string;
-  file_name: string;
+  filename: string;
+  file_name?: string;
   file_type: string;
-  file_path: string;
+  path: string;
+  file_path?: string;
   report_id: string;
-  file_category: 'previous' | 'current';
   created_at: string;
 }
 
@@ -121,109 +124,25 @@ export class PciReportsList implements OnInit {
         console.log("response data", res);
         
         // Transform API response to match PCIReport interface
-        this.reports_list = res.data.map(report => {
-          // Calculate file counts based on your API response
-          const prevAocCount = Array.isArray(report.prev_aoc_report) ? report.prev_aoc_report.length : 0;
-          const prevRocCount = Array.isArray(report.prev_roc_report) ? report.prev_roc_report.length : 0;
-          const prevFinalCount = Array.isArray(report.prev_final_report) ? report.prev_final_report.length : 0;
-          
-          const currentAocCount = Array.isArray(report.current_aoc_report) ? report.current_aoc_report.length : 0;
-          const currentRocCount = Array.isArray(report.current_roc_report) ? report.current_roc_report.length : 0;
-          const currentFinalCount = Array.isArray(report.current_final_report) ? report.current_final_report.length : 0;
-          
-          const previousFilesCount = prevAocCount + prevRocCount + prevFinalCount;
-          const currentFilesCount = currentAocCount + currentRocCount + currentFinalCount;
-          
-          // Combine all previous files into one array
-          const previousFiles: ReportFile[] = [];
-          if (Array.isArray(report.prev_aoc_report)) {
-            previousFiles.push(...report.prev_aoc_report.map((file: any) => ({
-              id: file.id || '',
-              file_name: file.filename || file.file_name || 'AOC Report',
-              file_type: 'PDF',
-              file_path: file.path || file.file_path || '',
-              report_id: report.report_verification_id,
-              file_category: 'previous' as const,
-              created_at: file.created_at || new Date().toISOString()
-            })));
-          }
-          if (Array.isArray(report.prev_roc_report)) {
-            previousFiles.push(...report.prev_roc_report.map((file: any) => ({
-              id: file.id || '',
-              file_name: file.filename || file.file_name || 'ROC Report',
-              file_type: 'PDF',
-              file_path: file.path || file.file_path || '',
-              report_id: report.report_verification_id,
-              file_category: 'previous' as const,
-              created_at: file.created_at || new Date().toISOString()
-            })));
-          }
-          if (Array.isArray(report.prev_final_report)) {
-            previousFiles.push(...report.prev_final_report.map((file: any) => ({
-              id: file.id || '',
-              file_name: file.filename || file.file_name || 'Final Report',
-              file_type: 'PDF',
-              file_path: file.path || file.file_path || '',
-              report_id: report.report_verification_id,
-              file_category: 'previous' as const,
-              created_at: file.created_at || new Date().toISOString()
-            })));
-          }
-          
-          // Combine all current files into one array
-          const currentFiles: ReportFile[] = [];
-          if (Array.isArray(report.current_aoc_report)) {
-            currentFiles.push(...report.current_aoc_report.map((file: any) => ({
-              id: file.id || '',
-              file_name: file.filename || file.file_name || 'AOC Report',
-              file_type: 'PDF',
-              file_path: file.path || file.file_path || '',
-              report_id: report.report_verification_id,
-              file_category: 'current' as const,
-              created_at: file.created_at || new Date().toISOString()
-            })));
-          }
-          if (Array.isArray(report.current_roc_report)) {
-            currentFiles.push(...report.current_roc_report.map((file: any) => ({
-              id: file.id || '',
-              file_name: file.filename || file.file_name || 'ROC Report',
-              file_type: 'PDF',
-              file_path: file.path || file.file_path || '',
-              report_id: report.report_verification_id,
-              file_category: 'current' as const,
-              created_at: file.created_at || new Date().toISOString()
-            })));
-          }
-          if (Array.isArray(report.current_final_report)) {
-            currentFiles.push(...report.current_final_report.map((file: any) => ({
-              id: file.id || '',
-              file_name: file.filename || file.file_name || 'Final Report',
-              file_type: 'PDF',
-              file_path: file.path || file.file_path || '',
-              report_id: report.report_verification_id,
-              file_category: 'current' as const,
-              created_at: file.created_at || new Date().toISOString()
-            })));
-          }
-          
-          return {
-            id: report.report_verification_id,
-            client: report.client || '',
-            audit: report.audit || '',
-            associated_organization: report.associated_organization || '',
-            associated_application: report.associated_application || '',
-            previous_files_count: previousFilesCount,
-            current_files_count: currentFilesCount,
-            previous_files: previousFiles,
-            current_files: currentFiles,
-            verification_status: report.verification_status || 'PENDING',
-            created_at: report.created_at || report.createdAt || new Date().toISOString(),
-            updated_at: report.updated_at || report.updatedAt || new Date().toISOString(),
-            verified_at: report.verified_at,
-            verified_by: report.verified_by,
-            verification_notes: report.verification_notes
-          };
-        });
+        this.reports_list = res.data.map(report => ({
+          id: report.report_verification_id,
+          client: report.client || '',
+          audit: report.audit || '',
+          associated_organization: report.associated_organization || '',
+          associated_application: report.associated_application || '',
+          prev_aoc_report: Array.isArray(report.prev_aoc_report) ? report.prev_aoc_report : [],
+          prev_roc_report: Array.isArray(report.prev_roc_report) ? report.prev_roc_report : [],
+          prev_final_report: Array.isArray(report.prev_final_report) ? report.prev_final_report : [],
+          current_aoc_report: Array.isArray(report.current_aoc_report) ? report.current_aoc_report : [],
+          current_roc_report: Array.isArray(report.current_roc_report) ? report.current_roc_report : [],
+          current_final_report: Array.isArray(report.current_final_report) ? report.current_final_report : [],
+          verification_status: report.verification_status || 'PENDING',
+          created_at: report.created_at || report.createdAt || new Date().toISOString(),
+          updated_at: report.updated_at || report.updatedAt || new Date().toISOString(),
+          verified_at: report.verified_at,
+          verified_by: report.verified_by,
+          verification_notes: report.verification_notes
+        }));
         
         this.filtered_list = [...this.reports_list];
         this.isLoading = false;
@@ -281,10 +200,37 @@ export class PciReportsList implements OnInit {
     }
   }
 
+  // Get file count by report type
+  getReportFileCount(report: PCIReport, reportType: string): number {
+    if (!report) return 0;
+    
+    switch(reportType) {
+      case 'prev_aoc_report':
+        return Array.isArray(report.prev_aoc_report) ? report.prev_aoc_report.length : 0;
+      case 'prev_roc_report':
+        return Array.isArray(report.prev_roc_report) ? report.prev_roc_report.length : 0;
+      case 'prev_final_report':
+        return Array.isArray(report.prev_final_report) ? report.prev_final_report.length : 0;
+      case 'current_aoc_report':
+        return Array.isArray(report.current_aoc_report) ? report.current_aoc_report.length : 0;
+      case 'current_roc_report':
+        return Array.isArray(report.current_roc_report) ? report.current_roc_report.length : 0;
+      case 'current_final_report':
+        return Array.isArray(report.current_final_report) ? report.current_final_report.length : 0;
+      default:
+        return 0;
+    }
+  }
+
+  // Get file name from file object
+  getFileName(file: any): string {
+    return file.filename || file.file_name || 'Unnamed file';
+  }
+
   // View report details
   viewReport(report: PCIReport) {
     // If report doesn't have file details, fetch them
-    if ((!report.previous_files || !report.current_files) && report.id) {
+    if (report.id) {
       this.fetchReportDetails(report.id).then(detailedReport => {
         this.viewingReport = detailedReport;
         this.cdr.detectChanges();
@@ -312,100 +258,18 @@ export class PciReportsList implements OnInit {
     try {
       const response = await this.http.get<any>(url, { headers }).toPromise();
       
-      // Process file arrays similar to loadReports
-      const prevAocCount = Array.isArray(response.prev_aoc_report) ? response.prev_aoc_report.length : 0;
-      const prevRocCount = Array.isArray(response.prev_roc_report) ? response.prev_roc_report.length : 0;
-      const prevFinalCount = Array.isArray(response.prev_final_report) ? response.prev_final_report.length : 0;
-      
-      const currentAocCount = Array.isArray(response.current_aoc_report) ? response.current_aoc_report.length : 0;
-      const currentRocCount = Array.isArray(response.current_roc_report) ? response.current_roc_report.length : 0;
-      const currentFinalCount = Array.isArray(response.current_final_report) ? response.current_final_report.length : 0;
-      
-      const previousFilesCount = prevAocCount + prevRocCount + prevFinalCount;
-      const currentFilesCount = currentAocCount + currentRocCount + currentFinalCount;
-      
-      // Combine all previous files
-      const previousFiles: ReportFile[] = [];
-      if (Array.isArray(response.prev_aoc_report)) {
-        previousFiles.push(...response.prev_aoc_report.map((file: any) => ({
-          id: file.id || '',
-          file_name: file.filename || file.file_name || 'AOC Report',
-          file_type: 'PDF',
-          file_path: file.path || file.file_path || '',
-          report_id: response.report_verification_id,
-          file_category: 'previous' as const,
-          created_at: file.created_at || new Date().toISOString()
-        })));
-      }
-      if (Array.isArray(response.prev_roc_report)) {
-        previousFiles.push(...response.prev_roc_report.map((file: any) => ({
-          id: file.id || '',
-          file_name: file.filename || file.file_name || 'ROC Report',
-          file_type: 'PDF',
-          file_path: file.path || file.file_path || '',
-          report_id: response.report_verification_id,
-          file_category: 'previous' as const,
-          created_at: file.created_at || new Date().toISOString()
-        })));
-      }
-      if (Array.isArray(response.prev_final_report)) {
-        previousFiles.push(...response.prev_final_report.map((file: any) => ({
-          id: file.id || '',
-          file_name: file.filename || file.file_name || 'Final Report',
-          file_type: 'PDF',
-          file_path: file.path || file.file_path || '',
-          report_id: response.report_verification_id,
-          file_category: 'previous' as const,
-          created_at: file.created_at || new Date().toISOString()
-        })));
-      }
-      
-      // Combine all current files
-      const currentFiles: ReportFile[] = [];
-      if (Array.isArray(response.current_aoc_report)) {
-        currentFiles.push(...response.current_aoc_report.map((file: any) => ({
-          id: file.id || '',
-          file_name: file.filename || file.file_name || 'AOC Report',
-          file_type: 'PDF',
-          file_path: file.path || file.file_path || '',
-          report_id: response.report_verification_id,
-          file_category: 'current' as const,
-          created_at: file.created_at || new Date().toISOString()
-        })));
-      }
-      if (Array.isArray(response.current_roc_report)) {
-        currentFiles.push(...response.current_roc_report.map((file: any) => ({
-          id: file.id || '',
-          file_name: file.filename || file.file_name || 'ROC Report',
-          file_type: 'PDF',
-          file_path: file.path || file.file_path || '',
-          report_id: response.report_verification_id,
-          file_category: 'current' as const,
-          created_at: file.created_at || new Date().toISOString()
-        })));
-      }
-      if (Array.isArray(response.current_final_report)) {
-        currentFiles.push(...response.current_final_report.map((file: any) => ({
-          id: file.id || '',
-          file_name: file.filename || file.file_name || 'Final Report',
-          file_type: 'PDF',
-          file_path: file.path || file.file_path || '',
-          report_id: response.report_verification_id,
-          file_category: 'current' as const,
-          created_at: file.created_at || new Date().toISOString()
-        })));
-      }
-      
       return {
         id: response.report_verification_id,
         client: response.client || '',
         audit: response.audit || '',
         associated_organization: response.associated_organization || '',
         associated_application: response.associated_application || '',
-        previous_files_count: previousFilesCount,
-        current_files_count: currentFilesCount,
-        previous_files: previousFiles,
-        current_files: currentFiles,
+        prev_aoc_report: Array.isArray(response.prev_aoc_report) ? response.prev_aoc_report : [],
+        prev_roc_report: Array.isArray(response.prev_roc_report) ? response.prev_roc_report : [],
+        prev_final_report: Array.isArray(response.prev_final_report) ? response.prev_final_report : [],
+        current_aoc_report: Array.isArray(response.current_aoc_report) ? response.current_aoc_report : [],
+        current_roc_report: Array.isArray(response.current_roc_report) ? response.current_roc_report : [],
+        current_final_report: Array.isArray(response.current_final_report) ? response.current_final_report : [],
         verification_status: response.verification_status || 'PENDING',
         created_at: response.created_at || response.createdAt || new Date().toISOString(),
         updated_at: response.updated_at || response.updatedAt || new Date().toISOString(),
@@ -425,7 +289,7 @@ export class PciReportsList implements OnInit {
     this.cdr.detectChanges();
   }
 
-  // Edit report (placeholder - you can implement as needed)
+  // Edit report
   editReport(report: PCIReport) {
     alert(`Edit functionality for report: ${report.associated_organization}`);
     // You can navigate to edit page or open edit popup
@@ -545,32 +409,32 @@ export class PciReportsList implements OnInit {
   }
 
   // Download individual file
-  downloadFile(file: ReportFile) {
+  downloadFile(file: any) {
     const token = localStorage.getItem("jwt");
     if (!token) {
       alert('Please login first. No authentication token found.');
       return;
     }
     
-    // Construct full URL if needed
-    const fileUrl = file.file_path.startsWith('http') 
-      ? file.file_path 
-      : `http://pci.accric.com${file.file_path.startsWith('/') ? '' : '/'}${file.file_path}`;
+    // Get file path
+    const filePath = file.path || file.file_path;
+    if (!filePath) {
+      alert('File path not found');
+      return;
+    }
+    
+    // Construct full URL
+    const fileUrl = filePath.startsWith('http') 
+      ? filePath 
+      : `http://pci.accric.com${filePath.startsWith('/') ? '' : '/'}${filePath}`;
     
     // Create download link
     const link = document.createElement('a');
     link.href = fileUrl;
-    link.download = file.file_name;
+    link.download = this.getFileName(file);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  }
-
-  // Download all reports for a specific report
-  downloadReport(report: PCIReport) {
-    alert(`Downloading all files for: ${report.associated_organization}`);
-    // Implement bulk download logic here
-    // You might want to create a ZIP file of all attachments
   }
 
   // Export to Excel
@@ -583,8 +447,12 @@ export class PciReportsList implements OnInit {
       const excelData = this.filtered_list.map(report => ({
         'Company Name': report.associated_organization || 'N/A',
         'Assessment/Project': report.associated_application || 'N/A',
-        'Previous Reports': report.previous_files_count,
-        'Current Reports': report.current_files_count,
+        'Previous AOC Reports': this.getReportFileCount(report, 'prev_aoc_report'),
+        'Previous ROC Reports': this.getReportFileCount(report, 'prev_roc_report'),
+        'Previous Final Reports': this.getReportFileCount(report, 'prev_final_report'),
+        'Current AOC Reports': this.getReportFileCount(report, 'current_aoc_report'),
+        'Current ROC Reports': this.getReportFileCount(report, 'current_roc_report'),
+        'Current Final Reports': this.getReportFileCount(report, 'current_final_report'),
         'Verification Status': this.getStatusLabel(report.verification_status),
         'Submitted Date': this.formatDate(report.created_at),
         'Verified Date': report.verified_at ? this.formatDate(report.verified_at) : 'Not Verified',
@@ -613,26 +481,6 @@ export class PciReportsList implements OnInit {
       this.isExporting = false;
       this.cdr.detectChanges();
     }
-  }
-
-  // Additional helper method to count files by category
-  countFilesByCategory(report: PCIReport, category: 'previous' | 'current'): number {
-    if (category === 'previous' && report.previous_files) {
-      return report.previous_files.length;
-    } else if (category === 'current' && report.current_files) {
-      return report.current_files.length;
-    }
-    return 0;
-  }
-
-  // Get file list by category
-  getFilesByCategory(report: PCIReport, category: 'previous' | 'current'): ReportFile[] {
-    if (category === 'previous' && report.previous_files) {
-      return report.previous_files;
-    } else if (category === 'current' && report.current_files) {
-      return report.current_files;
-    }
-    return [];
   }
 
   // Refresh reports list

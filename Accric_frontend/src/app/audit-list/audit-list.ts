@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-
+import { ToastService } from '../service/toast-service';
 
 interface QSA {
   qsa_id: string;
@@ -14,7 +14,6 @@ interface QSA {
   updated_at: string;
 }
 
-// Updated Interface for Audit data based on your actual data structure
 interface Client {
   clientId: string;
   legal_entity_name: string;
@@ -56,7 +55,7 @@ interface Audit {
   classification: string | null;
   date_of_report_submission: string | null;
   next_audit_due_date: string | null;
-  name_of_qsa: string; //store qsa_id
+  name_of_qsa: string;
   qsa_license_certificate_number: string;
   audit_manager_reviewer_name: string | null;
   scope_of_assessment: string;
@@ -88,8 +87,11 @@ export class AuditList implements OnInit {
   editingAudit: Audit | null = null;
   originalAudit: Audit | null = null;
 
-  // QSA list for dropdown - you might want to fetch this from API
+  // QSA list for dropdown
   qsaList: QSA[] = [];
+  
+  // Store QSA name mapping
+  qsaNameMap: Map<string, string> = new Map();
 
   // Loading state
   isLoading: boolean = false;
@@ -98,7 +100,8 @@ export class AuditList implements OnInit {
   constructor(
     private http: HttpClient,
     private datePipe: DatePipe,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private toast :ToastService
   ) { }
 
   ngOnInit() {
@@ -111,16 +114,25 @@ export class AuditList implements OnInit {
     return localStorage.getItem('jwt');
   }
 
-  // Convert YYYY-MM-DD to ISO 8601 (required by backend)
-private toIsoDate(date: string | null | undefined): string | null {
-  if (!date || date.trim() === '') return null;
+  // Convert date to YYYY-MM-DD format (same as Postman)
+  private formatDateToYMD(date: string | null | undefined): string | null {
+    if (!date || date.trim() === '') return null;
 
-  const parsed = new Date(date);
-  if (isNaN(parsed.getTime())) return null;
-
-  return parsed.toISOString();
-}
-
+    try {
+      const parsed = new Date(date);
+      if (isNaN(parsed.getTime())) return null;
+      
+      // Format to YYYY-MM-DD (same as Postman)
+      const year = parsed.getFullYear();
+      const month = String(parsed.getMonth() + 1).padStart(2, '0');
+      const day = String(parsed.getDate()).padStart(2, '0');
+      
+      return `${year}-${month}-${day}`;
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return null;
+    }
+  }
 
   // Create HTTP headers with JWT
   private getHeaders(): HttpHeaders {
@@ -147,7 +159,6 @@ private toIsoDate(date: string | null | undefined): string | null {
       next: (response) => {
         this.isLoading = false;
 
-        // Handle different response formats
         if (response && Array.isArray(response)) {
           this.auditList = response;
           this.filtered_list = [...response];
@@ -193,6 +204,12 @@ private toIsoDate(date: string | null | undefined): string | null {
       next: (response) => {
         if (response?.data && Array.isArray(response.data)) {
           this.qsaList = response.data;
+          
+          // Create a mapping of QSA ID to QSA Name
+          this.qsaNameMap.clear();
+          this.qsaList.forEach(qsa => {
+            this.qsaNameMap.set(qsa.qsa_id, qsa.qsa_name);
+          });
         } else {
           this.qsaList = [];
         }
@@ -204,7 +221,6 @@ private toIsoDate(date: string | null | undefined): string | null {
     });
   }
 
-
   // Filter list based on search text
   filter_list() {
     if (!this.search_text.trim()) {
@@ -214,7 +230,6 @@ private toIsoDate(date: string | null | undefined): string | null {
 
     const searchTerm = this.search_text.toLowerCase().trim();
     this.filtered_list = this.auditList.filter(audit => {
-      // Search in company name (from client object)
       const companyName = (audit.client.legal_entity_name || audit.client.trading_name || '').toLowerCase();
       const projectName = (audit.assessment_project_name || '').toLowerCase();
       const assessmentType = (audit.assessment_type || '').toLowerCase();
@@ -252,62 +267,118 @@ private toIsoDate(date: string | null | undefined): string | null {
     this.cdr.detectChanges();
   }
 
-  // Save edited audit
+  // Save audit - Updated with correct payload
   saveAudit() {
-  if (!this.editingAudit) return;
+    if (!this.editingAudit || !this.originalAudit) return;
 
-  if (!this.validateAuditForm()) return;
+    this.isLoading = true;
 
-  this.isLoading = true;
+    const updateUrl = `http://pci.accric.com/api/auth/update-audit/${this.editingAudit.auditId}`;
+    const headers = this.getHeaders();
 
-  const url = 'http://pci.accric.com/api/auth/update-audit';
-  const headers = this.getHeaders();
-  const updateUrl = `${url}/${this.editingAudit.auditId}`;
+    const payload = {
+      assessment_project_name: this.editingAudit.assessment_project_name || '',
+      assessment_type: this.editingAudit.assessment_type || '',
+      assessment_category: this.editingAudit.assessment_category || '',
+      assessment_year: this.editingAudit.assessment_year || '',
+      pci_dss_version_application: this.editingAudit.pci_dss_version_application || '',
+      assessment_period_covered: this.editingAudit.assessment_period_covered || '',
+      audit_start_date: this.formatDateToYMD(this.editingAudit.audit_start_date),
+      audit_end_date: this.formatDateToYMD(this.editingAudit.audit_end_date),
+      date_of_report_submission: this.formatDateToYMD(this.editingAudit.date_of_report_submission),
+      audit_status: this.editingAudit.audit_status || 'NOT_STARTED',
 
-  const auditToSave = {
-    ...this.editingAudit,
+      certificate_issue_date: this.formatDateToYMD(this.editingAudit.certificate_issue_date),
+      certificate_expiry_date: this.formatDateToYMD(this.editingAudit.certificate_expiry_date),
+      certificate_number_unique_id: this.editingAudit.certificate_number_unique_id || null,
+      classification: this.editingAudit.classification || null,
+      next_audit_due_date: this.formatDateToYMD(this.editingAudit.next_audit_due_date),
+      name_of_qsa: this.getQSAName(this.editingAudit.name_of_qsa),
+      qsa_license_certificate_number: this.editingAudit.qsa_license_certificate_number || null,
+      audit_manager_reviewer_name: this.editingAudit.audit_manager_reviewer_name || null,
 
-    audit_start_date: this.toIsoDate(this.editingAudit.audit_start_date),
-    audit_end_date: this.toIsoDate(this.editingAudit.audit_end_date),
-    date_of_report_submission: this.toIsoDate(this.editingAudit.date_of_report_submission),
+      scope_of_assessment: this.editingAudit.scope_of_assessment || null,
+      location_of_scope: this.editingAudit.location_of_scope || null
+    };
 
-    certificate_issue_date: this.toIsoDate(this.editingAudit.certificate_issue_date),
-    certificate_expiry_date: this.toIsoDate(this.editingAudit.certificate_expiry_date),
-    next_audit_due_date: this.toIsoDate(this.editingAudit.next_audit_due_date),
-  };
 
-  console.log('Sending payload:', auditToSave); // 🔍 Debug
+    this.http.put(updateUrl, payload, { headers }).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        console.log('Update successful:', response);
 
-  this.http.put(updateUrl, auditToSave, { headers }).subscribe({
-    next: (response) => {
-      this.isLoading = false;
+        // Update the local data
+        const index = this.auditList.findIndex(
+          a => a.auditId === this.editingAudit?.auditId
+        );
 
-      const index = this.auditList.findIndex(
-        a => a.auditId === this.originalAudit?.auditId
-      );
+        if (index !== -1) {
+          // Create updated audit object
+          const updatedAudit: Audit = {
+            ...this.originalAudit!,
+            assessment_project_name: payload.assessment_project_name || '',
+            assessment_type: payload.assessment_type || '',
+            assessment_category: payload.assessment_category || '',
+            assessment_year: payload.assessment_year || '',
+            pci_dss_version_application: payload.pci_dss_version_application || '',
+            assessment_period_covered: payload.assessment_period_covered || '',
+            
+            // Keep dates as they were (not converting)
+            audit_start_date: this.editingAudit!.audit_start_date || '',
+            audit_end_date: this.editingAudit!.audit_end_date || '',
+            audit_status: payload.audit_status || '',
+            
+            date_of_report_submission: this.editingAudit!.date_of_report_submission,
+            certificate_issue_date: this.editingAudit!.certificate_issue_date,
+            certificate_expiry_date: this.editingAudit!.certificate_expiry_date,
+            certificate_number_unique_id: payload.certificate_number_unique_id,
+            classification: payload.classification,
+            next_audit_due_date: this.editingAudit!.next_audit_due_date,
+            
+            // Keep the QSA ID for the interface
+            name_of_qsa: this.editingAudit!.name_of_qsa,
+            qsa_license_certificate_number: payload.qsa_license_certificate_number || '',
+            audit_manager_reviewer_name: payload.audit_manager_reviewer_name,
+            scope_of_assessment: payload.scope_of_assessment || '',
+            location_of_scope: payload.location_of_scope || '',
+            
+            // Update the timestamp
+            updated_at: new Date().toISOString()
+          };
 
-      if (index !== -1) {
-        this.auditList[index] = { ...auditToSave } as Audit;
-        this.filtered_list = [...this.auditList];
+          this.auditList[index] = updatedAudit;
+          this.filtered_list = [...this.auditList];
+        }
+
+        this.cancelEdit();
+        this.toast.success('Audit updated successfully!');
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        this.isLoading = false;
+        console.error('Error updating audit:', error);
+        console.error('Error details:', error.error);
+        if (error.error) {
+          console.error('Server error response:', error.error);
+          console.error('Payload sent:', payload);
+        }
+        
+        this.toast.error(error.error?.message || 'Failed to update audit. Check console for details.');
       }
+    });
+  }
 
-      this.cdr.detectChanges();
-      alert('Audit updated successfully!');
-      this.cancelEdit();
-    },
-    error: (error) => {
-      this.isLoading = false;
-      console.error('Error updating audit:', error);
-      alert(error.error?.message || 'Failed to update audit');
+  // Helper method to get QSA name from ID
+  private getQSAName(qsaId: string): string | null {
+    if (!qsaId) return null;
+    
+    // If it's already a name (not an ID), return it
+    if (!qsaId.includes('-') && qsaId.length < 36) {
+      return qsaId; // Probably already a name
     }
-  });
-}
-
-
-  // Validate audit form
-  private validateAuditForm(): boolean {
-    if (!this.editingAudit) return false;
-    return true;
+    
+    // Otherwise, try to get name from mapping
+    return this.qsaNameMap.get(qsaId) || null;
   }
 
   // Cancel edit
@@ -334,13 +405,13 @@ private toIsoDate(date: string | null | undefined): string | null {
           this.filtered_list = this.filtered_list.filter(a => a.auditId !== audit.auditId);
 
           this.cdr.detectChanges();
-          alert('Audit deleted successfully!');
+          this.toast.success('Audit deleted successfully!');
         },
         error: (error) => {
           this.isLoading = false;
           console.error('Error deleting audit:', error);
           this.cdr.detectChanges();
-          alert(`Failed to delete audit: ${error.message || 'Unknown error'}`);
+          this.toast.error(`Failed to delete audit: ${error.message || 'Unknown error'}`);
         }
       });
     }
@@ -370,7 +441,7 @@ private toIsoDate(date: string | null | undefined): string | null {
         'Certificate Number': audit.certificate_number_unique_id || 'N/A',
         'Classification': audit.classification || 'N/A',
         'Next Audit Due Date': this.formatDate(audit.next_audit_due_date || ''),
-        'Name of QSA': audit.name_of_qsa || 'N/A',
+        'Name of QSA': this.getQSAName(audit.name_of_qsa) || 'N/A',
         'QSA License/Certificate Number': audit.qsa_license_certificate_number || 'N/A',
         'Manager/Reviewer Name': audit.audit_manager_reviewer_name || 'N/A',
         'Scope of Assessment': audit.scope_of_assessment || 'N/A',
@@ -397,7 +468,7 @@ private toIsoDate(date: string | null | undefined): string | null {
       console.log('Export successful:', exportData.length, 'records exported');
     } catch (error) {
       console.error('Error exporting to Excel:', error);
-      alert('Failed to export data. Please try again.');
+      this.toast.error('Failed to export data. Please try again.');
     }
   }
 

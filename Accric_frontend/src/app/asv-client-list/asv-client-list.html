@@ -1,24 +1,192 @@
 <div class="client-list-container">
-  <div class="client-list-box">
+  <!-- EDIT POP-UP OVERLAY -->
+  <div *ngIf="showEditPopup" class="edit-popup-overlay">
+    <div class="edit-client-container">
+      <div class="edit-client-box">
+        <p class="edit-title">Edit ASV Client</p>
 
+        <div class="searchbox">
+          <div class="company-search-section">
+            <!-- COMPANY SEARCH DROPDOWN -->
+            <div class="form-group search-dropdown">
+              <label class="form-label">Company</label>
+              <input type="text" class="form-input" placeholder="Search Company" [(ngModel)]="companySearch"
+                 (input)="isCompanyOpen = true"  readonly/>
+            </div>
+          </div>
+          
+          <div class="assessment-search-section">
+            <!-- ASSESSMENT SEARCH DROPDOWN -->
+            <div class="form-group search-dropdown">
+              <label class="form-label">Assessment</label>
+              <input type="text" class="form-input" placeholder="Search Assessment" [(ngModel)]="assessmentSearch"
+                (input)="isAssessmentOpen = true" readonly />
+            </div>
+          </div>
+        </div>
+
+        <!-- Q1 Report Section -->
+        <div class="form-section">
+          <div class="form-group">
+            <label class="form-label">Q1 Report</label>
+            <div class="report-section-container">
+              <div class="report-upload-box">
+                <input type="text" class="file-display-input"
+                  [value]="editingRow.Q1File ? editingRow.Q1File.name : 'No file selected'" disabled />
+                <div class="action-buttons">
+                  <button type="button" class="action-btn upload-btn" (click)="triggerInput('Q1')">
+                    <span>Upload</span>
+                  </button>
+                  <button type="button" class="action-btn preview-btn" (click)="onPreview('Q1')"
+                    [disabled]="!editingRow.Q1File">
+                    <span>Preview</span>
+                  </button>
+          
+                </div>
+              </div>
+              <div class="status-selector">
+                <select class="status-dropdown" [(ngModel)]="editingRow.Q1Status"
+                  (change)="onStatusChange('Q1', editingRow.Q1Status)">
+                  <option value="PENDING" selected>Pending</option>
+                  <option value="INPROGRESS">In Progress</option>
+                  <option value="COMPLETED">Completed</option>
+                </select>
+              </div>
+            </div>
+            <input type="file" #Q1Input class="file-input-hidden" (change)="onFileSelect($event, 'Q1')">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Q2 Report</label>
+            <div class="report-section-container">
+              <div class="report-upload-box">
+                <input type="text" class="file-display-input"
+                  [value]="editingRow.Q2File ? editingRow.Q2File.name : 'No file selected'" disabled />
+                <div class="action-buttons">
+                  <button type="button" class="action-btn upload-btn" (click)="triggerInput('Q2')">
+                    <span>Upload</span>
+                  </button>
+                  <button type="button" class="action-btn preview-btn" (click)="onPreview('Q2')"
+                    [disabled]="!editingRow.Q2File">
+                    <span>Preview</span>
+                  </button>
+                 
+                </div>
+              </div>
+              <div class="status-selector">
+                <select class="status-dropdown" [(ngModel)]="editingRow.Q2Status"
+                  (change)="onStatusChange('Q2', editingRow.Q2Status)">
+                  <option value="PENDING" selected>Pending</option>
+                  <option value="INPROGRESS">In Progress</option>
+                  <option value="COMPLETED">Completed</option>
+                </select>
+              </div>
+            </div>
+            <input type="file" #Q2Input class="file-input-hidden" (change)="onFileSelect($event, 'Q2')">
+          </div>
+        </div>
+
+        <!-- Q3 Report Section -->
+        <div class="form-section">
+          <div class="form-group">
+            <label class="form-label">Q3 Report</label>
+            <div class="report-section-container">
+              <div class="report-upload-box">
+                <input type="text" class="file-display-input"
+                  [value]="editingRow.Q3File ? editingRow.Q3File.name : 'No file selected'" disabled />
+                <div class="action-buttons">
+                  <button type="button" class="action-btn upload-btn" (click)="triggerInput('Q3')">
+                    <span>Upload</span>
+                  </button>
+                  <button type="button" class="action-btn preview-btn" (click)="onPreview('Q3')"
+                    [disabled]="!editingRow.Q3File">
+                    <span>Preview</span>
+                  </button>
+                
+                </div>
+              </div>
+              <div class="status-selector">
+                <select class="status-dropdown" [(ngModel)]="editingRow.Q3Status"
+                  (change)="onStatusChange('Q3', editingRow.Q3Status)">
+                  <option value="PENDING" selected>Pending</option>
+                  <option value="INPROGRESS">In Progress</option>
+                  <option value="COMPLETED">Completed</option>
+                </select>
+              </div>
+            </div>
+            <input type="file" #Q3Input class="file-input-hidden" (change)="onFileSelect($event, 'Q3')">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Q4 Report</label>
+            <div class="report-section-container">
+              <div class="report-upload-box">
+                <input type="text" class="file-display-input"
+                  [value]="editingRow.Q4File ? editingRow.Q4File.name : 'No file selected'" disabled />
+                <div class="action-buttons">
+                  <button type="button" class="action-btn upload-btn" (click)="triggerInput('Q4')">
+                    <span>Upload</span>
+                  </button>
+                  <button type="button" class="action-btn preview-btn" (click)="onPreview('Q4')"
+                    [disabled]="!editingRow.Q4File">
+                    <span>Preview</span>
+                  </button>
+            
+                </div>
+              </div>
+              <div class="status-selector">
+                <select class="status-dropdown" [(ngModel)]="editingRow.Q4Status"
+                  (change)="onStatusChange('Q4', editingRow.Q4Status)">
+                  <option value="PENDING" selected>Pending</option>
+                  <option value="INPROGRESS">In Progress</option>
+                  <option value="COMPLETED">Completed</option>
+                </select>
+              </div>
+            </div>
+            <input type="file" #Q4Input class="file-input-hidden" (change)="onFileSelect($event, 'Q4')">
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="footer-buttons">
+          <button class="save-button" (click)="saveEdit()">Save</button>
+          <button class="cancel-button" (click)="cancelEdit()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="client-list-box">
     <div class="header-row">
       <p>ASV Client List</p>
-
       <div class="header-right">
         <div class="search-box">
           <img src="/assets/icons/magnifying-glass 2.png" alt="Search Icon">
           <input type="text" placeholder="Search Certificates"
-                 [(ngModel)]="serarch_text"
-                 (input)="filter_list()">
+                 [(ngModel)]="search_text"
+                 (input)="filter_list()"
+                 (keyup.enter)="filter_list()">
         </div>
-
-        <button class="export-btn" (click)="exportToExcel()">
+        <button class="export-btn" (click)="exportToExcel()" [disabled]="filtered_list.length === 0">
           <span>Export to Excel</span>
         </button>
       </div>
     </div>
 
-    <div class="table-wrapper">
+    <!-- Loading Indicator -->
+    <div *ngIf="isLoading" class="loading-state">
+      <p>Loading ASV audits...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && filtered_list.length === 0" class="empty-state">
+      <p *ngIf="search_text">No results found for "{{search_text}}"</p>
+      <p *ngIf="!search_text">No ASV audits available</p>
+    </div>
+
+    <!-- Data Table -->
+    <div *ngIf="!isLoading && filtered_list.length > 0" class="table-wrapper">
       <table>
         <thead>
           <tr>
@@ -31,27 +199,38 @@
             <th>Action</th>
           </tr>
         </thead>
-
         <tbody>
           <tr *ngFor="let row of filtered_list">
             <td>{{ row.company }}</td>
             <td>{{ row.assessment }}</td>
-            <td>{{ row.Q1 }}</td>
-            <td>{{ row.Q2 }}</td>
-            <td>{{ row.Q3 }}</td>
-            <td>{{ row.Q4 }}</td>
-
+            <td>
+              <span class="status-badge" [class]="getStatusClass(row.Q1)">
+                {{ row.Q1 }}
+              </span>
+            </td>
+            <td>
+              <span class="status-badge" [class]="getStatusClass(row.Q2)">
+                {{ row.Q2 }}
+              </span>
+            </td>
+            <td>
+              <span class="status-badge" [class]="getStatusClass(row.Q3)">
+                {{ row.Q3 }}
+              </span>
+            </td>
+            <td>
+              <span class="status-badge" [class]="getStatusClass(row.Q4)">
+                {{ row.Q4 }}
+              </span>
+            </td>
             <td>
               <div class="action-box">
-                <img src="/assets/icons/edit.png" alt="Edit" (click)="editRow(row)">
-                <img src="/assets/icons/delete.png" alt="Delete" (click)="deleteRow(row)">
+                <img src="/assets/icons/edit.png" alt="Edit" (click)="editRow(row)" title="Edit">
               </div>
             </td>
           </tr>
         </tbody>
-
       </table>
     </div>
-
   </div>
 </div>

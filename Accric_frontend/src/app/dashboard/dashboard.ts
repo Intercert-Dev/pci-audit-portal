@@ -109,13 +109,10 @@ export class Dashboard implements OnInit {
         // Using the safe check we discussed
         this.fullList = Array.isArray(res.data) ? res.data : [];
         this.upcomingAudits=this.fullList.slice(0,1);
-        console.log("res data",res.data);
         
         
         // Initialize filtered list for your UI search/filter needs
         this.filtered_list = [...this.upcomingAudits];
-
-        console.log("Upcoming Audits Loaded:", this.upcomingAudits.length);
         this.cdr.detectChanges();
       },
       error: (err) => {

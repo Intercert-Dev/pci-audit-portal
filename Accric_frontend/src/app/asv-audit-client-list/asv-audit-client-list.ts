@@ -99,7 +99,6 @@ export class AsvAuditClientList implements OnInit {
     this.http.get<{ data: AsvAuditResponse[] }>(url, { headers }).subscribe({
       next: (response) => {
         this.isLoading = false;
-        // Map API response to display format
         this.all_audits = response.data.map(audit => this.mapAuditToDisplay(audit));
         this.filtered_list = [...this.all_audits];
         this.cdr.detectChanges();

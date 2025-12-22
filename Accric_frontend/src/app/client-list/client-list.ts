@@ -77,7 +77,6 @@ export class ClientList implements OnInit {
 
     this.http.get<{data: Client[]}>(url, { headers }).subscribe({
       next: (res) => {
-        console.log("Raw API Data:", res.data);
 
         this.clientList = res.data.map((item: Client) => ({
           ...item,

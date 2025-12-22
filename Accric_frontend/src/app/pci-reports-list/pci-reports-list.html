@@ -7,10 +7,6 @@
           <img src="/assets/icons/magnifying-glass 2.png" alt="Search Icon">
           <input type="text" placeholder="Search Reports" [(ngModel)]="search_text" (input)="filter_list()">
         </div>
-        <button class="export-btn" (click)="exportToExcel()">
-          <span *ngIf="!isExporting">Export to Excel</span>
-          <span *ngIf="isExporting">Exporting...</span>
-        </button>
       </div>
     </div>
 
@@ -278,81 +274,6 @@
   </div>
 </div>
 
-<!-- ============================
-     VERIFY REPORT POPUP
-============================ -->
-<div class="verify-report-popup-overlay" *ngIf="verifyingReport">
-  <div class="verify-report-popup">
-    <div class="popup-header">
-      <h2>Verify Report - {{ verifyingReport.associated_organization || 'Report' }}</h2>
-      <button class="close-btn" (click)="cancelVerify()">&times;</button>
-    </div>
-
-    <div class="popup-content">
-      <div class="popup-section">
-        <h3 class="section-title">Verification Details</h3>
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Verification Status*</label>
-            <select [(ngModel)]="verificationData.status" required>
-              <option value="" disabled>Select Status</option>
-              <option value="VERIFIED">Verified</option>
-              <option value="PENDING">Pending</option>
-              <option value="REJECTED">Rejected</option>
-              <option value="PENDING_REVIEW">Pending Review</option>
-              <option value="NEEDS_REVISION">Needs Revision</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Verified By*</label>
-            <input type="text" 
-                   [(ngModel)]="verificationData.verified_by" 
-                   placeholder="Enter your name"
-                   required>
-          </div>
-
-          <div class="form-group full-width">
-            <label>Verification Notes</label>
-            <textarea [(ngModel)]="verificationData.notes" 
-                      rows="4"
-                      placeholder="Enter verification notes..."></textarea>
-          </div>
-        </div>
-      </div>
-
-      <!-- Report Info -->
-      <div class="popup-section">
-        <h3 class="section-title">Report Information</h3>
-        <div class="info-grid">
-          <div class="info-item">
-            <label>Company:</label>
-            <span>{{ verifyingReport.associated_organization || 'N/A' }}</span>
-          </div>
-          <div class="info-item">
-            <label>Project:</label>
-            <span>{{ verifyingReport.associated_application || 'N/A' }}</span>
-          </div>
-          <div class="info-item">
-            <label>Current Status:</label>
-            <span class="status-badge" [ngClass]="getStatusClass(verifyingReport.verification_status)">
-              {{ getStatusLabel(verifyingReport.verification_status) }}
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="popup-footer">
-      <button class="btn-cancel" (click)="cancelVerify()">
-        <span>Cancel</span>
-      </button>
-      <button class="btn-verify" (click)="submitVerification()">
-        <span>Verify Report</span>
-      </button>
-    </div>
-  </div>
-</div>
 
 
 <div class="edit-report-popup-overlay" *ngIf="editingReport">
@@ -416,7 +337,7 @@
               <button type="button" 
                       class="upload-btn"
                       (click)="triggerFileInput('prev', 'aoc')">
-                Upload PDF(s)
+               <span>Upload PDF(s)</span> 
               </button>
               <input type="file" 
                      #prevAocFileInput
@@ -450,7 +371,7 @@
               <button type="button" 
                       class="upload-btn"
                       (click)="triggerFileInput('prev', 'roc')">
-                Upload PDF(s)
+                <span>Upload PDF(s)</span>
               </button>
               <input type="file" 
                      #prevRocFileInput
@@ -483,7 +404,7 @@
               <button type="button" 
                       class="upload-btn"
                       (click)="triggerFileInput('prev', 'final')">
-                Upload PDF(s)
+             <span>Upload PDF(s)</span>   
               </button>
               <input type="file" 
                      #prevFinalFileInput
@@ -523,7 +444,7 @@
               <button type="button" 
                       class="upload-btn"
                       (click)="triggerFileInput('current', 'aoc')">
-                Upload PDF(s)
+            <span>Upload PDF(s)</span>    
               </button>
               <input type="file" 
                      #currentAocFileInput
@@ -556,7 +477,7 @@
               <button type="button" 
                       class="upload-btn"
                       (click)="triggerFileInput('current', 'roc')">
-                Upload PDF(s)
+            <span>Upload PDF(s)</span>    
               </button>
               <input type="file" 
                      #currentRocFileInput
@@ -589,7 +510,7 @@
               <button type="button" 
                       class="upload-btn"
                       (click)="triggerFileInput('current', 'final')">
-                Upload PDF(s)
+            <span>Upload PDF(s)</span>    
               </button>
               <input type="file" 
                      #currentFinalFileInput
@@ -604,7 +525,7 @@
     </div>
 
     <div class="popup-footer">
-      <button class="btn-cancel" (click)="cancelEdit()">
+      <button class="btn-close" (click)="cancelEdit()">
         <span>Cancel</span>
       </button>
       <button class="btn-save" (click)="saveReport()" [disabled]="isSaving">

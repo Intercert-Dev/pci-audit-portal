@@ -5,6 +5,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { NgIf } from '@angular/common'; // Add this import
+import { ToastService } from '../service/toast-service';
 
 interface FileObject {
   filename: string;
@@ -134,7 +135,8 @@ export class PciReportsList implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private toast:ToastService
   ) {}
 
   ngOnInit() {
@@ -150,7 +152,7 @@ export class PciReportsList implements OnInit {
     const token = localStorage.getItem("jwt");
     
     if (!token) {
-      alert('Please login first. No authentication token found.');
+      this.toast.warning('Please login first. No authentication token found.');
       this.isLoading = false;
       this.cdr.detectChanges();
       return;
@@ -197,7 +199,7 @@ export class PciReportsList implements OnInit {
       error: (err) => {
         console.error('Failed to load reports:', err);
         this.isLoading = false;
-        alert('Failed to load reports. Please try again.');
+        this.toast.error('Failed to load reports. Please try again.');
         this.cdr.detectChanges();
       }
     });
@@ -395,7 +397,7 @@ export class PciReportsList implements OnInit {
       // Validate files are PDFs
       const invalidFiles = files.filter(file => !file.name.toLowerCase().endsWith('.pdf'));
       if (invalidFiles.length > 0) {
-        alert('Only PDF files are allowed. Please select PDF files only.');
+        this.toast.warning('Only PDF files are allowed. Please select PDF files only.');
         input.value = '';
         return;
       }
@@ -480,177 +482,213 @@ export class PciReportsList implements OnInit {
     }
   }
 
-  // ==================== SAVE REPORT WITH FILES ====================
+async saveReport() {
+  if (!this.editingReport || !this.isFormValid()) return;
+
+  const token = localStorage.getItem("jwt");
+  if (!token) return this.toast.error('Please login first.');
+
+  this.isSaving = true;
   
-  // Save edited report with file uploads
-  async saveReport() {
-    if (!this.editingReport || !this.editingReport.id) return;
-    
-    if (!this.editFormData.associated_organization || !this.editFormData.associated_application) {
-      alert('Organization and Application are required fields.');
-      return;
-    }
+  try {
+    const formData = new FormData();
 
-    this.isSaving = true;
+    // 1. Add basic text fields
+    formData.append('associated_organization', this.editFormData.associated_organization);
+    formData.append('associated_application', this.editFormData.associated_application);
+    formData.append('client', this.editFormData.client);
+    formData.append('audit', this.editFormData.audit);
+
+    // 2. Simple loop to add all file categories
+    const reportKeys = [
+      'prev_aoc_report', 'prev_roc_report', 'prev_final_report',
+      'current_aoc_report', 'current_roc_report', 'current_final_report'
+    ];
+
+    reportKeys.forEach(key => {
+      const files = this.editingReport![key] || [];
+      files.forEach((fileObj: FileObject) => {
+        // If it's a new file, append the File object; if existing, append the URL string
+        const value = fileObj.file || fileObj.url;
+        if (value) formData.append(key, value);
+      });
+    });
+
+    // 3. Send update
+    await this.sendFormDataUpdateRequest(token, formData);
+    
+    this.toast.success('Report updated successfully!');
+    this.loadReports();
+    this.cancelEdit();
+  } catch (error) {
+    console.error('Error saving:', error);
+    this.toast.error('Update failed.');
+  } finally {
+    this.isSaving = false;
     this.cdr.detectChanges();
+  }
+}
 
-    try {
-      const token = localStorage.getItem("jwt");
-      if (!token) {
-        alert('Please login first. No authentication token found.');
-        this.isSaving = false;
-        this.cdr.detectChanges();
-        return;
-      }
+// Optional helper for cleaner validation
+private isFormValid(): boolean {
+  if (!this.editFormData.associated_organization || !this.editFormData.associated_application) {
+    this.toast.warning('Organization and Application are required fields.');
+    return false;
+  }
+  return true;
+}
+
+
+
+// Updated method to send FormData in PUT request
+private async sendFormDataUpdateRequest(token: string, formData: FormData): Promise<void> {
+  const url = `http://pci.accric.com/api/auth/update-report-verification/${this.editingReport!.id}`;
+  // OR use your actual domain: `http://pci.accric.com/api/auth/update-report-verification/${this.editingReport!.id}`
+
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`
+    // Note: Don't set Content-Type for FormData, let browser set it automatically
+  });
+
+  try {
+    const response = await this.http.put(url, formData, { 
+      headers,
+      reportProgress: true,
+      observe: 'events'
+    }).toPromise();
+
+    console.log('Update successful:', response);
+    
+    // Also update the verification data if it exists
+    if (this.editFormData.verification_status || 
+        this.editFormData.verification_notes || 
+        this.editFormData.verified_by) {
       
-      // Step 1: Upload new files if any
-      const uploadedFileUrls = await this.uploadNewFiles(token);
-      
-      // Step 2: Update report with new file URLs
-      this.updateReportWithNewFileUrls(uploadedFileUrls);
-      
-      // Step 3: Prepare report data for update
-      const reportUpdateData = await this.prepareReportUpdateData(token);
-      
-      // Step 4: Send update request
-      await this.sendReportUpdateRequest(token, reportUpdateData);
-      
-      // Success
-      alert('Report updated successfully!');
-      this.loadReports(); // Refresh the list
-      this.cancelEdit(); // Close popup
-      
-    } catch (error) {
-      console.error('Error saving report:', error);
-      alert('Failed to update report. Please try again.');
-      this.isSaving = false;
-      this.cdr.detectChanges();
+      await this.updateVerificationData(token);
     }
-  }
 
-  // Upload new files to server
-  private async uploadNewFiles(token: string): Promise<{url: string, category: string, type: string}[]> {
-    if (this.newFilesToUpload.length === 0) return [];
-    
-    const uploadedUrls: {url: string, category: string, type: string}[] = [];
-    
-    for (const upload of this.newFilesToUpload) {
-      for (const file of upload.files) {
-        try {
-          const formData = new FormData();
-          formData.append('file', file);
-          formData.append('reportId', this.editingReport!.id);
-          formData.append('category', upload.category);
-          formData.append('type', upload.type);
-          
-          const headers = new HttpHeaders({
-            'Authorization': `Bearer ${token}`
-            // Note: Don't set Content-Type for FormData, let browser set it
-          });
-          
-          const uploadUrl = 'http://pci.accric.com/api/auth/upload-report-file';
-          const response = await this.http.post<{url: string, message: string}>(uploadUrl, formData, { headers }).toPromise();
-          
-          if (response && response.url) {
-            uploadedUrls.push({
-              url: response.url,
-              category: upload.category,
-              type: upload.type
-            });
-          }
-        } catch (error) {
-          console.error(`Error uploading file ${file.name}:`, error);
-          throw new Error(`Failed to upload file: ${file.name}`);
-        }
-      }
+  } catch (error) {
+    console.error('Error sending form-data:', error);
+    throw error;
+  }
+}
+
+// Method to update verification data separately if needed
+private async updateVerificationData(token: string): Promise<void> {
+  const verificationPayload = {
+    verification_status: this.editFormData.verification_status || '',
+    verification_notes: this.editFormData.verification_notes || '',
+    verified_by: this.editFormData.verified_by || '',
+    verified_at: this.editFormData.verified_at || null
+  };
+
+  // Remove empty fields
+  Object.keys(verificationPayload).forEach(key => {
+    if (verificationPayload[key as keyof typeof verificationPayload] === '') {
+      delete verificationPayload[key as keyof typeof verificationPayload];
     }
-    
-    return uploadedUrls;
-  }
+  });
 
-  // Update report data with new file URLs
-  private updateReportWithNewFileUrls(uploadedFileUrls: {url: string, category: string, type: string}[]) {
-    if (!this.editingReport) return;
-    
-    // Group uploaded URLs by category and type
-    const urlMap: {[key: string]: string[]} = {};
-    
-    uploadedFileUrls.forEach(item => {
-      const key = `${item.category}_${item.type}`;
-      if (!urlMap[key]) urlMap[key] = [];
-      urlMap[key].push(item.url);
-    });
-    
-    // Update the editingReport with new URLs
-    Object.keys(urlMap).forEach(key => {
-      const [category, type] = key.split('_');
-      const prop = `${category}_${type}_report` as keyof PCIReport;
-      
-      if (this.editingReport && this.editingReport[prop]) {
-        // Update new files with their URLs
-        this.editingReport[prop] = this.editingReport[prop].map((file: FileObject) => {
-          if (file.isNew && !file.url) {
-            // Find matching URL by filename
-            const matchingUrl = urlMap[key].find(url => 
-              this.extractFileNameFromUrl(url) === file.filename
-            );
-            
-            if (matchingUrl) {
-              return {
-                ...file,
-                url: matchingUrl,
-                path: matchingUrl,
-                file_path: matchingUrl
-              };
-            }
-          }
-          return file;
-        });
-      }
-    });
-  }
-
-  // Prepare report update data
-  private async prepareReportUpdateData(token: string): Promise<any> {
-    if (!this.editingReport) return {};
-    
-    // Filter out new files (they will be added via separate API or included in update)
-    const payload: any = {
-      associated_organization: this.editFormData.associated_organization,
-      associated_application: this.editFormData.associated_application,
-      client: this.editFormData.client,
-      audit: this.editFormData.audit,
-      verification_status: this.editFormData.verification_status,
-      verification_notes: this.editFormData.verification_notes,
-      verified_by: this.editFormData.verified_by,
-      verified_at: this.editFormData.verified_at || null
-    };
-    
-    // Only include existing file URLs (not new ones)
-    ['prev_aoc_report', 'prev_roc_report', 'prev_final_report', 
-     'current_aoc_report', 'current_roc_report', 'current_final_report'].forEach(prop => {
-      if (this.editingReport && this.editingReport[prop]) {
-        // Filter out new files and get URLs of existing files
-        const existingFileUrls = (this.editingReport[prop] as FileObject[])
-          .filter((file: FileObject) => !file.isNew && file.url)
-          .map((file: FileObject) => file.url);
-        
-        payload[prop] = existingFileUrls;
-      }
-    });
-    
-    return payload;
-  }
-
-  // Send report update request
-  private async sendReportUpdateRequest(token: string, payload: any): Promise<void> {
+  // Only send if there's data to update
+  if (Object.keys(verificationPayload).length > 0) {
     const url = `http://pci.accric.com/api/auth/update-report-verification/${this.editingReport!.id}`;
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
     });
-    
-    await this.http.put(url, payload, { headers }).toPromise();
+
+    await this.http.put(url, verificationPayload, { headers }).toPromise();
   }
+}
+
+// Alternative simplified version if you want to keep the original structure
+// and just fix the file handling:
+private prepareFormDataForUpdate(): FormData {
+  const formData = new FormData();
+  
+  // Add text field from screenshot
+  if (this.editFormData.associated_organization) {
+    formData.append('associated_organization', this.editFormData.associated_organization);
+  }
+
+  // Handle all file categories
+  const fileCategories = [
+    { key: 'prev_roc_report', files: this.editingReport!.prev_roc_report },
+    { key: 'current_final_report', files: this.editingReport!.current_final_report },
+    { key: 'current_roc_report', files: this.editingReport!.current_roc_report },
+    { key: 'prev_final_report', files: this.editingReport!.prev_final_report },
+    { key: 'prev_aoc_report', files: this.editingReport!.prev_aoc_report },
+    { key: 'current_aoc_report', files: this.editingReport!.current_aoc_report }
+  ];
+
+  fileCategories.forEach(category => {
+    if (category.files && category.files.length > 0) {
+      category.files.forEach((file: FileObject, index: number) => {
+        if (file.isNew && file.file) {
+          // Newly uploaded files
+          formData.append(category.key, file.file, file.filename);
+        } else if (file.url) {
+          // Existing files - create a File object from URL
+          this.addExistingFileToFormData(formData, category.key, file, index);
+        }
+      });
+    }
+  });
+
+  return formData;
+}
+
+// Helper to add existing file URLs as File objects
+private addExistingFileToFormData(formData: FormData, key: string, file: FileObject, index: number) {
+  // If the file is already on server, we might just send the URL
+  // But for form-data PUT, we need to send the actual file
+  // Here's a simplified approach:
+  
+  // Option 1: Send as URL string (if API accepts it)
+  formData.append(key, file.url);
+  
+  // OR Option 2: Fetch and send as file (more complex)
+  // This would require async operations
+}
+
+// Updated simpler saveReport method using the formData approach
+async saveReportSimple() {
+  if (!this.editingReport || !this.editingReport.id) return;
+
+  this.isSaving = true;
+  this.cdr.detectChanges();
+
+  try {
+    const token = localStorage.getItem("jwt");
+    if (!token) {
+      this.toast.error('Please login first.');
+      this.isSaving = false;
+      this.cdr.detectChanges();
+      return;
+    }
+
+    // Prepare FormData
+    const formData = this.prepareFormDataForUpdate();
+    
+    // Send request
+    const url = `http://pci.accric.com/api/auth/update-report-verification/${this.editingReport.id}`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    await this.http.put(url, formData, { headers }).toPromise();
+    
+    this.toast.success('Report updated successfully!');
+    this.loadReports();
+    this.cancelEdit();
+
+  } catch (error) {
+    console.error('Error:', error);
+    this.toast.error('Failed to update report.');
+    this.isSaving = false;
+    this.cdr.detectChanges();
+  }
+}
+
 
   // ==================== UTILITY METHODS ====================
   
@@ -681,7 +719,7 @@ export class PciReportsList implements OnInit {
     }
   }
 
-  // Get file count by report type
+  
   getReportFileCount(report: PCIReport, reportType: string): number {
     if (!report) return 0;
     
@@ -703,14 +741,14 @@ export class PciReportsList implements OnInit {
     }
   }
 
-  // Get file name from file object
+  
   getFileName(file: FileObject): string {
     if (!file) return 'Unnamed file';
     
     return file.filename || file.file_name || this.extractFileNameFromUrl(file.url) || 'Unnamed file';
   }
 
-  // Get file download URL
+  
   getFileDownloadUrl(file: FileObject): string {
     if (!file) return '#';
     
@@ -725,14 +763,14 @@ export class PciReportsList implements OnInit {
     return `http://pci.accric.com/${url.startsWith('/') ? url.substring(1) : url}`;
   }
 
-  // Get file extension
+ 
   getFileExtension(fileName: string): string {
     if (!fileName) return '';
     const parts = fileName.split('.');
     return parts.length > 1 ? parts[parts.length - 1].toLowerCase() : '';
   }
 
-  // Get file icon based on extension
+  
   getFileIcon(fileName: string): string {
     const extension = this.getFileExtension(fileName);
     
@@ -755,7 +793,7 @@ export class PciReportsList implements OnInit {
     }
   }
 
-  // Get category label
+
   getCategoryLabel(category: string): string {
     return category === 'prev' ? 'Previous' : 'Current';
   }
@@ -805,7 +843,6 @@ export class PciReportsList implements OnInit {
     this.cdr.detectChanges();
   }
 
-  // ==================== VERIFICATION METHODS ====================
   
   verifyReport(report: PCIReport) {
     this.verifyingReport = report;
@@ -827,91 +864,6 @@ export class PciReportsList implements OnInit {
     this.cdr.detectChanges();
   }
 
-  submitVerification() {
-    if (!this.verifyingReport) return;
-    
-    if (!this.verificationData.status) {
-      alert('Please select a verification status');
-      return;
-    }
-    
-    if (!this.verificationData.verified_by) {
-      alert('Please enter your name in "Verified By" field');
-      return;
-    }
-    
-    this.updateReportVerification();
-  }
-
-  updateReportVerification() {
-    if (!this.verifyingReport) return;
-    
-    const token = localStorage.getItem("jwt");
-    if (!token) {
-      alert('Please login first. No authentication token found.');
-      return;
-    }
-    
-    const url = `http://pci.accric.com/api/auth/update-report-verification/${this.verifyingReport.id}`;
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-    
-    const payload = {
-      verification_status: this.verificationData.status,
-      verification_notes: this.verificationData.notes,
-      verified_by: this.verificationData.verified_by,
-      verified_at: new Date().toISOString()
-    };
-    
-    this.http.put(url, payload, { headers }).subscribe({
-      next: (response: any) => {
-        alert('Report verification updated successfully!');
-        
-        const index = this.reports_list.findIndex(r => r.id === this.verifyingReport?.id);
-        if (index !== -1) {
-          this.reports_list[index] = {
-            ...this.reports_list[index],
-            verification_status: this.verificationData.status,
-            verification_notes: this.verificationData.notes,
-            verified_by: this.verificationData.verified_by,
-            verified_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          };
-          
-          this.filtered_list = [...this.reports_list];
-        }
-        
-        this.verifyingReport = null;
-        this.viewingReport = null;
-        this.verificationData = {
-          status: '',
-          notes: '',
-          verified_by: ''
-        };
-        this.cdr.detectChanges();
-      },
-      error: (error) => {
-        console.error('Error updating verification:', error);
-        let errorMessage = 'Failed to update verification. ';
-        
-        if (error.error && error.error.message) {
-          errorMessage += error.error.message;
-        } else if (error.status === 401) {
-          errorMessage += 'Unauthorized. Please check your authentication token.';
-        } else if (error.status === 400) {
-          errorMessage += 'Bad request. Please check the data you entered.';
-        } else if (error.status === 404) {
-          errorMessage += 'Report not found.';
-        } else if (error.status === 500) {
-          errorMessage += 'Server error. Please try again later.';
-        }
-        
-        alert(errorMessage);
-        this.cdr.detectChanges();
-      }
-    });
-  }
 
   // ==================== FILE OPERATIONS ====================
   
@@ -940,43 +892,4 @@ export class PciReportsList implements OnInit {
     document.body.removeChild(link);
   }
 
-  // ==================== EXPORT METHODS ====================
-  
-  exportToExcel() {
-    this.isExporting = true;
-    this.cdr.detectChanges();
-    
-    try {
-      const excelData = this.filtered_list.map(report => ({
-        'Company Name': report.associated_organization || 'N/A',
-        'Assessment/Project': report.associated_application || 'N/A',
-        'Previous AOC Reports': this.getReportFileCount(report, 'prev_aoc_report'),
-        'Previous ROC Reports': this.getReportFileCount(report, 'prev_roc_report'),
-        'Previous Final Reports': this.getReportFileCount(report, 'prev_final_report'),
-        'Current AOC Reports': this.getReportFileCount(report, 'current_aoc_report'),
-        'Current ROC Reports': this.getReportFileCount(report, 'current_roc_report'),
-        'Current Final Reports': this.getReportFileCount(report, 'current_final_report'),
-        'Verification Status': this.getStatusLabel(report.verification_status),
-        'Submitted Date': this.formatDate(report.created_at),
-        'Verified Date': report.verified_at ? this.formatDate(report.verified_at) : 'Not Verified',
-        'Verified By': report.verified_by || 'N/A',
-        'Verification Notes': report.verification_notes || 'N/A'
-      }));
-      
-      const worksheet = XLSX.utils.json_to_sheet(excelData);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, 'PCI Reports');
-      
-      const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-      const data = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      saveAs(data, `PCI_Reports_${new Date().toISOString().split('T')[0]}.xlsx`);
-      
-    } catch (error) {
-      console.error('Error exporting to Excel:', error);
-      alert('Failed to export to Excel. Please try again.');
-    } finally {
-      this.isExporting = false;
-      this.cdr.detectChanges();
-    }
-  }
 }

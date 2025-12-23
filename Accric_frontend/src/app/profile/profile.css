@@ -1,19 +1,4 @@
-/* ================================
-   Root Variables
-================================ */
-:root {
-  --primary-color: #007bff;
-  --secondary-color: #6c757d;
-  --background-color: #f8f9fa;
-  --card-background: #140606;
-  --border-radius: 10px;
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --transition-speed: 0.3s;
-}
 
-/* ================================
-   Profile Container
-================================ */
 .profile-container {
   padding: 20px;
   font-family: 'Inter', sans-serif;
@@ -22,9 +7,6 @@
   background-color: rgba(250, 251, 254, 1);
 }
 
-/* ================================
-   Profile Header
-================================ */
 .profile-header {
   display: flex;
   align-items: center;

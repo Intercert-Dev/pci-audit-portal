@@ -212,4 +212,18 @@ export class QsaAdd {
       control?.markAsPristine();
     });
   }
+  resetQsaForm(form: FormGroup): void {
+  form.reset();
+
+  form.markAsPristine();
+  form.markAsUntouched();
+
+  this.selectedSignatureFile = null;
+  this.signaturePreview = null;
+  this.signatureFileName = '';
+  this.isImage = false;
+
+  this.isLoading = false;
+}
+
 }

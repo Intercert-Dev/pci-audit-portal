@@ -80,16 +80,16 @@
               </div>
               <!-- SUBMENU ITEMS - DON'T close submenu when clicked -->
               <ul class="submenu" *ngIf="isListExpanded">
-                <li routerLink="/client-list" routerLinkActive="active" (click)="onSubmenuItemListClick()">
+                <li routerLink="/client-list" routerLinkActive="active" (click)="onSubmenuItemClick()">
                   <span>Clients</span>
                 </li>
-                <li routerLink="/audit-list" routerLinkActive="active" (click)="onSubmenuItemListClick()">
+                <li routerLink="/audit-list" routerLinkActive="active" (click)="onSubmenuItemClick()">
                   <span>Audits</span>
                 </li>
-                <li routerLink="/asv-audit-client-list" routerLinkActive="active" (click)="onSubmenuItemListClick()">
+                <li routerLink="/asv-audit-client-list" routerLinkActive="active" (click)="onSubmenuItemClick()">
                   <span>ASV Audits</span>
                 </li>
-                <li routerLink="/pci-reports-list" routerLinkActive="active" (click)="onSubmenuItemListClick()">
+                <li routerLink="/pci-reports-list" routerLinkActive="active" (click)="onSubmenuItemClick()">
                   <span>PCI Reports</span>
                 </li>
               </ul>

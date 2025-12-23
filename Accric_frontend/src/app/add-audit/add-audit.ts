@@ -71,7 +71,7 @@ export class AddAudit implements OnInit {
     'assessor-info',
     'scope-env'
   ];
-  qsaList: QSA[]= [];
+  qsaList: QSA[] = [];
 
   auditData = {
     clientId: '',
@@ -219,42 +219,42 @@ export class AddAudit implements OnInit {
     }, 200);
   }
 
-onQsaChange(event: Event) {
-  const selectedQsaId = (event.target as HTMLSelectElement).value;
+  onQsaChange(event: Event) {
+    const selectedQsaId = (event.target as HTMLSelectElement).value;
 
-  const selectedQsa = this.qsaList.find(
-    qsa => qsa.qsa_id === selectedQsaId
-  );
+    const selectedQsa = this.qsaList.find(
+      qsa => qsa.qsa_id === selectedQsaId
+    );
 
-  if (selectedQsa) {
-    this.auditData.qsa_license_certificate_number =
-      selectedQsa.certification_number;
-  } else {
-    this.auditData.qsa_license_certificate_number = '';
-  }
-}
-
-
- loadQsaList() {
-  const url = 'http://pci.accric.com/api/auth/qsa-list';
-  const token = localStorage.getItem('jwt');
-
-  if (!token) return;
-
-  const headers = new HttpHeaders({
-    Authorization: `Bearer ${token}`
-  });
-
-  this.http.get<{ data: Qsa[] }>(url, { headers }).subscribe({
-    next: (res) => {
-      this.qsaList = res?.data ?? [];
-    },
-    error: (err) => {
-      console.error('Failed to fetch QSA list:', err);
-      this.qsaList = [];
+    if (selectedQsa) {
+      this.auditData.qsa_license_certificate_number =
+        selectedQsa.certification_number;
+    } else {
+      this.auditData.qsa_license_certificate_number = '';
     }
-  });
-}
+  }
+
+
+  loadQsaList() {
+    const url = 'http://pci.accric.com/api/auth/qsa-list';
+    const token = localStorage.getItem('jwt');
+
+    if (!token) return;
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    this.http.get<{ data: Qsa[] }>(url, { headers }).subscribe({
+      next: (res) => {
+        this.qsaList = res?.data ?? [];
+      },
+      error: (err) => {
+        console.error('Failed to fetch QSA list:', err);
+        this.qsaList = [];
+      }
+    });
+  }
 
 
   validateDates(): boolean {
@@ -522,15 +522,56 @@ onQsaChange(event: Event) {
     });
   }
 
-  private resetForm(): void {
-    if (this.auditForm) {
-      this.auditForm.resetForm();
-    }
+ private resetForm(): void {
+  if (this.auditForm) {
+    this.auditForm.resetForm();
+  }
 
-    this.activeTab = 'assessment-summary';
-    this.showErrors = false;
-    this.clearDateErrors();
+  this.activeTab = 'assessment-summary';
+  this.showErrors = false;
+  this.clearDateErrors();
 
+  this.auditData = {
+    clientId: '',
+    clientName: '',
+
+    assessment_project_name: '',
+    assessment_type: '',
+    assessment_category: '',
+    assessment_year: '',
+    pci_dss_version_application: '',
+    assessment_period_covered: '',
+
+    audit_start_date: '',
+    audit_end_date: '',
+    date_of_report_submission: '',
+    audit_status: 'NOT_STARTED',
+
+    certificate_issue_date: '',
+    certificate_expiry_date: '',
+    certificate_number_unique_id: '',
+    classification: '',
+    next_audit_due_date: '',
+
+    name_of_qsa: '',
+    qsa_license_certificate_number: '',
+    audit_manager_reviewer_name: '',
+
+    scope_of_assessment: '',
+    location_of_scope: ''
+  };
+
+  this.clientSearch = '';
+  this.selectedClientId = null;
+  this.filteredClients = [...this.clients];
+}
+
+  // Add NgForm to your imports at the top
+  // import { NgForm } from '@angular/forms';
+
+  resetAuditForm(form: NgForm) {
+
+    // 1. Reset the data object to its initial state
     this.auditData = {
       clientId: '',
       clientName: '',
@@ -543,7 +584,7 @@ onQsaChange(event: Event) {
       audit_start_date: '',
       audit_end_date: '',
       date_of_report_submission: '',
-      audit_status: 'NOT_STARTED',
+      audit_status: '',
       certificate_issue_date: '',
       certificate_expiry_date: '',
       certificate_number_unique_id: '',
@@ -556,8 +597,19 @@ onQsaChange(event: Event) {
       location_of_scope: ''
     };
 
+
+    // 2. Clear Search-specific variables
     this.clientSearch = '';
     this.selectedClientId = null;
-    this.filteredClients = [...this.clients];
+    this.clearDateErrors(); // Clear any date validation messages
+
+    // 3. Reset the Angular Form state (clears red error borders)
+    form.resetForm();
+
+    // 4. Return user to the first tab
+    this.activeTab = 'assessment-summary';
+
+    // 5. Scroll to top for better UX
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }

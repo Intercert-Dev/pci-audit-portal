@@ -259,6 +259,7 @@ tbody tr {
   transition: background-color 0.3s;
 }
 
+
 .qsa-btn span {
   font-family: 'Inter', sans-serif;
   font-weight: 600;
@@ -273,13 +274,29 @@ tbody tr {
 }
 
 .btn-cancel {
-  background-color: rgba(12, 50, 166, 1);
-  color: rgba(245, 247, 250, 1);
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 1rem;
+  opacity: 1;
+  padding: 0.8rem 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  flex-shrink: 0;
+  background-color: rgba(198, 215, 246, 1);
+  color: rgba(52, 60, 106, 1);
+}
+
+.btn-cancel span {
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 20px;
 }
 
 .btn-remove {
   background-color: rgb(237, 82, 82);
-  color :rgba(52, 60, 106, 1);
+  color: rgba(52, 60, 106, 1);
 }
 
 /* ============================

@@ -126,6 +126,9 @@
 
       <!-- SUBMIT BUTTON -->
       <div class="form-actions">
+        <button type="button" class="btn-reset" (click)="resetAsvAuditForm(asvForm)" [disabled]="isLoading">
+            <span>Reset Form</span>
+          </button>
         <button type="submit" class="btn-primary" [disabled]="isLoading">
           <span *ngIf="!isLoading">Submit ASV Audit</span>
           <span *ngIf="isLoading">Loading...</span>

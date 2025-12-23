@@ -730,7 +730,9 @@ tbody tr {
   flex-shrink: 0;
   font-family: 'Inter', sans-serif;
   font-weight: 600;
-  font-size: 16px;
+  background-color: rgba(198, 215, 246, 1);
+  color: rgba(52, 60, 106, 1);
+    font-size: 20px;
 }
 
 .btn-save,
@@ -808,7 +810,7 @@ textarea::placeholder {
   gap: 12px;
 }
 
-.file-category h4{
+.file-category h4 {
   padding-block: 12px;
   font-family: 'Inter', sans-serif;
   font-weight: 500;
@@ -1483,7 +1485,7 @@ tbody tr td[colspan] {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(135deg, #667eea 0%,);
+  background: linear-gradient(135deg, #667eea 0%, );
   color: white;
   border-radius: 12px 12px 0 0;
 }
@@ -1726,7 +1728,7 @@ tbody tr td[colspan] {
   background-color: rgba(57, 106, 255, 1);
 }
 
-.btn-save span{
+.btn-save span {
   font-family: 'Inter', sans-serif;
   font-weight: 600;
   font-size: 1.25rem;
@@ -1740,19 +1742,19 @@ tbody tr td[colspan] {
     width: 95%;
     max-height: 95vh;
   }
-  
+
   .form-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .report-files-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .popup-content {
     padding: 20px;
   }
-  
+
   .popup-footer {
     padding: 15px 20px;
   }
@@ -1778,9 +1780,11 @@ tbody tr td[colspan] {
   display: flex;
   align-items: center;
   justify-content: center;
-  align-items: flex-start;   /* ✅ FIX */
-  padding-top: 40px; 
-  z-index: 999999; /* 🔥 higher than everything */
+  align-items: flex-start;
+  /* ✅ FIX */
+  padding-top: 40px;
+  z-index: 999999;
+  /* 🔥 higher than everything */
 }
 
 /* ===== POPUP BOX ===== */
@@ -1791,6 +1795,6 @@ tbody tr td[colspan] {
   max-height: 90vh;
   overflow-y: auto;
   border-radius: 12px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
   position: relative;
 }

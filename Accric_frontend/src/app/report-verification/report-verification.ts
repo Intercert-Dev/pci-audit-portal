@@ -569,6 +569,44 @@ export class ReportVerification implements OnInit {
     this.cdr.detectChanges();
   }
 
+resetReoprtForm(form: NgForm): void {
+  form.resetForm();
+
+  this.legalEntitySearch = '';
+  this.auditSearch = '';
+
+  this.selectedClientId = null;
+  this.selectedClientName = '';
+  this.selectedAuditId = null;
+  this.selectedAuditName = '';
+
+  this.showClientDropdown = false;
+  this.showAuditDropdown = false;
+
+  this.filteredClients = [...this.clients];
+  this.filteredAudits = [];
+
+  this.previousAocReportFiles = [];
+  this.previousRocReportFiles = [];
+  this.previousFinalReportFiles = [];
+
+  this.currentAocReportFiles = [];
+  this.currentRocReportFiles = [];
+  this.currentFinalReportFiles = [];
+
+  this.reportData = {
+    associatedOrganization: '',
+    associatedApplication: ''
+  };
+
+  this.showErrors = false;
+  this.isSubmitting = false;
+
+  this.cdr.detectChanges();
+}
+
+
+
   // Helper method to get selected client name
   getSelectedClientName(): string {
     if (!this.selectedClientId) return '';

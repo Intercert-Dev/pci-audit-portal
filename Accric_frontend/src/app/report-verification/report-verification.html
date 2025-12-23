@@ -217,6 +217,9 @@
 
       <!-- Submit Button -->
       <div class="form-actions">
+         <button type="button" class="btn-reset" (click)="resetReoprtForm(reportForm)" [disabled]="isLoading">
+            <span>Reset Form</span>
+          </button>
         <button type="submit" class="btn-primary" [disabled]="isSubmitting || isLoading">
           <span *ngIf="!isSubmitting">Submit Verification</span>
           <span *ngIf="isSubmitting">Submitting...</span>

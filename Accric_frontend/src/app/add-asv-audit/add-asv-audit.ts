@@ -414,7 +414,7 @@ export class AddAsvAudit implements OnInit {
 
   submitAsvAudit(payload: AsvAuditPayload, form: NgForm): void {
     this.isSubmitting = true;
-    
+
     const url = 'http://pci.accric.com/api/auth/add-asv-audit-to-client';
     const token = localStorage.getItem('jwt');
 
@@ -435,26 +435,26 @@ export class AddAsvAudit implements OnInit {
     this.http.post<any>(url, payload, { headers }).subscribe({
       next: (response) => {
         this.isSubmitting = false;
-        
+
         // Check response structure based on your API
         if (response.success || response.message) {
           this.toast.success(response.message || 'ASV Audit added successfully!');
-          
+
           // Reset form after successful submission
           this.resetForm(form);
         } else {
           this.toast.success('ASV Audit added successfully!');
           this.resetForm(form);
         }
-        
+
         this.cdr.detectChanges();
       },
       error: (error) => {
         this.isSubmitting = false;
-        
+
         // Log error for debugging
         console.error('Error submitting ASV Audit:', error);
-        
+
         // Handle different error scenarios
         if (error.status === 401) {
           this.toast.error('Session expired. Please login again.');
@@ -471,7 +471,7 @@ export class AddAsvAudit implements OnInit {
         } else {
           this.toast.error(error.error?.message || 'Failed to add ASV Audit. Please try again.');
         }
-        
+
         this.cdr.detectChanges();
       }
     });
@@ -502,4 +502,34 @@ export class AddAsvAudit implements OnInit {
     // Force UI update
     this.cdr.detectChanges();
   }
+
+
+  resetAsvAuditForm(form: NgForm): void {
+
+     this.asvData = {
+      numberOfIPs: null,
+      associatedOrganization: '',
+      associatedApplication: '',
+      IPDetails: ''
+    };
+
+    this.legalEntitySearch = '';
+    this.auditSearch = '';
+
+    this.selectedClientId = '';
+    this.selectedAuditId = '';
+
+    this.showLegalEntityDropdown = false;
+    this.showAuditDropdown = false;
+
+    this.showErrors = false;
+
+    this.filteredClients = [...this.clients];
+    this.filteredAudits = [];
+
+    form.resetForm();
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
 }

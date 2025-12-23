@@ -48,18 +48,22 @@
                     </div>
                 </div>
             </div>
-            
+
             <small *ngIf="f['signature'].touched && f['signature'].invalid" class="error">
                 Signature file is required
             </small>
         </div>
 
-        <button 
-            type="submit" 
-            class="submit-btn"
-        >
+        <div class="form-action">
+
+        
+        <button type="button" class="btn-reset" (click)="resetQsaForm(qsaForm)" [disabled]="isLoading">
+            <span>Reset QSA</span>
+        </button>
+        <button type="submit" class="submit-btn">
             <span *ngIf="!isLoading">Add QSA</span>
             <span *ngIf="isLoading">Adding...</span>
         </button>
+        </div>
     </form>
 </div>

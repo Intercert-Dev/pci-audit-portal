@@ -106,20 +106,23 @@
       <!-- SECTION 2 -->
       <div class="form-section">
         <div class="form-group">
-          <label for="IPDetails">IP Details <span class="required">*</span></label>
+          <label for="IPDetails">IP & Domain Details <span class="required">*</span></label>
           <textarea id="IPDetails" name="IPDetails" [(ngModel)]="asvData.IPDetails" #IPDetails="ngModel"
-            placeholder="Enter IP addresses (one per line or comma separated)" rows="3" required
+            placeholder="Enter IP addresses or Domains (e.g. 192.168.1.1 or example.com)" rows="3" required
             [disabled]="isLoading"></textarea>
 
           <div *ngIf="showErrors && IPDetails.invalid" class="error">
-            <small>IP Details is required</small>
+            <small>IP or Domain Details are required</small>
           </div>
 
-          <div class="ip-info" *ngIf="getIPCountFromDetails() > 0">
-            <small>Found {{ getIPCountFromDetails() }} valid IP address(es)</small>
+          <div *ngIf="asvData.IPDetails && getValidEntries().hasInvalid" class="error">
+            <small>Some entries are not valid IPs or Domains. Please check your formatting.</small>
           </div>
-          <div class="ip-info" *ngIf="asvData.IPDetails && getIPCountFromDetails() === 0">
-            <small class="error">No valid IP addresses found. Please enter valid IPs</small>
+
+          <div class="ip-info" *ngIf="getValidEntries().total > 0">
+            <small style="color: green;">
+              Detected: {{ getValidEntries().ips }} IP(s) and {{ getValidEntries().domains }} Domain(s)
+            </small>
           </div>
         </div>
       </div>
@@ -127,8 +130,8 @@
       <!-- SUBMIT BUTTON -->
       <div class="form-actions">
         <button type="button" class="btn-reset" (click)="resetAsvAuditForm(asvForm)" [disabled]="isLoading">
-            <span>Reset Form</span>
-          </button>
+          <span>Reset Form</span>
+        </button>
         <button type="submit" class="btn-primary" [disabled]="isLoading">
           <span *ngIf="!isLoading">Submit ASV Audit</span>
           <span *ngIf="isLoading">Loading...</span>

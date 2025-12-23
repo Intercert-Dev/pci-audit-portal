@@ -72,6 +72,7 @@ export class AddAudit implements OnInit {
     'scope-env'
   ];
   qsaList: QSA[] = [];
+  assessmentYears: number[] = [];
 
   auditData = {
     clientId: '',
@@ -130,6 +131,7 @@ export class AddAudit implements OnInit {
     ).subscribe(searchTerm => {
       this.filterClients(searchTerm);
     });
+    this.generateYearList();
   }
 
   loadClients() {
@@ -159,6 +161,13 @@ export class AddAudit implements OnInit {
       }
     });
   }
+
+  generateYearList() {
+  const currentYear = new Date().getFullYear();
+  for (let i = currentYear - 6; i <= currentYear + 3; i++) {
+    this.assessmentYears.push(i);
+  }
+}
 
   onClientSearch() {
     this.searchSubject.next(this.clientSearch);

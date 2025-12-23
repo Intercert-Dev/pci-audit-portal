@@ -53,9 +53,8 @@ interface AsvAuditPayload {
 })
 export class AddAsvAudit implements OnInit {
 
-  private ipRegex =
-    /^(25[0-5]|2[0-4]\d|1?\d?\d)(\.(25[0-5]|2[0-4]\d|1?\d?\d)){3}$/;
-
+  private readonly ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+  private readonly domainRegex = /^(?!:\/\/)([a-zA-Z0-9-_]+\.)+[a-zA-Z]{2,11}$/;
   legalEntitySearch = '';
   auditSearch = '';
 
@@ -198,6 +197,31 @@ export class AddAsvAudit implements OnInit {
     });
   }
 
+  getValidEntries() {
+    if (!this.asvData.IPDetails) return { ips: 0, domains: 0, total: 0, invalidCount: 0 };
+
+    // Split by comma or newline, then trim whitespace
+    const entries = this.asvData.IPDetails.split(/[,\n]/).map(e => e.trim()).filter(e => e !== '');
+
+    let ips = 0;
+    let domains = 0;
+
+    entries.forEach(entry => {
+      if (this.ipRegex.test(entry)) {
+        ips++;
+      } else if (this.domainRegex.test(entry)) {
+        domains++;
+      }
+    });
+
+    return {
+      ips,
+      domains,
+      total: ips + domains,
+      invalidCount: entries.length - (ips + domains),
+      hasInvalid: (entries.length - (ips + domains)) > 0
+    };
+  }
   // CLIENT SEARCH
   onLegalEntitySearch() {
     this.clientSearchSubject.next(this.legalEntitySearch);
@@ -506,7 +530,7 @@ export class AddAsvAudit implements OnInit {
 
   resetAsvAuditForm(form: NgForm): void {
 
-     this.asvData = {
+    this.asvData = {
       numberOfIPs: null,
       associatedOrganization: '',
       associatedApplication: '',

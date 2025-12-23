@@ -540,7 +540,7 @@ input::placeholder {
     min-width: 180px;
   }
 
-  .btn-primary span {
+  .btn-primary span,.btn-reset span {
     font-size: 1.1rem;
   }
 
@@ -654,7 +654,7 @@ input::placeholder {
     min-width: 160px;
   }
 
-  .btn-primary span {
+  .btn-primary span  ,.btn-reset span{
     font-size: 1rem;
   }
 
@@ -852,7 +852,7 @@ input::placeholder {
     border-radius: 0.8rem;
   }
 
-  .btn-primary span {
+  .btn-primary span , .btn-reset span {
     font-size: 0.9rem;
   }
 

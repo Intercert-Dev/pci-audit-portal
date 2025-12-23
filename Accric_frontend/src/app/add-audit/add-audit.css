@@ -596,11 +596,17 @@ select {
 /* Fix dropdown width on mobile */
 @media (max-width: 768px) {
   .search-dropdown-list {
-    width: 100%;
+    width: 50%;
+  }
+  .btn-primary span  ,.btn-reset span{
+    font-size: 1rem;
   }
 }
 @media (max-width: 480px) {
   .tab {
     min-height: 44px; /* Google touch guideline */
+  }
+    .btn-primary span , .btn-reset span {
+    font-size: 0.9rem;
   }
 }

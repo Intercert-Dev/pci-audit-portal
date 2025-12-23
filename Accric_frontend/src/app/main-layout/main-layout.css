@@ -553,7 +553,7 @@
 
   .sidebar.open {
     transform: translateX(0);
-    margin-top: 3rem;
+    margin-top: 58px;
   }
 
   .sidebar.closed {
@@ -643,7 +643,7 @@
 
   .sidebar.open {
     transform: translateX(0);
-    margin-top: 38px;
+    margin-top: 58px;
   }
 
   .sidebar nav ul li {

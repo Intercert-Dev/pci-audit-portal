@@ -42,15 +42,34 @@ export class AsvAudit implements OnInit, OnDestroy {
   isLoading = true;
   errorMessage = '';
   
-  // API URL
+  // API URLs
   private apiUrl = 'http://pci.accric.com/api/auth/asv-fetch-details';
+  // Updated quarter API endpoints based on your structure
+  private completedQ1Url = 'http://pci.accric.com/api/auth/completed-q1';
+  private completedQ2Url = 'http://pci.accric.com/api/auth/completed-q2';
+  private completedQ3Url = 'http://pci.accric.com/api/auth/completed-q3';
+  private completedQ4Url = 'http://pci.accric.com/api/auth/completed-q4';
+  private pendingQ1Url = 'http://pci.accric.com/api/auth/pending-q1';
+  private pendingQ2Url = 'http://pci.accric.com/api/auth/pending-q2';
+  private pendingQ3Url = 'http://pci.accric.com/api/auth/pending-q3';
+  private pendingQ4Url = 'http://pci.accric.com/api/auth/pending-q4';
   
   // For unsubscribing to prevent memory leaks
   private destroy$ = new Subject<void>();
 
-  constructor(private http: HttpClient,private router:Router) {}
+  // Popup related properties
+  showQuarterPopup = false;
+  popupTitle = '';
+  quarterType: 'completed' | 'pending' = 'completed';
+  quarterNumber = 1;
+  quarterData: any[] = [];
+  isQuarterDataLoading = false;
+  quarterErrorMessage = '';
+
+  constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
+    this.cdr.detectChanges(); // Initial UI detection
     this.fetchASVData();
   }
 
@@ -62,31 +81,31 @@ export class AsvAudit implements OnInit, OnDestroy {
   fetchASVData(): void {
     this.isLoading = true;
     this.errorMessage = '';
+    this.cdr.markForCheck(); // Mark for change detection
+    this.cdr.detectChanges(); // Force immediate UI update for loading state
     
-    // Get JWT token from localStorage
     const token = localStorage.getItem('jwt');
     
     if (!token) {
       this.errorMessage = 'Please login first. No authentication token found.';
       this.isLoading = false;
+      this.cdr.markForCheck();
       this.cdr.detectChanges();
       return;
     }
     
-    // Create headers with authorization token
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
     
-    // Manually trigger change detection for loading state
-    this.cdr.detectChanges();
-    
+    // Use markForCheck for better performance
     this.http.get<any>(this.apiUrl, { headers })
       .pipe(
         takeUntil(this.destroy$),
         finalize(() => {
           this.isLoading = false;
+          this.cdr.markForCheck();
           this.cdr.detectChanges();
         })
       )
@@ -97,6 +116,7 @@ export class AsvAudit implements OnInit, OnDestroy {
             this.updateDashboardData(response.data);
           } else {
             this.errorMessage = response.message || 'Invalid response format';
+            this.cdr.markForCheck();
             this.cdr.detectChanges();
           }
         },
@@ -109,29 +129,162 @@ export class AsvAudit implements OnInit, OnDestroy {
             this.errorMessage = 'Access denied. You do not have permission to view this data.';
           } else {
             this.errorMessage = 'Failed to load ASV dashboard data. Please try again later.';
-            // Load sample data for testing if API fails
             this.loadSampleData();
           }
           
+          this.cdr.markForCheck();
           this.cdr.detectChanges();
         }
       });
   }
 
-  goToTotalClients():void{
-    this.router.navigate([
-      '/asv-client-list'
-    ])
+  // Method to fetch quarter details based on quarter number and type
+  fetchQuarterDetails(quarter: number, type: 'completed' | 'pending'): void {
+    this.isQuarterDataLoading = true;
+    this.quarterErrorMessage = '';
+    this.quarterData = [];
+    
+    // Force immediate UI updates before API call
+    this.cdr.markForCheck();
+    this.cdr.detectChanges();
+    
+    const token = localStorage.getItem('jwt');
+    
+    if (!token) {
+      this.quarterErrorMessage = 'Authentication token not found';
+      this.isQuarterDataLoading = false;
+      this.cdr.markForCheck();
+      this.cdr.detectChanges();
+      return;
+    }
+    
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+    
+    // Determine the API endpoint based on quarter and type
+    let apiEndpoint = '';
+    switch (quarter) {
+      case 1:
+        apiEndpoint = type === 'completed' ? this.completedQ1Url : this.pendingQ1Url;
+        break;
+      case 2:
+        apiEndpoint = type === 'completed' ? this.completedQ2Url : this.pendingQ2Url;
+        break;
+      case 3:
+        apiEndpoint = type === 'completed' ? this.completedQ3Url : this.pendingQ3Url;
+        break;
+      case 4:
+        apiEndpoint = type === 'completed' ? this.completedQ4Url : this.pendingQ4Url;
+        break;
+      default:
+        apiEndpoint = this.completedQ1Url;
+    }
+    
+    this.http.get<any>(apiEndpoint, { headers })
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => {
+          this.isQuarterDataLoading = false;
+          this.cdr.markForCheck();
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: (response) => {
+          if (response.message && response.message.includes('successfully') && response.data) {
+            // Transform API data to match our table structure
+            this.quarterData = this.transformQuarterData(response.data, quarter, type);
+          } else {
+            this.quarterErrorMessage = response.message || 'No data available';
+          }
+          this.cdr.markForCheck();
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          console.error('Error fetching quarter details:', error);
+          this.quarterErrorMessage = 'Failed to load quarter details.';
+          this.cdr.markForCheck();
+          this.cdr.detectChanges();
+        }
+      });
   }
-  onCurrentPendingList():void{
-    this.router.navigate([
-      '/current-pending-clients'
-    ])
+
+  // Transform API data to match table structure
+  private transformQuarterData(apiData: any[], quarter: number, type: 'completed' | 'pending'): any[] {
+    const transformedData = apiData.map((item, index) => ({
+      id: index + 1,
+      companyName: item.associated_organization || 'N/A',
+      assessmentType: item.associated_application || 'Assessment',
+      // Get quarter status from the item (e.g., q1, q2, etc.)
+      status: item[`q${quarter}`] || (type === 'completed' ? 'COMPLETED' : 'PENDING'),
+      dueDate: item.updated_at || item.created_at || 'N/A',
+      asvName: 'ASV', // You might want to add ASV name to your API response
+      // Additional fields from API if needed
+      numberOfIP: item.number_of_ip,
+      ipDetails: item.ip_details,
+      overallStatus: item.status,
+      pdfUrl: item[`q${quarter}_pdf`]
+    }));
+    
+    return transformedData;
   }
-  onNextPendingList():void{
-    this.router.navigate([
-      '/next-month-pending-clients'
-    ])
+
+  // Method to open quarter popup
+  openQuarterPopup(quarter: number, type: 'completed' | 'pending'): void {
+    this.quarterNumber = quarter;
+    this.quarterType = type;
+    
+    // Set popup title based on quarter and type
+    const quarterText = `Q${quarter}`;
+    const typeText = type === 'completed' ? 'Completed' : 'Pending';
+    this.popupTitle = `${quarterText} ${typeText} Assessments`;
+    
+    // Show popup immediately before loading data
+    this.showQuarterPopup = true;
+    
+    // Prevent body scrolling when popup is open
+    document.body.style.overflow = 'hidden';
+    
+    // Force immediate UI update for popup opening
+    this.cdr.markForCheck();
+    this.cdr.detectChanges();
+    
+    // Fetch data for the selected quarter after UI is updated
+    setTimeout(() => {
+      this.fetchQuarterDetails(quarter, type);
+    }, 10); // Small delay to ensure UI renders first
+  }
+
+  // Method to close quarter popup
+  closeQuarterPopup(): void {
+    this.showQuarterPopup = false;
+    this.quarterData = [];
+    this.quarterErrorMessage = '';
+    
+    // Restore body scrolling
+    document.body.style.overflow = 'auto';
+    
+    this.cdr.markForCheck();
+    this.cdr.detectChanges();
+  }
+
+  // Add trackBy function for better *ngFor performance
+  trackById(index: number, item: any): number {
+    return item.id || index;
+  }
+
+  goToTotalClients(): void {
+    this.router.navigate(['/asv-client-list']);
+  }
+
+  onCurrentPendingList(): void {
+    this.router.navigate(['/current-pending-clients']);
+  }
+
+  onNextPendingList(): void {
+    this.router.navigate(['/next-month-pending-clients']);
   }
 
   updateDashboardData(data: any): void {
@@ -165,6 +318,7 @@ export class AsvAudit implements OnInit, OnDestroy {
     this.nextMonthPending = Math.max(0, this.assessmentPending - this.currentPending);
     
     // Trigger change detection
+    this.cdr.markForCheck();
     this.cdr.detectChanges();
   }
 
@@ -190,5 +344,31 @@ export class AsvAudit implements OnInit, OnDestroy {
   // Refresh data method
   refreshData(): void {
     this.fetchASVData();
+  }
+
+  // Method to view PDF (if available)
+  viewPDF(pdfUrl: string): void {
+    if (pdfUrl) {
+      window.open(pdfUrl, '_blank');
+    }
+  }
+
+  // Method to get status badge class
+  getStatusClass(status: string): string {
+    if (!status) return 'pending';
+    
+    const statusUpper = status.toUpperCase();
+    switch (statusUpper) {
+      case 'COMPLETED':
+        return 'completed';
+      case 'INPROGRESS':
+        return 'in-progress';
+      case 'NOTSTARTED':
+        return 'not-started';
+      case 'PENDING':
+        return 'pending';
+      default:
+        return 'pending';
+    }
   }
 }

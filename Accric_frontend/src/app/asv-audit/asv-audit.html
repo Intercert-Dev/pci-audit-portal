@@ -45,34 +45,34 @@
           <div class="lower-content">
             <div class="card-bottom-items">
               <div class="bottom-list">
-                <div class="left-item">
+                <div class="left-item clickable" (click)="openQuarterPopup(1, 'completed')">
                   <img src="/assets/icons/fiber_manual_record.png" alt="icon">
                   <p class="quater">Q1</p>
                 </div>
-                <p class="number">{{ q1Completed }}</p>
+                <p class="number clickable" (click)="openQuarterPopup(1, 'completed')">{{ q1Completed }}</p>
               </div>
               <div class="bottom-list">
-                <div class="left-item">
+                <div class="left-item clickable" (click)="openQuarterPopup(2, 'completed')">
                   <img src="/assets/icons/fiber_manual_record.png" alt="icon">
                   <p class="quater">Q2</p>
                 </div>
-                <p class="number">{{ q2Completed }}</p>
+                <p class="number clickable" (click)="openQuarterPopup(2, 'completed')">{{ q2Completed }}</p>
               </div>
             </div>
             <div class="card-bottom-items">
               <div class="bottom-list">
-                <div class="left-item">
+                <div class="left-item clickable" (click)="openQuarterPopup(3, 'completed')">
                   <img src="/assets/icons/fiber_manual_record.png" alt="icon">
                   <p class="quater">Q3</p>
                 </div>
-                <p class="number">{{ q3Completed }}</p>
+                <p class="number clickable" (click)="openQuarterPopup(3, 'completed')">{{ q3Completed }}</p>
               </div>
               <div class="bottom-list">
-                <div class="left-item">
+                <div class="left-item clickable" (click)="openQuarterPopup(4, 'completed')">
                   <img src="/assets/icons/fiber_manual_record.png" alt="icon">
                   <p class="quater">Q4</p>
                 </div>
-                <p class="number">{{ q4Completed }}</p>
+                <p class="number clickable" (click)="openQuarterPopup(4, 'completed')">{{ q4Completed }}</p>
               </div>
             </div>
           </div>
@@ -95,34 +95,34 @@
           <div class="lower-content">
             <div class="card-bottom-items">
               <div class="bottom-list">
-                <div class="left-item">
+                <div class="left-item clickable" (click)="openQuarterPopup(1, 'pending')">
                   <img src="/assets/icons/fiber_manual_record.png" alt="icon">
                   <p class="quater">Q1</p>
                 </div>
-                <p class="number">{{ q1Pending }}</p>
+                <p class="number clickable" (click)="openQuarterPopup(1, 'pending')">{{ q1Pending }}</p>
               </div>
               <div class="bottom-list">
-                <div class="left-item">
+                <div class="left-item clickable" (click)="openQuarterPopup(2, 'pending')">
                   <img src="/assets/icons/fiber_manual_record.png" alt="icon">
                   <p class="quater">Q2</p>
                 </div>
-                <p class="number">{{ q2Pending }}</p>
+                <p class="number clickable" (click)="openQuarterPopup(2, 'pending')">{{ q2Pending }}</p>
               </div>
             </div>
             <div class="card-bottom-items">
               <div class="bottom-list">
-                <div class="left-item">
+                <div class="left-item clickable" (click)="openQuarterPopup(3, 'pending')">
                   <img src="/assets/icons/fiber_manual_record.png" alt="icon">
                   <p class="quater">Q3</p>
                 </div>
-                <p class="number">{{ q3Pending }}</p>
+                <p class="number clickable" (click)="openQuarterPopup(3, 'pending')">{{ q3Pending }}</p>
               </div>
               <div class="bottom-list">
-                <div class="left-item">
+                <div class="left-item clickable" (click)="openQuarterPopup(4, 'pending')">
                   <img src="/assets/icons/fiber_manual_record.png" alt="icon">
                   <p class="quater">Q4</p>
                 </div>
-                <p class="number">{{ q4Pending }}</p>
+                <p class="number clickable" (click)="openQuarterPopup(4, 'pending')">{{ q4Pending }}</p>
               </div>
             </div>
           </div>
@@ -158,5 +158,65 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- Quarter Details Popup -->
+  <div *ngIf="showQuarterPopup" class="quarter-popup-overlay">
+    <div class="quarter-popup-container">
+      <div class="popup-header">
+        <h3 class="popup-title">{{ popupTitle }}</h3>
+        <button class="close-btn" (click)="closeQuarterPopup()">&times;</button>
+      </div>
+
+      <div class="popup-content">
+        <!-- Loading State -->
+        <div *ngIf="isQuarterDataLoading" class="popup-loading">
+          <div class="spinner"></div>
+          <p>Loading {{ popupTitle }}...</p>
+        </div>
+
+        <!-- Error State -->
+        <div *ngIf="quarterErrorMessage && !isQuarterDataLoading" class="popup-error">
+          <p class="error-message">{{ quarterErrorMessage }}</p>
+        </div>
+
+        <!-- Data Table -->
+        <!-- In your asv-audit.html, update the table section in the popup -->
+        <div *ngIf="!isQuarterDataLoading && !quarterErrorMessage && quarterData.length > 0"
+          class="quarter-table-container">
+          <table class="quarter-table">
+            <thead>
+              <tr>
+                <th>Company</th>
+                <th>Assessment</th>
+                <th>Q{{ quarterNumber }} Status</th>
+                <th>Last Updated</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of quarterData">
+                <td>{{ item.companyName }}</td>
+                <td>{{ item.assessmentType }}</td>
+                <td>
+                  <span class="status-badge" [class]="getStatusClass(item.status)">
+                    {{ item.status }}
+                  </span>
+                </td>
+                <td>{{ item.dueDate | date: 'MMM dd, yyyy' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!isQuarterDataLoading && !quarterErrorMessage && quarterData.length === 0" class="empty-state">
+          <p>No data available for {{ popupTitle }}</p>
+        </div>
+      </div>
+
+      <div class="popup-footer">
+        <button class="popup-close-btn" (click)="closeQuarterPopup()">Close</button>
+      </div>
+    </div>
   </div>
 </div>

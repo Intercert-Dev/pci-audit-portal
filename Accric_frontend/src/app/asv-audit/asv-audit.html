@@ -19,7 +19,7 @@
 
     <div class="cards-row">
       <!-- Total Clients -->
-      <div class="card">
+      <div class="card" (click)="goToTotalClients()">
         <div class="icon-circle">
           <img src="/assets/icons/user 3 2.png" alt="user icon">
         </div>
@@ -136,7 +136,7 @@
 
     <div class="cards-row">
       <!-- Current Pending Client -->
-      <div class="card">
+      <div class="card" (click)="onCurrentPendingList()">
         <div class="icon-circle light">
           <img src="/assets/icons/other_admission.png" alt="pending icon">
         </div>
@@ -147,7 +147,7 @@
       </div>
 
       <!-- Next Month Pending -->
-      <div class="card" id="card-next-Month">
+      <div class="card" id="card-next-Month" (click)="onNextPendingList()">
         <div class="icon-circle light">
           <img src="/assets/icons/text_select_move_forward_word.png" alt="calendar icon">
         </div>

@@ -1,12 +1,19 @@
 <div class="profile-page">
   <div class="profile-wrapper">
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading profile data...</p>
+    </div>
 
     <!-- PROFILE CARD -->
-    <div class="profile-card">
+    <div *ngIf="!isLoading && !errorMessage" class="profile-card">
       <header class="profile-header">
         <div class="avatar-wrapper">
-          <img src="https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
-            [alt]="userProfile.name" class="profile-avatar" />
+          <img [src]="userProfile.avatarUrl" 
+               [alt]="userProfile.name" 
+               class="profile-avatar"
+               (error)="userProfile.avatarUrl = 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg'" />
         </div>
 
         <h1 class="profile-name">{{ userProfile.name }}</h1>
@@ -19,62 +26,127 @@
             <div class="info-grid">
               <div class="info-item">
                 <i class="icon fas fa-envelope"></i>
-                <span>{{ userProfile.email }}</span>
+                <span>{{ userProfile.email || 'Not provided' }}</span>
               </div>
 
               <div class="info-item">
                 <i class="icon fas fa-phone"></i>
-                <span>{{ userProfile.phone }}</span>
+                <span>{{ userProfile.phone || 'Not provided' }}</span>
               </div>
 
               <div class="info-item">
                 <i class="icon fas fa-map-marker-alt"></i>
-                <span>{{ userProfile.location }}</span>
+                <span>{{ userProfile.location || 'Not provided' }}</span>
               </div>
-
             </div>
           </section>
-          <button class="edit-btn" (click)="openEditPopup()"> <span>Edit Profile</span> </button>
+          
+          <button class="edit-btn" (click)="openEditPopup()">
+            <span>Edit Profile</span>
+          </button>
         </div>
-
-
       </header>
-
-
     </div>
   </div>
 </div>
 
-<!-- ==========================
-       EDIT PROFILE MODAL
-=========================== -->
-<div class="modal-overlay" *ngIf="showPopup">
-  <div class="modal">
-
-    <h2>Edit Profile</h2>
-
-    <div class="modal-body">
-      <label>Name</label>
-      <input type="text" [(ngModel)]="tempData.name" />
-
-      <label>Email</label>
-      <input type="email" [(ngModel)]="tempData.email" />
-
-      <label>Phone</label>
-      <input type="text" [(ngModel)]="tempData.phone" />
-
-      <label>Location</label>
-      <input type="text" [(ngModel)]="tempData.location" />
-
-      <label>Profile Image</label>
-      <input type="file" (change)="onImageUpload($event)" />
-      <img *ngIf="tempData.avatarUrl" [src]="tempData.avatarUrl" class="preview-avatar" />
+<!-- Edit Profile Popup -->
+<div class="edit-profile-popup-overlay" *ngIf="showPopup">
+  <div class="edit-profile-popup">
+    <div class="popup-header">
+      <h2>Edit Profile</h2>
+      <button class="close-btn" (click)="closeEditPopup()">&times;</button>
     </div>
 
-    <div class="modal-actions">
-      <button class="btn-save" (click)="saveProfile()">Save</button>
-      <button class="btn-cancel" (click)="closeEditPopup()">Cancel</button>
+    <div class="popup-content">
+      <form #editProfileForm="ngForm">
+        
+        <!-- Profile Image Section -->
+        <div class="popup-section">
+          <h3 class="section-title">Profile Image</h3>
+          <div class="profile-image-upload">
+            <div class="current-avatar">
+              <img [src]="tempData.avatarUrl" 
+                   (error)="tempData.avatarUrl = 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg'"
+                   class="profile-avatar-preview" 
+                   alt="Current Avatar">
+            </div>
+            <div class="upload-controls">
+              <label class="file-upload-btn">
+                <input type="file" (change)="onImageUpload($event)" accept="image/*" hidden>
+                <span class="upload-icon">📁</span>
+                Upload New Photo
+              </label>
+              <small class="file-hint">Max size: 5MB (JPG, PNG, GIF)</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Personal Information Section -->
+        <div class="popup-section">
+          <h3 class="section-title">Personal Information</h3>
+          <div class="form-grid">
+            
+            <div class="form-group">
+              <label>Full Name*</label>
+              <input type="text" 
+                     name="name" 
+                     required 
+                     [(ngModel)]="tempData.name" 
+                     class="form-input"
+                     placeholder="Enter your full name" />
+            </div>
+
+            <div class="form-group">
+              <label>Email Address*</label>
+              <input type="email" 
+                     name="email" 
+                     required 
+                     [(ngModel)]="tempData.email" 
+                     class="form-input"
+                     placeholder="Enter your email address" />
+            </div>
+
+            <div class="form-group">
+              <label>Phone Number</label>
+              <input type="text" 
+                     name="phone" 
+                     [(ngModel)]="tempData.phone" 
+                     class="form-input"
+                     placeholder="Enter your phone number" />
+            </div>
+
+            <div class="form-group">
+              <label>Location</label>
+              <input type="text" 
+                     name="location" 
+                     [(ngModel)]="tempData.location" 
+                     class="form-input"
+                     placeholder="Enter your location" />
+            </div>
+
+            <div class="form-group">
+              <label>Title/Role</label>
+              <input type="text" 
+                     name="title" 
+                     [(ngModel)]="tempData.title" 
+                     class="form-input"
+                     placeholder="Enter your title or role" />
+            </div>
+
+          </div>
+        </div>
+
+      </form>
     </div>
 
+    <div class="popup-footer">
+      <button class="btn-cancel" (click)="closeEditPopup()">
+        <span>Cancel</span>
+      </button>
+      <button class="btn-save" (click)="saveProfile()" [disabled]="!editProfileForm.valid">
+        <span>Save Changes</span>
+      </button>
+    </div>
   </div>
 </div>

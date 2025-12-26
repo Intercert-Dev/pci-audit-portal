@@ -3,6 +3,7 @@ import { Component, OnInit, ChangeDetectorRef, inject, OnDestroy } from '@angula
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil, finalize } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-asv-audit',
@@ -47,7 +48,7 @@ export class AsvAudit implements OnInit, OnDestroy {
   // For unsubscribing to prevent memory leaks
   private destroy$ = new Subject<void>();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,private router:Router) {}
 
   ngOnInit(): void {
     this.fetchASVData();
@@ -115,6 +116,22 @@ export class AsvAudit implements OnInit, OnDestroy {
           this.cdr.detectChanges();
         }
       });
+  }
+
+  goToTotalClients():void{
+    this.router.navigate([
+      '/asv-client-list'
+    ])
+  }
+  onCurrentPendingList():void{
+    this.router.navigate([
+      '/current-pending-clients'
+    ])
+  }
+  onNextPendingList():void{
+    this.router.navigate([
+      '/next-month-pending-clients'
+    ])
   }
 
   updateDashboardData(data: any): void {

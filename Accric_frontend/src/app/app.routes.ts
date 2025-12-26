@@ -25,6 +25,8 @@ import { AddAsvAudit } from './add-asv-audit/add-asv-audit';
 import { AsvAuditClientList } from './asv-audit-client-list/asv-audit-client-list';
 import { AuditList } from './audit-list/audit-list';
 import { PciReportsList } from './pci-reports-list/pci-reports-list';
+import { CurrentPendingClients } from './current-pending-clients/current-pending-clients';
+import { NextMonthPendingClientsList } from './next-month-pending-clients-list/next-month-pending-clients-list';
 
 
 export const routes: Routes = [
@@ -59,6 +61,8 @@ export const routes: Routes = [
       { path: 'asv-audit-client-list',  component: AsvAuditClientList},
       { path: 'audit-list',  component: AuditList},
       { path: 'pci-reports-list',  component: PciReportsList},
+      { path: 'current-pending-clients',  component: CurrentPendingClients},
+      { path: 'next-month-pending-clients',  component: NextMonthPendingClientsList},
     ],
   },
   { path: '**', redirectTo: 'dashboard' }

@@ -69,7 +69,7 @@ export class AsvAudit implements OnInit, OnDestroy {
   constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
-    this.cdr.detectChanges(); // Initial UI detection
+    this.cdr.detectChanges();
     this.fetchASVData();
   }
 
@@ -96,7 +96,6 @@ export class AsvAudit implements OnInit, OnDestroy {
     
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
     });
     
     // Use markForCheck for better performance
@@ -129,7 +128,6 @@ export class AsvAudit implements OnInit, OnDestroy {
             this.errorMessage = 'Access denied. You do not have permission to view this data.';
           } else {
             this.errorMessage = 'Failed to load ASV dashboard data. Please try again later.';
-            this.loadSampleData();
           }
           
           this.cdr.markForCheck();
@@ -160,7 +158,6 @@ export class AsvAudit implements OnInit, OnDestroy {
     
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
     });
     
     // Determine the API endpoint based on quarter and type
@@ -288,57 +285,39 @@ export class AsvAudit implements OnInit, OnDestroy {
   }
 
   updateDashboardData(data: any): void {
-    // Total counts
+    // Total counts - directly from backend
     this.totalClients = data.totalCount || 0;
     this.assessmentPending = data.pendingCount || 0;
     
-    // Calculate completed assessments
+    // Calculate completed assessments from backend data
     this.assessmentCompleted = 
       (data.q1CompletedCount || 0) + 
       (data.q2CompletedCount || 0) + 
       (data.q3CompletedCount || 0) + 
       (data.q4CompletedCount || 0);
     
-    // Quarterly completed counts
+    // Quarterly completed counts - directly from backend
     this.q1Completed = data.q1CompletedCount || 0;
     this.q2Completed = data.q2CompletedCount || 0;
     this.q3Completed = data.q3CompletedCount || 0;
     this.q4Completed = data.q4CompletedCount || 0;
     
-    // Quarterly pending counts
+    // Quarterly pending counts - directly from backend
     this.q1Pending = data.q1PendingCount || 0;
     this.q2Pending = data.q2PendingCount || 0;
     this.q3Pending = data.q3PendingCount || 0;
     this.q4Pending = data.q4PendingCount || 0;
     
-    // For current pending - using xCount as per your API response
+    // IMPORTANT: Direct assignment from backend as per your requirement
+    // currentPending should come from xCount value from backend
     this.currentPending = data.xCount || 0;
     
-    // For next month pending - if not in API, calculate or set default
-    this.nextMonthPending = Math.max(0, this.assessmentPending - this.currentPending);
+    // nextMonthPending should come from pendingCount value from backend
+    this.nextMonthPending = data.pendingCount || 0;
     
     // Trigger change detection
     this.cdr.markForCheck();
     this.cdr.detectChanges();
-  }
-
-  // Method to load sample data for testing
-  loadSampleData(): void {
-    const sampleData = {
-      totalCount: 4,
-      pendingCount: 3,
-      xCount: 3,
-      q1CompletedCount: 1,
-      q2CompletedCount: 0,
-      q3CompletedCount: 0,
-      q4CompletedCount: 0,
-      q1PendingCount: 3,
-      q2PendingCount: 0,
-      q3PendingCount: 0,
-      q4PendingCount: 0
-    };
-    
-    this.updateDashboardData(sampleData);
   }
 
   // Refresh data method

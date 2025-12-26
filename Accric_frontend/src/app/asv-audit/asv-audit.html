@@ -1,148 +1,162 @@
 <div class="dashboard-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading ASV Dashboard Data...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="errorMessage && !isLoading" class="error-state">
+    <p class="error-message">{{ errorMessage }}</p>
+    <button class="retry-btn" (click)="refreshData()">Retry</button>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!isLoading && !errorMessage">
     <div class="asv-dashboard-heading">
-        <p class="asv-heading">ASV Dashboard</p>
-        <!-- <p class="asv-heading">Client List</p> -->
+      <p class="asv-heading">ASV Dashboard</p>
     </div>
 
     <div class="cards-row">
-        <!-- Total Clients -->
-        <div class="card">
-            <div class="icon-circle">
-                <img src="/assets/icons/user 3 2.png" alt="user icon">
-            </div>
-            <div class="card-item">
-                <p class="card-text">Total Clients</p>
-                <p class="card-number"> {{ totalClients }}</p>
-            </div>
+      <!-- Total Clients -->
+      <div class="card">
+        <div class="icon-circle">
+          <img src="/assets/icons/user 3 2.png" alt="user icon">
+        </div>
+        <div class="card-item">
+          <p class="card-text">Total Clients</p>
+          <p class="card-number">{{ totalClients }}</p>
+        </div>
+      </div>
+
+      <!-- Assessment Completed Card -->
+      <div class="card-items">
+        <div class="card-left-content">
+          <div class="icon-circle">
+            <img src="/assets/icons/fact_check.png" alt="completed icon">
+          </div>
         </div>
 
-        <div class="card-items">
+        <div class="card-right-content">
+          <div class="upper-content">
+            <p class="card-text">Assessment Completed</p>
+          </div>
 
-            <div class="card-left-content">
-                <div class="icon-circle">
-                    <img src="/assets/icons/fact_check.png" alt="completed icon">
+          <div class="lower-content">
+            <div class="card-bottom-items">
+              <div class="bottom-list">
+                <div class="left-item">
+                  <img src="/assets/icons/fiber_manual_record.png" alt="icon">
+                  <p class="quater">Q1</p>
                 </div>
+                <p class="number">{{ q1Completed }}</p>
+              </div>
+              <div class="bottom-list">
+                <div class="left-item">
+                  <img src="/assets/icons/fiber_manual_record.png" alt="icon">
+                  <p class="quater">Q2</p>
+                </div>
+                <p class="number">{{ q2Completed }}</p>
+              </div>
             </div>
-
-            <div class="card-right-content">
-                <div class="upper-content">
-                    <p class="card-text">Assessment Completed</p>
+            <div class="card-bottom-items">
+              <div class="bottom-list">
+                <div class="left-item">
+                  <img src="/assets/icons/fiber_manual_record.png" alt="icon">
+                  <p class="quater">Q3</p>
                 </div>
-
-                <div class="lower-content">
-                    <div class="card-bottom-items">
-                        <div class="bottom-list">
-                            <div class="left-item">
-                                <img src="/assets/icons/fiber_manual_record.png" alt="icon">
-                                <p class="quater">Q1</p>
-                            </div>
-                            <p class="number">12</p>
-                        </div>
-                        <div class="bottom-list">
-                            <div class="left-item">
-                                <img src="/assets/icons/fiber_manual_record.png" alt="icon">
-                                <p class="quater">Q2</p>
-                            </div>
-                            <p class="number">22</p>
-                        </div>
-                    </div>
-                    <div class="card-bottom-items">
-                        <div class="bottom-list">
-                            <div class="left-item">
-                                <img src="/assets/icons/fiber_manual_record.png" alt="icon">
-                                <p class="quater">Q3</p>
-                            </div>
-                            <p class="number">18</p>
-                        </div>
-                        <div class="bottom-list">
-                            <div class="left-item">
-                                <img src="/assets/icons/fiber_manual_record.png" alt="icon">
-                                <p class="quater">Q4</p>
-                            </div>
-                            <p class="number">16</p>
-                        </div>
-                    </div>
+                <p class="number">{{ q3Completed }}</p>
+              </div>
+              <div class="bottom-list">
+                <div class="left-item">
+                  <img src="/assets/icons/fiber_manual_record.png" alt="icon">
+                  <p class="quater">Q4</p>
                 </div>
+                <p class="number">{{ q4Completed }}</p>
+              </div>
             </div>
+          </div>
         </div>
-        <div class="card-items">
+      </div>
 
-            <div class="card-left-content">
-                <div class="icon-circle">
-                    <img src="/assets/icons/clock_loader_80.png" alt="completed icon">
-                </div>
-            </div>
-
-            <div class="card-right-content">
-                <div class="upper-content">
-                    <p class="card-text">Assessment Pending</p>
-                </div>
-
-                <div class="lower-content">
-                    <div class="card-bottom-items">
-                        <div class="bottom-list">
-                            <div class="left-item">
-                                <img src="/assets/icons/fiber_manual_record.png" alt="icon">
-                                <p class="quater">Q1</p>
-                            </div>
-                            <p class="number">12</p>
-                        </div>
-                        <div class="bottom-list">
-                            <div class="left-item">
-                                <img src="/assets/icons/fiber_manual_record.png" alt="icon">
-                                <p class="quater">Q2</p>
-                            </div>
-                            <p class="number">22</p>
-                        </div>
-                    </div>
-                    <div class="card-bottom-items">
-                        <div class="bottom-list">
-                            <div class="left-item">
-                                <img src="/assets/icons/fiber_manual_record.png" alt="icon">
-                                <p class="quater">Q3</p>
-                            </div>
-                            <p class="number">18</p>
-                        </div>
-                        <div class="bottom-list">
-                            <div class="left-item">
-                                <img src="/assets/icons/fiber_manual_record.png" alt="icon">
-                                <p class="quater">Q4</p>
-                            </div>
-                            <p class="number">16</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <!-- Assessment Pending Card -->
+      <div class="card-items">
+        <div class="card-left-content">
+          <div class="icon-circle">
+            <img src="/assets/icons/clock_loader_80.png" alt="pending icon">
+          </div>
         </div>
 
+        <div class="card-right-content">
+          <div class="upper-content">
+            <p class="card-text">Assessment Pending</p>
+          </div>
 
+          <div class="lower-content">
+            <div class="card-bottom-items">
+              <div class="bottom-list">
+                <div class="left-item">
+                  <img src="/assets/icons/fiber_manual_record.png" alt="icon">
+                  <p class="quater">Q1</p>
+                </div>
+                <p class="number">{{ q1Pending }}</p>
+              </div>
+              <div class="bottom-list">
+                <div class="left-item">
+                  <img src="/assets/icons/fiber_manual_record.png" alt="icon">
+                  <p class="quater">Q2</p>
+                </div>
+                <p class="number">{{ q2Pending }}</p>
+              </div>
+            </div>
+            <div class="card-bottom-items">
+              <div class="bottom-list">
+                <div class="left-item">
+                  <img src="/assets/icons/fiber_manual_record.png" alt="icon">
+                  <p class="quater">Q3</p>
+                </div>
+                <p class="number">{{ q3Pending }}</p>
+              </div>
+              <div class="bottom-list">
+                <div class="left-item">
+                  <img src="/assets/icons/fiber_manual_record.png" alt="icon">
+                  <p class="quater">Q4</p>
+                </div>
+                <p class="number">{{ q4Pending }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="upcoming-audit">
-        <p class="asv-heading">Up Coming Assessment</p>
+      <p class="asv-heading">Up Coming Assessment</p>
     </div>
 
     <div class="cards-row">
-        <!-- Current Pending Client -->
-        <div class="card">
-            <div class="icon-circle light">
-                <img src="/assets/icons/other_admission.png" alt="pending icon">
-            </div>
-            <div class="card-item">
-                <p class="card-text">Current Pending Client</p>
-                <p class="card-number">{{ currentPending }}</p>
-            </div>
+      <!-- Current Pending Client -->
+      <div class="card">
+        <div class="icon-circle light">
+          <img src="/assets/icons/other_admission.png" alt="pending icon">
         </div>
+        <div class="card-item">
+          <p class="card-text">Current Pending Client</p>
+          <p class="card-number">{{ currentPending }}</p>
+        </div>
+      </div>
 
-        <!-- Next Month Pending -->
-        <div class="card" id="card-next-Month">
-            <div class="icon-circle light">
-                <img src="/assets/icons/text_select_move_forward_word.png" alt="calendar icon">
-            </div>
-            <div class="card-text">
-                <p class="card-text">Assessment pending for Next month</p>
-                <p class="card-number">{{ nextMonthPending }}</p>
-            </div>
+      <!-- Next Month Pending -->
+      <div class="card" id="card-next-Month">
+        <div class="icon-circle light">
+          <img src="/assets/icons/text_select_move_forward_word.png" alt="calendar icon">
         </div>
+        <div class="card-text">
+          <p class="card-text">Assessment pending for Next month</p>
+          <p class="card-number">{{ nextMonthPending }}</p>
+        </div>
+      </div>
     </div>
+
+  </div>
 </div>

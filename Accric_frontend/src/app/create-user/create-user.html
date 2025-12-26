@@ -1,8 +1,9 @@
 <div class="create-user-container">
   <div class="form-box">
-    
+
     <!-- Success/Error Message -->
-    <div *ngIf="message" class="message-box" [class.success]="messageType === 'success'" [class.error]="messageType === 'error'">
+    <div *ngIf="message" class="message-box" [class.success]="messageType === 'success'"
+      [class.error]="messageType === 'error'">
       {{ message }}
     </div>
 
@@ -10,14 +11,7 @@
       <!-- Name -->
       <div class="form-group">
         <label for="name">Name <span class="required">*</span></label>
-        <input 
-          type="text" 
-          id="name" 
-          name="name" 
-          ngModel 
-          #name="ngModel" 
-          required 
-          placeholder="Enter name" 
+        <input type="text" id="name" name="name" ngModel #name="ngModel" required placeholder="Enter name"
           [class.error-border]="(name.touched || formSubmitted) && name.errors?.['required']" />
 
         <small class="error" *ngIf="(name.touched || formSubmitted) && name.errors?.['required']">
@@ -28,26 +22,18 @@
       <!-- Email -->
       <div class="form-group">
         <label for="email">Email <span class="required">*</span></label>
-        <input 
-          type="email" 
-          id="email" 
-          name="email" 
-          ngModel 
-          #email="ngModel" 
-          pattern="^[a-zA-Z0-9._%+-]+@intercert\.com$" 
-          required 
-          placeholder="Enter email" 
-          [class.error-border]="(email.touched || formSubmitted) && (email.errors?.['required'] || email.errors?.['email'] || email.errors?.['pattern'])" />
-
+        <input type="email" id="email" name="email" ngModel #email="ngModel" email required placeholder="Enter email"
+          [class.error-border]="
+    (email.touched || formSubmitted) &&
+    (email.errors?.['required'] || email.errors?.['email'])
+  " />
+        <!-- Required -->
         <small class="error" *ngIf="(email.touched || formSubmitted) && email.errors?.['required']">
           Email is required
         </small>
-
-        <small class="error" *ngIf="(email.touched || formSubmitted) && email.errors?.['email'] && !email.errors?.['pattern']">
-          Please enter a valid email format
-        </small>
-        <small class="error" *ngIf="(email.touched || formSubmitted) && email.errors?.['pattern']">
-          Only emails from the @intercert.com domain are allowed
+        <!-- Invalid format -->
+        <small class="error" *ngIf="(email.touched || formSubmitted) && email.errors?.['email']">
+          Please enter a valid email address
         </small>
       </div>
 
@@ -55,27 +41,18 @@
       <div class="form-group">
         <label for="role">Role <span class="required">*</span></label>
 
-        <div class="custom-select" 
-             #roleDropdown
-             (click)="toggleDropdown()" 
-             (mouseleave)="closeDropdown()"
-             [class.error-border]="formSubmitted && !selectedRole">
+        <div class="custom-select" #roleDropdown (click)="toggleDropdown()" (mouseleave)="closeDropdown()"
+          [class.error-border]="formSubmitted && !selectedRole">
           <div class="selected-value">
             {{ selectedRole || 'Select role' }}
           </div>
 
-          <img class="arrow-icon" 
-               src="/assets/icons/arrow_forward_ios.png" 
-               [class.open]="dropdownOpen"
-               alt="dropdown arrow">
+          <img class="arrow-icon" src="/assets/icons/arrow_forward_ios.png" [class.open]="dropdownOpen"
+            alt="dropdown arrow">
 
-          <div class="dropdown-options" 
-               *ngIf="dropdownOpen" 
-               (mouseleave)="closeDropdown()">
-            <div class="option" 
-                 *ngFor="let r of roles" 
-                 (click)="selectRole(r); onRoleSelected()"
-                 [class.selected]="selectedRole === r">
+          <div class="dropdown-options" *ngIf="dropdownOpen" (mouseleave)="closeDropdown()">
+            <div class="option" *ngFor="let r of roles" (click)="selectRole(r); onRoleSelected()"
+              [class.selected]="selectedRole === r">
               {{ r }}
             </div>
           </div>

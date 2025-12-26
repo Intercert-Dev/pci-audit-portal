@@ -201,7 +201,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let row of filtered_list">
-            <td>xy</td>
+            <td>{{row.company}}</td>
             <td>{{ row.assessment }}</td>
             <td>
               <span class="status-badge" [class]="getStatusClass(row.Q1)">

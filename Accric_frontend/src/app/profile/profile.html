@@ -1,83 +1,74 @@
-<div class="profile-container">
+<div class="profile-page">
+  <div class="profile-wrapper">
 
-  <!-- ==========================
-       PROFILE HEADER
-  =========================== -->
-  <header class="profile-header">
-    <div class="avatar-wrapper">
-      <img src="https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
-           [alt]="userProfile.name" class="profile-avatar">
+    <!-- PROFILE CARD -->
+    <div class="profile-card">
+      <header class="profile-header">
+        <div class="avatar-wrapper">
+          <img src="https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
+            [alt]="userProfile.name" class="profile-avatar" />
+        </div>
+
+        <h1 class="profile-name">{{ userProfile.name }}</h1>
+        <p class="profile-role">{{ userProfile.title }}</p>
+
+        <div class="footer">
+          <section class="contact-section">
+            <h2 class="section-title">Contact & Location</h2>
+
+            <div class="info-grid">
+              <div class="info-item">
+                <i class="icon fas fa-envelope"></i>
+                <span>{{ userProfile.email }}</span>
+              </div>
+
+              <div class="info-item">
+                <i class="icon fas fa-phone"></i>
+                <span>{{ userProfile.phone }}</span>
+              </div>
+
+              <div class="info-item">
+                <i class="icon fas fa-map-marker-alt"></i>
+                <span>{{ userProfile.location }}</span>
+              </div>
+
+            </div>
+          </section>
+          <button class="edit-btn" (click)="openEditPopup()"> <span>Edit Profile</span> </button>
+        </div>
+
+
+      </header>
+
+
     </div>
-
-    <div class="header-info">
-      <h1>{{ userProfile.name }}</h1>
-      <p class="title">{{ userProfile.title }}</p>
-    </div>
-     
-    
-      <button class="edit-btn" (click)="openEditPopup()">Edit Profile</button>
-  </header>
-
-    <!-- EDIT BUTTON -->
-
-  <!-- ==========================
-       MAIN CONTENT
-  =========================== -->
-  <main class="profile-main">
-
-    <!-- CONTACT BOX -->
-    <section class="card contact-section">
-      <h2 class="section-title">Contact & Location</h2>
-
-      <ul class="contact-list">
-        <li>
-          <i class="icon fas fa-envelope"></i>
-          <a [href]="'mailto:' + userProfile.email">{{ userProfile.email }}</a>
-        </li>
-
-        <li>
-          <i class="icon fas fa-phone"></i>
-          <span>{{ userProfile.phone }}</span>
-        </li>
-
-        <li>
-          <i class="icon fas fa-map-marker-alt"></i>
-          <span>{{ userProfile.location }}</span>
-        </li>
-      </ul>
-    </section>
-
-  </main>
-
+  </div>
 </div>
 
 <!-- ==========================
-       EDIT PROFILE POPUP
+       EDIT PROFILE MODAL
 =========================== -->
 <div class="modal-overlay" *ngIf="showPopup">
-
   <div class="modal">
 
     <h2>Edit Profile</h2>
 
     <div class="modal-body">
-
       <label>Name</label>
-      <input type="text" [(ngModel)]="tempData.name">
+      <input type="text" [(ngModel)]="tempData.name" />
 
       <label>Email</label>
-      <input type="email" [(ngModel)]="tempData.email">
+      <input type="email" [(ngModel)]="tempData.email" />
 
       <label>Phone</label>
-      <input type="text" [(ngModel)]="tempData.phone">
+      <input type="text" [(ngModel)]="tempData.phone" />
 
       <label>Location</label>
-      <input type="text" [(ngModel)]="tempData.location">
+      <input type="text" [(ngModel)]="tempData.location" />
 
       <label>Profile Image</label>
-      <input type="file" (change)="onImageUpload($event)">
-      <img *ngIf="tempData.avatarUrl" [src]="tempData.avatarUrl" class="preview-avatar">
-
+      <input type="file" (change)="onImageUpload($event)" />
+      <img *ngIf="tempData.avatarUrl" [src]="tempData.avatarUrl" class="preview-avatar" />
     </div>
 
     <div class="modal-actions">
@@ -86,5 +77,4 @@
     </div>
 
   </div>
-
 </div>

@@ -8,17 +8,20 @@
 .audit-list-container {
   width: 100%;
   background-color: rgba(250, 251, 254, 1);
-  min-height: 89vh;
+  min-height: 88vh;
   padding-top: 1px;
   display: flex;
   justify-content: center;
+  overflow-x: hidden;
 }
 
 .audit-list-box {
-  width: 100%;
+   flex: 1;
+  min-width: 0;
   margin-left: 56px;
   margin-top: 34px;
   margin-right: 50px;
+  overflow: hidden;
 }
 
 .header-row {
@@ -636,13 +639,12 @@ textarea::placeholder {
   opacity: 0.8;
 }
 
-/* ============================
-      RESPONSIVE POPUP (TABLET)
-   ============================ */
+
 @media (max-width: 1024px) {
   .edit-audit-popup {
     width: 95%;
-    max-height: 85vh;
+    max-height: 80vh;
+    margin-top: 10rem;
   }
 
   .popup-content {
@@ -660,9 +662,7 @@ textarea::placeholder {
   }
 }
 
-/* ============================
-      RESPONSIVE POPUP (MOBILE)
-   ============================ */
+
 @media (max-width: 768px) {
   .edit-audit-popup-overlay {
     padding: 10px;
@@ -670,8 +670,10 @@ textarea::placeholder {
 
   .edit-audit-popup {
     width: 100%;
-    max-height: 95vh;
+    max-height: 60vh;
     border-radius: 16px;
+    margin-top: 14rem;
+    margin-inline: 1rem;
   }
 
   .popup-content {
@@ -701,19 +703,17 @@ textarea::placeholder {
   .btn-cancel {
     width: 100%;
     padding: 14px 24px;
+    justify-content: center;
   }
 }
 
-/* ============================
-   RESPONSIVE POPUP (SMALL MOBILE)
-   ============================ */
+
 @media (max-width: 480px) {
   .edit-audit-popup-overlay {
     padding: 5px;
   }
 
   .popup-content {
-    margin-top: 10.5rem;
     padding: 16px;
   }
 

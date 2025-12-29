@@ -169,6 +169,10 @@ export class MainLayout implements OnInit {
     }
   }
 
+  goToHomeDashboard(){
+    this.router.navigate(['/dashboard']);
+  }
+
   toggleListsMenu(event: Event) {
     event.stopPropagation();
     this.isListExpanded = !this.isListExpanded;

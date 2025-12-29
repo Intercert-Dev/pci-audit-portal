@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -134,6 +134,18 @@ export class AddAudit implements OnInit {
     this.generateYearList();
   }
 
+  // Listen for clicks outside the dropdown
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    const isDropdown = target.closest('.search-dropdown');
+    
+    // Close dropdown if click is outside the dropdown area
+    if (!isDropdown) {
+      this.showClientDropdown = false;
+    }
+  }
+
   loadClients() {
     this.isLoading = true;
     const url = 'http://pci.accric.com/api/auth/client-list';
@@ -163,11 +175,11 @@ export class AddAudit implements OnInit {
   }
 
   generateYearList() {
-  const currentYear = new Date().getFullYear();
-  for (let i = currentYear - 6; i <= currentYear + 3; i++) {
-    this.assessmentYears.push(i);
+    const currentYear = new Date().getFullYear();
+    for (let i = currentYear - 6; i <= currentYear + 3; i++) {
+      this.assessmentYears.push(i);
+    }
   }
-}
 
   onClientSearch() {
     this.searchSubject.next(this.clientSearch);
@@ -203,29 +215,49 @@ export class AddAudit implements OnInit {
   }
 
   onClientBlur() {
+    // Use a shorter timeout to handle blur
     setTimeout(() => {
-      this.showClientDropdown = false;
+      // Only process if dropdown is still open
+      if (this.showClientDropdown) {
+        this.showClientDropdown = false;
+        
+        // Validate client selection on blur
+        if (!this.selectedClientId && this.clientSearch) {
+          const matchedClient = this.clients.find(client =>
+            client.legal_entity_name.toLowerCase() === this.clientSearch.toLowerCase()
+          );
 
-      if (!this.selectedClientId && this.clientSearch) {
-        const matchedClient = this.clients.find(client =>
-          client.legal_entity_name.toLowerCase() === this.clientSearch.toLowerCase()
-        );
+          if (matchedClient) {
+            this.selectClient(matchedClient);
+          } else {
+            // Clear if no match found
+            this.clientSearch = '';
+            this.auditData.clientId = '';
+            this.auditData.clientName = '';
 
-        if (matchedClient) {
-          this.selectClient(matchedClient);
-        } else {
-          this.clientSearch = '';
-          this.auditData.clientId = '';
-          this.auditData.clientName = '';
-
-          if (this.auditForm?.controls['clientId']) {
-            this.auditForm.controls['clientId'].setValue('');
-            this.auditForm.controls['clientId'].markAsTouched();
-            this.auditForm.controls['clientId'].updateValueAndValidity();
+            if (this.auditForm?.controls['clientId']) {
+              this.auditForm.controls['clientId'].setValue('');
+              this.auditForm.controls['clientId'].markAsTouched();
+              this.auditForm.controls['clientId'].updateValueAndValidity();
+            }
           }
         }
       }
-    }, 200);
+    }, 150);
+  }
+
+  // Handle focus to show dropdown
+  onClientFocus() {
+    if (this.clientSearch && this.filteredClients.length > 0) {
+      this.showClientDropdown = true;
+    }
+  }
+
+  // Handle input click to toggle dropdown
+  onClientInputClick() {
+    if (this.filteredClients.length > 0 && !this.showClientDropdown) {
+      this.showClientDropdown = true;
+    }
   }
 
   onQsaChange(event: Event) {
@@ -242,7 +274,6 @@ export class AddAudit implements OnInit {
       this.auditData.qsa_license_certificate_number = '';
     }
   }
-
 
   loadQsaList() {
     const url = 'http://pci.accric.com/api/auth/qsa-list';
@@ -264,7 +295,6 @@ export class AddAudit implements OnInit {
       }
     });
   }
-
 
   validateDates(): boolean {
     this.clearDateErrors();
@@ -334,7 +364,6 @@ export class AddAudit implements OnInit {
       nextAuditDueDate: ''
     };
   }
-
 
   focusOnFirstError(): void {
     if (!this.auditData.clientId) {
@@ -436,7 +465,6 @@ export class AddAudit implements OnInit {
   }
 
   onSubmit() {
-
     this.showErrors = false;
     this.createAudit();
   }
@@ -526,60 +554,57 @@ export class AddAudit implements OnInit {
           errorMessage += 'Server error. Please try again later.';
         }
 
-        this.toast.error(errorMessage || 'Somthing went wrong');
+        this.toast.error(errorMessage || 'Something went wrong');
       }
     });
   }
 
- private resetForm(): void {
-  if (this.auditForm) {
-    this.auditForm.resetForm();
+  private resetForm(): void {
+    if (this.auditForm) {
+      this.auditForm.resetForm();
+    }
+
+    this.activeTab = 'assessment-summary';
+    this.showErrors = false;
+    this.clearDateErrors();
+
+    this.auditData = {
+      clientId: '',
+      clientName: '',
+
+      assessment_project_name: '',
+      assessment_type: '',
+      assessment_category: '',
+      assessment_year: '',
+      pci_dss_version_application: '',
+      assessment_period_covered: '',
+
+      audit_start_date: '',
+      audit_end_date: '',
+      date_of_report_submission: '',
+      audit_status: 'NOT_STARTED',
+
+      certificate_issue_date: '',
+      certificate_expiry_date: '',
+      certificate_number_unique_id: '',
+      classification: '',
+      next_audit_due_date: '',
+
+      name_of_qsa: '',
+      qsa_license_certificate_number: '',
+      audit_manager_reviewer_name: '',
+
+      scope_of_assessment: '',
+      location_of_scope: ''
+    };
+
+    this.clientSearch = '';
+    this.selectedClientId = null;
+    this.filteredClients = [...this.clients];
+    this.showClientDropdown = false;
   }
 
-  this.activeTab = 'assessment-summary';
-  this.showErrors = false;
-  this.clearDateErrors();
-
-  this.auditData = {
-    clientId: '',
-    clientName: '',
-
-    assessment_project_name: '',
-    assessment_type: '',
-    assessment_category: '',
-    assessment_year: '',
-    pci_dss_version_application: '',
-    assessment_period_covered: '',
-
-    audit_start_date: '',
-    audit_end_date: '',
-    date_of_report_submission: '',
-    audit_status: 'NOT_STARTED',
-
-    certificate_issue_date: '',
-    certificate_expiry_date: '',
-    certificate_number_unique_id: '',
-    classification: '',
-    next_audit_due_date: '',
-
-    name_of_qsa: '',
-    qsa_license_certificate_number: '',
-    audit_manager_reviewer_name: '',
-
-    scope_of_assessment: '',
-    location_of_scope: ''
-  };
-
-  this.clientSearch = '';
-  this.selectedClientId = null;
-  this.filteredClients = [...this.clients];
-}
-
-  // Add NgForm to your imports at the top
-  // import { NgForm } from '@angular/forms';
-
   resetAuditForm(form: NgForm) {
-
     // 1. Reset the data object to its initial state
     this.auditData = {
       clientId: '',
@@ -606,10 +631,10 @@ export class AddAudit implements OnInit {
       location_of_scope: ''
     };
 
-
     // 2. Clear Search-specific variables
     this.clientSearch = '';
     this.selectedClientId = null;
+    this.showClientDropdown = false;
     this.clearDateErrors(); // Clear any date validation messages
 
     // 3. Reset the Angular Form state (clears red error borders)

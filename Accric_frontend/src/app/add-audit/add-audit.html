@@ -21,7 +21,10 @@
             <label>Client (Legal Entity Name)*</label>
             <div class="search-input-wrapper">
               <input type="text" name="clientSearch" [(ngModel)]="clientSearch" (input)="onClientSearch()"
-                (focus)="showClientDropdown = true" (blur)="onClientBlur()" placeholder="Search client name"
+                (focus)="onClientFocus()" 
+                (click)="onClientInputClick()"
+                (blur)="onClientBlur()" 
+                placeholder="Search client name"
                 autocomplete="off" required />
             </div>
 
@@ -30,8 +33,10 @@
 
             <!-- Dropdown list -->
             <div class="search-dropdown-list" *ngIf="showClientDropdown && filteredClients.length > 0">
-              <div *ngFor="let client of filteredClients" class="dropdown-item" (mousedown)="selectClient(client)"
-                [class.selected]="client.clientId === selectedClientId">
+              <div *ngFor="let client of filteredClients" class="dropdown-item" 
+                   (mousedown)="selectClient(client)"
+                   (click)="$event.preventDefault()"
+                   [class.selected]="client.clientId === selectedClientId">
                 {{ client.legal_entity_name }}
               </div>
             </div>
@@ -45,7 +50,6 @@
             </div>
           </div>
         </div>
-
         <div class="form-row">
           <div class="form-group">
             <label>Assessment / Project Name <span class="required">*</span></label>

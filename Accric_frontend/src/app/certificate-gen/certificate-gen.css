@@ -5,7 +5,6 @@
   font-family: 'Inter', sans-serif;
 }
 
-
 .certificate-box {
   padding: 48px 42px;
   background: #f5f7fc;
@@ -13,9 +12,6 @@
   width: 100%;
   overflow-x: hidden;
 }
-
-
-
 
 .certificate-container {
   width: 100%;
@@ -30,12 +26,14 @@
   overflow-x: hidden;
 }
 
+/* FIXED: Expanded state - preserve margin auto and proper width on all screens */
 .certificate-container.expanded {
   padding: 30px 35px;
   max-width: 100%;
+  margin: 32px auto 0;           /* Added: keeps centering */
+  width: 100%;                   /* Added: consistent width control */
   transition: padding 0.3s ease, width 0.3s ease;
 }
-
 
 .certificate-sub-heading {
   color: #343c6a;
@@ -43,7 +41,6 @@
   font-size: 1.5rem;
   margin-bottom: 1rem;
 }
-
 
 .input-row {
   display: flex;
@@ -98,7 +95,6 @@
   min-width: 0;
   margin-right: 10px;
 }
-
 
 .edit-options,
 .certification-options {
@@ -200,7 +196,6 @@
 .fields-container .field-row input[name="full_address"] {
   font-size: 13px;
 }
-
 
 .options-flex-container {
   display: flex;
@@ -345,7 +340,6 @@
   flex: 0 1 auto;
 }
 
-
 /* ===================== */
 /* PDF VIEWER            */
 /* ===================== */
@@ -411,8 +405,6 @@
   font-size: 1.1rem;
 }
 
-
-
 /* ===================== */
 /* RESPONSIVE DESIGN     */
 /* ===================== */
@@ -427,6 +419,15 @@
     width: 95%;
     max-width: 950px;
     padding: 25px 20px;
+    margin: 32px auto 0;           /* Ensure centering */
+  }
+
+  /* Fix expanded on tablet */
+  .certificate-container.expanded {
+    width: 95%;
+    max-width: 950px;
+    padding: 30px 25px;
+    margin: 32px auto 0;
   }
 
   .option-row {
@@ -459,6 +460,16 @@
     width: 100%;
     max-width: 100%;
     padding: 20px 15px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* CRITICAL FIX: Expanded state on mobile */
+  .certificate-container.expanded {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 25px 20px;
+    margin: 6rem auto 0 !important;
   }
 
   .certificate-sub-heading {
@@ -570,6 +581,12 @@
     margin-top: 3rem;
   }
 
+  /* Fix expanded on small mobile */
+  .certificate-container.expanded {
+    padding: 22px 16px;
+    margin-top: 3rem;
+  }
+
   .certificate-sub-heading {
     font-size: 1.15rem;
     margin-bottom: 1rem;
@@ -646,6 +663,12 @@
   .certificate-container {
     padding: 15px 10px;
     border-radius: 10px;
+    margin-top: 5rem;
+  }
+
+  /* Fix expanded on extra small */
+  .certificate-container.expanded {
+    padding: 20px 14px;
     margin-top: 5rem;
   }
 
@@ -728,4 +751,9 @@
 
 .date-input {
   color: rgba(113, 142, 191, 1);
+}
+
+/* Extra safeguard - prevent any hidden overflow or visibility issues */
+.certificate-box {
+  overflow: hidden;
 }

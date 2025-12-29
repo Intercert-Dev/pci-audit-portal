@@ -130,8 +130,6 @@
   transition: all 0.2s ease;
 }
 
-
-
 .icon {
   color: #396aff;
   font-size: 1rem;
@@ -528,86 +526,299 @@
 }
 
 /* ==========================
-   RESPONSIVE DESIGN
+   RESPONSIVE DESIGN - FULLY ENHANCED
 ========================== */
-@media (max-width: 768px) {
+
+/* Tablet (1024px and below) */
+@media (max-width: 1024px) {
   .profile-card {
-    width: 85%;
-    padding: 28px 24px;
+    width: 80%;
+    padding: 32px 28px;
   }
-  
-  .edit-profile-popup {
-    max-width: 95%;
-    max-height: 90vh;
+
+  .profile-name {
+    font-size: 1.5rem;
   }
-  
+
   .form-grid {
     grid-template-columns: 1fr;
+    gap: 18px;
   }
-  
+
   .social-links-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
-  
-  .profile-image-upload {
-    flex-direction: column;
-    text-align: center;
-    gap: 20px;
-  }
-  
+
   .popup-header {
-    padding: 20px 24px;
+    padding: 20px 28px;
   }
-  
-  .popup-header h2 {
-    font-size: 1.3rem;
-  }
-  
+
   .popup-content {
-    padding: 24px;
+    padding: 28px;
   }
-  
+
   .popup-footer {
-    padding: 20px 24px;
-    flex-direction: column;
+    padding: 20px 28px;
   }
-  
-  .btn-cancel,
-  .btn-save {
-    width: 100%;
-    min-width: auto;
-    padding: 14px;
+}
+
+/* Mobile Landscape / Small Tablet (768px and below) */
+@media (max-width: 768px) {
+  .profile-page {
+    padding-top: 90px; /* Space for fixed header */
   }
-  
+
+  .profile-card {
+    width: 90%;
+    padding: 28px 24px;
+    border-radius: 20px;
+    margin-top: 3rem;
+  }
+
+  .avatar-wrapper {
+    width: 100px;
+    height: 100px;
+  }
+
+  .profile-name {
+    font-size: 1.4rem;
+  }
+
+  .profile-role {
+    font-size: 0.95rem;
+  }
+
+  .edit-btn {
+    width: 140px;
+    height: 46px;
+    padding: 0.7rem 1.2rem;
+  }
+
+  .edit-btn span {
+    font-size: 1.1rem;
+  }
+
   .footer {
     flex-direction: column;
     gap: 2rem;
     align-items: center;
   }
+
+  .edit-profile-popup {
+    max-width: 95%;
+    max-height: 92vh;
+    border-radius: 20px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .social-links-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-image-upload {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+    padding: 16px;
+  }
+
+  .profile-avatar-preview {
+    width: 90px;
+    height: 90px;
+  }
+
+  .popup-header {
+    padding: 18px 24px;
+  }
+
+  .popup-header h2 {
+    font-size: 1.3rem;
+  }
+
+  .popup-content {
+    padding: 24px;
+  }
+
+  .popup-section {
+    padding: 20px;
+  }
+
+  .popup-footer {
+    padding: 20px 24px;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .btn-cancel,
+  .btn-save {
+    width: 100%;
+    min-width: auto;
+    padding: 14px;
+    font-size: 0.95rem;
+  }
 }
 
+/* Small Mobile (480px and below) */
 @media (max-width: 480px) {
-  .profile-card {
-    width: 92%;
-    padding: 24px 20px;
+  .profile-page {
+    padding-top: 100px;
   }
-  
+
+  .profile-card {
+    width: 94%;
+    padding: 24px 20px;
+    border-radius: 18px;
+  }
+
+  .avatar-wrapper {
+    width: 90px;
+    height: 90px;
+  }
+
+  .profile-name {
+    font-size: 1.3rem;
+  }
+
+  .profile-role {
+    font-size: 0.9rem;
+  }
+
+  .edit-btn {
+    width: 130px;
+    height: 44px;
+    padding: 0.6rem 1rem;
+  }
+
+  .edit-btn span {
+    font-size: 1rem;
+  }
+
+  .info-item {
+    padding: 10px 14px;
+    font-size: 0.85rem;
+  }
+
   .edit-profile-popup {
     max-width: 96%;
-    max-height: 92vh;
+    max-height: 94vh;
+    border-radius: 18px;
   }
-  
+
+  .popup-header {
+    padding: 16px 20px;
+  }
+
+  .popup-header h2 {
+    font-size: 1.2rem;
+  }
+
+  .close-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 24px;
+  }
+
+  .popup-content {
+    padding: 20px;
+  }
+
   .popup-section {
-    padding: 20px 16px;
+    padding: 18px;
+    border-radius: 16px;
   }
-  
+
+  .section-title {
+    font-size: 1rem;
+  }
+
+  .form-input {
+    padding: 11px 14px;
+    font-size: 0.9rem;
+  }
+
+  .file-upload-btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+
   .profile-avatar-preview {
     width: 80px;
     height: 80px;
   }
-  
-  .edit-profile-popup-overlay {
-    padding: 10px;
+
+  .popup-footer {
+    padding: 18px 20px;
+  }
+}
+
+/* Extra Small Devices (360px and below) */
+@media (max-width: 360px) {
+  .profile-page {
+    padding-top: 90px;
+  }
+
+  .profile-card {
+    width: 96%;
+    padding: 20px 16px;
+  }
+
+  .avatar-wrapper {
+    width: 80px;
+    height: 80px;
+  }
+
+  .profile-name {
+    font-size: 1.2rem;
+  }
+
+  .profile-role {
+    font-size: 0.85rem;
+  }
+
+  .edit-btn {
+    width: 120px;
+    height: 42px;
+    padding: 0.5rem 0.9rem;
+  }
+
+  .edit-btn span {
+    font-size: 0.95rem;
+  }
+
+  .info-item {
+    padding: 10px 12px;
+    font-size: 0.8rem;
+    gap: 10px;
+  }
+
+  .icon {
+    font-size: 0.9rem;
+  }
+
+  .popup-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .popup-content {
+    padding: 16px;
+  }
+
+  .popup-section {
+    padding: 16px;
+  }
+
+  .form-input {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+
+  .btn-cancel,
+  .btn-save {
+    padding: 12px;
+    font-size: 0.9rem;
   }
 }
 

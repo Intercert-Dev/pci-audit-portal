@@ -13,10 +13,9 @@ import { ToastService } from '../service/toast-service';
   styleUrls: ['./profile.css'],
 })
 export class Profile implements OnInit, OnDestroy {
-  // Inject ChangeDetectorRef
   private cdr = inject(ChangeDetectorRef);
   private http = inject(HttpClient);
-  private toast=inject(ToastService);
+  private toast = inject(ToastService);
   
   userProfile: any = {
     name: '',
@@ -24,7 +23,9 @@ export class Profile implements OnInit, OnDestroy {
     phone: '',
     location: '',
     title: '',
+    role: '',
     avatarUrl: 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg',
+    profile_image: null
   };
   
   showPopup = false;
@@ -35,6 +36,8 @@ export class Profile implements OnInit, OnDestroy {
   isSaving = false;
   saveSuccess = false;
   saveError = '';
+  imageUploading = false;
+  selectedImageFile: File | null = null;
   
   // API URLs
   private baseUrl = 'http://pci.accric.com/api/auth';
@@ -66,8 +69,7 @@ export class Profile implements OnInit, OnDestroy {
         
         // Try different possible user ID fields
         this.userId = decoded.userId || decoded.id || decoded.sub || decoded.user_id || '';
-
-        console.log('Extracted User ID:', this.userId);
+        this.cdr.detectChanges();
       } catch (e) {
         console.error('Invalid token format:', e);
       }
@@ -100,7 +102,9 @@ export class Profile implements OnInit, OnDestroy {
       phone: decoded.phone || '123-456-7890',
       location: decoded.location || 'India',
       title: decoded.role || decoded.title || 'Member',
+      role: decoded.role || 'Member',
       avatarUrl: decoded.avatar || 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg',
+      profile_image: null
     };
     
     this.isLoading = false;
@@ -119,6 +123,7 @@ export class Profile implements OnInit, OnDestroy {
     this.errorMessage = '';
     this.saveSuccess = false;
     this.saveError = '';
+    this.cdr.detectChanges();
     
     const token = localStorage.getItem('jwt');
     
@@ -132,8 +137,6 @@ export class Profile implements OnInit, OnDestroy {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
     });
-    
-    this.cdr.detectChanges();
     
     this.http.get<any>(`${this.userDetailsUrl}${this.userId}`, { headers })
       .pipe(
@@ -170,19 +173,12 @@ export class Profile implements OnInit, OnDestroy {
             this.errorMessage = 'Failed to load profile. Using token data.';
             this.loadFromToken();
           }
-          
           this.cdr.detectChanges();
         }
       });
   }
 
   private mapApiResponseToProfile(userData: any): void {
-   
-    
-    // Map API response fields to your profile structure
-    // Based on the image, your API returns fields like:
-    // name, phone, location, profile_image, etc.
-    
     let name = '';
     if (userData.name) name = userData.name;
     else if (userData.fullName) name = userData.fullName;
@@ -199,7 +195,7 @@ export class Profile implements OnInit, OnDestroy {
     }
     
     // Construct image URL if profile_image is provided
-    let avatarUrl = this.userProfile.avatarUrl; // Default
+    let avatarUrl = 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg';
     if (userData.profile_image) {
       // Check if it's a full URL or just a filename
       if (userData.profile_image.startsWith('http')) {
@@ -212,20 +208,24 @@ export class Profile implements OnInit, OnDestroy {
       avatarUrl = userData.avatar;
     }
     
+    // Update user profile with exact API response structure
     this.userProfile = {
       name: name,
       email: userData.email || this.userProfile.email,
-      phone: userData.phone || userData.phoneNumber || userData.mobile || this.userProfile.phone,
-      location: userData.location || userData.address || userData.country || this.userProfile.location,
-      title: userData.title || userData.role || userData.designation || this.userProfile.title,
+      phone: userData.phone || this.userProfile.phone,
+      location: userData.location || this.userProfile.location,
+      title: userData.role || userData.title || this.userProfile.title,
+      role: userData.role || this.userProfile.role,
       avatarUrl: avatarUrl,
-      // Store the original profile_image for API updates
-      profile_image: userData.profile_image || userData.avatar || ''
+      profile_image: userData.profile_image || null
     };
+    
+    console.log('Updated user profile:', this.userProfile);
   }
 
   openEditPopup(): void {
     this.tempData = { ...this.userProfile };
+    this.selectedImageFile = null;
     this.showPopup = true;
     this.saveSuccess = false;
     this.saveError = '';
@@ -236,26 +236,28 @@ export class Profile implements OnInit, OnDestroy {
     this.showPopup = false;
     this.saveSuccess = false;
     this.saveError = '';
+    this.selectedImageFile = null;
     this.cdr.detectChanges();
   }
 
   saveProfile(): void {
-    if (!this.editProfileForm.valid) {
+    // Basic validation
+    if (!this.tempData.name || !this.tempData.email) {
+      this.saveError = 'Name and email are required';
+      this.cdr.detectChanges();
       return;
     }
     
     this.isSaving = true;
     this.saveSuccess = false;
     this.saveError = '';
+    this.cdr.detectChanges();
     
-    // First update local profile
-    this.userProfile = { ...this.tempData };
-    
-    // Then call API to update on server
-    this.updateProfileOnServer();
+    // Update profile using single API call
+    this.updateProfile();
   }
 
-  updateProfileOnServer(): void {
+  updateProfile(): void {
     if (!this.userId) {
       this.saveError = 'User ID not found';
       this.isSaving = false;
@@ -272,31 +274,27 @@ export class Profile implements OnInit, OnDestroy {
     }
     
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
+      'Authorization': `Bearer ${token}`
+      // Note: Don't set Content-Type for FormData, browser will set it automatically
     });
     
-    // Prepare the update data according to your API structure
-    // Based on the image, your API expects these fields:
-    const updateData: any = {
-      name: this.tempData.name || '',
-      phone: this.tempData.phone || '',
-      location: this.tempData.location || '',
-      // profile_image will be handled separately if it's a file
-    };
+    // Create FormData to handle both file and text data
+    const formData = new FormData();
     
-    // If title exists in your API, include it
-    if (this.tempData.title) {
-      updateData.title = this.tempData.title;
+    // Add text fields according to API structure
+    formData.append('name', this.tempData.name || '');
+    formData.append('email', this.tempData.email || '');
+    formData.append('phone', this.tempData.phone || '');
+    formData.append('location', this.tempData.location || '');
+    
+    // Add image file if selected
+    if (this.selectedImageFile) {
+      formData.append('profile_image', this.selectedImageFile);
     }
     
-    // If email exists in your API, include it
-    if (this.tempData.email) {
-      updateData.email = this.tempData.email;
-    }
+    console.log('Sending update data with FormData for user ID:', this.userId);
     
-    console.log('Sending update data:', updateData);
-    
-    this.http.put(`${this.updateUserUrl}${this.userId}`, updateData, { headers })
+    this.http.put(`${this.updateUserUrl}${this.userId}`, formData, { headers })
       .pipe(
         takeUntil(this.destroy$),
         finalize(() => {
@@ -307,86 +305,58 @@ export class Profile implements OnInit, OnDestroy {
       .subscribe({
         next: (response: any) => {
           console.log('Profile updated successfully:', response);
-          this.saveSuccess = true;
           
-          // If the API returns updated user data, update the profile
           if (response && response.data) {
+            // Update local profile with API response data
             this.mapApiResponseToProfile(response.data);
-          } else if (response && response.user) {
-            this.mapApiResponseToProfile(response.user);
-          }
-          
-          // Close popup after 2 seconds on success
-          setTimeout(() => {
-            this.showPopup = false;
+            this.saveSuccess = true;
+            this.toast.success('Profile updated successfully!');
+            
+            // Close popup after 1.5 seconds on success
+            setTimeout(() => {
+              this.closeEditPopup();
+              this.cdr.detectChanges();
+            }, 1500);
+          } else if (response && response.message) {
+            // If response only has message, refresh profile
+            this.saveSuccess = true;
+            this.toast.success(response.message);
+            
+            // Refresh profile data
+            setTimeout(() => {
+              this.fetchUserProfile();
+              this.closeEditPopup();
+              this.cdr.detectChanges();
+            }, 1000);
+          } else {
+            this.saveError = 'Invalid response from server';
+            this.toast.error('Invalid response from server');
             this.cdr.detectChanges();
-          }, 2000);
+          }
         },
         error: (error) => {
           console.error('Error updating profile:', error);
           
+          let errorMessage = 'Failed to update profile. Please try again.';
+          
           if (error.status === 401) {
-            this.saveError = 'Session expired. Please login again.';
+            errorMessage = 'Session expired. Please login again.';
           } else if (error.status === 400) {
-            this.saveError = error.error?.message || 'Invalid data provided.';
+            errorMessage = error.error?.message || 'Invalid data provided.';
           } else if (error.status === 404) {
-            this.saveError = 'User not found.';
+            errorMessage = 'User not found.';
           } else if (error.status === 500) {
-            this.saveError = 'Server error. Please try again later.';
-          } else {
-            this.saveError = error.error?.message || 'Failed to update profile. Please try again.';
+            errorMessage = 'Server error. Please try again later.';
+          } else if (error.error?.message) {
+            errorMessage = error.error.message;
           }
+          
+          this.saveError = errorMessage;
+          this.toast.error(errorMessage);
           
           // Revert to original data on error
           this.tempData = { ...this.userProfile };
-        }
-      });
-  }
-
-  // Handle image upload separately if your API supports file upload
-  uploadProfileImage(): void {
-    if (!this.tempData.avatarUrl || !this.tempData.avatarUrl.startsWith('data:image')) {
-      return; // Not a new image
-    }
-    
-    const token = localStorage.getItem('jwt');
-    if (!token || !this.userId) return;
-    
-    // Convert data URL to blob
-    const byteString = atob(this.tempData.avatarUrl.split(',')[1]);
-    const mimeString = this.tempData.avatarUrl.split(',')[0].split(':')[1].split(';')[0];
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
-    
-    for (let i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
-    }
-    
-    const blob = new Blob([ab], { type: mimeString });
-    const formData = new FormData();
-    formData.append('profile_image', blob, 'profile.jpg');
-    
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-      // Don't set Content-Type for FormData, let browser set it
-    });
-    
-    // If your API has a separate endpoint for image upload
-    const imageUploadUrl = `${this.baseUrl}/upload-profile-image/${this.userId}`;
-    
-    this.http.post(imageUploadUrl, formData, { headers })
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response: any) => {
-          console.log('Image uploaded successfully:', response);
-          if (response && response.profile_image) {
-            this.userProfile.avatarUrl = `${this.baseUrl}/uploads/${response.profile_image}`;
-            this.userProfile.profile_image = response.profile_image;
-            this.cdr.detectChanges();
-          }
-        },
-        error: (error) => {
-          console.error('Error uploading image:', error);
+          this.cdr.detectChanges();
         }
       });
   }
@@ -397,7 +367,7 @@ export class Profile implements OnInit, OnDestroy {
 
     // Validate file type
     if (!file.type.match('image.*')) {
-      this.toast.error("upload a correct image");
+      this.toast.error("Please upload a valid image file (JPG, PNG, GIF)");
       return;
     }
 
@@ -407,21 +377,28 @@ export class Profile implements OnInit, OnDestroy {
       return;
     }
 
+    this.selectedImageFile = file;
+    this.imageUploading = true;
+    this.cdr.detectChanges();
+    
+    // Preview image immediately
     const reader = new FileReader();
     reader.onload = () => {
       this.tempData.avatarUrl = reader.result as string;
+      this.imageUploading = false;
       this.cdr.detectChanges();
     };
+    
+    reader.onerror = () => {
+      this.imageUploading = false;
+      this.toast.error("Failed to read image file");
+      this.cdr.detectChanges();
+    };
+    
     reader.readAsDataURL(file);
   }
 
   refreshProfile(): void {
     this.fetchUserProfile();
-  }
-
-  // Getter for form validation
-  get editProfileForm(): any {
-    // This is a placeholder - in real scenario, use @ViewChild
-    return { valid: true };
   }
 }

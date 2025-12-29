@@ -6,6 +6,13 @@
       <p>Loading profile data...</p>
     </div>
 
+    <!-- Error State -->
+    <div *ngIf="errorMessage && !isLoading" class="error-state">
+      <div class="error-icon">⚠️</div>
+      <p class="error-message">{{ errorMessage }}</p>
+      <button class="btn-retry" (click)="refreshProfile()">Retry</button>
+    </div>
+
     <!-- PROFILE CARD -->
     <div *ngIf="!isLoading && !errorMessage" class="profile-card">
       <header class="profile-header">
@@ -17,7 +24,7 @@
         </div>
 
         <h1 class="profile-name">{{ userProfile.name }}</h1>
-        <p class="profile-role">{{ userProfile.title }}</p>
+        <p class="profile-role">{{ userProfile.role || userProfile.title }}</p>
 
         <div class="footer">
           <section class="contact-section">
@@ -70,6 +77,10 @@
                    (error)="tempData.avatarUrl = 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg'"
                    class="profile-avatar-preview" 
                    alt="Current Avatar">
+              <div *ngIf="imageUploading" class="image-uploading">
+                <div class="upload-spinner"></div>
+                <span>Processing image...</span>
+              </div>
             </div>
             <div class="upload-controls">
               <label class="file-upload-btn">
@@ -94,7 +105,8 @@
                      required 
                      [(ngModel)]="tempData.name" 
                      class="form-input"
-                     placeholder="Enter your full name" />
+                     placeholder="Enter your full name"
+                     [disabled]="isSaving" />
             </div>
 
             <div class="form-group">
@@ -104,7 +116,8 @@
                      required 
                      [(ngModel)]="tempData.email" 
                      class="form-input"
-                     placeholder="Enter your email address" />
+                     placeholder="Enter your email address"
+                     [disabled]="isSaving" />
             </div>
 
             <div class="form-group">
@@ -113,7 +126,8 @@
                      name="phone" 
                      [(ngModel)]="tempData.phone" 
                      class="form-input"
-                     placeholder="Enter your phone number" />
+                     placeholder="Enter your phone number"
+                     [disabled]="isSaving" />
             </div>
 
             <div class="form-group">
@@ -122,30 +136,49 @@
                      name="location" 
                      [(ngModel)]="tempData.location" 
                      class="form-input"
-                     placeholder="Enter your location" />
+                     placeholder="Enter your location"
+                     [disabled]="isSaving" />
             </div>
 
+            <!-- Role/Title (Read-only since it comes from backend) -->
             <div class="form-group">
-              <label>Title/Role</label>
+              <label>Role</label>
               <input type="text" 
-                     name="title" 
-                     [(ngModel)]="tempData.title" 
+                     name="role" 
+                     [value]="tempData.role || tempData.title"
                      class="form-input"
-                     placeholder="Enter your title or role" />
+                     placeholder="Role"
+                     disabled />
+              <small class="form-hint">Role is assigned by administrator</small>
             </div>
 
           </div>
+        </div>
+
+        <!-- Save Status Messages -->
+        <div *ngIf="saveSuccess" class="save-success">
+          <span class="success-icon">✓</span>
+          <span>Profile updated successfully!</span>
+        </div>
+        
+        <div *ngIf="saveError" class="save-error">
+          <span class="error-icon">⚠️</span>
+          <span>{{ saveError }}</span>
         </div>
 
       </form>
     </div>
 
     <div class="popup-footer">
-      <button class="btn-cancel" (click)="closeEditPopup()">
+      <button class="btn-cancel" type="button" (click)="closeEditPopup()" [disabled]="isSaving">
         <span>Cancel</span>
       </button>
-      <button class="btn-save" (click)="saveProfile()" [disabled]="!editProfileForm.valid">
-        <span>Save Changes</span>
+      <button class="btn-save" type="button" (click)="saveProfile()" [disabled]="isSaving || !editProfileForm.valid">
+        <span *ngIf="!isSaving">Save Changes</span>
+        <span *ngIf="isSaving">
+          <span class="save-spinner"></span>
+          Saving...
+        </span>
       </button>
     </div>
   </div>

@@ -124,7 +124,7 @@
             </li>
 
 
-            <li routerLink="/user-settings" routerLinkActive="active" (click)="onMainMenuItemClick()">
+            <li *ngIf="userRole === 'SUPER_ADMIN'" routerLink="/user-settings" routerLinkActive="active" (click)="onMainMenuItemClick()">
               <div class="nav-item">
                 <img src="/assets/icons/settings solid 1.png" alt="icon" class="nav-icon">
                 <span class="nav-text">Settings</span>

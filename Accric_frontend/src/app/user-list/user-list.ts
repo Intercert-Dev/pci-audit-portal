@@ -33,6 +33,8 @@ export class UserList implements OnInit {
     this.http.get<any>("https://pci.accric.com/api/auth/user-list", { headers })
       .subscribe({
         next: (res) => {
+          console.log("res",res);
+          
           this.users = Array.isArray(res.data) ? res.data : [];
           this.isLoading = false;
           this.cdr.detectChanges();

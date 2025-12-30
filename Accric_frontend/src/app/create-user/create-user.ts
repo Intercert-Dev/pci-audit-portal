@@ -106,7 +106,7 @@ export class CreateUser {
 
     // Make API call
     this.http.post(
-      'http://pci.accric.com/api/auth/create-user',
+      'https://pci.accric.com/api/auth/create-user',
       formData,
       { headers }
     ).subscribe({

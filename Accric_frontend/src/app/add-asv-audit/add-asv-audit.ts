@@ -118,7 +118,7 @@ export class AddAsvAudit implements OnInit {
   // API to load clients
   loadClients(): void {
     this.isLoading = true;
-    const url = 'http://pci.accric.com/api/auth/clients-for-audit';
+    const url = 'https://pci.accric.com/api/auth/clients-for-audit';
     const token = localStorage.getItem('jwt');
 
     if (!token) {
@@ -158,7 +158,7 @@ export class AddAsvAudit implements OnInit {
   // API to load all audits
   loadAudits(): void {
     this.isLoading = true;
-    const url = 'http://pci.accric.com/api/auth/audit-list';
+    const url = 'https://pci.accric.com/api/auth/audit-list';
     const token = localStorage.getItem('jwt');
 
     if (!token) {
@@ -439,7 +439,7 @@ export class AddAsvAudit implements OnInit {
   submitAsvAudit(payload: AsvAuditPayload, form: NgForm): void {
     this.isSubmitting = true;
 
-    const url = 'http://pci.accric.com/api/auth/add-asv-audit-to-client';
+    const url = 'https://pci.accric.com/api/auth/add-asv-audit-to-client';
     const token = localStorage.getItem('jwt');
 
     if (!token) {
@@ -452,7 +452,6 @@ export class AddAsvAudit implements OnInit {
     // Prepare headers with JWT token
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
     });
 
     // Make POST request

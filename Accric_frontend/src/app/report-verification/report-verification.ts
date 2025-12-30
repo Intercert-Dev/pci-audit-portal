@@ -100,7 +100,7 @@ export class ReportVerification implements OnInit {
   // Load clients from API
   loadClients() {
     this.isLoading = true;
-    const url = 'http://pci.accric.com/api/auth/client-list';
+    const url = 'https://pci.accric.com/api/auth/client-list';
     const token = localStorage.getItem("jwt");
     
     if (!token) {
@@ -139,7 +139,7 @@ export class ReportVerification implements OnInit {
 
   // Load audits from API
   loadAudits() {
-    const url = 'http://pci.accric.com/api/auth/audit-list';
+    const url = 'https://pci.accric.com/api/auth/audit-list';
     const token = localStorage.getItem("jwt");
     
     if (!token) {
@@ -447,7 +447,7 @@ export class ReportVerification implements OnInit {
   submitReportVerification(form: NgForm) {
     this.isSubmitting = true;
     
-    const url = 'http://pci.accric.com/api/auth/create-report-verification';
+    const url = 'https://pci.accric.com/api/auth/create-report-verification';
     const token = localStorage.getItem("jwt");
     
     if (!token) {

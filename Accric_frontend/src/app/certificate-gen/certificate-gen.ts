@@ -219,7 +219,7 @@ export class CertificateGen implements OnInit {
     const headers = this.getAuthHeaders();
 
     this.http.get<{ data: Company[] }>(
-      'http://pci.accric.com/api/auth/clients-for-audit',
+      'https://pci.accric.com/api/auth/clients-for-audit',
       { headers }
     ).subscribe({
       next: (res) => {
@@ -239,7 +239,7 @@ export class CertificateGen implements OnInit {
     const headers = this.getAuthHeaders();
 
     this.http.get<{ data: Assessment[] }>(
-      'http://pci.accric.com/api/auth/audit-list',
+      'https://pci.accric.com/api/auth/audit-list',
       { headers }
     ).subscribe({
       next: (res) => {
@@ -286,7 +286,7 @@ export class CertificateGen implements OnInit {
     const headers = this.getAuthHeaders();
 
     this.http.get<any>(
-      `http://pci.accric.com/api/auth/client-audit-details/${this.selectedAssessmentId}`,
+      `https://pci.accric.com/api/auth/client-audit-details/${this.selectedAssessmentId}`,
       { headers }
     ).subscribe({
       next: (res) => {
@@ -339,13 +339,11 @@ export class CertificateGen implements OnInit {
     this.showPdfViewer = false;
 
     this.http.get<any>(
-      `http://pci.accric.com/api/auth/certificate-audit-details/${certificateNumber}`,
+      `https://pci.accric.com/api/auth/certificate-audit-details/${certificateNumber}`,
       { headers }
     ).subscribe({
       next: (res) => {
         this.loading = false;
-        console.log('Certificate details:', res);
-
         const apiData = res.data || res;
         this.certificateData = this.initializeCertificateData();
         this.mapApiDataToCertificate(apiData);
@@ -527,7 +525,7 @@ export class CertificateGen implements OnInit {
     this.showPdfViewer = false;
 
     this.http.post(
-      'http://pci.accric.com/api/auth/generate-certificate-from-template',
+      'https://pci.accric.com/api/auth/generate-certificate-from-template',
       requestData,
       {
         headers: headers,

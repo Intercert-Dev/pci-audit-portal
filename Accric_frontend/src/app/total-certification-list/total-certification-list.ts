@@ -35,7 +35,7 @@ export class TotalCertificationList implements OnInit {
   }
 
   getClientList() {
-    const url = 'http://pci.accric.com/api/auth/clients-with-certificate';
+    const url = 'https://pci.accric.com/api/auth/clients-with-certificate';
     const token = localStorage.getItem("jwt");
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
@@ -43,7 +43,6 @@ export class TotalCertificationList implements OnInit {
     
     this.http.get<any>(url, { headers }).subscribe({
       next: (res) => {
-        console.log("Raw API Data:", res.data);
 
         this.clientList = res.data.map((item: any) => ({
           company: item.legal_entity_name || '',

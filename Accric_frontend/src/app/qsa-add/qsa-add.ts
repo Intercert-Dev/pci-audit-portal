@@ -127,11 +127,10 @@ export class QsaAdd {
 
     this.isLoading = true;
 
-    const apiUrl = 'http://pci.accric.com/api/auth/create-qsa';
+    const apiUrl = 'https://pci.accric.com/api/auth/create-qsa';
     
     this.http.post(apiUrl, formData, { headers }).subscribe({
       next: (response: any) => {
-        console.log('QSA created successfully:', response);
         
         // Check API response structure
         if (response.success) {

@@ -129,7 +129,7 @@ ngOnInit(): void {
 
 loadAsvAudits(): void {
     this.isLoading = true;
-    const url = 'http://pci.accric.com/api/auth/asv-list';
+    const url = 'https://pci.accric.com/api/auth/asv-list';
     const token = localStorage.getItem('jwt');
 
     if (!token) {
@@ -512,7 +512,7 @@ loadAsvAudits(): void {
     // DO NOT add 'Content-Type': 'multipart/form-data' here
   });
 
-  const url = `http://pci.accric.com/api/auth/update-asv/${asvId}`;
+  const url = `https://pci.accric.com/api/auth/update-asv/${asvId}`;
 
   this.http.put(url, formData, { headers }).subscribe({
     next: (response: any) => {

@@ -43,16 +43,16 @@ export class AsvAudit implements OnInit, OnDestroy {
   errorMessage = '';
   
   // API URLs
-  private apiUrl = 'http://pci.accric.com/api/auth/asv-fetch-details';
+  private apiUrl = 'https://pci.accric.com/api/auth/asv-fetch-details';
   // Updated quarter API endpoints based on your structure
-  private completedQ1Url = 'http://pci.accric.com/api/auth/completed-q1';
-  private completedQ2Url = 'http://pci.accric.com/api/auth/completed-q2';
-  private completedQ3Url = 'http://pci.accric.com/api/auth/completed-q3';
-  private completedQ4Url = 'http://pci.accric.com/api/auth/completed-q4';
-  private pendingQ1Url = 'http://pci.accric.com/api/auth/pending-q1';
-  private pendingQ2Url = 'http://pci.accric.com/api/auth/pending-q2';
-  private pendingQ3Url = 'http://pci.accric.com/api/auth/pending-q3';
-  private pendingQ4Url = 'http://pci.accric.com/api/auth/pending-q4';
+  private completedQ1Url = 'https://pci.accric.com/api/auth/completed-q1';
+  private completedQ2Url = 'https://pci.accric.com/api/auth/completed-q2';
+  private completedQ3Url = 'https://pci.accric.com/api/auth/completed-q3';
+  private completedQ4Url = 'https://pci.accric.com/api/auth/completed-q4';
+  private pendingQ1Url = 'https://pci.accric.com/api/auth/pending-q1';
+  private pendingQ2Url = 'https://pci.accric.com/api/auth/pending-q2';
+  private pendingQ3Url = 'https://pci.accric.com/api/auth/pending-q3';
+  private pendingQ4Url = 'https://pci.accric.com/api/auth/pending-q4';
   
   // For unsubscribing to prevent memory leaks
   private destroy$ = new Subject<void>();

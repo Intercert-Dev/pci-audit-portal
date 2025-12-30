@@ -148,7 +148,7 @@ export class PciReportsList implements OnInit {
   // Load reports from API
   loadReports() {
     this.isLoading = true;
-    const url = 'http://pci.accric.com/api/auth/report-verification-list';
+    const url = 'https://pci.accric.com/api/auth/report-verification-list';
     const token = localStorage.getItem("jwt");
     
     if (!token) {
@@ -164,7 +164,6 @@ export class PciReportsList implements OnInit {
 
     this.http.get<{data: any[], message: string}>(url, { headers }).subscribe({
       next: (res) => {
-        console.log("API response data:", res);
         
         // Transform API response to match PCIReport interface
         this.reports_list = res.data.map(report => {
@@ -542,7 +541,7 @@ private isFormValid(): boolean {
 
 // Updated method to send FormData in PUT request
 private async sendFormDataUpdateRequest(token: string, formData: FormData): Promise<void> {
-  const url = `http://pci.accric.com/api/auth/update-report-verification/${this.editingReport!.id}`;
+  const url = `https://pci.accric.com/api/auth/update-report-verification/${this.editingReport!.id}`;
   // OR use your actual domain: `http://pci.accric.com/api/auth/update-report-verification/${this.editingReport!.id}`
 
   const headers = new HttpHeaders({
@@ -591,7 +590,7 @@ private async updateVerificationData(token: string): Promise<void> {
 
   // Only send if there's data to update
   if (Object.keys(verificationPayload).length > 0) {
-    const url = `http://pci.accric.com/api/auth/update-report-verification/${this.editingReport!.id}`;
+    const url = `https://pci.accric.com/api/auth/update-report-verification/${this.editingReport!.id}`;
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
     });
@@ -670,7 +669,7 @@ async saveReportSimple() {
     const formData = this.prepareFormDataForUpdate();
     
     // Send request
-    const url = `http://pci.accric.com/api/auth/update-report-verification/${this.editingReport.id}`;
+    const url = `https://pci.accric.com/api/auth/update-report-verification/${this.editingReport.id}`;
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });

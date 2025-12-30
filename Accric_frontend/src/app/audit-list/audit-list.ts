@@ -74,7 +74,7 @@ interface Audit {
 })
 export class AuditList implements OnInit {
   // API Configuration
-  private apiUrl = 'http://pci.accric.com/api/auth/audit-list';
+  private apiUrl = 'https://pci.accric.com/api/auth/audit-list';
 
   // Data arrays
   auditList: Audit[] = [];
@@ -197,7 +197,7 @@ export class AuditList implements OnInit {
   }
 
   fetchQSAList() {
-    const url = 'http://pci.accric.com/api/auth/qsa-list';
+    const url = 'https://pci.accric.com/api/auth/qsa-list';
     const headers = this.getHeaders();
 
     this.http.get<any>(url, { headers }).subscribe({
@@ -273,7 +273,7 @@ export class AuditList implements OnInit {
 
     this.isLoading = true;
 
-    const updateUrl = `http://pci.accric.com/api/auth/update-audit/${this.editingAudit.auditId}`;
+    const updateUrl = `https://pci.accric.com/api/auth/update-audit/${this.editingAudit.auditId}`;
     const headers = this.getHeaders();
 
     const payload = {

@@ -62,7 +62,7 @@ export class ClientList implements OnInit {
 
   getClientList() {
     this.isLoading = true;
-    const url = 'http://pci.accric.com/api/auth/client-list';
+    const url = 'https://pci.accric.com/api/auth/client-list';
     const token = localStorage.getItem("jwt");
     
     if (!token) {
@@ -191,7 +191,7 @@ export class ClientList implements OnInit {
     this.isLoading = true;
     
     // Construct the URL with clientId in the path
-    const url = `http://pci.accric.com/api/auth/update-client/${this.editingClient.clientId}`;
+    const url = `https://pci.accric.com/api/auth/update-client/${this.editingClient.clientId}`;
     const token = localStorage.getItem("jwt");
     
     if (!token) {
@@ -202,7 +202,6 @@ export class ClientList implements OnInit {
     
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
     });
 
     // Prepare update payload (EXACTLY as your API expects)
@@ -281,7 +280,7 @@ export class ClientList implements OnInit {
     }
 
     this.isLoading = true;
-    const url = `http://pci.accric.com/api/auth/delete-client/${client.clientId}`;
+    const url = `https://pci.accric.com/api/auth/delete-client/${client.clientId}`;
     const token = localStorage.getItem("jwt");
     
     if (!token) {

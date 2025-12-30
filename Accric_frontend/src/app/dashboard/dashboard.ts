@@ -66,7 +66,7 @@ export class Dashboard implements OnInit {
   }
 
   fetchLoginDetails(token: string) {
-    const url = "http://pci.accric.com/api/auth/login-response";
+    const url = "https://pci.accric.com/api/auth/login-response";
     const headers = new HttpHeaders({
       "Authorization": `Bearer ${token}`
     });
@@ -101,7 +101,7 @@ export class Dashboard implements OnInit {
   }
 
   fetchTotalUpcomingAudits(token: string): void {
-    const url = "http://pci.accric.com/api/auth/upcoming-expiry-clients";
+    const url = "https://pci.accric.com/api/auth/upcoming-expiry-clients";
     const headers = new HttpHeaders({ "Authorization": `Bearer ${token}` });
 
     this.http.get(url, { headers }).subscribe({

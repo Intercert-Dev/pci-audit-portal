@@ -62,7 +62,7 @@ export class CurrentPendingClients implements OnInit {
 
   loadCurrentPendingClients(): void {
     this.isLoading = true;
-    const url = 'http://pci.accric.com/api/auth/current-asv-pending-report';
+    const url = 'https://pci.accric.com/api/auth/current-asv-pending-report';
     const token = localStorage.getItem('jwt');
 
     if (!token) {

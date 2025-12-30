@@ -148,7 +148,7 @@ export class AddAudit implements OnInit {
 
   loadClients() {
     this.isLoading = true;
-    const url = 'http://pci.accric.com/api/auth/client-list';
+    const url = 'https://pci.accric.com/api/auth/client-list';
     const token = localStorage.getItem("jwt");
 
     if (!token) {
@@ -276,7 +276,7 @@ export class AddAudit implements OnInit {
   }
 
   loadQsaList() {
-    const url = 'http://pci.accric.com/api/auth/qsa-list';
+    const url = 'https://pci.accric.com/api/auth/qsa-list';
     const token = localStorage.getItem('jwt');
 
     if (!token) return;
@@ -509,7 +509,7 @@ export class AddAudit implements OnInit {
   private createAudit() {
     this.isLoading = true;
 
-    const url = 'http://pci.accric.com/api/auth/add-audit-to-client';
+    const url = 'https://pci.accric.com/api/auth/add-audit-to-client';
     const token = localStorage.getItem("jwt");
 
     if (!token) {

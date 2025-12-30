@@ -487,7 +487,7 @@ export class AddClient implements OnInit {
   private sendClientDataToAPI(payload: any) {
     this.isLoading = true;
     
-    const url = 'http://pci.accric.com/api/auth/create-client';
+    const url = 'https://pci.accric.com/api/auth/create-client';
     const token = localStorage.getItem('jwt');
     
     if (!token) {

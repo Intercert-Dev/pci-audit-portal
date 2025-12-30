@@ -40,7 +40,7 @@ export class Profile implements OnInit, OnDestroy {
   selectedImageFile: File | null = null;
   
   // API URLs
-  private baseUrl = 'http://pci.accric.com/api/auth';
+  private baseUrl = 'https://pci.accric.com/api/auth';
   private userDetailsUrl = `${this.baseUrl}/user-details/`;
   private updateUserUrl = `${this.baseUrl}/update-user/`;
   
@@ -304,7 +304,6 @@ export class Profile implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (response: any) => {
-          console.log('Profile updated successfully:', response);
           
           if (response && response.data) {
             // Update local profile with API response data

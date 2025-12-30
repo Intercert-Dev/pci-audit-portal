@@ -62,7 +62,7 @@ export class NextMonthPendingClientsList implements OnInit {
 
   loadNextMonthPendingClients(): void {
     this.isLoading = true;
-    const url = 'http://pci.accric.com/api/auth/asv-pending-for-nextmonth';
+    const url = 'https://pci.accric.com/api/auth/asv-pending-for-nextmonth';
     const token = localStorage.getItem('jwt');
 
     if (!token) {

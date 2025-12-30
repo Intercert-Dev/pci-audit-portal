@@ -93,6 +93,6 @@ export class Login implements OnInit {
     console.log("Initiating Google OAuth login...");
     
     // Redirect to Google OAuth
-    window.location.href = 'http://pci.accric.com/api/auth/google';
+    window.location.href = 'https://pci.accric.com/api/auth/google';
   }
 }

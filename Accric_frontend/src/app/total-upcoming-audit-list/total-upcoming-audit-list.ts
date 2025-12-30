@@ -45,7 +45,7 @@ export class TotalUpcomingAuditList implements OnInit {
 
   /** Fetch Data */
   fetchTotalUpcomingAudits(token: string): void {
-    const url = "http://pci.accric.com/api/auth/upcoming-expiry-clients";
+    const url = "https://pci.accric.com/api/auth/upcoming-expiry-clients";
 
     const headers = new HttpHeaders({
       "Authorization": `Bearer ${token}`
@@ -53,8 +53,6 @@ export class TotalUpcomingAuditList implements OnInit {
 
     this.http.get(url, { headers }).subscribe({
       next: (res: any) => {
-        // Keep defensive: if API returns object, check key
-        console.log("res api", res);
 
         this.upcomingAudits = Array.isArray(res.data)
           ? res.data

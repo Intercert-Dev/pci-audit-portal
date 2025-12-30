@@ -53,9 +53,8 @@ interface AsvAuditPayload {
 })
 export class AddAsvAudit implements OnInit {
 
-  private ipRegex =
-    /^(25[0-5]|2[0-4]\d|1?\d?\d)(\.(25[0-5]|2[0-4]\d|1?\d?\d)){3}$/;
-
+  private readonly ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+  private readonly domainRegex = /^(?!:\/\/)([a-zA-Z0-9-_]+\.)+[a-zA-Z]{2,11}$/;
   legalEntitySearch = '';
   auditSearch = '';
 
@@ -119,7 +118,7 @@ export class AddAsvAudit implements OnInit {
   // API to load clients
   loadClients(): void {
     this.isLoading = true;
-    const url = 'http://pci.accric.com/api/auth/clients-for-audit';
+    const url = 'https://pci.accric.com/api/auth/clients-for-audit';
     const token = localStorage.getItem('jwt');
 
     if (!token) {
@@ -159,7 +158,7 @@ export class AddAsvAudit implements OnInit {
   // API to load all audits
   loadAudits(): void {
     this.isLoading = true;
-    const url = 'http://pci.accric.com/api/auth/audit-list';
+    const url = 'https://pci.accric.com/api/auth/audit-list';
     const token = localStorage.getItem('jwt');
 
     if (!token) {
@@ -198,6 +197,31 @@ export class AddAsvAudit implements OnInit {
     });
   }
 
+  getValidEntries() {
+    if (!this.asvData.IPDetails) return { ips: 0, domains: 0, total: 0, invalidCount: 0 };
+
+    // Split by comma or newline, then trim whitespace
+    const entries = this.asvData.IPDetails.split(/[,\n]/).map(e => e.trim()).filter(e => e !== '');
+
+    let ips = 0;
+    let domains = 0;
+
+    entries.forEach(entry => {
+      if (this.ipRegex.test(entry)) {
+        ips++;
+      } else if (this.domainRegex.test(entry)) {
+        domains++;
+      }
+    });
+
+    return {
+      ips,
+      domains,
+      total: ips + domains,
+      invalidCount: entries.length - (ips + domains),
+      hasInvalid: (entries.length - (ips + domains)) > 0
+    };
+  }
   // CLIENT SEARCH
   onLegalEntitySearch() {
     this.clientSearchSubject.next(this.legalEntitySearch);
@@ -414,8 +438,8 @@ export class AddAsvAudit implements OnInit {
 
   submitAsvAudit(payload: AsvAuditPayload, form: NgForm): void {
     this.isSubmitting = true;
-    
-    const url = 'http://pci.accric.com/api/auth/add-asv-audit-to-client';
+
+    const url = 'https://pci.accric.com/api/auth/add-asv-audit-to-client';
     const token = localStorage.getItem('jwt');
 
     if (!token) {
@@ -428,33 +452,32 @@ export class AddAsvAudit implements OnInit {
     // Prepare headers with JWT token
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
     });
 
     // Make POST request
     this.http.post<any>(url, payload, { headers }).subscribe({
       next: (response) => {
         this.isSubmitting = false;
-        
+
         // Check response structure based on your API
         if (response.success || response.message) {
           this.toast.success(response.message || 'ASV Audit added successfully!');
-          
+
           // Reset form after successful submission
           this.resetForm(form);
         } else {
           this.toast.success('ASV Audit added successfully!');
           this.resetForm(form);
         }
-        
+
         this.cdr.detectChanges();
       },
       error: (error) => {
         this.isSubmitting = false;
-        
+
         // Log error for debugging
         console.error('Error submitting ASV Audit:', error);
-        
+
         // Handle different error scenarios
         if (error.status === 401) {
           this.toast.error('Session expired. Please login again.');
@@ -471,7 +494,7 @@ export class AddAsvAudit implements OnInit {
         } else {
           this.toast.error(error.error?.message || 'Failed to add ASV Audit. Please try again.');
         }
-        
+
         this.cdr.detectChanges();
       }
     });
@@ -502,4 +525,34 @@ export class AddAsvAudit implements OnInit {
     // Force UI update
     this.cdr.detectChanges();
   }
+
+
+  resetAsvAuditForm(form: NgForm): void {
+
+    this.asvData = {
+      numberOfIPs: null,
+      associatedOrganization: '',
+      associatedApplication: '',
+      IPDetails: ''
+    };
+
+    this.legalEntitySearch = '';
+    this.auditSearch = '';
+
+    this.selectedClientId = '';
+    this.selectedAuditId = '';
+
+    this.showLegalEntityDropdown = false;
+    this.showAuditDropdown = false;
+
+    this.showErrors = false;
+
+    this.filteredClients = [...this.clients];
+    this.filteredAudits = [];
+
+    form.resetForm();
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
 }

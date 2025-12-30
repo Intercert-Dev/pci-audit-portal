@@ -82,7 +82,7 @@ export class AsvAuditClientList implements OnInit {
   // Load ASV Audits from API
   loadAsvAudits(): void {
     this.isLoading = true;
-    const url = 'http://pci.accric.com/api/auth/asv-list';
+    const url = 'https://pci.accric.com/api/auth/asv-list';
     const token = localStorage.getItem('jwt');
     
     if (!token) {
@@ -99,7 +99,6 @@ export class AsvAuditClientList implements OnInit {
     this.http.get<{ data: AsvAuditResponse[] }>(url, { headers }).subscribe({
       next: (response) => {
         this.isLoading = false;
-        // Map API response to display format
         this.all_audits = response.data.map(audit => this.mapAuditToDisplay(audit));
         this.filtered_list = [...this.all_audits];
         this.cdr.detectChanges();
@@ -264,7 +263,7 @@ export class AsvAuditClientList implements OnInit {
   // Update audit on server
   private updateAuditOnServer(audit: AsvAuditDisplay): void {
     this.isLoading = true;
-    const url=`http://pci.accric.com/api/auth/update-asv/${audit.asv_id}` // Update with your actual endpoint
+    const url=`https://pci.accric.com/api/auth/update-asv/${audit.asv_id}` // Update with your actual endpoint
     const token = localStorage.getItem('jwt');
     
     if (!token) {
@@ -306,7 +305,7 @@ export class AsvAuditClientList implements OnInit {
   deleteAudit(audit: AsvAuditDisplay): void {
     if (confirm(`Are you sure you want to delete ASV audit for ${audit.project_name}?`)) {
       this.isLoading = true;
-      const url = `http://pci.accric.com/api/auth/delete-asv-audit/${audit.asv_id}`; // Update with your actual endpoint
+      const url = `https://pci.accric.com/api/auth/delete-asv-audit/${audit.asv_id}`; // Update with your actual endpoint
       const token = localStorage.getItem('jwt');
       
       if (!token) {

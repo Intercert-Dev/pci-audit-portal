@@ -62,7 +62,7 @@ export class QsaList implements OnInit, OnDestroy {
   }
 
   loadQsaList() {
-    const url = 'http://pci.accric.com/api/auth/qsa-list';
+    const url = 'https://pci.accric.com/api/auth/qsa-list';
     const token = localStorage.getItem("jwt");
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
@@ -204,7 +204,7 @@ export class QsaList implements OnInit, OnDestroy {
   }
 
   private sendUpdateRequest(formData: FormData, qsaId: string): void {
-    const url = `http://pci.accric.com/api/auth/update-qsa/${qsaId}`;
+    const url = `https://pci.accric.com/api/auth/update-qsa/${qsaId}`;
     const token = localStorage.getItem("jwt");
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`

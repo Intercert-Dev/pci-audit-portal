@@ -141,8 +141,9 @@ export class MainLayout implements OnInit {
   private isListsSubmenuRoute(url: string): boolean {
     const listsSubmenuRoutes = [
       '/client-list',
-      '/audit-list', // Changed from '/client' to '/audit-list'
-      '/asv-audit-client-list' // Changed from '/list' to '/asv-audit-client-list'
+      '/audit-list',
+      '/asv-audit-client-list',
+      '/pci-reports-list' 
     ];
     return listsSubmenuRoutes.some(route => url.startsWith(route));
   }
@@ -166,6 +167,10 @@ export class MainLayout implements OnInit {
     if (this.isClientsExpanded) {
       this.isListExpanded = false;
     }
+  }
+
+  goToHomeDashboard(){
+    this.router.navigate(['/dashboard']);
   }
 
   toggleListsMenu(event: Event) {

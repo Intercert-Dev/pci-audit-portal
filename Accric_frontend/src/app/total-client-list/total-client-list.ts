@@ -84,7 +84,7 @@ export class TotalClientList implements OnInit {
   }
 
   getClientList() {
-    const url = 'http://pci.accric.com/api/auth/total-clients-data';
+    const url = 'https://pci.accric.com/api/auth/total-clients-data';
     const token = localStorage.getItem("jwt");
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
@@ -92,7 +92,7 @@ export class TotalClientList implements OnInit {
 
     this.http.get<any>(url, { headers }).subscribe({
       next: (res) => {
-        console.log("Raw API Data from Total Client", res.data);
+      
 
         this.clientList = res.data.map((item: any) => ({
           company: item.legal_entity_name || '',

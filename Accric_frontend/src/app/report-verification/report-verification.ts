@@ -100,7 +100,7 @@ export class ReportVerification implements OnInit {
   // Load clients from API
   loadClients() {
     this.isLoading = true;
-    const url = 'http://pci.accric.com/api/auth/client-list';
+    const url = 'https://pci.accric.com/api/auth/client-list';
     const token = localStorage.getItem("jwt");
     
     if (!token) {
@@ -139,7 +139,7 @@ export class ReportVerification implements OnInit {
 
   // Load audits from API
   loadAudits() {
-    const url = 'http://pci.accric.com/api/auth/audit-list';
+    const url = 'https://pci.accric.com/api/auth/audit-list';
     const token = localStorage.getItem("jwt");
     
     if (!token) {
@@ -447,7 +447,7 @@ export class ReportVerification implements OnInit {
   submitReportVerification(form: NgForm) {
     this.isSubmitting = true;
     
-    const url = 'http://pci.accric.com/api/auth/create-report-verification';
+    const url = 'https://pci.accric.com/api/auth/create-report-verification';
     const token = localStorage.getItem("jwt");
     
     if (!token) {
@@ -568,6 +568,44 @@ export class ReportVerification implements OnInit {
     this.showErrors = false;
     this.cdr.detectChanges();
   }
+
+resetReoprtForm(form: NgForm): void {
+  form.resetForm();
+
+  this.legalEntitySearch = '';
+  this.auditSearch = '';
+
+  this.selectedClientId = null;
+  this.selectedClientName = '';
+  this.selectedAuditId = null;
+  this.selectedAuditName = '';
+
+  this.showClientDropdown = false;
+  this.showAuditDropdown = false;
+
+  this.filteredClients = [...this.clients];
+  this.filteredAudits = [];
+
+  this.previousAocReportFiles = [];
+  this.previousRocReportFiles = [];
+  this.previousFinalReportFiles = [];
+
+  this.currentAocReportFiles = [];
+  this.currentRocReportFiles = [];
+  this.currentFinalReportFiles = [];
+
+  this.reportData = {
+    associatedOrganization: '',
+    associatedApplication: ''
+  };
+
+  this.showErrors = false;
+  this.isSubmitting = false;
+
+  this.cdr.detectChanges();
+}
+
+
 
   // Helper method to get selected client name
   getSelectedClientName(): string {

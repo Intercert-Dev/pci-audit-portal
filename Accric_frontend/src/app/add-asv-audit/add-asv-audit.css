@@ -9,7 +9,7 @@
 }
 
 /* ================================
-   CONTAINER & BOX
+   CONTAINER & BOX - CRITICAL FIXES
 ================================ */
 
 .asv-audit-container {
@@ -18,6 +18,7 @@
   min-height: 88vh;
   padding: 2rem 3rem;
   display: flex;
+  position: relative;
 }
 
 .asv-audit-box {
@@ -27,6 +28,7 @@
   width: 100%;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   animation: fadeIn 0.3s ease-in-out;
+  position: relative;
 }
 
 .asv-audit-box h2 {
@@ -127,7 +129,6 @@ input[type="number"]::-webkit-inner-spin-button {
   margin: 0;
 }
 
-
 textarea {
   font-family: 'Inter', sans-serif;
   font-weight: 400;
@@ -162,7 +163,7 @@ textarea.ng-invalid.ng-touched {
 
 .form-actions {
   display: flex;
-  justify-content: flex-start;
+  justify-content: flex-end;
   margin-top: 2rem;
   gap: 1.25rem;
   padding-top: 1.5rem;
@@ -221,6 +222,27 @@ textarea.ng-invalid.ng-touched {
   color: rgba(35, 35, 35, 1);
 }
 
+.btn-reset {
+  color: rgba(52, 60, 106, 1);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 1rem;
+  opacity: 1;
+  padding: 0.8rem 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  flex-shrink: 0;
+}
+
+.btn-reset span {
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+}
+
 /* ================================
    ERROR MESSAGES
 ================================ */
@@ -239,23 +261,22 @@ textarea.ng-invalid.ng-touched {
 }
 
 /* ================================
-   SEARCH DROPDOWN - CRITICAL FIX
+   SEARCH DROPDOWN - CRITICAL FIXES
+   Key change: Simplified z-index strategy
 ================================ */
 
-.search-dropdown,
-.edit-client-container .search-dropdown {
+/* Main dropdown styles */
+.search-dropdown {
   position: relative;
-  z-index: 9998;
 }
 
-.search-input-wrapper,
-.edit-client-container .search-input-wrapper {
+.search-input-wrapper {
   position: relative;
   width: 100%;
 }
 
-.search-input-wrapper input,
-.edit-client-container .search-input-wrapper input {
+.search-input-wrapper input {
+  width: 100%;
   padding-right: 2.5rem;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23718ebf' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
@@ -263,32 +284,25 @@ textarea.ng-invalid.ng-touched {
   background-size: 16px;
 }
 
-.search-input-wrapper input:focus,
-.edit-client-container .search-input-wrapper input:focus {
+.search-input-wrapper input:focus {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%234e77ff' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
 }
 
-.search-dropdown-list,
-.edit-client-container .search-dropdown-list {
+/* Dropdown list - MOST CRITICAL FIX */
+.search-dropdown-list {
   position: absolute;
   top: calc(100% + 4px);
   left: 0;
   right: 0;
+  width: 100%;
   background: white;
   border: 1px solid rgba(223, 234, 242, 1);
   border-radius: 0.75rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   max-height: 300px;
   overflow-y: auto;
-  z-index: 1000;
+  z-index: 9999 !important; /* HIGHEST priority with !important */
   animation: dropdownFadeIn 0.2s ease-out;
-}
-
-.edit-client-container .search-dropdown-list {
-  top: calc(100% + 6px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-  max-height: 280px;
-  z-index: 99999;
 }
 
 @keyframes dropdownFadeIn {
@@ -302,8 +316,7 @@ textarea.ng-invalid.ng-touched {
   }
 }
 
-.dropdown-item,
-.edit-client-container .dropdown-item {
+.dropdown-item {
   padding: 0.875rem 1rem;
   cursor: pointer;
   font-family: 'Inter', sans-serif;
@@ -316,23 +329,104 @@ textarea.ng-invalid.ng-touched {
   min-height: 48px;
 }
 
+.dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.dropdown-item:hover {
+  background-color: rgba(250, 251, 254, 1);
+  color: rgba(57, 106, 255, 1);
+}
+
+.dropdown-item.selected {
+  background-color: rgba(57, 106, 255, 0.1);
+  color: rgba(57, 106, 255, 1);
+  font-weight: 500;
+  position: relative;
+}
+
+.dropdown-item.selected::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background-color: rgba(57, 106, 255, 1);
+  border-radius: 0 3px 3px 0;
+}
+
+.no-results {
+  padding: 1.5rem 1rem;
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: rgba(113, 142, 191, 0.8);
+  background-color: white;
+  border-radius: 0.75rem;
+}
+
+/* Edit client container specific styles */
+.edit-client-container .search-dropdown {
+  position: relative;
+}
+
+.edit-client-container .search-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.edit-client-container .search-input-wrapper input {
+  width: 100%;
+  padding-right: 2.5rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23718ebf' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 16px;
+}
+
+.edit-client-container .search-input-wrapper input:focus {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%234e77ff' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
+}
+
+.edit-client-container .search-dropdown-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  width: 100%;
+  background: white;
+  border: 1px solid rgba(223, 234, 242, 1);
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-height: 280px;
+  overflow-y: auto;
+  z-index: 9999 !important; /* HIGHEST priority with !important */
+  animation: dropdownFadeIn 0.2s ease-out;
+}
+
 .edit-client-container .dropdown-item {
   padding: 0.85rem 1rem;
   min-height: 46px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  color: rgba(35, 35, 35, 1);
+  border-bottom: 1px solid rgba(245, 247, 250, 1);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
 }
 
-.dropdown-item:last-child,
 .edit-client-container .dropdown-item:last-child {
   border-bottom: none;
 }
 
-.dropdown-item:hover,
 .edit-client-container .dropdown-item:hover {
   background-color: rgba(250, 251, 254, 1);
   color: rgba(57, 106, 255, 1);
 }
 
-.dropdown-item.selected,
 .edit-client-container .dropdown-item.selected {
   background-color: rgba(57, 106, 255, 0.1);
   color: rgba(57, 106, 255, 1);
@@ -340,7 +434,6 @@ textarea.ng-invalid.ng-touched {
   position: relative;
 }
 
-.dropdown-item.selected::before,
 .edit-client-container .dropdown-item.selected::before {
   content: '';
   position: absolute;
@@ -352,19 +445,14 @@ textarea.ng-invalid.ng-touched {
   border-radius: 0 3px 3px 0;
 }
 
-.no-results,
 .edit-client-container .no-results {
-  padding: 1.5rem 1rem;
+  padding: 1.25rem 1rem;
   text-align: center;
   font-family: 'Inter', sans-serif;
   font-size: 0.9rem;
   color: rgba(113, 142, 191, 0.8);
   background-color: white;
   border-radius: 0.75rem;
-}
-
-.edit-client-container .no-results {
-  padding: 1.25rem 1rem;
 }
 
 /* ================================
@@ -393,17 +481,25 @@ textarea.ng-invalid.ng-touched {
   background: rgba(113, 142, 191, 0.7);
 }
 
+/* ================================
+   ANIMATIONS
+================================ */
 
-
-.add-audit-box {
-  position: relative;
-  z-index: 1;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.edit-client-container .search-dropdown {
-  z-index: 9998;
-}
-
+/* ================================
+   RESPONSIVE STYLES
+   Key change: Ensure z-index is consistently high in all media queries
+================================ */
 
 @media (max-width: 1024px) {
   .asv-audit-container {
@@ -439,17 +535,16 @@ textarea.ng-invalid.ng-touched {
     gap: 1rem;
   }
   
+  /* Ensure dropdown stays on top */
   .search-dropdown-list,
   .edit-client-container .search-dropdown-list {
-    z-index: 99999;
+    z-index: 9999 !important; /* Consistent high z-index with !important */
   }
 }
 
-
-
 @media (max-width: 768px) {
   .asv-audit-container {
-    margin-top: 6rem;
+    margin-top: 7rem;
   }
   
   .asv-audit-box {
@@ -462,6 +557,10 @@ textarea.ng-invalid.ng-touched {
   .asv-audit-box h2 {
     font-size: 1.35rem;
     margin-bottom: 1rem;
+  }
+
+  .asv-form{
+    gap:0.5rem;
   }
   
   .form-section h3 {
@@ -496,21 +595,21 @@ textarea.ng-invalid.ng-touched {
   }
   
   .btn-primary span,
-  .btn-secondary span {
+  .btn-secondary span ,
+  .btn-reset span{
     font-size: 1.1rem;
   }
 
-  /* Dropdown adjustments */
+  /* Dropdown adjustments - CRITICAL for mobile */
   .search-dropdown-list,
   .edit-client-container .search-dropdown-list {
     max-height: 250px;
     border-radius: 0.5rem;
-    z-index: 99999;
+    z-index: 9999 !important; /* Consistent high z-index with !important */
   }
 
   .edit-client-container .search-dropdown-list {
     max-height: 240px;
-    z-index: 99999;
   }
   
   .dropdown-item,
@@ -525,12 +624,11 @@ textarea.ng-invalid.ng-touched {
   }
 }
 
-
-
 @media (max-width: 480px) {
   .asv-audit-container {
     min-height: calc(100vh - 60px);
     align-items: flex-start;
+    margin-top: 4rem;
   }
   
   .asv-audit-box {
@@ -539,6 +637,7 @@ textarea.ng-invalid.ng-touched {
     border-radius: 0;
     min-height: calc(100vh - 60px);
     width: 100%;
+    margin-top: 1rem;
   }
   
   .asv-audit-box h2 {
@@ -562,7 +661,8 @@ textarea.ng-invalid.ng-touched {
   }
   
   .btn-primary span,
-  .btn-secondary span {
+  .btn-secondary span ,
+  .btn-reset span{
     font-size: 1rem;
   }
   
@@ -580,11 +680,11 @@ textarea.ng-invalid.ng-touched {
     font-size: 0.8rem;
   }
 
-  /* Dropdown adjustments */
+  /* Dropdown adjustments - CRITICAL for small screens */
   .search-dropdown-list,
   .edit-client-container .search-dropdown-list {
     max-height: 200px;
-    z-index: 99999;
+    z-index: 9999 !important; /* Consistent high z-index with !important */
   }
   
   .dropdown-item,
@@ -594,7 +694,6 @@ textarea.ng-invalid.ng-touched {
     min-height: 40px;
   }
 }
-
 
 @media (max-width: 360px) {
   .asv-audit-container {
@@ -654,7 +753,8 @@ textarea.ng-invalid.ng-touched {
   }
 
   .btn-primary span,
-  .btn-secondary span {
+  .btn-secondary span ,
+  .btn-reset span{
     font-size: 0.95rem;
   }
 
@@ -663,12 +763,12 @@ textarea.ng-invalid.ng-touched {
     font-size: 0.75rem;
   }
 
-  /* Dropdown adjustments */
+  /* Dropdown adjustments - CRITICAL for extra small screens */
   .search-dropdown-list,
   .edit-client-container .search-dropdown-list {
     max-height: 180px;
     border-radius: 0.5rem;
-    z-index: 99999;
+    z-index: 9999 !important; /* Consistent high z-index with !important */
   }
 
   .dropdown-item,
@@ -683,4 +783,9 @@ textarea.ng-invalid.ng-touched {
     font-size: 0.8rem;
     padding: 1rem 0.75rem;
   }
+}
+
+.search-dropdown-list,
+.edit-client-container .search-dropdown-list {
+  z-index: 9999 !important;
 }

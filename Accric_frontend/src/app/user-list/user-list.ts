@@ -30,7 +30,7 @@ export class UserList implements OnInit {
     const token = localStorage.getItem("jwt");
     const headers = { 'Authorization': `Bearer ${token}` };
 
-    this.http.get<any>("http://pci.accric.com/api/auth/user-list", { headers })
+    this.http.get<any>("https://pci.accric.com/api/auth/user-list", { headers })
       .subscribe({
         next: (res) => {
           this.users = Array.isArray(res.data) ? res.data : [];
@@ -61,7 +61,7 @@ export class UserList implements OnInit {
     const token = localStorage.getItem("jwt");
     const headers = { 'Authorization': `Bearer ${token}` };
 
-    this.http.put(`http://pci.accric.com/api/auth/update-user/${this.editModel.id}`, this.editModel, { headers })
+    this.http.put(`https://pci.accric.com/api/auth/update-user/${this.editModel.id}`, this.editModel, { headers })
       .subscribe({
         next: (res) => {
           alert("User updated successfully!");
@@ -90,7 +90,7 @@ export class UserList implements OnInit {
     const token = localStorage.getItem("jwt");
     const headers = { 'Authorization': `Bearer ${token}` };
 
-    this.http.delete(`http://pci.accric.com/api/auth/delete-user/${user.id}`, { headers })
+    this.http.delete(`https://pci.accric.com/api/auth/delete-user/${user.id}`, { headers })
       .subscribe({
         next: (res) => {
           alert("User deleted!");

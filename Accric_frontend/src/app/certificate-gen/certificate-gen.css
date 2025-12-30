@@ -5,12 +5,6 @@
   font-family: 'Inter', sans-serif;
 }
 
-html,
-body {
-  overflow-x: hidden;
-  width: 100%;
-}
-
 .certificate-box {
   padding: 48px 42px;
   background: #f5f7fc;
@@ -19,13 +13,10 @@ body {
   overflow-x: hidden;
 }
 
-
-
-
 .certificate-container {
   width: 100%;
   max-width: 1200px;
-  min-height: 175px;
+  min-height: 200px;
   margin: 32px auto 0;
   padding: 20px 25px;
   background: #fff;
@@ -35,12 +26,14 @@ body {
   overflow-x: hidden;
 }
 
+/* FIXED: Expanded state - preserve margin auto and proper width on all screens */
 .certificate-container.expanded {
   padding: 30px 35px;
   max-width: 100%;
+  margin: 32px auto 0;           /* Added: keeps centering */
+  width: 100%;                   /* Added: consistent width control */
   transition: padding 0.3s ease, width 0.3s ease;
 }
-
 
 .certificate-sub-heading {
   color: #343c6a;
@@ -48,7 +41,6 @@ body {
   font-size: 1.5rem;
   margin-bottom: 1rem;
 }
-
 
 .input-row {
   display: flex;
@@ -103,7 +95,6 @@ body {
   min-width: 0;
   margin-right: 10px;
 }
-
 
 .edit-options,
 .certification-options {
@@ -206,7 +197,6 @@ body {
   font-size: 13px;
 }
 
-
 .options-flex-container {
   display: flex;
   flex-wrap: wrap;
@@ -238,6 +228,10 @@ body {
   background: #ffffff;
   cursor: pointer;
   min-width: 0;
+}
+
+.search-dropdown label{
+  padding-bottom: 8px;
 }
 
 .certificate-btn {
@@ -346,7 +340,6 @@ body {
   flex: 0 1 auto;
 }
 
-
 /* ===================== */
 /* PDF VIEWER            */
 /* ===================== */
@@ -412,8 +405,6 @@ body {
   font-size: 1.1rem;
 }
 
-
-
 /* ===================== */
 /* RESPONSIVE DESIGN     */
 /* ===================== */
@@ -428,6 +419,15 @@ body {
     width: 95%;
     max-width: 950px;
     padding: 25px 20px;
+    margin: 32px auto 0;           /* Ensure centering */
+  }
+
+  /* Fix expanded on tablet */
+  .certificate-container.expanded {
+    width: 95%;
+    max-width: 950px;
+    padding: 30px 25px;
+    margin: 32px auto 0;
   }
 
   .option-row {
@@ -460,6 +460,16 @@ body {
     width: 100%;
     max-width: 100%;
     padding: 20px 15px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* CRITICAL FIX: Expanded state on mobile */
+  .certificate-container.expanded {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 25px 20px;
+    margin: 6rem auto 0 !important;
   }
 
   .certificate-sub-heading {
@@ -571,6 +581,12 @@ body {
     margin-top: 3rem;
   }
 
+  /* Fix expanded on small mobile */
+  .certificate-container.expanded {
+    padding: 22px 16px;
+    margin-top: 3rem;
+  }
+
   .certificate-sub-heading {
     font-size: 1.15rem;
     margin-bottom: 1rem;
@@ -647,6 +663,12 @@ body {
   .certificate-container {
     padding: 15px 10px;
     border-radius: 10px;
+    margin-top: 5rem;
+  }
+
+  /* Fix expanded on extra small */
+  .certificate-container.expanded {
+    padding: 20px 14px;
     margin-top: 5rem;
   }
 
@@ -729,4 +751,9 @@ body {
 
 .date-input {
   color: rgba(113, 142, 191, 1);
+}
+
+/* Extra safeguard - prevent any hidden overflow or visibility issues */
+.certificate-box {
+  overflow: hidden;
 }

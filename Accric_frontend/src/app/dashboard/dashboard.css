@@ -1,3 +1,4 @@
+/* ===== Base & Container Styling ===== */
 .dashboard-container {
   background-color: rgba(250, 251, 254, 1);
   width: 100%;
@@ -17,6 +18,7 @@
   margin-top: 1rem;
 }
 
+/* ===== Card Layout ===== */
 .cards {
   display: flex;
   flex-wrap: wrap;
@@ -26,7 +28,6 @@
   margin-top: 1.5rem;
   width: 100%;
 }
-
 
 .card {
   width: 349px;
@@ -43,15 +44,12 @@
   cursor: pointer;
 }
 
-
 .card:hover,
 .audit-card:hover {
   box-shadow: 0px 0px 12.7px 2px rgba(100, 149, 237, 1) inset;
 }
 
-
-
-/* ===== Header Section ===== */
+/* ===== Card Header Section ===== */
 .card-header {
   display: flex;
   align-items: center;
@@ -81,7 +79,6 @@
   padding-top: 1rem;
 }
 
-
 .card-info .text {
   margin-top: 10px;
   font-family: 'Inter', sans-serif;
@@ -89,7 +86,6 @@
   font-style: normal;
   font-size: 1.5rem;
   color: rgba(35, 35, 35, 1);
-
 }
 
 .card-info .count {
@@ -101,9 +97,7 @@
   color: rgba(35, 35, 35, 1);
 }
 
-
-
-/* ===== Footer Section ===== */
+/* ===== Card Footer & Chart Styling ===== */
 .card-footer {
   margin-top: 2rem;
 }
@@ -118,499 +112,18 @@
   font-size: 1rem;
 }
 
-
-/* ===== Chart Styling ===== */
 .chart {
   width: 80%;
   height: 80px;
 }
 
-
-
-
 .chart path {
   transition: all 0.4s ease;
 }
 
-
-
-
-/* Upcoming Audits */
-.upcoming {
-  margin-top: 5rem;
-  padding-top: 1rem;
-}
-
-.upcoming-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.upcoming-header p {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  font-size: 1.5rem;
-  color: rgba(52, 60, 106, 1);
-}
-
-.upcoming-header a {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  font-size: 1rem;
-  color: rgba(52, 60, 106, 1);
-  text-decoration: none;
-}
-
-.upcoming-box {
-  margin: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 2rem;
-}
-
-.upcoming-box-percentage-div {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-
-}
-
-
-#upcoming-box-text {
-  font-family: 'Inter', sans-serif;
-  font-weight: 400;
-  font-size: 1.5rem;
-  color: rgba(35, 35, 35, 1);
-}
-
-#upcoming-box-number {
-  font-family: 'Overpass', sans-serif;
-  font-weight: 600;
-  font-size: 2.25rem;
-  color: rgba(35, 35, 35, 1);
-  margin-top: 0.25rem;
-}
-
-#upcoming-box-percentage {
-  margin: 0;
-  font-family: 'Overpass', sans-serif;
-  font-weight: 900;
-  font-size: 2rem;
-  color: rgba(0, 0, 0, 1);
-}
-
-.horizontal-line {
-  margin-top: 1rem;
-  height: 6px;
-  width: 100%;
-  background: linear-gradient(to right, #3498db 10%, rgba(224, 224, 224, 1) 10%);
-  border: none;
-}
-
-
-
-
-.audit-list {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin-top: 3rem;
-}
-
-.audit-card {
-  display: flex;
-  align-items: center;
-  background-color: rgba(255, 255, 255, 1);
-  border-radius: 1.5rem;
-  border: 3px solid rgba(224, 224, 224, 1);
-  
-}
-
-
-.audit-card-box {
-  width: 100%;
-  margin: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-
-.card-box-item {
-  width: 80px;
-  height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(231, 237, 255, 1);
-  border-radius: 30%;
-}
-
-.card-box-item img {
-  width: 50px;
-  height: 50px;
-}
-
-.audit-card-info{
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.code, .client ,.date{
-  font-family: 'Inter', sans-serif;
-  font-weight: 500;
-  font-size: 1.25rem;
-  color: rgba(35, 35, 35, 1);
-}
-
-.view-details{
-  text-decoration: none;
-  color: rgba(24, 20, 243, 1);
-  font-family: 'Inter', sans-serif;
-  font-weight: 500;
-  font-size: 1.25rem;
-}
-
-.upcoming-count{
-
-   margin: 0;
-  font-family: 'Overpass', sans-serif;
-  font-weight: 600;
-  font-style: normal;
-  font-size: 2.25rem;
-  color: rgba(35, 35, 35, 1);
-
-}
-
-
-/* ---------- 1024px ---------- */
-@media (max-width: 1024px) {
-  .dashboard-box {
-    padding: 2.5rem;
-  }
-  
-  .cards {
-    gap: 18px;
-    justify-content: center;
-  }
-  
-  .card {
-    width: calc(50% - 18px);
-    min-width: 300px;
-    height: 270px;
-    padding: 1.75rem;
-  }
-  
-  .audit-card-box {
-    margin: 1.25rem;
-    gap: 1rem;
-  }
-  
-  .audit-card-info {
-    flex-wrap: wrap;
-    gap: 0.8rem;
-  }
-
-  .chart-img{
-    width: 180px;
-  }
-  
-  .code, .client, .date, .view-details {
-    font-size: 1.15rem;
-  }
-}
-
-/* ---------- 768px ---------- */
-@media (max-width: 768px) {
-  .dashboard-container {
-    margin-top: 6rem;
-    padding-inline: 0.5rem;
-  }
-  
-  .dashboard-box {
-    padding: 1.5rem;
-  }
-  
-  .cards {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    gap: 16px;
-  }
-  
-  .card {
-    height: 250px;
-    padding: 1.5rem;
-    border-radius: 1.75rem;
-  }
-  
-  .card-logo {
-    width: 2.75rem;
-    height: 2.75rem;
-  }
-  
-  .card-info .text {
-    font-size: 1.3rem;
-  }
-  
-  .card-info .count {
-    font-size: 2rem;
-  }
-  
-  .chart {
-    height: 70px;
-  }
-
-  .chart-img{
-    width: 150px;
-  }
-  
-  .upcoming-box {
-    margin-top: 1.5rem;
-  }
-  
-  .audit-card {
-    border-radius: 1.25rem;
-  }
-  
-  .audit-card-box {
-    flex-direction: row;
-    margin: 1rem;
-    gap: 1rem;
-  }
-  
-  .card-box-item {
-    width: 70px;
-    height: 70px;
-  }
-  
-  .card-box-item img {
-    width: 45px;
-    height: 45px;
-  }
-  
-  .audit-card-info {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 0.5rem;
-  }
-  
-  .code, .client, .date {
-    font-size: 1.1rem;
-  }
-  
-  .view-details {
-    font-size: 1.1rem;
-  }
-}
-
-/* ---------- 480px ---------- */
-@media (max-width: 480px) {
-  .dashboard-container {
-    margin-top: 4rem;
-    padding-inline: 0.75rem;
-  }
-  
-  .dashboard-box {
-    padding: 1rem;
-  }
-  
-  .cards {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  
-  .card {
-    height: 220px;
-    padding: 1.25rem;
-    border-radius: 1.5rem;
-  }
-  
-  .card-header {
-    gap: 12px;
-  }
-  
-  .card-logo {
-    width: 2.5rem;
-    height: 2.5rem;
-  }
-  
-  .card-info .text {
-    font-size: 1.2rem;
-  }
-  
-  .card-info .count {
-    font-size: 1.8rem;
-  }
-  
-  .card-footer {
-    margin-top: 1.5rem;
-  }
-  
-  .percentage {
-    font-size: 0.9rem;
-  }
-  
-  .chart {
-    height: 60px;
-  }
-
-  .chart-img{
-    width: 130px;
-  }
-  
-  .upcoming {
-    margin-top: 2.5rem;
-  }
-  
-  .upcoming-header {
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  #upcoming-box-text {
-    font-size: 1.2rem;
-  }
-  
-  #upcoming-box-number {
-    font-size: 1.8rem;
-  }
-  
-  .horizontal-line {
-    margin-top: 0.75rem;
-  }
-  
-  .audit-list {
-    margin-top: 2rem;
-  }
-  
-  .audit-card-box {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-    margin: 1rem;
-  }
-  
-  .card-box-item {
-    width: 60px;
-    height: 60px;
-  }
-  
-  .card-box-item img {
-    width: 40px;
-    height: 40px;
-  }
-  
-  .audit-card-info {
-    width: 100%;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-  
-  .code, .client, .date {
-    font-size: 1rem;
-  }
-  
-  .view-details {
-    font-size: 1rem;
-    align-self: flex-end;
-  }
-}
-
-/* ---------- 360px ---------- */
-@media (max-width: 360px) {
-  .dashboard-container {
-    padding-inline: 0.5rem;
-  }
-  
-  .dashboard-box {
-    padding: 0.75rem;
-  }
-  
-  .card {
-    height: 200px;
-    padding: 1rem;
-    border-radius: 1.25rem;
-  }
-  
-  .card-logo {
-    width: 2.25rem;
-    height: 2.25rem;
-  }
-  
-  .card-info .text {
-    font-size: 1.1rem;
-  }
-  
-  .card-info .count {
-    font-size: 1.6rem;
-  }
-  
-  .percentage {
-    font-size: 0.85rem;
-  }
-  
-  /* .chart {
-    height: 55px;
-  } */
-
-  .chart-img{
-    width: 130px;
-  }
-  
-  .upcoming-header p {
-    font-size: 1.3rem;
-  }
-  
-  #upcoming-box-text {
-    font-size: 1.1rem;
-  }
-  
-  #upcoming-box-number {
-    font-size: 1.6rem;
-  }
-  
-  .audit-card {
-    border-radius: 1rem;
-  }
-  
-  .audit-card-box {
-    margin: 0.75rem;
-    gap: 0.75rem;
-  }
-  
-  .card-box-item {
-    width: 55px;
-    height: 55px;
-    border-radius: 20%;
-  }
-  
-  .card-box-item img {
-    width: 35px;
-    height: 35px;
-  }
-  
-  .code, .client, .date, .view-details {
-    font-size: 0.95rem;
-  }
-}
-
-
 /* ===== Upcoming Audits Section ===== */
 .upcoming {
-  margin-top: 5rem;
+  margin-top: 2rem;
   padding-top: 1rem;
 }
 
@@ -661,8 +174,9 @@
   padding-bottom: 1rem;
 }
 
-.upcoming-count {
+.upcoming-count, #upcoming-box-number {
   margin: 0;
+  margin-top: 0.25rem;
   font-family: 'Overpass', sans-serif;
   font-weight: 600;
   font-style: normal;
@@ -686,22 +200,20 @@
   border: none;
 }
 
-/* ===== Audit List Container ===== */
+/* ===== Audit List & Card Styling ===== */
 .audit-list {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  margin-top: 3rem;
+  margin-top: 3rem; /* Adjusted for consistency */
 }
 
-/* ===== Audit Card Styling ===== */
 .audit-card {
   display: flex;
   align-items: center;
   background-color: rgba(255, 255, 255, 1);
   border-radius: 1.5rem;
   border: 3px solid rgba(224, 224, 224, 1);
-  padding: 0;
   transition: all 0.3s ease;
   cursor: pointer;
 }
@@ -714,7 +226,6 @@
   gap: 1.5rem;
 }
 
-/* Audit icon container */
 .card-box-item {
   width: 80px;
   height: 80px;
@@ -731,16 +242,15 @@
   height: 50px;
 }
 
-/* ===== Audit Info - Table-like Structure ===== */
 .audit-card-info {
   width: 100%;
-  display: grid;
-  grid-template-columns: 2fr 2fr 1.5fr auto;
+  
+  display: flex;
+  justify-content: space-between;
   align-items: center;
   gap: 1rem;
 }
 
-/* Individual info items */
 .code, .client, .date {
   font-family: 'Inter', sans-serif;
   font-weight: 500;
@@ -752,157 +262,275 @@
   white-space: nowrap;
 }
 
-/* Column headers for better structure (optional) */
-.audit-list::before {
-  content: "";
-  display: block;
-  margin-bottom: 1rem;
+.view-details {
+  text-decoration: none;
+  color: rgba(24, 20, 243, 1);
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 1.25rem;
 }
 
-/* ===== Media Queries for Responsive Design ===== */
+/* ---------- MEDIA QUERIES CONSOLIDATED ---------- */
 
 /* ---------- 1024px ---------- */
 @media (max-width: 1024px) {
-  .audit-card-info {
-    grid-template-columns: 1.5fr 1.5fr 1fr;
+  .dashboard-box {
+    padding: 2.5rem;
+  }
+  .cards {
+    gap: 18px;
+    justify-content: center;
+  }
+  .card {
+    width: calc(50% - 18px);
+    min-width: 300px;
+    height: 270px;
+    padding: 1.75rem;
+  }
+  .audit-card-box {
+    margin: 1.25rem;
     gap: 1rem;
   }
-  
-  .code, .client, .date {
-    font-size: 1.1rem;
+  .audit-card-info {
+    display: flex;
+    justify-content: space-around;
   }
-  
+  .chart-img {
+    width: 180px;
+  }
+  .code, .client, .date, .view-details {
+    font-size: 1.15rem;
+  }
   .card-box-item {
     width: 70px;
     height: 70px;
   }
-  
   .card-box-item img {
     width: 45px;
     height: 45px;
-  }
-  
-  .audit-card-box {
-    margin: 1.25rem;
-    gap: 1rem;
   }
 }
 
 /* ---------- 768px ---------- */
 @media (max-width: 768px) {
-  .audit-card-info {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
-    gap: 0.8rem;
+  .dashboard-container {
+    margin-top: 6rem;
+    padding-inline: 0.5rem;
   }
-  
-  .code {
-    grid-column: 1 / 3;
-    grid-row: 1;
+  .dashboard-box {
+    padding: 1.5rem;
   }
-  
-  .client {
-    grid-column: 1;
-    grid-row: 2;
+  .cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 16px;
   }
-  
-  .date {
-    grid-column: 2;
-    grid-row: 2;
+  .card {
+    height: 250px;
+    padding: 1.5rem;
+    border-radius: 1.75rem;
   }
-  
-  .code, .client, .date {
-    font-size: 1.05rem;
+  .card-logo {
+    width: 2.75rem;
+    height: 2.75rem;
   }
-  
+  .card-info .text {
+    font-size: 1.3rem;
+  }
+  .card-info .count {
+    font-size: 2rem;
+  }
+  .chart {
+    height: 70px;
+  }
+  .chart-img {
+    width: 150px;
+  }
+  .upcoming-box {
+    margin-top: 1.5rem;
+  }
+  .audit-card {
+    border-radius: 1.25rem;
+  }
+  .audit-card-box {
+    flex-direction: row;
+    margin: 1rem;
+    gap: 1rem;
+  }
   .card-box-item {
     width: 60px;
     height: 60px;
   }
-  
   .card-box-item img {
     width: 40px;
     height: 40px;
   }
-  
-  .audit-card-box {
-    margin: 1rem;
-    gap: 1rem;
+  .audit-card-info {
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+  .code {
+    grid-column: 1 / 3;
+    grid-row: 1;
+  }
+  .client {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .date {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .code, .client, .date, .view-details {
+    font-size: 1.05rem;
   }
 }
 
 /* ---------- 480px ---------- */
 @media (max-width: 480px) {
-  .audit-card-info {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
+  .dashboard-container {
+    margin-top: 4rem;
+    padding-inline: 0.75rem;
+  }
+  .dashboard-box {
+    padding: 1rem;
+  }
+  .cards {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .card {
+    height: 220px;
+    padding: 1.25rem;
+    border-radius: 1.5rem;
+  }
+  .card-header {
+    gap: 12px;
+  }
+  .card-logo {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  .card-info .text {
+    font-size: 1.2rem;
+  }
+  .card-info .count, #upcoming-box-number {
+    font-size: 1.8rem;
+  }
+  .card-footer {
+    margin-top: 1.5rem;
+  }
+  .percentage {
+    font-size: 0.9rem;
+  }
+  .chart {
+    height: 60px;
+  }
+  .chart-img {
+    width: 130px;
+  }
+  .upcoming {
+    margin-top: 2.5rem;
+  }
+  .upcoming-header {
+    flex-direction: row;
+    align-items: flex-start;
     gap: 0.5rem;
+    margin-bottom: 1rem;
   }
-  
-  .code, .client, .date {
-    grid-column: 1;
+  #upcoming-box-text {
+    font-size: 1.2rem;
   }
-  
-  .code {
-    grid-row: 1;
-    font-size: 1rem;
-    font-weight: 600;
+  .horizontal-line {
+    margin-top: 0.75rem;
   }
-  
-  .client {
-    grid-row: 2;
-    font-size: 0.95rem;
+  .audit-list {
+    margin-top: 2rem;
   }
-  
-  .date {
-    grid-row: 3;
-    font-size: 0.95rem;
-    color: rgba(100, 100, 100, 1);
+  .audit-card-box {
+    flex-direction: column;
+    align-items: flex-start;
   }
-  
   .card-box-item {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     border-radius: 20%;
   }
-  
   .card-box-item img {
     width: 35px;
     height: 35px;
   }
-  
-  .audit-card-box {
-    margin: 0.75rem;
-    gap: 0.75rem;
+  .audit-card-info {
+    width: 100%;
+    gap: 0.5rem;
+  }
+  .code, .client, .date {
+    font-size: 0.95rem;
+  }
+
+  .view-details {
+    font-size: 1rem;
+    align-self: flex-end;
   }
 }
 
 /* ---------- 360px ---------- */
 @media (max-width: 360px) {
-  .audit-card-info {
-    gap: 0.4rem;
+  .dashboard-container {
+    padding-inline: 0.5rem;
   }
-  
-  .code {
-    font-size: 0.95rem;
+  .dashboard-box {
+    padding: 0.75rem;
   }
-  
-  .client, .date {
-    font-size: 0.9rem;
+  .card {
+    height: 200px;
+    padding: 1rem;
+    border-radius: 1.25rem;
   }
-  
+  .card-logo {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+  .card-info .text {
+    font-size: 1.1rem;
+  }
+  .card-info .count, #upcoming-box-number {
+    font-size: 1.6rem;
+  }
+  .percentage {
+    font-size: 0.85rem;
+  }
+  .chart-img {
+    width: 130px;
+  }
+  .upcoming-header p {
+    font-size: 1.3rem;
+  }
+  #upcoming-box-text {
+    font-size: 1.1rem;
+  }
+  .audit-card {
+    border-radius: 1rem;
+  }
+  .audit-card-box {
+    margin: 0.5rem;
+    gap: 0.5rem;
+  }
   .card-box-item {
-    width: 45px;
-    height: 45px;
+    width: 35px;
+    height: 35px;
+    border-radius: 20%;
   }
-  
   .card-box-item img {
     width: 30px;
     height: 30px;
   }
-  
-  .audit-card-box {
-    margin: 0.5rem;
-    gap: 0.5rem;
+  .audit-card-info {
+    gap: 12px;
+  }
+  .code, .client, .date, .view-details {
+    font-size: 0.9rem;
   }
 }

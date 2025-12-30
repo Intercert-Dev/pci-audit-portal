@@ -7,11 +7,16 @@
           <img src="/assets/icons/magnifying-glass 2.png" alt="Search Icon">
           <input type="text" placeholder="Search Reports" [(ngModel)]="search_text" (input)="filter_list()">
         </div>
-        <button class="export-btn" (click)="exportToExcel()"><span>Export to Excel</span></button>
       </div>
     </div>
 
-    <div class="table-wrapper">
+    <!-- Loading Overlay -->
+    <div *ngIf="isLoading && reports_list.length === 0" class="loading-overlay">
+      <div class="loading-spinner"></div>
+      <p>Loading reports...</p>
+    </div>
+
+    <div class="table-wrapper" *ngIf="!isLoading || reports_list.length > 0">
       <table>
         <thead>
           <tr>
@@ -89,31 +94,498 @@
               <span *ngIf="getReportFileCount(report, 'current_final_report') === 0">No files</span>
             </td>
             
-            
             <!-- Action column -->
             <td class="sticky-action">
               <div class="action-box">
-                <img id="view-img" src="/assets/icons/report-view-icon.jpg" alt="View" (click)="viewReport(report)" title="View Details">
-                <img src="/assets/icons/edit.png" alt="Edit" (click)="editReport(report)" title="Edit Report">
+                <img id="view-img" src="/assets/icons/report-view-icon.jpg" alt="View" 
+                     (click)="viewReport(report)" title="View Details">
+                <img src="/assets/icons/edit.png" alt="Edit" 
+                     (click)="editReport(report)" title="Edit Report">
               </div>
-            </td>
-          </tr>
-          
-          <!-- Loading State -->
-          <tr *ngIf="isLoading && filtered_list.length === 0">
-            <td colspan="10" style="text-align: center; padding: 20px;">
-              Loading reports...
             </td>
           </tr>
           
           <!-- Empty State -->
           <tr *ngIf="!isLoading && filtered_list.length === 0">
             <td colspan="10" style="text-align: center; padding: 20px;">
-              No reports found.
+              <div class="empty-state">
+                <p>No reports found</p>
+              </div>
             </td>
           </tr>
         </tbody>
       </table>
+    </div>
+  </div>
+</div>
+
+<div class="view-report-popup-overlay" *ngIf="viewingReport">
+  <div class="view-report-popup">
+    <div class="popup-header">
+      <h2>PCI Report Details - {{ viewingReport.associated_organization || 'Report' }}</h2>
+      <button class="close-btn" (click)="closeView()">&times;</button>
+    </div>
+
+    <div class="popup-content">
+      <!-- Report Information -->
+      <div class="popup-section">
+        <h3 class="section-title">Report Information</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Company Name:</label>
+            <span>{{ viewingReport.associated_organization || 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <label>Assessment/Project:</label>
+            <span>{{ viewingReport.associated_application || 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <label>Created Date:</label>
+            <span>{{ formatDate(viewingReport.created_at) || 'N/A' }}</span>
+          </div>
+        </div>
+        
+        <div class="info-item full-width" *ngIf="viewingReport.verification_notes">
+          <label>Verification Notes:</label>
+          <p class="notes-text">{{ viewingReport.verification_notes }}</p>
+        </div>
+      </div>
+
+      <!-- Previous Reports -->
+      <div class="popup-section">
+        <h3 class="section-title">Previous Reports</h3>
+        <div class="file-grid">
+          <div class="file-category">
+            <h4>AOC Reports</h4>
+            <div class="file-list" *ngIf="viewingReport.prev_aoc_report?.length; else noPrevAoc">
+              <div *ngFor="let file of viewingReport.prev_aoc_report" class="file-item">
+                <div class="file-info">
+                  <span class="file-name">{{ getFileName(file) }}</span>
+                </div>
+                <button class="download-file-btn" (click)="downloadFile(file)" title="Download">
+                  <span>View</span>
+                </button>
+              </div>
+            </div>
+            <ng-template #noPrevAoc>
+              <div class="no-files">No AOC files uploaded</div>
+            </ng-template>
+          </div>
+          
+          <div class="file-category">
+            <h4>ROC Reports</h4>
+            <div class="file-list" *ngIf="viewingReport.prev_roc_report?.length; else noPrevRoc">
+              <div *ngFor="let file of viewingReport.prev_roc_report" class="file-item">
+                <div class="file-info">
+                  <span class="file-name">{{ getFileName(file) }}</span>
+                </div>
+                 <button class="download-file-btn" (click)="downloadFile(file)" title="Download">
+                  <span>View</span>
+                </button>
+              </div>
+            </div>
+            <ng-template #noPrevRoc>
+              <div class="no-files">No ROC files uploaded</div>
+            </ng-template>
+          </div>
+          
+          <div class="file-category">
+            <h4>Final Reports</h4>
+            <div class="file-list" *ngIf="viewingReport.prev_final_report?.length; else noPrevFinal">
+              <div *ngFor="let file of viewingReport.prev_final_report" class="file-item">
+                <div class="file-info">
+                  <span class="file-name">{{ getFileName(file) }}</span>
+                </div>
+                 <button class="download-file-btn" (click)="downloadFile(file)" title="Download">
+                  <span>View</span>
+                </button>
+              </div>
+            </div>
+            <ng-template #noPrevFinal>
+              <div class="no-files">No Final files uploaded</div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+
+      <!-- Current Reports -->
+      <div class="popup-section">
+        <h3 class="section-title">Current Reports</h3>
+        <div class="file-grid">
+          <div class="file-category">
+            <h4>AOC Reports</h4>
+            <div class="file-list" *ngIf="viewingReport.current_aoc_report?.length; else noCurrentAoc">
+              <div *ngFor="let file of viewingReport.current_aoc_report" class="file-item">
+                <div class="file-info">
+                  <span class="file-name">{{ getFileName(file) }}</span>
+                </div>
+                <button class="download-file-btn" (click)="downloadFile(file)" title="Download">
+                  <span>View</span>
+                </button>
+              </div>
+            </div>
+            <ng-template #noCurrentAoc>
+              <div class="no-files">No AOC files uploaded</div>
+            </ng-template>
+          </div>
+          
+          <div class="file-category">
+            <h4>ROC Reports</h4>
+            <div class="file-list" *ngIf="viewingReport.current_roc_report?.length; else noCurrentRoc">
+              <div *ngFor="let file of viewingReport.current_roc_report" class="file-item">
+                <div class="file-info">
+                  <span class="file-name">{{ getFileName(file) }}</span>
+                </div>
+                 <button class="download-file-btn" (click)="downloadFile(file)" title="Download">
+                  <span>View</span>
+                </button>
+              </div>
+            </div>
+            <ng-template #noCurrentRoc>
+              <div class="no-files">No ROC files uploaded</div>
+            </ng-template>
+          </div>
+          
+          <div class="file-category">
+            <h4>Final Reports</h4>
+            <div class="file-list" *ngIf="viewingReport.current_final_report?.length; else noCurrentFinal">
+              <div *ngFor="let file of viewingReport.current_final_report" class="file-item">
+                <div class="file-info">
+                  <span class="file-name">{{ getFileName(file) }}</span>
+                </div>
+                <button class="download-file-btn" (click)="downloadFile(file)" title="Download">
+                  <span>View</span>
+                </button>
+              </div>
+            </div>
+            <ng-template #noCurrentFinal>
+              <div class="no-files">No Final files uploaded</div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup-footer">
+      <button class="btn-close" (click)="closeView()">
+        <span>Close</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="edit-report-popup-overlay" *ngIf="editingReport">
+  <div class="edit-report-popup">
+    <div class="popup-header">
+      <h2>Edit PCI Report</h2>
+      <button class="close-btn" (click)="cancelEdit()">&times;</button>
+    </div>
+
+    <div class="popup-content">
+      <!-- Company Name and Assessment/Project -->
+      <div class="popup-section">
+        <h3 class="section-title">Company Details</h3>
+        <div class="form-grid">
+          <!-- Company Name -->
+          <div class="form-group full-width">
+            <label >Company Name</label>
+            <input type="text" 
+                   [(ngModel)]="editFormData.associated_organization" 
+                   placeholder="Enter company name"
+                   class="form-input"
+                  readonly>
+          </div>
+
+          <!-- Assessment/Project -->
+          <div class="form-group full-width">
+            <label >Assessment / Project Name</label>
+            <input type="text" 
+                   [(ngModel)]="editFormData.associated_application" 
+                   placeholder="Enter assessment/project name"
+                   class="form-input"
+                   readonly>
+          </div>
+        </div>
+      </div>
+
+      <!-- Previous Report Section -->
+      <div class="popup-section">
+        <h3 class="section-title">Previous Report</h3>
+        
+        <div class="report-files-grid">
+          <!-- Previous AOC Report -->
+          <div class="report-file-group">
+            <label class="sub-label">AOC Report</label>
+            <div class="file-upload-box">
+              <div class="file-list">
+                <div *ngFor="let file of editingReport.prev_aoc_report; let i = index" 
+                     class="file-item">
+                  <span class="file-name">{{ getFileName(file) }}</span>
+                  <button type="button" 
+                          class="remove-file-btn" 
+                          (click)="removeFile('prev', 'aoc', i)"
+                          title="Remove file">
+                    ×
+                  </button>
+                </div>
+                <div *ngIf="editingReport.prev_aoc_report.length === 0" class="no-files">
+                  No files selected
+                </div>
+              </div>
+              <button type="button" 
+                      class="upload-btn"
+                      (click)="triggerFileInput('prev', 'aoc')">
+               <span>Upload PDF(s)</span> 
+              </button>
+              <input type="file" 
+                     #prevAocFileInput
+                     (change)="onFileSelected($event, 'prev', 'aoc')" 
+                     multiple
+                     accept=".pdf"
+                     style="display: none;">
+            </div>
+          </div>
+
+          <!-- Previous ROC Report -->
+          <div class="report-file-group">
+            <label class="sub-label">ROC Report</label>
+            <div class="file-upload-box">
+              <div class="file-list">
+                <div *ngFor="let file of editingReport.prev_roc_report; let i = index" 
+                     class="file-item">
+                  <span class="file-name">{{ getFileName(file) }}</span>
+                  <button type="button" 
+                          class="remove-file-btn" 
+                          (click)="removeFile('prev', 'roc', i)"
+                          title="Remove file">
+                    ×
+                  </button>
+                </div>
+                <!-- FIXED: Changed *if to *ngIf -->
+                <div *ngIf="editingReport.prev_roc_report.length === 0" class="no-files">
+                  No files selected
+                </div>
+              </div>
+              <button type="button" 
+                      class="upload-btn"
+                      (click)="triggerFileInput('prev', 'roc')">
+                <span>Upload PDF(s)</span>
+              </button>
+              <input type="file" 
+                     #prevRocFileInput
+                     (change)="onFileSelected($event, 'prev', 'roc')" 
+                     multiple
+                     accept=".pdf"
+                     style="display: none;">
+            </div>
+          </div>
+
+          <!-- Previous Final Report -->
+          <div class="report-file-group">
+            <label class="sub-label">Final Report</label>
+            <div class="file-upload-box">
+              <div class="file-list">
+                <div *ngFor="let file of editingReport.prev_final_report; let i = index" 
+                     class="file-item">
+                  <span class="file-name">{{ getFileName(file) }}</span>
+                  <button type="button" 
+                          class="remove-file-btn" 
+                          (click)="removeFile('prev', 'final', i)"
+                          title="Remove file">
+                    ×
+                  </button>
+                </div>
+                <div *ngIf="editingReport.prev_final_report.length === 0" class="no-files">
+                  No files selected
+                </div>
+              </div>
+              <button type="button" 
+                      class="upload-btn"
+                      (click)="triggerFileInput('prev', 'final')">
+             <span>Upload PDF(s)</span>   
+              </button>
+              <input type="file" 
+                     #prevFinalFileInput
+                     (change)="onFileSelected($event, 'prev', 'final')" 
+                     multiple
+                     accept=".pdf"
+                     style="display: none;">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Current Report Section -->
+      <div class="popup-section">
+        <h3 class="section-title">Current Report</h3>
+        
+        <div class="report-files-grid">
+          <!-- Current AOC Report -->
+          <div class="report-file-group">
+            <label class="sub-label">AOC Report</label>
+            <div class="file-upload-box">
+              <div class="file-list">
+                <div *ngFor="let file of editingReport.current_aoc_report; let i = index" 
+                     class="file-item">
+                  <span class="file-name">{{ getFileName(file) }}</span>
+                  <button type="button" 
+                          class="remove-file-btn" 
+                          (click)="removeFile('current', 'aoc', i)"
+                          title="Remove file">
+                    ×
+                  </button>
+                </div>
+                <div *ngIf="editingReport.current_aoc_report.length === 0" class="no-files">
+                  No files selected
+                </div>
+              </div>
+              <button type="button" 
+                      class="upload-btn"
+                      (click)="triggerFileInput('current', 'aoc')">
+            <span>Upload PDF(s)</span>    
+              </button>
+              <input type="file" 
+                     #currentAocFileInput
+                     (change)="onFileSelected($event, 'current', 'aoc')" 
+                     multiple
+                     accept=".pdf"
+                     style="display: none;">
+            </div>
+          </div>
+
+          <!-- Current ROC Report -->
+          <div class="report-file-group">
+            <label class="sub-label">ROC Report</label>
+            <div class="file-upload-box">
+              <div class="file-list">
+                <div *ngFor="let file of editingReport.current_roc_report; let i = index" 
+                     class="file-item">
+                  <span class="file-name">{{ getFileName(file) }}</span>
+                  <button type="button" 
+                          class="remove-file-btn" 
+                          (click)="removeFile('current', 'roc', i)"
+                          title="Remove file">
+                    ×
+                  </button>
+                </div>
+                <div *ngIf="editingReport.current_roc_report.length === 0" class="no-files">
+                  No files selected
+                </div>
+              </div>
+              <button type="button" 
+                      class="upload-btn"
+                      (click)="triggerFileInput('current', 'roc')">
+            <span>Upload PDF(s)</span>    
+              </button>
+              <input type="file" 
+                     #currentRocFileInput
+                     (change)="onFileSelected($event, 'current', 'roc')" 
+                     multiple
+                     accept=".pdf"
+                     style="display: none;">
+            </div>
+          </div>
+
+          <!-- Current Final Report -->
+          <div class="report-file-group">
+            <label class="sub-label">Final Report</label>
+            <div class="file-upload-box">
+              <div class="file-list">
+                <div *ngFor="let file of editingReport.current_final_report; let i = index" 
+                     class="file-item">
+                  <span class="file-name">{{ getFileName(file) }}</span>
+                  <button type="button" 
+                          class="remove-file-btn" 
+                          (click)="removeFile('current', 'final', i)"
+                          title="Remove file">
+                    ×
+                  </button>
+                </div>
+                <div *ngIf="editingReport.current_final_report.length === 0" class="no-files">
+                  No files selected
+                </div>
+              </div>
+              <button type="button" 
+                      class="upload-btn"
+                      (click)="triggerFileInput('current', 'final')">
+            <span>Upload PDF(s)</span>    
+              </button>
+              <input type="file" 
+                     #currentFinalFileInput
+                     (change)="onFileSelected($event, 'current', 'final')" 
+                     multiple
+                     accept=".pdf"
+                     style="display: none;">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup-footer">
+      <button class="btn-close" (click)="cancelEdit()">
+        <span>Cancel</span>
+      </button>
+      <button class="btn-save" (click)="saveReport()" [disabled]="isSaving">
+        <span *ngIf="!isSaving">Save Changes</span>
+        <span *ngIf="isSaving">Saving...</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================
+     VIEW FILES POPUP
+============================ -->
+<div class="view-files-popup-overlay" *ngIf="viewingFiles">
+  <div class="view-files-popup">
+    <div class="popup-header">
+      <h2>{{ getCategoryLabel(selectedFileCategory) }} {{ getTypeFullName(selectedFileType) }} Files</h2>
+      <button class="close-btn" (click)="closeFileViewer()">&times;</button>
+    </div>
+
+    <div class="popup-content">
+      <div class="files-info-header">
+        <p>{{ selectedFiles.length }} file{{ selectedFiles.length !== 1 ? 's' : '' }} found</p>
+      </div>
+
+      <div class="files-list-container" *ngIf="selectedFiles.length > 0">
+        <div class="files-list">
+          <div *ngFor="let file of selectedFiles" class="file-item">
+            <div class="file-icon">
+              <img [src]="getFileIcon(getFileName(file))" alt="File Icon">
+            </div>
+            <div class="file-details">
+              <h4 class="file-name">{{ getFileName(file) }}</h4>
+              <div class="file-meta">
+                <span class="file-type">{{ file.file_type || 'Unknown type' }}</span>
+                <span class="file-date">{{ formatDate(file.created_at) || 'Unknown date' }}</span>
+              </div>
+            </div>
+            <div class="file-actions">
+              <button class="download-btn" (click)="downloadFile(file)" title="Download">
+                <img src="/assets/icons/download.png" alt="Download">
+              </button>
+              <a [href]="getFileDownloadUrl(file)" target="_blank" class="preview-btn" title="Preview" *ngIf="file.file_type === 'pdf' || file.file_type === 'image'">
+                <img src="/assets/icons/preview.png" alt="Preview">
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="no-files-found" *ngIf="selectedFiles.length === 0">
+        <div class="no-files-icon">📄</div>
+        <p>No files available in this category</p>
+      </div>
+    </div>
+
+    <div class="popup-footer">
+      <button class="btn-close" (click)="closeFileViewer()">
+        <span>Close</span>
+      </button>
     </div>
   </div>
 </div>

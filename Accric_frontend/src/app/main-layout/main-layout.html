@@ -4,7 +4,7 @@
       <button class="menu-btn" (click)="toggleSidebar()">
         <img src="/assets/icons/dehaze.png" alt="icons">
       </button>
-      <div class="logo">
+      <div class="logo" (click)="goToHomeDashboard()">
         <img src="/assets/main-logo.svg" alt="Intercert Logo" />
       </div>
     </div>
@@ -80,30 +80,20 @@
               </div>
               <!-- SUBMENU ITEMS - DON'T close submenu when clicked -->
               <ul class="submenu" *ngIf="isListExpanded">
-                <li routerLink="/client-list" routerLinkActive="active" (click)="onSubmenuItemListClick()">
+                <li routerLink="/client-list" routerLinkActive="active" (click)="onSubmenuItemClick()">
                   <span>Clients</span>
                 </li>
-                <li routerLink="/audit-list" routerLinkActive="active" (click)="onSubmenuItemListClick()">
+                <li routerLink="/audit-list" routerLinkActive="active" (click)="onSubmenuItemClick()">
                   <span>Audits</span>
                 </li>
-                <li routerLink="/asv-audit-client-list" routerLinkActive="active" (click)="onSubmenuItemListClick()">
+                <li routerLink="/asv-audit-client-list" routerLinkActive="active" (click)="onSubmenuItemClick()">
                   <span>ASV Audits</span>
                 </li>
-                <li routerLink="/pci-reports-list" routerLinkActive="active" (click)="onSubmenuItemListClick()">
+                <li routerLink="/pci-reports-list" routerLinkActive="active" (click)="onSubmenuItemClick()">
                   <span>PCI Reports</span>
                 </li>
               </ul>
             </li>
-
-
-
-            <!-- MAIN MENU ITEMS - Close submenu when clicked -->
-            <!-- <li routerLink="/client-list" routerLinkActive="active" (click)="onMainMenuItemClick()">
-              <div class="nav-item">
-                <img src="/assets/icons/calendar_view_week.png" alt="icon" class="nav-icon">
-                <span class="nav-text">Client List</span>
-              </div>
-            </li> -->
             <li routerLink="/asv-dashboard" routerLinkActive="active" (click)="onMainMenuItemClick()">
               <div class="nav-item">
                 <img src="/assets/icons/breaking_news_alt_1.png" alt="icon" class="nav-icon">

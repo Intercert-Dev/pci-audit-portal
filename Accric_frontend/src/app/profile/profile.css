@@ -1,430 +1,870 @@
-/* ================================
-   Root Variables
-================================ */
-:root {
-  --primary-color: #007bff;
-  --secondary-color: #6c757d;
-  --background-color: #f8f9fa;
-  --card-background: #140606;
-  --border-radius: 10px;
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --transition-speed: 0.3s;
+/* ==========================
+   PAGE LAYOUT
+========================== */
+.profile-page {
+  min-height: 85vh;
+  background: #fafbfe;
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
+  font-family: "Inter", sans-serif;
+  position: relative;
 }
 
-/* ================================
-   Profile Container
-================================ */
-.profile-container {
-  padding: 20px;
-  font-family: 'Inter', sans-serif;
+.profile-wrapper {
   width: 100%;
-  min-height: 89vh;
-  background-color: rgba(250, 251, 254, 1);
+  display: flex;
+  justify-content: center;
 }
 
-/* ================================
-   Profile Header
-================================ */
+.profile-card {
+  width: 60%;
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 36px 32px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.08);
+  position: relative;
+  z-index: 1;
+}
+
 .profile-header {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 25px;
-  padding: 30px;
-  background: linear-gradient(135deg, var(--primary-color), #0056b3);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow);
-  margin-bottom: 30px;
+  text-align: center;
 }
 
 .avatar-wrapper {
-  position: relative;
-  width: 130px;
-  height: 130px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
-  overflow: hidden;
-  border: 4px solid rgba(255, 255, 255, 0.9);
+  background: linear-gradient(135deg, #396aff, #5f7cff);
+  padding: 4px;
+  margin-bottom: 18px;
 }
 
 .profile-avatar {
   width: 100%;
   height: 100%;
+  border-radius: 50%;
   object-fit: cover;
+  background: #fff;
 }
 
-.header-info h1 {
-  font-size: 2rem;
-  margin-bottom: 5px;
+.profile-name {
+  font-size: 1.6rem;
   font-weight: 600;
+  color: #111827;
+  margin-bottom: 4px;
 }
 
-.header-info .title {
-  font-size: 1.1rem;
-  opacity: 0.95;
-  font-weight: 300;
-}
-
-/* ================================
-   Main Grid Layout
-================================ */
-.profile-main {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 25px;
-}
-
-/* ================================
-   Card Component
-================================ */
-.card {
-  background-color: var(--card-background);
-  padding: 25px;
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow);
-  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
-}
-
-.card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-}
-
-.section-title {
-  font-size: 1.4rem;
-  padding-bottom: 10px;
-  margin-bottom: 20px;
-  border-bottom: 2px solid var(--background-color);
-  font-weight: 600;
-}
-
-/* ================================
-   Bio Section
-================================ */
-.bio-text {
-  line-height: 1.7;
+.profile-role {
+  font-family: "Inter", sans-serif;
   font-size: 1rem;
-  color: #495057;
+  color: #6b7280;
+  letter-spacing: 0.08em;
+  margin-bottom: 20px;
 }
-
 
 .edit-btn {
-  margin-top: 15px;
-  padding: 8px 16px;
-  font-family: "Inter", sans-serif;
-  font-weight: 600;
-  font-size: 1.25rem;
-  color: rgba(245, 247, 250, 1);
-  background-color: rgba(57, 106, 255, 1);
+  background-color: #396aff;
   border: none;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   border-radius: 1rem;
   opacity: 1;
   padding: 0.8rem 1.5rem;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+  width: 160px;
+  height: 50px;
+  margin-top: 6px;
 }
 
-/* ================================
-   Skills Section (Tags)
-================================ */
-.skill-tags {
+.edit-btn:hover {
+  background-color: #2a56e8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(57, 106, 255, 0.3);
+}
+
+.edit-btn span {
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: rgba(245, 247, 250, 1);
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background: #eef2f7;
+  margin: 30px 0;
+}
+
+.section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 18px;
+}
+
+/* ==========================
+   CONTACT ITEMS
+========================== */
+.info-grid {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.tag {
-  padding: 8px 15px;
-  background-color: #e9ecef;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: background-color var(--transition-speed);
-}
-
-.tag:hover {
-  background-color: var(--primary-color);
-  color: #fff;
-}
-
-/* ================================
-   Contact Section
-================================ */
-.contact-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.contact-list li {
+.info-item {
   display: flex;
   align-items: center;
-  margin-bottom: 15px;
-  font-size: 0.95rem;
-  color: var(--secondary-color);
-}
-
-.contact-list a {
-  color: var(--primary-color);
-  text-decoration: none;
-  transition: color var(--transition-speed);
-}
-
-.contact-list a:hover {
-  text-decoration: underline;
-  color: #0056b3;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-size: 0.9rem;
+  color: #374151;
+  transition: all 0.2s ease;
 }
 
 .icon {
-  margin-right: 12px;
+  color: #396aff;
+  font-size: 1rem;
   width: 20px;
-  color: var(--primary-color);
   text-align: center;
 }
 
-/* ================================
-   Social Links
-================================ */
-.social-links {
+.footer {
+  width: 100%;
   display: flex;
-  gap: 20px;
+  justify-content: center;
+  gap: 6rem;
+  margin-top: 30px;
 }
 
-.social-link {
-  font-size: 1.6rem;
-  color: var(--secondary-color);
-  transition: transform var(--transition-speed), color var(--transition-speed);
+/* ==========================
+   LOADING STATE
+========================== */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  text-align: center;
 }
 
-.social-link:hover {
-  transform: scale(1.1);
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #396aff;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
 }
 
-.social-link.linkedin:hover {
-  color: #0077b5;
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-.social-link.github:hover {
-  color: #333;
+.loading-state p {
+  color: #6b7280;
+  font-size: 1rem;
+  font-weight: 500;
 }
 
-.social-link.website:hover {
-  color: var(--primary-color);
-}
-
-
-/* ================================
-   EDIT POPUP (MATCHES FORM STYLE)
-================================ */
-
-/* Overlay */
-.modal-overlay {
+/* ==========================
+   EDIT PROFILE POPUP OVERLAY
+========================== */
+.edit-profile-popup-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.35);
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 1100;
-  backdrop-filter: blur(2px);
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+  backdrop-filter: blur(8px);
+  animation: fadeInOverlay 0.3s ease-out;
 }
 
-/* Popup box */
-.modal {
-  width: 45%;
-  background: #fff;
-  border-radius: 1.2rem;
-  padding: 2rem;
-  box-shadow: 0 6px 35px rgba(0, 0, 0, 0.12);
-  animation: fadeIn 0.25s ease-out;
-  max-height: 90vh;
-  overflow-y: auto;
-}
-
-/* Animation */
-@keyframes fadeIn {
+@keyframes fadeInOverlay {
   from {
     opacity: 0;
-    transform: translateY(-20px);
+    backdrop-filter: blur(0);
   }
-
   to {
     opacity: 1;
-    transform: translateY(0);
+    backdrop-filter: blur(8px);
   }
 }
 
-/* =====================================
-   MODAL TITLE
-===================================== */
-.modal h2 {
-  font-family: "Inter", sans-serif;
-  font-size: 1.6rem;
-  font-weight: 600;
-  color: #232323;
-  margin-bottom: 1rem;
-}
-
-/* =====================================
-   INPUT GROUPS
-===================================== */
-.modal-body {
+/* ==========================
+   EDIT PROFILE POPUP
+========================== */
+.edit-profile-popup {
+  background: #ffffff;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 85vh;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+  animation: slideInPopup 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow: hidden;
 }
 
-.modal-body label {
-  font-family: "Inter", sans-serif;
-  font-size: 1rem;
-  font-weight: 500;
-  color: rgba(35, 35, 35, 1);
+@keyframes slideInPopup {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
-.modal-body input {
-  padding: 12px;
-  border-radius: 1rem;
-  border: 1px solid rgba(223, 234, 242, 1);
+/* ==========================
+   POPUP HEADER
+========================== */
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 32px;
+  border-bottom: 1px solid #eef2f7;
+  background: linear-gradient(135deg, #396aff, #5f7cff);
+  color: white;
+}
+
+.popup-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: white;
+}
+
+.close-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  line-height: 1;
+  padding: 0;
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg);
+}
+
+/* ==========================
+   POPUP CONTENT
+========================== */
+.popup-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px;
+  background: #fafbfe;
+}
+
+/* Scrollbar Styling */
+.popup-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.popup-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.popup-content::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.popup-content::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+/* ==========================
+   POPUP SECTIONS
+========================== */
+.popup-section {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 24px;
+  border: 1px solid #eef2f7;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.popup-section:last-child {
+  margin-bottom: 0;
+}
+
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #eef2f7;
+}
+
+.sub-section-title {
   font-size: 0.95rem;
-  font-family: "Inter", sans-serif;
-  outline: none;
-  transition: border-color 0.3s;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 16px;
 }
 
-.modal-body input:focus {
-  border-color: #396aff;
+/* ==========================
+   PROFILE IMAGE UPLOAD SECTION
+========================== */
+.profile-image-upload {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  padding: 20px;
+  background: #f9fafb;
+  border-radius: 16px;
+  margin-bottom: 20px;
 }
 
-/* Placeholder color */
-.modal-body input::placeholder {
-  color: rgba(113, 142, 191, 1);
+.current-avatar {
+  flex-shrink: 0;
 }
 
-/* =====================================
-   PROFILE IMAGE PREVIEW
-===================================== */
-.preview-avatar {
+.profile-avatar-preview {
   width: 100px;
   height: 100px;
-  border-radius: 1rem;
-  border: 1px solid #dfeaf2;
-  margin-top: 10px;
+  border-radius: 50%;
   object-fit: cover;
+  border: 3px solid white;
+  box-shadow: 0 8px 24px rgba(57, 106, 255, 0.2);
 }
 
-/* =====================================
-   BUTTONS (Save / Cancel)
-===================================== */
-.modal-actions {
-  margin-top: 1.7rem;
+.upload-controls {
+  flex: 1;
+}
+
+.file-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: white;
+  border: 2px dashed #d1d5db;
+  padding: 12px 24px;
+  border-radius: 12px;
+  cursor: pointer;
+  color: #374151;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  margin-bottom: 8px;
+}
+
+.file-upload-btn:hover {
+  border-color: #396aff;
+  color: #396aff;
+  background: #f5f7ff;
+  transform: translateY(-1px);
+}
+
+.upload-icon {
+  font-size: 18px;
+}
+
+.file-hint {
+  display: block;
+  color: #6b7280;
+  font-size: 0.85rem;
+  margin-top: 8px;
+}
+
+/* ==========================
+   FORM STYLES
+========================== */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.form-group {
+  margin-bottom: 0;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #374151;
+  font-size: 0.9rem;
+}
+
+.form-group label[required]::after {
+  content: " *";
+  color: #ef4444;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  background: white;
+  font-family: "Inter", sans-serif;
+  color: #111827;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #396aff;
+  box-shadow: 0 0 0 3px rgba(57, 106, 255, 0.1);
+}
+
+.form-input::placeholder {
+  color: #9ca3af;
+}
+
+/* ==========================
+   SOCIAL LINKS GRID
+========================== */
+.social-links-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.social-input-group {
+  margin-bottom: 0;
+}
+
+/* ==========================
+   POPUP FOOTER
+========================== */
+.popup-footer {
   display: flex;
   justify-content: flex-end;
-  gap: 1rem;
+  gap: 16px;
+  padding: 24px 32px;
+  border-top: 1px solid #eef2f7;
+  background: #ffffff;
 }
 
+.btn-cancel,
 .btn-save {
-  background-color: rgba(57, 106, 255, 1);
-  color: white;
-  border: none;
-  padding: 0.8rem 1.3rem;
-  border-radius: 1rem;
+  padding: 14px 32px;
+  border-radius: 14px;
+  font-size: 0.95rem;
   font-weight: 600;
-  font-family: "Inter", sans-serif;
-  font-size: 1rem;
   cursor: pointer;
-  transition: 0.3s;
-}
-
-.btn-save:hover {
-  background-color: #2f55d4;
+  border: none;
+  transition: all 0.3s ease;
+  min-width: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Inter", sans-serif;
 }
 
 .btn-cancel {
-  background-color: #d9534f;
-  color: white;
-  border: none;
-  padding: 0.8rem 1.3rem;
-  border-radius: 1rem;
-  font-weight: 600;
-  font-family: "Inter", sans-serif;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: 0.3s;
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
 }
 
 .btn-cancel:hover {
-  background-color: #b13d3a;
+  background: #e5e7eb;
+  color: #111827;
+  transform: translateY(-1px);
 }
 
-/* =====================================
-   RESPONSIVE POPUP
-===================================== */
-@media (max-width: 992px) {
-  .modal {
-    width: 60%;
-  }
+.btn-save {
+  background: linear-gradient(135deg, #396aff, #5f7cff);
+  color: white;
 }
 
-@media (max-width: 768px) {
-  .modal {
+.btn-save:hover:not(:disabled) {
+  background: linear-gradient(135deg, #2a56e8, #4a6aff);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(57, 106, 255, 0.3);
+}
+
+.btn-save:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ==========================
+   RESPONSIVE DESIGN - FULLY ENHANCED
+========================== */
+
+/* Tablet (1024px and below) */
+@media (max-width: 1024px) {
+  .profile-card {
     width: 80%;
-    padding: 1.5rem;
+    padding: 32px 28px;
+  }
+
+  .profile-name {
+    font-size: 1.5rem;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .social-links-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .popup-header {
+    padding: 20px 28px;
+  }
+
+  .popup-content {
+    padding: 28px;
+  }
+
+  .popup-footer {
+    padding: 20px 28px;
   }
 }
 
-@media (max-width: 480px) {
-  .modal {
-    width: 90%;
-    padding: 1.2rem;
-  }
-
-  .modal-actions {
-    flex-direction: column;
-  }
-
-  .btn-save,
-  .btn-cancel {
-    width: 100%;
-  }
-}
-
-
-/* ================================
-   Responsive Design
-================================ */
-@media (max-width: 992px) {
-  .profile-main {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
+/* Mobile Landscape / Small Tablet (768px and below) */
 @media (max-width: 768px) {
-  .profile-header {
-    flex-direction: column;
-    text-align: center;
-    gap: 15px;
+  .profile-page {
+    padding-top: 90px; /* Space for fixed header */
+  }
+
+  .profile-card {
+    width: 90%;
+    padding: 28px 24px;
+    border-radius: 20px;
+    margin-top: 3rem;
   }
 
   .avatar-wrapper {
-    width: 110px;
-    height: 110px;
+    width: 100px;
+    height: 100px;
   }
 
-  .profile-main {
+  .profile-name {
+    font-size: 1.4rem;
+  }
+
+  .profile-role {
+    font-size: 0.95rem;
+  }
+
+  .edit-btn {
+    width: 140px;
+    height: 46px;
+    padding: 0.7rem 1.2rem;
+  }
+
+  .edit-btn span {
+    font-size: 1.1rem;
+  }
+
+  .footer {
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .edit-profile-popup {
+    max-width: 95%;
+    max-height: 92vh;
+    border-radius: 20px;
+  }
+
+  .form-grid {
     grid-template-columns: 1fr;
+  }
+
+  .social-links-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-image-upload {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+    padding: 16px;
+  }
+
+  .profile-avatar-preview {
+    width: 90px;
+    height: 90px;
+  }
+
+  .popup-header {
+    padding: 18px 24px;
+  }
+
+  .popup-header h2 {
+    font-size: 1.3rem;
+  }
+
+  .popup-content {
+    padding: 24px;
+  }
+
+  .popup-section {
+    padding: 20px;
+  }
+
+  .popup-footer {
+    padding: 20px 24px;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .btn-cancel,
+  .btn-save {
+    width: 100%;
+    min-width: auto;
+    padding: 14px;
+    font-size: 0.95rem;
   }
 }
 
+/* Small Mobile (480px and below) */
 @media (max-width: 480px) {
-  .section-title {
+  .profile-page {
+    padding-top: 100px;
+  }
+
+  .profile-card {
+    width: 94%;
+    padding: 24px 20px;
+    border-radius: 18px;
+  }
+
+  .avatar-wrapper {
+    width: 90px;
+    height: 90px;
+  }
+
+  .profile-name {
+    font-size: 1.3rem;
+  }
+
+  .profile-role {
+    font-size: 0.9rem;
+  }
+
+  .edit-btn {
+    width: 130px;
+    height: 44px;
+    padding: 0.6rem 1rem;
+  }
+
+  .edit-btn span {
+    font-size: 1rem;
+  }
+
+  .info-item {
+    padding: 10px 14px;
+    font-size: 0.85rem;
+  }
+
+  .edit-profile-popup {
+    max-width: 96%;
+    max-height: 94vh;
+    border-radius: 18px;
+  }
+
+  .popup-header {
+    padding: 16px 20px;
+  }
+
+  .popup-header h2 {
     font-size: 1.2rem;
   }
 
-  .bio-text {
+  .close-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 24px;
+  }
+
+  .popup-content {
+    padding: 20px;
+  }
+
+  .popup-section {
+    padding: 18px;
+    border-radius: 16px;
+  }
+
+  .section-title {
+    font-size: 1rem;
+  }
+
+  .form-input {
+    padding: 11px 14px;
+    font-size: 0.9rem;
+  }
+
+  .file-upload-btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+
+  .profile-avatar-preview {
+    width: 80px;
+    height: 80px;
+  }
+
+  .popup-footer {
+    padding: 18px 20px;
+  }
+}
+
+/* Extra Small Devices (360px and below) */
+@media (max-width: 360px) {
+  .profile-page {
+    padding-top: 90px;
+  }
+
+  .profile-card {
+    width: 96%;
+    padding: 20px 16px;
+  }
+
+  .avatar-wrapper {
+    width: 80px;
+    height: 80px;
+  }
+
+  .profile-name {
+    font-size: 1.2rem;
+  }
+
+  .profile-role {
+    font-size: 0.85rem;
+  }
+
+  .edit-btn {
+    width: 120px;
+    height: 42px;
+    padding: 0.5rem 0.9rem;
+  }
+
+  .edit-btn span {
     font-size: 0.95rem;
   }
+
+  .info-item {
+    padding: 10px 12px;
+    font-size: 0.8rem;
+    gap: 10px;
+  }
+
+  .icon {
+    font-size: 0.9rem;
+  }
+
+  .popup-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .popup-content {
+    padding: 16px;
+  }
+
+  .popup-section {
+    padding: 16px;
+  }
+
+  .form-input {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+
+  .btn-cancel,
+  .btn-save {
+    padding: 12px;
+    font-size: 0.9rem;
+  }
+}
+
+/* ==========================
+   FORM VALIDATION STYLES
+========================== */
+.form-input.ng-invalid.ng-touched {
+  border-color: #ef4444;
+}
+
+.form-input.ng-valid.ng-touched {
+  border-color: #10b981;
+}
+
+.error-message {
+  color: #ef4444;
+  font-size: 0.85rem;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.error-message::before {
+  content: "⚠";
+  font-size: 0.9rem;
+}
+
+/* ==========================
+   TRANSITION EFFECTS
+========================== */
+.edit-btn,
+.close-btn,
+.file-upload-btn,
+.btn-cancel,
+.btn-save,
+.info-item,
+.form-input {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================
+   FOCUS VISIBLE (ACCESSIBILITY)
+========================== */
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid #396aff;
+  outline-offset: 2px;
 }

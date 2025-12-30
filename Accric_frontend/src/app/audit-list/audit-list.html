@@ -55,7 +55,7 @@
             <td class="sticky-action">
               <div class="action-box">
                 <img src="/assets/icons/edit.png" alt="Edit" (click)="editAudit(audit)" title="Edit Audit">
-                <img src="/assets/icons/delete.png" alt="Delete" (click)="deleteAudit(audit)" title="Delete Audit">
+                <!-- <img src="/assets/icons/delete.png" alt="Delete" (click)="deleteAudit(audit)" title="Delete Audit"> -->
               </div>
             </td>
           </tr>
@@ -186,14 +186,11 @@
               <label>Name of QSA</label>
               <select name="name_of_qsa" [(ngModel)]="editingAudit.name_of_qsa">
                 <option [ngValue]="null">Select QSA</option>
-
-                <option *ngFor="let qsa of qsaList" [ngValue]="qsa.qsa_id">
+                <!-- Change ngValue to qsa.qsa_name instead of qsa.qsa_id -->
+                <option *ngFor="let qsa of qsaList" [ngValue]="qsa.qsa_name">
                   {{ qsa.qsa_name }}
                 </option>
               </select>
-
-
-
             </div>
 
             <div class="form-group">

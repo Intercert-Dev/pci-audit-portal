@@ -120,7 +120,7 @@ input::placeholder {
 
 .form-actions {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-top: 1.5rem;
   gap: 1.25rem;
 }
@@ -148,6 +148,26 @@ input::placeholder {
   padding: 0.8rem 1.5rem;
   cursor: pointer;
   transition: background-color 0.3s;
+}
+
+.btn-reset {
+  color: rgba(52, 60, 106, 1);
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 1rem;
+  opacity: 1;
+  padding: 0.8rem 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  flex-shrink: 0;
+}
+
+.btn-reset span {
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 20px;
 }
 
 .btn-primary:hover {
@@ -520,7 +540,7 @@ input::placeholder {
     min-width: 180px;
   }
 
-  .btn-primary span {
+  .btn-primary span,.btn-reset span {
     font-size: 1.1rem;
   }
 
@@ -534,115 +554,115 @@ input::placeholder {
 /* ---------- Dropdown Positioning Fixes ---------- */
 @media (max-width: 768px) {
 
-  
-    .add-client-container {
-      min-height: 82vh;
-      padding: 0.5rem;
-    }
 
-    .add-client-box {
-      margin: 15px;
-      padding: 1.5rem;
-      border-radius: 8px;
-      margin-top: 7rem;
-    }
+  .add-client-container {
+    min-height: 82vh;
+    padding: 0.5rem;
+  }
 
-    .tabs {
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-bottom: 1.5rem;
-    }
+  .add-client-box {
+    margin: 15px;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-top: 7rem;
+  }
 
-    .tab {
-      flex: 1 1 calc(33.333% - 0.5rem);
-      font-size: 0.9rem;
-      padding: 0.4rem 0.3rem;
-      min-width: 120px;
-    }
+  .tabs {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
 
-    .tab.active {
-      border-bottom-width: 4px;
-    }
+  .tab {
+    flex: 1 1 calc(33.333% - 0.5rem);
+    font-size: 0.9rem;
+    padding: 0.4rem 0.3rem;
+    min-width: 120px;
+  }
 
-    .form-row {
-      flex-direction: column;
-      margin-top: 1.5rem;
-      gap: 1.25rem;
-    }
+  .tab.active {
+    border-bottom-width: 4px;
+  }
 
-    .form-group,
-    .form-group.wide {
-      flex: 1 1 100%;
-      width: 100%;
-    }
+  .form-row {
+    flex-direction: column;
+    margin-top: 1.5rem;
+    gap: 1.25rem;
+  }
 
-    .phone-input-container {
-      gap: 0.75rem;
-    }
+  .form-group,
+  .form-group.wide {
+    flex: 1 1 100%;
+    width: 100%;
+  }
 
-    .country-code-selector {
-      min-width: 90px;
-      height: 2.25rem;
-      padding: 0 8px;
-    }
+  .phone-input-container {
+    gap: 0.75rem;
+  }
 
-    .country-code-list,
-    .dropdown-list {
-      width: 100%;
-      max-height: 280px;
-      position: absolute;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-    }
-    
-    .dropdown-list {
-      z-index: 9999;
-    }
-    
-    .country-code-list {
-      z-index: 99999;
-    }
+  .country-code-selector {
+    min-width: 90px;
+    height: 2.25rem;
+    padding: 0 8px;
+  }
 
-    .search-container {
-      padding: 10px;
-    }
+  .country-code-list,
+  .dropdown-list {
+    width: 100%;
+    max-height: 280px;
+    position: absolute;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
 
-    .search-input {
-      padding: 0.6rem 0.75rem !important;
-      font-size: 0.85rem;
-    }
+  .dropdown-list {
+    z-index: 9999;
+  }
 
-    .dropdown-items {
-      max-height: 220px;
-    }
+  .country-code-list {
+    z-index: 99999;
+  }
 
-    .dropdown-item,
-    .country-code-item {
-      padding: 0.75rem 1rem;
-      font-size: 0.85rem;
-    }
+  .search-container {
+    padding: 10px;
+  }
 
-    .form-actions {
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 2rem;
-      gap: 1rem;
-    }
+  .search-input {
+    padding: 0.6rem 0.75rem !important;
+    font-size: 0.85rem;
+  }
 
-    .btn-primary {
-      padding: 0.6rem 1.25rem;
-      min-width: 160px;
-    }
+  .dropdown-items {
+    max-height: 220px;
+  }
 
-    .btn-primary span {
-      font-size: 1rem;
-    }
+  .dropdown-item,
+  .country-code-item {
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+  }
 
-    .go-back-btn {
-      width: 40px;
-      height: 40px;
-      padding: 8px;
-    }
+  .form-actions {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    gap: 1rem;
+  }
+
+  .btn-primary {
+    padding: 0.6rem 1.25rem;
+    min-width: 160px;
+  }
+
+  .btn-primary span  ,.btn-reset span{
+    font-size: 1rem;
+  }
+
+  .go-back-btn {
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+  }
 
   .custom-dropdown {
     position: static;
@@ -660,11 +680,11 @@ input::placeholder {
     max-height: 70vh !important;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
   }
-  
+
   .dropdown-list {
     z-index: 99998 !important;
   }
-  
+
   .country-code-list {
     z-index: 99999 !important;
   }
@@ -795,11 +815,11 @@ input::placeholder {
     max-height: 260px;
     border-radius: 0.8rem;
   }
-  
+
   .dropdown-list {
     z-index: 99998;
   }
-  
+
   .country-code-list {
     z-index: 99999;
   }
@@ -832,7 +852,7 @@ input::placeholder {
     border-radius: 0.8rem;
   }
 
-  .btn-primary span {
+  .btn-primary span , .btn-reset span {
     font-size: 0.9rem;
   }
 
@@ -908,11 +928,11 @@ input::placeholder {
   .dropdown-list {
     max-height: 240px;
   }
-  
+
   .dropdown-list {
     z-index: 99998;
   }
-  
+
   .country-code-list {
     z-index: 99999;
   }

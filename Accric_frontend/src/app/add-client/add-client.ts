@@ -137,6 +137,53 @@ export class AddClient implements OnInit {
     }
   }
 
+
+  getPhonePattern() {
+    if (this.clientData.phoneCountryCode === '+91') {
+      return "^[0-9]{10}$";
+    }
+    return "^[0-9]{7,15}$";
+  }
+
+
+  resetPage(form: NgForm) {
+    this.clientData = {
+      phoneCountryCode: '+91',
+      legalEntityName: '',
+      brandName: '',
+      country: '',
+      state: '',
+      city: '',
+      street: '',
+      zipCode: '',
+      natureOfBusiness: '',
+      website: '',
+      typeOfBusiness: '',
+      primaryName: '',
+      primaryDesignation: '',
+      primaryEmail: '',
+      primaryPhone: '',
+      technicalContact: '',
+      informationSecurityOfficer: '',
+      clientStatus: '',
+      clientSignoff: ''
+    };
+
+    form.resetForm({
+      phoneCountryCode: '+91'
+    });
+
+    // 4. Reset UI flags
+    this.showErrors = false;
+
+    // 5. Go back to the first tab
+    this.activeTab = 'client-profile';
+    
+    // Optional: Scroll to top of the page
+    window.scrollTo(0, 0);
+  
+}
+
   // Load all countries from API
   loadCountries() {
     this.http.get<{ data: Country[] }>('https://countriesnow.space/api/v0.1/countries')
@@ -440,7 +487,7 @@ export class AddClient implements OnInit {
   private sendClientDataToAPI(payload: any) {
     this.isLoading = true;
     
-    const url = 'http://pci.accric.com/api/auth/create-client';
+    const url = 'https://pci.accric.com/api/auth/create-client';
     const token = localStorage.getItem('jwt');
     
     if (!token) {

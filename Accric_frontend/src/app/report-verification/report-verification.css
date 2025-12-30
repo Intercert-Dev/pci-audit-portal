@@ -10,10 +10,10 @@
   min-height: 88vh;
   padding-top: 1px;
   display: flex;
-  display: flex;
   padding-left: 3rem;
   padding-top: 2rem;
   padding-right: 3rem;
+  position: relative;
 }
 
 .report-verification-box {
@@ -23,6 +23,7 @@
   width: 100%;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   animation: fadeIn 0.3s ease-in-out;
+  position: relative;
 }
 
 @keyframes fadeIn {
@@ -30,7 +31,6 @@
     opacity: 0;
     transform: translateY(10px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -68,6 +68,7 @@
   min-width: 250px;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 label {
@@ -87,10 +88,9 @@ label {
   color: rgba(57, 106, 255, 1);
 }
 
-#current-report{
+#current-report {
   padding-top: 2rem;
 }
-
 
 .form-actions {
   display: flex;
@@ -99,6 +99,7 @@ label {
   margin-top: 2.5rem;
   padding-top: 1.5rem;
   border-top: 1px solid rgba(223, 234, 242, 1);
+  gap: 1.25rem;
 }
 
 .btn-primary {
@@ -125,8 +126,6 @@ label {
   color: rgba(245, 247, 250, 1);
 }
 
-
-/* Report Verification – File Section */
 .report-file-box {
   background: #fff;
   border: 1px solid rgba(223, 234, 242, 1);
@@ -153,8 +152,6 @@ label {
   gap: 10px;
 }
 
-
-
 .btn-upload,
 .btn-preview,
 .btn-download {
@@ -169,17 +166,15 @@ label {
   transition: background-color 0.3s;
 }
 
-.btn-upload,
-.btn-preview,
+.btn-upload span,
+.btn-preview span,
 .btn-download span {
   font-family: 'Inter', sans-serif;
   font-weight: 600;
   font-size: 1.25rem;
   font-size: 20px;
-
 }
 
-/* Button colors */
 .btn-upload {
   background-color: rgba(57, 106, 255, 1);
   color: rgba(245, 247, 250, 1);
@@ -195,6 +190,26 @@ label {
   color: rgba(52, 60, 106, 1);
 }
 
+.btn-reset {
+  color: rgba(52, 60, 106, 1);
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 1rem;
+  opacity: 1;
+  padding: 0.8rem 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  flex-shrink: 0;
+}
+
+.btn-reset span {
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+}
+
 .file-info {
   margin-top: 6px;
   font-size: 14px;
@@ -202,10 +217,13 @@ label {
   font-weight: 500;
 }
 
-/* Legal Entity Search Dropdown Styles */
+/* ================================
+   SEARCH DROPDOWN - FIXED STRUCTURE
+   Using position: absolute like in working example
+================================ */
+
 .search-dropdown {
   position: relative;
-  z-index: 100;
 }
 
 .search-input-wrapper {
@@ -214,7 +232,7 @@ label {
 }
 
 .search-input-wrapper input {
-  width: 50%;
+  width: 100%;
   padding-right: 2.5rem;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23718ebf' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
@@ -242,19 +260,23 @@ label {
   box-shadow: 0 0 0 3px rgba(79, 119, 255, 0.1);
 }
 
+/* DROPDOWN LIST - Using absolute positioning */
 .search-dropdown-list {
-  width: 50%;
   position: absolute;
   top: calc(100% + 4px);
   left: 0;
+  right: 0;
+  width: 100%; /* Match input width */
   background: white;
   border: 1px solid rgba(223, 234, 242, 1);
   border-radius: 0.75rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   max-height: 300px;
   overflow-y: auto;
-  z-index: 1000;
+  z-index: 9999 !important;
   animation: dropdownFadeIn 0.2s ease-out;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 @keyframes dropdownFadeIn {
@@ -262,7 +284,6 @@ label {
     opacity: 0;
     transform: translateY(-5px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -280,6 +301,7 @@ label {
   display: flex;
   align-items: center;
   min-height: 48px;
+  width: 100%;
 }
 
 .dropdown-item:last-child {
@@ -319,7 +341,6 @@ label {
   border-radius: 0.75rem;
 }
 
-/* Scrollbar styling for dropdown */
 .search-dropdown-list::-webkit-scrollbar {
   width: 6px;
 }
@@ -338,49 +359,21 @@ label {
   background: rgba(113, 142, 191, 0.7);
 }
 
-/* Responsive adjustments for dropdown */
+/* ================================
+   RESPONSIVE STYLES
+================================ */
+
 @media (max-width: 1024px) {
   .search-input-wrapper input {
     width: 100%;
   }
-
   .search-dropdown-list {
-    width: 100%;
+    width: 100%; /* Match 100% width on tablet */
+    z-index: 9999 !important;
   }
-}
-
-@media (max-width: 768px) {
-  .search-dropdown-list {
-    max-height: 250px;
-    border-radius: 0.5rem;
-  }
-
-  .dropdown-item {
-    padding: 0.75rem 1rem;
-    font-size: 0.9rem;
-    min-height: 44px;
-  }
-}
-
-@media (max-width: 480px) {
-  .search-dropdown-list {
-    max-height: 200px;
-  }
-
-  .dropdown-item {
-    padding: 0.625rem 0.875rem;
-    min-height: 40px;
-  }
-}
-
-
-/* Responsive Design */
-/* Tablet (max-width: 1024px) */
-@media (max-width: 1024px) {
   .report-verification-container {
     padding: 1rem;
   }
-
   .report-verification-box {
     margin-left: 1rem;
     margin-right: 1rem;
@@ -388,24 +381,19 @@ label {
     padding: 1.5rem;
     width: calc(100% - 2rem);
   }
-
   .report-verification-box h2 {
     font-size: 1.5rem;
     margin-bottom: 1.25rem;
   }
-
   .form-row {
     gap: 0.75rem;
   }
-
   .form-group {
     min-width: calc(50% - 0.375rem);
   }
-
   .report-buttons {
     flex-wrap: wrap;
   }
-
   .btn-upload,
   .btn-preview,
   .btn-download {
@@ -415,35 +403,43 @@ label {
   }
 }
 
-/* Mobile (max-width: 768px) */
 @media (max-width: 768px) {
+  .search-dropdown-list {
+    max-height: 250px;
+    border-radius: 0.5rem;
+    z-index: 9999 !important;
+    width: 100%; /* Full width on mobile */
+  }
+  .dropdown-item {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    min-height: 44px;
+  }
+  .report-verification-container {
+    margin-top: 7rem;
+  }
   .report-verification-box {
     padding: 1.25rem;
     margin: 0.5rem;
     border-radius: 0.5rem;
     width: calc(100% - 1rem);
   }
-
   .report-verification-box h2 {
     font-size: 1.35rem;
     margin-bottom: 1rem;
   }
-
   .form-row {
     flex-direction: column;
     gap: 1rem;
     margin-top: 0.75rem;
   }
-
   .form-group {
     min-width: 100%;
     width: 100%;
   }
-
   .report-buttons {
     flex-direction: column;
   }
-
   .btn-upload,
   .btn-preview,
   .btn-download {
@@ -451,32 +447,36 @@ label {
     justify-content: center;
     padding: 0.875rem;
   }
-
   .form-actions {
     justify-content: center;
     margin-top: 2rem;
     padding-top: 1rem;
   }
-
   .btn-primary {
     width: 100%;
     justify-content: center;
     padding: 0.875rem 1.5rem;
   }
-
   .report-file-box input {
     font-size: 1rem;
     height: 2.875rem;
   }
 }
 
-/* Small Mobile (max-width: 480px) */
 @media (max-width: 480px) {
+  .search-dropdown-list {
+    max-height: 200px;
+    z-index: 9999 !important;
+    width: 100%; /* Full width on small screens */
+  }
+  .dropdown-item {
+    padding: 0.625rem 0.875rem;
+    min-height: 40px;
+  }
   .report-verification-container {
     min-height: calc(100vh - 60px);
     align-items: flex-start;
   }
-
   .report-verification-box {
     padding: 1rem;
     margin: 0;
@@ -484,40 +484,53 @@ label {
     min-height: calc(100vh - 60px);
     width: 100%;
   }
-
   .report-verification-box h2 {
     font-size: 1.25rem;
     margin-bottom: 0.75rem;
   }
-
   .form-actions {
     margin-top: 1.5rem;
     padding-top: 0.75rem;
   }
-
   .btn-primary {
     padding: 0.875rem;
     width: 100%;
     justify-content: center;
   }
-
-  .btn-primary span {
+  .btn-primary span,
+  .btn-reset span {
     font-size: 0.95rem;
   }
-
   .report-file-box input {
     padding: 0 0.875rem;
   }
-
   .btn-upload,
   .btn-preview,
   .btn-download {
     padding: 0.75rem;
   }
-
   .btn-upload span,
   .btn-preview span,
   .btn-download span {
     font-size: 0.85rem;
   }
+}
+
+@media (max-width: 360px) {
+  .search-dropdown-list {
+    max-height: 180px;
+    z-index: 9999 !important;
+  }
+  .dropdown-item {
+    padding: 0.55rem 0.75rem;
+    font-size: 0.85rem;
+    min-height: 38px;
+  }
+}
+
+/* ================================
+   GLOBAL DROPDOWN Z-INDEX OVERRIDE
+================================ */
+.search-dropdown-list {
+  z-index: 9999 !important;
 }

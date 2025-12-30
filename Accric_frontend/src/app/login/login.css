@@ -9,18 +9,16 @@
   overflow: hidden;
 }
 
-/* Left Side */
+/* Left Side - Background Image */
 .login-left {
   width: 37%;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  object-fit: contain;
   background: url('https://accric-pci-web.s3.ap-south-1.amazonaws.com/accric/9750dcac592b58202d0ab8111bd3958d179f06f3.jpg') no-repeat center center;
   background-size: cover;
+  position: relative;
 }
-
 
 .logo {
   display: flex;
@@ -29,41 +27,54 @@
   z-index: 2;
 }
 
+.logo img {
+  max-width: 80%;
+  height: auto;
+}
+
 /* Right Side */
 .login-right {
   width: 63%;
-  padding-left: 10rem;
-  padding-top: 13rem;
-  
+  padding: 6rem 8rem 4rem 10rem;
+  padding-top: 20rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  background: white;
 }
 
 .login-right-box {
   width: 70%;
+  max-width: 500px;
 }
 
 .mobile-logo {
   display: none;
+  justify-content: center;
+  margin-bottom: 2rem;
 }
 
+.mobile-logo img {
+  width: 160px;
+  height: auto;
+}
 
 .login-top-text h1 {
   font-family: "Inter", sans-serif;
   font-weight: 500;
-  font-style: normal;
   font-size: 4rem;
   letter-spacing: 0;
-  margin-block: 2rem;
-
+  margin-block: 0 1.5rem;
+  line-height: 1.2;
 }
 
 .login-top-text p {
   font-family: "Inter", sans-serif;
   font-weight: 500;
-  font-style: medium;
   font-size: 1rem;
-  margin-block: 0.8rem;
+  margin-block: 0 1.5rem;
   color: rgba(111, 108, 143, 1);
-
+  line-height: 1.5;
 }
 
 .google-btn {
@@ -83,42 +94,39 @@
   font-family: 'Inter', sans-serif;
   color: rgba(23, 15, 73, 1);
   font-weight: 400;
-  margin-bottom: 0.5rem;
-  font-style: regular;
-
+  font-size: 1.1rem;
 }
-
 
 /* Divider */
 .divider-container {
-  margin-block: 0.8rem;
-  padding-block: 12px;
+  margin: 2rem 0;
+  text-align: center;
+  position: relative;
 }
 
 .divider-line {
-  border: 1px solid rgba(241, 242, 249, 1);
-  margin-block: 0.5rem;
+  border-top: 1px solid rgba(241, 242, 249, 1);
+  margin: 0.8rem 0;
 }
 
-.divider-container-text{
+.divider-container-text {
   font-family: "Inter", sans-serif;
-  font-style: medium;
   font-weight: 500;
   font-size: 1rem;
   color: rgba(111, 108, 143, 1);
+  background: white;
+  padding: 0 1rem;
 }
 
 /* Input Fields */
-
-
 .input-box {
   border: 1px solid rgba(158, 188, 244, 1);
   border-radius: 1rem;
-  padding: 1rem 1rem;
+  padding: 1rem 1.2rem;
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  color: rgba(255, 255, 255, 1);
+  background: white;
 }
 
 .input-box input {
@@ -127,32 +135,27 @@
   outline: none;
   background: none;
   font-size: 1rem;
-  color:rgba(111, 108, 143, 1);
-  font-style: regular;
+  color: rgba(111, 108, 143, 1);
   font-weight: 400;
+  width: 100%;
 }
 
-
 .input-box-password {
-
   border: 1px solid rgba(158, 188, 244, 1);
   margin-top: 0.8rem;
   border-radius: 1rem;
-  padding: 1rem 1rem;
+  padding: 1rem 1.2rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: rgba(255, 255, 255, 1);
-
+  background: white;
 }
-
 
 .input-password {
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  
-
+  width: 100%;
 }
 
 .input-password input {
@@ -160,48 +163,46 @@
   outline: none;
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
-  color:rgba(111, 108, 143, 1);
-  font-style: regular;
+  color: rgba(111, 108, 143, 1);
   font-weight: 400;
   background: none;
+  width: 100%;
 }
 
-/* Show/Hide Password */
 .show-btn {
-  color: blue;
+  color: rgba(66, 133, 244, 1);
   cursor: pointer;
   background: none;
   border: none;
   font-size: 1rem;
+  font-weight: 500;
 }
 
 /* Remember + Forget */
 .remember-forget {
-  margin-top: 1rem;
+  margin-top: 1.2rem;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   font-family: 'Inter', sans-serif;
-  font-style: normal;
-
+  font-size: 1rem;
+  color: rgba(111, 108, 143, 1);
 }
 
 .remember {
   display: flex;
   align-items: center;
-  gap: 0.2rem;
-  font-size: 1rem;
-  color: rgba(111, 108, 143, 1);
+  gap: 0.5rem;
 }
 
 .forget-btn {
   background: none;
   border: none;
-  color: rgba(111, 108, 143, 1);
+  color: rgba(66, 133, 244, 1);
   cursor: pointer;
   font-size: 1rem;
+  font-weight: 500;
 }
-
 
 /* Login Button */
 .login-btn {
@@ -210,153 +211,219 @@
   border: 1px solid rgba(210, 206, 255, 1);
   border-radius: 1.2rem;
   padding: 1.5rem;
-  margin-top: 2rem;
+  margin-top: 2.5rem;
   text-align: center;
-  box-shadow: inset rgba(223, 238, 255, 0.3);
-  font-size: 1rem;
-  font-style: semi-bold;
-  color: rgba(255, 255, 255, 1);
+  font-size: 1.1rem;
   font-weight: 600;
+  color: rgba(255, 255, 255, 1);
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.login-btn:hover {
+  background: rgba(30, 100, 230, 1);
+  transform: translateY(-2px);
 }
 
 .signup-text {
   font-family: "Inter", sans-serif;
   color: rgba(111, 108, 143, 1);
   font-weight: 400;
-  font-style: normal;
   font-size: 1rem;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
+  text-align: center;
 }
 
 .signup-text a {
-  font-family: "Inter", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-  font-size: 1rem;
+  font-weight: 500;
   color: rgba(66, 133, 244, 1);
   text-decoration: none;
-  margin-left: 0.2rem;
 }
 
+.signup-text a:hover {
+  text-decoration: underline;
+}
 
+/* ============================
+   RESPONSIVE DESIGN
+============================ */
 
-/* ---------- Tablets (≤1024px) ---------- */
+/* Large Tablet (1024px and below) */
 @media (max-width: 1024px) {
+  .login-left {
+    width: 40%;
+  }
+
   .login-right {
-    padding-left: 5rem;
-    padding-top: 10rem;
-    padding-bottom: 2rem;
+    width: 60%;
+    padding: 5rem 4rem;
+    padding-top: 20rem;
   }
 
   .login-right-box {
-    width: 95%;
+    width: 85%;
   }
 
-
+  .login-top-text h1 {
+    font-size: 3.5rem;
+  }
 }
 
-/* ---------- Small Tablets / Large Phones (≤768px) ---------- */
+/* Tablet & Mobile Landscape (768px and below) */
 @media (max-width: 768px) {
   .login-container {
     flex-direction: column;
     height: auto;
-    overflow-y: auto;
+    min-height: 100vh;
   }
 
-  /* Hide Left Section */
   .login-left {
     display: none;
   }
 
-  /* Show Mobile Logo */
   .mobile-logo {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 2rem;
   }
 
-  .mobile-logo img {
-    width: 160px;
-    height: auto;
-  }
-
-  /* Right section takes full width */
   .login-right {
     width: 100%;
-    padding: 3rem 2rem;
+    padding: 3rem 2rem 4rem;
+    justify-content: center;
+    min-height: 100vh;
   }
 
   .login-right-box {
     width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
   }
 
   .login-top-text h1 {
+    font-size: 3rem;
     text-align: center;
+    margin-block: 0 1rem;
   }
 
   .login-top-text p {
     text-align: center;
+    font-size: 1.1rem;
+  }
+
+  .google-btn {
+    padding: 1.1rem;
+    font-size: 1rem;
+  }
+
+  .divider-container {
+    margin: 2rem 0;
+  }
+
+  .remember-forget {
+    font-size: 0.95rem;
+  }
+
+  .login-btn {
+    padding: 1.3rem;
+    font-size: 1.05rem;
+    margin-top: 2rem;
+  }
+
+  .signup-text {
+    margin-top: 1.8rem;
+    font-size: 1rem;
+  }
+}
+
+/* Mobile Portrait (480px and below) */
+@media (max-width: 480px) {
+  .login-right {
+    padding: 2.5rem 1.5rem 3rem;
+  }
+
+  .mobile-logo img {
+    width: 140px;
+  }
+
+  .login-top-text h1 {
+    font-size: 2.6rem;
+  }
+
+  .login-top-text p {
+    font-size: 1rem;
   }
 
   .google-btn {
     padding: 1rem;
-  }
-
-  .divider-container {
-    text-align: center;
-  }
-
-  .divider-container-text {
-    display: inline-block;
+    font-size: 0.95rem;
   }
 
   .input-box,
   .input-box-password {
-    width: 100%;
+    padding: 0.9rem 1rem;
   }
 
-  .remember-forget {
-    flex-direction: row;
-    gap: 0.5rem;
+  .input-box input,
+  .input-password input {
+    font-size: 0.95rem;
   }
 
   .login-btn {
     padding: 1.2rem;
-
+    font-size: 1rem;
+    margin-top: 1.8rem;
   }
 
   .signup-text {
-    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.95rem;
   }
 }
 
-/* ---------- Mobile Devices (≤480px) ---------- */
-@media (max-width: 480px) {
+/* Extra Small Mobile (360px and below) */
+@media (max-width: 360px) {
   .login-right {
-    padding: 3rem 2rem;
+    padding: 2rem 1rem;
   }
 
   .mobile-logo img {
-    width: 130px;
+    width: 120px;
   }
 
-  .login-right-box {
-    width: 100%;
+  .login-top-text h1 {
+    font-size: 2.3rem;
   }
- 
+
+  .login-top-text p {
+    font-size: 0.95rem;
+  }
+
   .google-btn {
-    padding: 0.8rem;
+    padding: 0.9rem;
+    font-size: 0.9rem;
   }
 
   .input-box,
   .input-box-password {
-    width: 100%;
+    padding: 0.8rem;
+  }
+
+  .input-box input,
+  .input-password input {
+    font-size: 0.9rem;
+  }
+
+  .remember-forget {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .forget-btn {
+    align-self: flex-end;
   }
 
   .login-btn {
-    padding: 1rem;
+    padding: 1.1rem;
+    font-size: 0.95rem;
   }
-
 }

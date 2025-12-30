@@ -1,0 +1,74 @@
+<div class="client-list-container">
+  <!-- MAIN CONTENT -->
+  <div class="client-list-box">
+    <div class="header-row">
+      <p>Current Pending Clients List</p>
+      <div class="header-right">
+        <div class="search-box">
+          <img src="/assets/icons/magnifying-glass 2.png" alt="Search Icon">
+          <input type="text" placeholder="Search Certificates"
+                 [(ngModel)]="search_text"
+                 (input)="filter_list()"
+                 (keyup.enter)="filter_list()">
+        </div>
+        <button class="export-btn" (click)="exportToExcel()" [disabled]="filtered_list.length === 0">
+          <span>Export to Excel</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div *ngIf="isLoading" class="loading-state">
+      <p>Loading ASV audits...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && filtered_list.length === 0" class="empty-state">
+      <p *ngIf="search_text">No results found for "{{search_text}}"</p>
+      <p *ngIf="!search_text">No ASV audits available</p>
+    </div>
+
+    <!-- Data Table -->
+    <div *ngIf="!isLoading && filtered_list.length > 0" class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Company</th>
+            <th>Assessment</th>
+            <th>Q1</th>
+            <th>Q2</th>
+            <th>Q3</th>
+            <th>Q4</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of filtered_list">
+            <td>{{row.company}}</td>
+            <td>{{ row.assessment }}</td>
+            <td>
+              <span class="status-badge" [class]="getStatusClass(row.Q1)">
+                {{ row.Q1 }}
+              </span>
+            </td>
+            <td>
+              <span class="status-badge" [class]="getStatusClass(row.Q2)">
+                {{ row.Q2 }}
+              </span>
+            </td>
+            <td>
+              <span class="status-badge" [class]="getStatusClass(row.Q3)">
+                {{ row.Q3 }}
+              </span>
+            </td>
+            <td>
+              <span class="status-badge" [class]="getStatusClass(row.Q4)">
+                {{ row.Q4 }}
+              </span>
+            </td>
+         
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

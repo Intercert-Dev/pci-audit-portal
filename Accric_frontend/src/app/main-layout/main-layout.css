@@ -10,10 +10,12 @@
   min-height: 100vh;
   width: 100%;
   background-color: white;
+  overflow-x: hidden; /* NEW: Prevents horizontal page scroll from wide tables */
 }
 
 .main-content {
   flex: 1;
+  overflow: hidden; /* NEW: Contains any overflowing content inside main area */
 }
 
 .topbar {
@@ -51,9 +53,8 @@
   color: rgba(100, 149, 237, 1);
   width: 200px;
   height: 80px;
+  cursor: pointer;
 }
-
-
 
 .header-right {
   width: 90%;
@@ -62,7 +63,6 @@
   justify-content: space-between;
   padding: 0.5rem;
   margin-left: 3.5rem;
-
 }
 
 .header-right p {
@@ -70,7 +70,6 @@
   font-weight: 600;
   font-size: 2rem;
   color: rgba(52, 60, 106, 1);
-
 }
 
 .header-right-items {
@@ -106,7 +105,6 @@
   padding-left: 0.5rem;
 }
 
-
 .notification-bell {
   width: 50px;
   height: 50px;
@@ -120,7 +118,6 @@
 #notification-icon {
   object-fit: cover;
   cursor: pointer;
-
 }
 
 #user-icon {
@@ -136,7 +133,7 @@
 .layout-body {
   display: flex;
   flex: 1;
-  overflow: hidden;
+  overflow: hidden; /* Already good — kept */
 }
 
 .sidebar-wrapper {
@@ -147,6 +144,8 @@
   white-space: nowrap;
   transition: width 0.6s ease-in-out;
   padding-inline: 16px;
+  flex-shrink: 0; /* NEW: Prevents sidebar from shrinking */
+  z-index: 10; /* NEW: Ensures sidebar stays above content */
 }
 
 .sidebaar-box {
@@ -164,7 +163,6 @@
   padding: 0;
 }
 
-/* Remove padding when sidebar is closed */
 .sidebar {
   width: 267px;
   background: white;
@@ -197,7 +195,6 @@
   padding-left: 22px;
 }
 
-
 .nav-item {
   display: flex;
   align-items: center;
@@ -209,7 +206,6 @@
   justify-content: center;
   padding: 12px 0;
 }
-
 
 .sidebar nav ul li span {
   font-family: 'Inter', sans-serif;
@@ -226,8 +222,6 @@
   overflow: hidden;
 }
 
-
-
 .sidebar nav ul li.active span,
 .sidebar nav ul li.active a {
   color: rgba(66, 133, 244, 1);
@@ -238,12 +232,10 @@
   transition: all 0.6s ease;
 }
 
-
 .has-submenu .nav-item {
   display: flex;
   align-items: center;
 }
-
 
 .submenu nav ul li {
   padding: 12px 20px;
@@ -262,15 +254,11 @@
   transform: rotate(0deg);
 }
 
-
-
-
 .main-layout.sidebar-wrapper-collapsed .layout-body-box {
   width: 100px;
   padding-left: 1.6rem;
   transition: all 0.9s ease;
 }
-
 
 .user-box {
   width: 63px;
@@ -281,14 +269,11 @@
   cursor: pointer;
 }
 
-
 .arrow-icon {
   width: 12px;
   height: 12px;
   transition: transform 0.2s ease;
 }
-
-
 
 .dropdown-menu {
   width: 157px;
@@ -302,8 +287,8 @@
   text-align: center;
   right: 8px;
   top: 90px;
-
-
+  background: white; /* Added for safety */
+  z-index: 10000; /* NEW: Ensures dropdown stays on top */
 }
 
 .dropdown-item {
@@ -316,27 +301,18 @@
   padding-left: 45px;
   padding-right: 51px;
   padding-block: 14px;
-
 }
 
 .dropdown-item:hover {
   border-top-left-radius: 17px;
   border-top-right-radius: 17px;
   background-color: rgba(198, 216, 247, 1);
-
 }
-
-
-
-
-
 
 /* ----- Tablet and below ----- */
 @media (max-width: 1024px) {
-
   .main-content {
     margin-top: 2rem;
-
   }
 
   .main-layout.sidebar-collapsed .main-content {
@@ -346,8 +322,8 @@
   .layout-body {
     flex-direction: column;
     margin-top: 7rem;
+    overflow-x: hidden; /* NEW: Critical for mobile/tablet */
   }
-
 
   .topbar {
     position: fixed;
@@ -380,9 +356,7 @@
     align-items: stretch;
     width: 100%;
     gap: 0.6rem;
-    /* margin-top: 3rem; */
     margin-left: 0;
-
   }
 
   .header-right p {
@@ -437,7 +411,7 @@
   /* ---------- Sidebar Drawer ---------- */
   .sidebar {
     position: fixed;
-    top: 13rem;
+    top: 8.5rem;
     left: 0;
     height: calc(100% - 7rem);
     width: 70%;
@@ -446,7 +420,6 @@
     z-index: 300;
     transform: translateX(-100%);
     transition: transform 0.3s ease-in-out;
-
   }
 
   .sidebar.open {
@@ -466,13 +439,13 @@
     height: calc(100% - 7rem);
     z-index: 120;
     display: none;
+    background: rgba(0, 0, 0, 0.5); /* Added for clarity */
   }
 
   .sidebar-overlay.active {
     display: block;
   }
 
-  /* ---------- Prevent Scroll Overlap ---------- */
   body {
     overflow-x: hidden;
   }
@@ -483,8 +456,7 @@
 }
 
 /* ---------- Tablets portrait / Large Phones (481px–767px) ---------- */
-@media (min-width: 481px) and (max-width: 767px) {
-
+@media (max-width: 768px) {
   .main-layout.sidebar-collapsed .main-content {
     margin-left: 0px !important;
   }
@@ -540,6 +512,7 @@
 
   .layout-body {
     flex-direction: column;
+    overflow-x: hidden; /* NEW */
   }
 
   .sidebar {
@@ -554,15 +527,11 @@
 
   .sidebar.open {
     transform: translateX(0);
-    margin-top: 3rem;
+    margin-top: 58px;
   }
 
   .sidebar.closed {
     transform: translateX(-100%);
-  }
-
-  .layout-body {
-    overflow-x: hidden;
   }
 
   .bottom-line {
@@ -644,14 +613,13 @@
 
   .sidebar.open {
     transform: translateX(0);
-    margin-top: 38px;
+    margin-top: 58px;
   }
 
   .sidebar nav ul li {
     padding: 12px 16px;
     gap: 20px;
   }
-
 
   .layout-body {
     flex-direction: column;
@@ -670,10 +638,8 @@
 
 /* Extra Small Devices (max-width: 360px) */
 @media (max-width: 360px) {
-
   .asv-audit-container {
     margin-top: 8rem;
-    /* Space for fixed topbar */
     padding: 0.75rem;
     min-height: calc(100vh - 60px);
   }
@@ -704,7 +670,6 @@
     height: 2.5rem;
   }
 
-
   .form-actions {
     margin-top: 1rem;
     padding-top: 0.5rem;
@@ -719,7 +684,6 @@
     padding: 0.6rem 1rem;
   }
 
-  /* Dropdown responsiveness */
   .search-dropdown-list {
     max-height: 150px;
   }
@@ -727,5 +691,4 @@
   .dropdown-item {
     padding: 0.6rem 0.6rem;
   }
-
 }

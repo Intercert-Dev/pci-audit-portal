@@ -38,7 +38,7 @@ export class SuspendedClientList implements OnInit {
   getClientList() {
     this.isLoading = true; 
     
-    const url = 'http://pci.accric.com/api/auth/suspended-clients';
+    const url = 'https://pci.accric.com/api/auth/suspended-clients';
     const token = localStorage.getItem("jwt");
 
     const headers = new HttpHeaders({

@@ -49,7 +49,7 @@ export class TotalActiveClientList implements OnInit {
   }
 
   getClientList() {
-    const url = 'http://pci.accric.com/api/auth/client-list';
+    const url = 'https://pci.accric.com/api/auth/client-list';
     const token = localStorage.getItem("jwt");
 
     const headers = new HttpHeaders({

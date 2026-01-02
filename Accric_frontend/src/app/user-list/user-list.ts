@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ToastService } from '../service/toast-service';
 
 @Component({
   selector: 'app-user-list',
@@ -18,7 +19,9 @@ export class UserList implements OnInit {
   showEditPopup: boolean = false;  // Controls popup visibility
   editModel: any = {};      // temp object for edit form
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) { }
+  constructor(private http: HttpClient, 
+    private cdr: ChangeDetectorRef,
+  private toast:ToastService) { }
 
   ngOnInit(): void {
     this.getAllUsers();
@@ -33,7 +36,6 @@ export class UserList implements OnInit {
     this.http.get<any>("https://pci.accric.com/api/auth/user-list", { headers })
       .subscribe({
         next: (res) => {
-          console.log("res",res);
           
           this.users = Array.isArray(res.data) ? res.data : [];
           this.isLoading = false;
@@ -66,7 +68,7 @@ export class UserList implements OnInit {
     this.http.put(`https://pci.accric.com/api/auth/update-user/${this.editModel.id}`, this.editModel, { headers })
       .subscribe({
         next: (res) => {
-          alert("User updated successfully!");
+         this.toast.success("User updated successfully!");
 
           // Update table instantly
           const index = this.users.findIndex(u => u.id === this.editModel.id);
@@ -83,28 +85,5 @@ export class UserList implements OnInit {
       });
   }
 
-  // --------------------------
-  // DELETE USER
-  // --------------------------
-  deleteRow(user: any) {
-    if (!confirm("Are you sure you want to delete this user?")) return;
-
-    const token = localStorage.getItem("jwt");
-    const headers = { 'Authorization': `Bearer ${token}` };
-
-    this.http.delete(`https://pci.accric.com/api/auth/delete-user/${user.id}`, { headers })
-      .subscribe({
-        next: (res) => {
-          alert("User deleted!");
-
-          // remove from table instantly
-          this.users = this.users.filter(u => u.id !== user.id);
-        },
-        error: err => {
-          console.error(err);
-          alert("Error deleting user");
-        }
-      });
-  }
 
 }

@@ -176,9 +176,6 @@ tbody tr {
   flex-shrink: 0;
 }
 
-#client-status {
-  padding-left: 2.5rem;
-}
 
 .view-btn {
   border: none;

@@ -113,13 +113,7 @@ export class QsaAdd {
     formData.append('certification_number', this.qsaForm.value.certificationNumber);
     formData.append('signature', this.selectedSignatureFile, this.selectedSignatureFile.name);
 
-    // Debug: Log what's being sent
-    console.log('Form values:', {
-      qsa_name: this.qsaForm.value.qsaName,
-      qsa_email: this.qsaForm.value.email,
-      certification_number: this.qsaForm.value.certificationNumber,
-      signature: this.selectedSignatureFile?.name
-    });
+   
 
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
@@ -172,7 +166,7 @@ export class QsaAdd {
           // Unprocessable Entity - Laravel validation errors
           this.errorMessage = 'Validation error. Please check all fields are correct.';
           if (error.error && error.error.errors) {
-            console.log('Validation errors:', error.error.errors);
+         
           }
         } else if (error.status === 401) {
           this.errorMessage = 'Authentication failed. Please login again.';

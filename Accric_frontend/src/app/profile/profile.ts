@@ -148,7 +148,7 @@ export class Profile implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (response) => {
-          console.log("Response Data: ", response);
+   
           
           if (response && response.data) {
             this.mapApiResponseToProfile(response.data);
@@ -220,7 +220,7 @@ export class Profile implements OnInit, OnDestroy {
       profile_image: userData.profile_image || null
     };
     
-    console.log('Updated user profile:', this.userProfile);
+   
   }
 
   openEditPopup(): void {
@@ -291,8 +291,7 @@ export class Profile implements OnInit, OnDestroy {
     if (this.selectedImageFile) {
       formData.append('profile_image', this.selectedImageFile);
     }
-    
-    console.log('Sending update data with FormData for user ID:', this.userId);
+
     
     this.http.put(`${this.updateUserUrl}${this.userId}`, formData, { headers })
       .pipe(

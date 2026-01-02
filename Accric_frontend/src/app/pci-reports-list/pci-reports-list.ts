@@ -556,7 +556,7 @@ private async sendFormDataUpdateRequest(token: string, formData: FormData): Prom
       observe: 'events'
     }).toPromise();
 
-    console.log('Update successful:', response);
+  
     
     // Also update the verification data if it exists
     if (this.editFormData.verification_status || 

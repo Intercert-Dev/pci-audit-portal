@@ -398,8 +398,7 @@ loadAsvAudits(): void {
 
   // Handle status change
   onStatusChange(quarter: string, status: string): void {
-    // You can add any additional logic here when status changes
-    console.log(`${quarter} status changed to: ${status}`);
+  
   }
 
   // Preview file

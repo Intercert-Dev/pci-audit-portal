@@ -305,7 +305,7 @@ export class AuditList implements OnInit {
     this.http.put(updateUrl, payload, { headers }).subscribe({
       next: (response) => {
         this.isLoading = false;
-        console.log('Update successful:', response);
+      
 
         // Update the local data
         const index = this.auditList.findIndex(
@@ -465,7 +465,6 @@ export class AuditList implements OnInit {
       link.click();
       document.body.removeChild(link);
 
-      console.log('Export successful:', exportData.length, 'records exported');
     } catch (error) {
       console.error('Error exporting to Excel:', error);
       this.toast.error('Failed to export data. Please try again.');

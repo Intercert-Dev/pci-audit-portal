@@ -39,7 +39,7 @@ export class TotalUpcomingAuditList implements OnInit {
       this.fetchTotalUpcomingAudits(token);
     } else {
       alert("You can't access Total Upcoming Audit List without a Token");
-      console.log("Token not found");
+      
     }
   }
 

@@ -55,14 +55,13 @@ export class UserList implements OnInit {
   // EDIT USER
   // --------------------------
   editRow(user: any) {
-    console.log("Editing user:", user);
+   
     this.editModel = {
       user_id: user.user_id,
       name: user.name || '',
       email: user.email || '',
       role: user.role || ''
     };
-    console.log("Edit model:", this.editModel);
     this.showEditPopup = true;
   }
 
@@ -72,7 +71,7 @@ export class UserList implements OnInit {
   }
 
   saveEdit() {
-    console.log("Save edit - editModel:", this.editModel);
+
 
     if (!this.editModel.user_id) {
       this.toast.error("User ID is missing. Cannot update user.");
@@ -94,12 +93,9 @@ export class UserList implements OnInit {
 
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
     });
 
     const url = `https://pci.accric.com/api/auth/admin/update-user/${this.editModel.user_id}`;
-    console.log("API URL:", url);
-    console.log("Payload:", payload);
 
     this.http.put(url, payload, { headers }).subscribe({
       next: (res: any) => {

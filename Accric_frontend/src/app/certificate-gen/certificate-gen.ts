@@ -223,7 +223,7 @@ export class CertificateGen implements OnInit {
       { headers }
     ).subscribe({
       next: (res) => {
-        console.log("companies Data", res.data);
+     
 
         this.companies = res.data;
         this.filteredCompanies = [...this.companies];
@@ -244,7 +244,7 @@ export class CertificateGen implements OnInit {
     ).subscribe({
       next: (res) => {
         this.assessments = res.data;
-        console.log("Assessments loaded:", res.data);
+     
       },
       error: (err) => {
         this.toast.error('Failed to load assessments');
@@ -290,7 +290,7 @@ export class CertificateGen implements OnInit {
       { headers }
     ).subscribe({
       next: (res) => {
-        console.log('Assessment details:', res);
+  
         const certificateNo =
           res?.data?.audits?.length > 0
             ? res.data.audits[0].certificate_number_unique_id
@@ -584,7 +584,6 @@ export class CertificateGen implements OnInit {
   }
 
   onOptionsChange() {
-    console.log('Certificate options changed:', this.certificateOptions);
   }
 
   downloadCurrentPDF() {

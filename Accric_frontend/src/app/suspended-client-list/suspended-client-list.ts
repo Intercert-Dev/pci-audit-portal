@@ -47,7 +47,6 @@ export class SuspendedClientList implements OnInit {
 
     this.http.get<any>(url, { headers }).subscribe({
       next: (res) => {
-        console.log("res data in sus ",res.data);
         
         this.clientList = res.data.map((item: any) => ({
           company: item.legal_entity_name || 'N/A',

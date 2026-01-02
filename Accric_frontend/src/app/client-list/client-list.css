@@ -176,6 +176,12 @@ tbody tr {
   flex-shrink: 0;
 }
 
+.clickable-company{
+  cursor: pointer;
+  color: #1976d2; /* or your primary color */
+  text-decoration:none;
+
+}
 
 .view-btn {
   border: none;

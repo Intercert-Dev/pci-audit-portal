@@ -27,6 +27,7 @@ import { AuditList } from './audit-list/audit-list';
 import { PciReportsList } from './pci-reports-list/pci-reports-list';
 import { CurrentPendingClients } from './current-pending-clients/current-pending-clients';
 import { NextMonthPendingClientsList } from './next-month-pending-clients-list/next-month-pending-clients-list';
+import { CompanyDetails } from './company-details/company-details';
 
 
 export const routes: Routes = [
@@ -63,6 +64,7 @@ export const routes: Routes = [
       { path: 'pci-reports-list',  component: PciReportsList},
       { path: 'current-pending-clients',  component: CurrentPendingClients},
       { path: 'next-month-pending-clients',  component: NextMonthPendingClientsList},
+      { path: 'company-details',  component: CompanyDetails},
     ],
   },
   { path: '**', redirectTo: 'dashboard' }

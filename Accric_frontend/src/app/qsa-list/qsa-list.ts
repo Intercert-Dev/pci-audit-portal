@@ -212,8 +212,7 @@ export class QsaList implements OnInit, OnDestroy {
 
     this.http.put<any>(url, formData, { headers }).subscribe({
       next: (res) => {
-        console.log('Update response:', res);
-
+    
         if (res.success) {
           // Update local list with server data
           const updatedIndex = this.qsaList.findIndex(q => q.qsa_id === res.data.qsa_id);
@@ -223,7 +222,7 @@ export class QsaList implements OnInit, OnDestroy {
           }
           
           this.successMessage = '✅ QSA updated successfully!';
-          console.log('Update successful:', res.data);
+       
         } else {
           this.errorMessage = res.message || 'Failed to update QSA';
           console.error('Update failed:', res);

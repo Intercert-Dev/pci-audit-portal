@@ -404,7 +404,7 @@ export class EditAsvClient {
     }
 
     this.fileDataMap.delete(quarter);
-    console.log(`Cleared ${quarter} file`);
+
   }
 
   // Optional: Method to check if any files are uploaded

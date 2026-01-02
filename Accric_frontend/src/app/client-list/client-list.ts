@@ -226,12 +226,11 @@ export class ClientList implements OnInit {
       client_status: this.editingClient.client_status || 'ACTIVE'
     };
 
-    console.log('Sending PUT request to:', url);
-    console.log('Update payload:', updatePayload);
+   
 
     this.http.put(url, updatePayload, { headers }).subscribe({
       next: (res: any) => {
-        console.log('Client updated successfully:', res);
+    
         
         // Update the client in local list
         const index = this.clientList.findIndex(client => client.clientId === this.editingClient!.clientId);
@@ -295,8 +294,7 @@ export class ClientList implements OnInit {
 
     this.http.delete(url, { headers }).subscribe({
       next: (res: any) => {
-        console.log('Client deleted:', res);
-        
+
         // Remove client from local list
         this.clientList = this.clientList.filter(item => item.clientId !== client.clientId);
         this.filtered_list = this.filtered_list.filter(item => item.clientId !== client.clientId);

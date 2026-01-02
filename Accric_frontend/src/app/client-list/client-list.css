@@ -176,8 +176,11 @@ tbody tr {
   flex-shrink: 0;
 }
 
-#client-status {
-  padding-left: 2.5rem;
+.clickable-company{
+  cursor: pointer;
+  color: #1976d2; /* or your primary color */
+  text-decoration:none;
+
 }
 
 .view-btn {

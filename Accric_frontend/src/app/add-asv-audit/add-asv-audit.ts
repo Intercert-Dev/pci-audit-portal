@@ -429,9 +429,7 @@ export class AddAsvAudit implements OnInit {
       status: "PENDING"
     };
 
-    // Log payload for debugging
-    console.log('Submitting payload:', payload);
-
+   
     // Call the submit function
     this.submitAsvAudit(payload, form);
   }

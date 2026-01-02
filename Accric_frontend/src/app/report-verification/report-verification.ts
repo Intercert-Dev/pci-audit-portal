@@ -380,7 +380,6 @@ export class ReportVerification implements OnInit {
               break;
           }
           
-          console.log(`${type} reports uploaded:`, validFiles.map(f => f.name).join(', '));
           this.cdr.detectChanges();
         }
       }

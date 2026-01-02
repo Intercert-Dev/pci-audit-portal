@@ -1,7 +1,8 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ToastService } from '../service/toast-service';
 
 @Component({
   selector: 'app-user-list',
@@ -15,10 +16,15 @@ export class UserList implements OnInit {
   users: any[] = [];
   isLoading: boolean = false;
 
-  showEditPopup: boolean = false;  // Controls popup visibility
-  editModel: any = {};      // temp object for edit form
+  showEditPopup: boolean = false;
+  editModel: any = {};
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) { }
+  constructor(
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef,
+    private toast: ToastService,
+    private zone: NgZone  // <-- Added for reliable UI updates
+  ) { }
 
   ngOnInit(): void {
     this.getAllUsers();
@@ -40,6 +46,7 @@ export class UserList implements OnInit {
         error: (err) => {
           console.error("Error fetching users", err);
           this.isLoading = false;
+          this.toast.error("Failed to load users");
         }
       });
   }
@@ -48,7 +55,13 @@ export class UserList implements OnInit {
   // EDIT USER
   // --------------------------
   editRow(user: any) {
-    this.editModel = { ...user };  // copy values into popup form
+   
+    this.editModel = {
+      user_id: user.user_id,
+      name: user.name || '',
+      email: user.email || '',
+      role: user.role || ''
+    };
     this.showEditPopup = true;
   }
 
@@ -58,51 +71,73 @@ export class UserList implements OnInit {
   }
 
   saveEdit() {
+
+
+    if (!this.editModel.user_id) {
+      this.toast.error("User ID is missing. Cannot update user.");
+      return;
+    }
+
+    if (!this.editModel.name || !this.editModel.email || !this.editModel.role) {
+      this.toast.error("Please fill all required fields");
+      return;
+    }
+
     const token = localStorage.getItem("jwt");
-    const headers = { 'Authorization': `Bearer ${token}` };
 
-    this.http.put(`https://pci.accric.com/api/auth/update-user/${this.editModel.id}`, this.editModel, { headers })
-      .subscribe({
-        next: (res) => {
-          alert("User updated successfully!");
+    const payload = {
+      name: this.editModel.name,
+      email: this.editModel.email,
+      role: this.editModel.role
+    };
 
-          // Update table instantly
-          const index = this.users.findIndex(u => u.id === this.editModel.id);
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+    });
+
+    const url = `https://pci.accric.com/api/auth/admin/update-user/${this.editModel.user_id}`;
+
+    this.http.put(url, payload, { headers }).subscribe({
+      next: (res: any) => {
+        // Run all UI updates inside Angular's zone to ensure change detection
+        this.zone.run(() => {
+          this.toast.success("User updated successfully!");
+
+          // Update the user in the list instantly
+          const index = this.users.findIndex(u => u.user_id === this.editModel.user_id);
           if (index !== -1) {
-            this.users[index] = { ...this.editModel };
+            this.users[index] = {
+              ...this.users[index],
+              name: this.editModel.name,
+              email: this.editModel.email,
+              role: this.editModel.role
+            };
           }
 
-          this.showEditPopup = false; // close popup
-        },
-        error: err => {
-          console.error(err);
-          alert("Error updating user");
+          // Close popup and reset model — this will now work 100%
+          this.showEditPopup = false;
+          this.editModel = {};
+
+          // Optional: force detection if needed (usually not required with NgZone)
+          this.cdr.detectChanges();
+        });
+      },
+      error: (err) => {
+        console.error("Error updating user:", err);
+
+        let errorMessage = "Error updating user";
+        if (err.status === 401) {
+          errorMessage = "Unauthorized. Please login again.";
+        } else if (err.status === 403) {
+          errorMessage = "You don't have permission to update users.";
+        } else if (err.status === 404) {
+          errorMessage = "User not found.";
+        } else if (err.error?.message) {
+          errorMessage = err.error.message;
         }
-      });
+
+        this.toast.error(errorMessage);
+      }
+    });
   }
-
-  // --------------------------
-  // DELETE USER
-  // --------------------------
-  deleteRow(user: any) {
-    if (!confirm("Are you sure you want to delete this user?")) return;
-
-    const token = localStorage.getItem("jwt");
-    const headers = { 'Authorization': `Bearer ${token}` };
-
-    this.http.delete(`https://pci.accric.com/api/auth/delete-user/${user.id}`, { headers })
-      .subscribe({
-        next: (res) => {
-          alert("User deleted!");
-
-          // remove from table instantly
-          this.users = this.users.filter(u => u.id !== user.id);
-        },
-        error: err => {
-          console.error(err);
-          alert("Error deleting user");
-        }
-      });
-  }
-
 }

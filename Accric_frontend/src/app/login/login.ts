@@ -90,7 +90,7 @@ export class Login implements OnInit {
   loginWithGoogle() {
     this.loading = true;
     this.errorMessage = '';
-    console.log("Initiating Google OAuth login...");
+
     
     // Redirect to Google OAuth
     window.location.href = 'https://pci.accric.com/api/auth/google';

@@ -186,8 +186,8 @@
               <label>Name of QSA</label>
               <select name="name_of_qsa" [(ngModel)]="editingAudit.name_of_qsa">
                 <option [ngValue]="null">Select QSA</option>
-                <!-- Change ngValue to qsa.qsa_name instead of qsa.qsa_id -->
-                <option *ngFor="let qsa of qsaList" [ngValue]="qsa.qsa_name">
+                <!-- Store QSA ID (qsa.qsa_id) in the value -->
+                <option *ngFor="let qsa of qsaList" [ngValue]="qsa.qsa_id">
                   {{ qsa.qsa_name }}
                 </option>
               </select>

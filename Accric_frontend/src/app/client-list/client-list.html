@@ -28,7 +28,7 @@
 
         <tbody>
           <tr *ngFor="let client of filtered_list">
-            <td class="clickable-company">
+            <td class="clickable-company" (click)="navigateToDetails(client.clientId)">
               {{ client.company || 'N/A' }}
             </td>
             <td>{{ client.contact_name || 'N/A' }}</td>

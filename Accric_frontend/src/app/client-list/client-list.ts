@@ -5,6 +5,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ToastService } from '../service/toast-service';
+import { Router } from '@angular/router';
 
 interface Client {
   // Client Profile Fields (from API)
@@ -19,7 +20,7 @@ interface Client {
   nature_of_business: string | null;
   website_domain_url: string | null;
   type_of_business: string;
-  
+
   // Primary Contacts Fields (from API)
   contact_name: string;
   designation: string;
@@ -29,11 +30,11 @@ interface Client {
   information_security_officer: string | null;
   client_signoff_authority: string;
   client_status: string;
-  
+
   // Timestamps (from API)
   created_at: string;
   updated_at: string;
-  
+
   // For table display compatibility (optional)
   company?: string;
 }
@@ -53,7 +54,7 @@ export class ClientList implements OnInit {
   isLoading: boolean = false;
 
   constructor(private http: HttpClient, private cdr: ChangeDetectorRef,
-    private toast:ToastService
+    private toast: ToastService, private router: Router
   ) { }
 
   ngOnInit() {
@@ -64,18 +65,18 @@ export class ClientList implements OnInit {
     this.isLoading = true;
     const url = 'https://pci.accric.com/api/auth/client-list';
     const token = localStorage.getItem("jwt");
-    
+
     if (!token) {
       this.toast.error('Please login first. No authentication token found.');
       this.isLoading = false;
       return;
     }
-    
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
 
-    this.http.get<{data: Client[]}>(url, { headers }).subscribe({
+    this.http.get<{ data: Client[] }>(url, { headers }).subscribe({
       next: (res) => {
 
         this.clientList = res.data.map((item: Client) => ({
@@ -98,12 +99,12 @@ export class ClientList implements OnInit {
 
   filter_list() {
     const search = this.search_text.toLowerCase().trim();
-    
+
     if (!search) {
       this.filtered_list = [...this.clientList];
       return;
     }
-    
+
     this.filtered_list = this.clientList.filter((client: Client) =>
       client.legal_entity_name?.toLowerCase().includes(search) ||
       client.trading_name?.toLowerCase().includes(search) ||
@@ -120,7 +121,7 @@ export class ClientList implements OnInit {
 
   exportToExcel() {
     const fileName = 'Clients-List.xlsx';
-    
+
     // Prepare data for Excel export
     const excelData = this.filtered_list.map(client => ({
       'Client ID': client.clientId,
@@ -137,13 +138,13 @@ export class ClientList implements OnInit {
       'Designation': client.designation,
       'Type of Business': client.type_of_business
     }));
-    
+
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(excelData);
-    const wb: XLSX.WorkBook = { 
-      Sheets: { 'Clients': ws }, 
-      SheetNames: ['Clients'] 
+    const wb: XLSX.WorkBook = {
+      Sheets: { 'Clients': ws },
+      SheetNames: ['Clients']
     };
-    
+
     // Auto-size columns
     const wscols = [
       { wch: 15 }, // Client ID
@@ -161,7 +162,7 @@ export class ClientList implements OnInit {
       { wch: 20 }  // Type of Business
     ];
     ws['!cols'] = wscols;
-    
+
     const excelBuffer: any = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
     const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
     saveAs(blob, fileName);
@@ -189,17 +190,17 @@ export class ClientList implements OnInit {
     if (!this.editingClient) return;
 
     this.isLoading = true;
-    
+
     // Construct the URL with clientId in the path
     const url = `https://pci.accric.com/api/auth/update-client/${this.editingClient.clientId}`;
     const token = localStorage.getItem("jwt");
-    
+
     if (!token) {
       this.toast.warning('Please login first. No authentication token found.');
       this.isLoading = false;
       return;
     }
-    
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
     });
@@ -226,12 +227,12 @@ export class ClientList implements OnInit {
       client_status: this.editingClient.client_status || 'ACTIVE'
     };
 
-   
+
 
     this.http.put(url, updatePayload, { headers }).subscribe({
       next: (res: any) => {
-    
-        
+
+
         // Update the client in local list
         const index = this.clientList.findIndex(client => client.clientId === this.editingClient!.clientId);
         if (index !== -1) {
@@ -239,11 +240,11 @@ export class ClientList implements OnInit {
           this.clientList[index] = { ...this.editingClient! };
           // Ensure company display name is updated
           this.clientList[index].company = this.editingClient!.legal_entity_name;
-          
+
           // Update filtered list
           this.filtered_list = [...this.clientList];
         }
-        
+
         this.cancelEdit();
         this.isLoading = false;
         this.toast.success('Client updated successfully!');
@@ -251,7 +252,7 @@ export class ClientList implements OnInit {
       },
       error: (err) => {
         console.error('Failed to update client:', err);
-        
+
         let errorMessage = 'Failed to update client. ';
         if (err.status === 401) {
           errorMessage += 'Unauthorized. Please check your authentication token.';
@@ -262,11 +263,14 @@ export class ClientList implements OnInit {
         } else if (err.error && err.error.message) {
           errorMessage += err.error.message;
         }
-        
         this.isLoading = false;
         this.toast.error(errorMessage || 'Something went wrong');
       }
     });
+  }
+
+  navigateToDetails(clientId: string): void {
+    this.router.navigate(['/company-details', clientId]);
   }
 
   cancelEdit() {
@@ -281,13 +285,13 @@ export class ClientList implements OnInit {
     this.isLoading = true;
     const url = `https://pci.accric.com/api/auth/delete-client/${client.clientId}`;
     const token = localStorage.getItem("jwt");
-    
+
     if (!token) {
       this.toast.error('Please login first. No authentication token found.');
       this.isLoading = false;
       return;
     }
-    
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
@@ -298,7 +302,7 @@ export class ClientList implements OnInit {
         // Remove client from local list
         this.clientList = this.clientList.filter(item => item.clientId !== client.clientId);
         this.filtered_list = this.filtered_list.filter(item => item.clientId !== client.clientId);
-        
+
         this.isLoading = false;
         this.toast.success('Client deleted successfully!');
         this.cdr.detectChanges();
@@ -306,14 +310,14 @@ export class ClientList implements OnInit {
       error: (err) => {
         console.error('Failed to delete client:', err);
         this.isLoading = false;
-        
+
         let errorMessage = 'Failed to delete client. ';
         if (err.status === 401) {
           errorMessage += 'Unauthorized. Please check your authentication token.';
         } else if (err.status === 404) {
           errorMessage += 'Client not found.';
         }
-        
+
         this.toast.error(errorMessage || 'Something went wrong');
       }
     });

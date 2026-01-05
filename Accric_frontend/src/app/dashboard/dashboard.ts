@@ -108,7 +108,7 @@ export class Dashboard implements OnInit {
       next: (res: any) => {
         // Using the safe check we discussed
         this.fullList = Array.isArray(res.data) ? res.data : [];
-        this.upcomingAudits=this.fullList.slice(0,1);
+        this.upcomingAudits=this.fullList.slice(0,3);
         
         
         // Initialize filtered list for your UI search/filter needs

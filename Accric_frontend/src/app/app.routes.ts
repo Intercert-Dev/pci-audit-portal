@@ -64,7 +64,7 @@ export const routes: Routes = [
       { path: 'pci-reports-list',  component: PciReportsList},
       { path: 'current-pending-clients',  component: CurrentPendingClients},
       { path: 'next-month-pending-clients',  component: NextMonthPendingClientsList},
-      { path: 'company-details',  component: CompanyDetails},
+      { path: 'company-details/:id',  component: CompanyDetails},
     ],
   },
   { path: '**', redirectTo: 'dashboard' }

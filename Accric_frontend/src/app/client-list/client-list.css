@@ -176,10 +176,13 @@ tbody tr {
   flex-shrink: 0;
 }
 
-.clickable-company{
+td.clickable-company {
   cursor: pointer;
-  color: #1976d2; /* or your primary color */
-  text-decoration:none;
+  text-decoration: none;
+}
+
+tbody tr td.clickable-company:hover {
+  color: blue;
 
 }
 

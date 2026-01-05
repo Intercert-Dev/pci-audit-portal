@@ -101,7 +101,7 @@ export class AuditList implements OnInit {
     private http: HttpClient,
     private datePipe: DatePipe,
     private cdr: ChangeDetectorRef,
-    private toast :ToastService
+    private toast: ToastService
   ) { }
 
   ngOnInit() {
@@ -158,6 +158,8 @@ export class AuditList implements OnInit {
     this.http.get<any>(this.apiUrl, { headers }).subscribe({
       next: (response) => {
         this.isLoading = false;
+        console.log("Audit list data ",response);
+        
 
         if (response && Array.isArray(response)) {
           this.auditList = response;
@@ -202,6 +204,7 @@ export class AuditList implements OnInit {
 
     this.http.get<any>(url, { headers }).subscribe({
       next: (response) => {
+        
         if (response?.data && Array.isArray(response.data)) {
           this.qsaList = response.data;
           
@@ -267,7 +270,7 @@ export class AuditList implements OnInit {
     this.cdr.detectChanges();
   }
 
-  // Save audit - Updated with correct payload
+  // Save audit - Updated with correct QSA ID handling
   saveAudit() {
     if (!this.editingAudit || !this.originalAudit) return;
 
@@ -276,6 +279,7 @@ export class AuditList implements OnInit {
     const updateUrl = `https://pci.accric.com/api/auth/update-audit/${this.editingAudit.auditId}`;
     const headers = this.getHeaders();
 
+    // Prepare payload with QSA ID
     const payload = {
       assessment_project_name: this.editingAudit.assessment_project_name || '',
       assessment_type: this.editingAudit.assessment_type || '',
@@ -287,25 +291,23 @@ export class AuditList implements OnInit {
       audit_end_date: this.formatDateToYMD(this.editingAudit.audit_end_date),
       date_of_report_submission: this.formatDateToYMD(this.editingAudit.date_of_report_submission),
       audit_status: this.editingAudit.audit_status || 'NOT_STARTED',
-
       certificate_issue_date: this.formatDateToYMD(this.editingAudit.certificate_issue_date),
       certificate_expiry_date: this.formatDateToYMD(this.editingAudit.certificate_expiry_date),
       certificate_number_unique_id: this.editingAudit.certificate_number_unique_id || null,
       classification: this.editingAudit.classification || null,
       next_audit_due_date: this.formatDateToYMD(this.editingAudit.next_audit_due_date),
-      name_of_qsa: this.getQSAName(this.editingAudit.name_of_qsa),
+      
+      // Send QSA ID - This is the key change
+      name_of_qsa: this.editingAudit.name_of_qsa, // QSA ID, not name
       qsa_license_certificate_number: this.editingAudit.qsa_license_certificate_number || null,
       audit_manager_reviewer_name: this.editingAudit.audit_manager_reviewer_name || null,
-
       scope_of_assessment: this.editingAudit.scope_of_assessment || null,
       location_of_scope: this.editingAudit.location_of_scope || null
     };
 
-
     this.http.put(updateUrl, payload, { headers }).subscribe({
       next: (response) => {
         this.isLoading = false;
-      
 
         // Update the local data
         const index = this.auditList.findIndex(
@@ -368,13 +370,26 @@ export class AuditList implements OnInit {
     });
   }
 
-  // Helper method to get QSA name from ID
+  // Helper method to get QSA name from ID for display
+  getQSADisplayName(qsaId: string): string {
+    if (!qsaId) return 'N/A';
+    
+    // If it's not a UUID (contains hyphen and 36 chars), it might already be a name
+    if (!qsaId.includes('-') || qsaId.length !== 36) {
+      return qsaId;
+    }
+    
+    // Try to get name from mapping
+    return this.qsaNameMap.get(qsaId) || 'N/A';
+  }
+
+  // Helper method to get QSA name from ID (for export)
   private getQSAName(qsaId: string): string | null {
     if (!qsaId) return null;
     
     // If it's already a name (not an ID), return it
-    if (!qsaId.includes('-') && qsaId.length < 36) {
-      return qsaId; // Probably already a name
+    if (!qsaId.includes('-') || qsaId.length !== 36) {
+      return qsaId;
     }
     
     // Otherwise, try to get name from mapping
@@ -441,7 +456,7 @@ export class AuditList implements OnInit {
         'Certificate Number': audit.certificate_number_unique_id || 'N/A',
         'Classification': audit.classification || 'N/A',
         'Next Audit Due Date': this.formatDate(audit.next_audit_due_date || ''),
-        'Name of QSA': this.getQSAName(audit.name_of_qsa) || 'N/A',
+        'Name of QSA': this.getQSADisplayName(audit.name_of_qsa),
         'QSA License/Certificate Number': audit.qsa_license_certificate_number || 'N/A',
         'Manager/Reviewer Name': audit.audit_manager_reviewer_name || 'N/A',
         'Scope of Assessment': audit.scope_of_assessment || 'N/A',

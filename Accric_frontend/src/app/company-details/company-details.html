@@ -1,1 +1,289 @@
-<p>company-details works!</p>
+<div class="client-list-container">
+  <div class="client-list-box">
+
+    <!-- Header -->
+    <div class="header-row">
+      <p>Client Details</p>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading" *ngIf="isLoading">
+      <p>Loading client details...</p>
+    </div>
+
+    <!-- Details Content -->
+    <div class="details-content" *ngIf="!isLoading && client">
+
+      <!-- Section 1: Key Client Information -->
+      <div class="popup-section">
+        <h3 class="section-title">Key Client Information</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Company Name</label>
+            <div class="display-value">{{ client.legal_entity_name || 'N/A' }}</div>
+          </div>
+
+          <div class="form-group">
+            <label>Contact Name</label>
+            <div class="display-value">{{ client.contact_name || 'N/A' }}</div>
+          </div>
+
+          <div class="form-group">
+            <label>Email</label>
+            <div class="display-value">{{ client.contact_email || 'N/A' }}</div>
+          </div>
+
+          <div class="form-group">
+            <label>Phone</label>
+            <div class="display-value">{{ client.phone || 'N/A' }}</div>
+          </div>
+
+          <div class="form-group">
+            <label>Country</label>
+            <div class="display-value">{{ client.county_name || 'N/A' }}</div>
+            
+          </div>
+
+          <div class="form-group">
+            <label>Status</label>
+            <div class="display-value">
+             {{ client.client_status || 'N/A' }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Created Date</label>
+            <div class="display-value">{{ formatDate(client.created_at) }}</div>
+          </div>
+
+          <div class="form-group">
+            <label>Client Signoff Authority</label>
+            <div class="display-value">{{ client.client_signoff_authority || 'N/A' }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: Assessments (with ASV & Reports inside each) -->
+      <div class="popup-section" *ngIf="client.assessments && client.assessments.length > 0">
+        <h3 class="section-title">Assessments</h3>
+        <div class="assessment-list">
+          <div class="assessment-card" *ngFor="let assessment of client.assessments; let i = index">
+            <h4 class="assessment-title">Assessment {{ i + 1 }}: {{ assessment.project_name || 'Untitled Assessment' }}</h4>
+
+            <!-- Assessment Details -->
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Assessment / Project Name</label>
+                <div class="display-value">{{ assessment.project_name || 'N/A' }}</div>
+              </div>
+
+              <div class="form-group">
+                <label>Assessment Type</label>
+                <div class="display-value">{{ assessment.assessment_type || 'N/A' }}</div>
+              </div>
+
+              <div class="form-group">
+                <label>Assessment Category</label>
+                <div class="display-value">{{ assessment.assessment_category || 'N/A' }}</div>
+              </div>
+
+              <div class="form-group">
+                <label>Assessment Year</label>
+                <div class="display-value">{{ assessment.assessment_year || 'N/A' }}</div>
+              </div>
+
+              <div class="form-group">
+                <label>PCI DSS Version Applicable</label>
+                <div class="display-value">{{ assessment.pci_dss_version || 'N/A' }}</div>
+              </div>
+
+              <div class="form-group">
+                <label>Assessment Period Covered</label>
+                <div class="display-value">{{ assessment.assessment_period || 'N/A' }}</div>
+              </div>
+
+              <div class="form-group">
+                <label>Audit Start Date</label>
+                <div class="display-value">{{ formatDate(assessment.audit_start_date) }}</div>
+              </div>
+
+              <div class="form-group">
+                <label>Audit End Date</label>
+                <div class="display-value">{{ formatDate(assessment.audit_end_date) }}</div>
+              </div>
+
+              <div class="form-group">
+                <label>Date of Report Submission</label>
+                <div class="display-value">{{ formatDate(assessment.report_submission_date) }}</div>
+              </div>
+
+              <div class="form-group">
+                <label>Audit Status</label>
+                <div class="display-value">{{ assessment.audit_status || 'N/A' }}</div>
+              </div>
+
+              <div class="form-group">
+                <label>Classification</label>
+                <div class="display-value">{{ assessment.classification || 'N/A' }}</div>
+              </div>
+
+              <div class="form-group">
+                <label>Next Audit Due Date</label>
+                <div class="display-value">{{ formatDate(assessment.next_audit_due_date) }}</div>
+              </div>
+
+              <div class="form-group">
+                <label>Name of QSA</label>
+                <div class="display-value">{{ assessment.qsa_name || 'N/A' }}</div>
+              </div>
+
+              <div class="form-group">
+                <label>QSA License/Certificate Number</label>
+                <div class="display-value">{{ assessment.qsa_license_number || 'N/A' }}</div>
+              </div>
+
+              <div class="form-group">
+                <label>Manager/Reviewer Name</label>
+                <div class="display-value">{{ assessment.reviewer_name || 'N/A' }}</div>
+              </div>
+
+              <div class="form-group">
+                <label>Location in Scope</label>
+                <div class="display-value">{{ assessment.location_in_scope || 'N/A' }}</div>
+              </div>
+
+              <div class="form-group full-width">
+                <label>Scope of Assessment</label>
+                <div class="display-value">{{ assessment.scope_of_assessment || 'N/A' }}</div>
+              </div>
+            </div>
+
+            <!-- ASV Details & Reports (per assessment) -->
+            <div class="assessment-subsection">
+                <h4 class="assessment-title" style="padding:16px; margin-top: 1rem;">ASV Details & Reports</h4>
+                
+              <div class="form-grid">
+
+                <div class="form-group">
+                  <label>Number of IP</label>
+                  <div class="display-value">{{ assessment.asv_number_of_ip || 'N/A' }}</div>
+                </div>
+
+                <div class="form-group full-width">
+                  <label>IP & Domain Details</label>
+                  <div class="display-value">{{ assessment.asv_ip_domain_details || 'N/A' }}</div>
+                </div>
+
+                <div class="form-group">
+                  <label>Previous AOC Report</label>
+                  <div class="display-value">
+                    <button type="button" class="download-file-btn"
+                      (click)="openReport(assessment.previous_aoc_report_url)"
+                      title="View Previous AOC Report"
+                      *ngIf="assessment.previous_aoc_report_url; else noLink">
+                      <span>View</span>
+                    </button>
+                    <ng-template #noLink><span class="na-text">N/A</span></ng-template>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Previous ROC Report</label>
+                  <div class="display-value">
+                    <button type="button" class="download-file-btn"
+                      (click)="openReport(assessment.previous_roc_report_url)"
+                      title="View Previous ROC Report"
+                      *ngIf="assessment.previous_roc_report_url; else noLink">
+                      <span>View</span>
+                    </button>
+                    <ng-template #noLink><span class="na-text">N/A</span></ng-template>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Previous Final Report</label>
+                  <div class="display-value">
+                    <button type="button" class="download-file-btn"
+                      (click)="openReport(assessment.previous_final_report_url)"
+                      title="View Previous Final Report"
+                      *ngIf="assessment.previous_final_report_url; else noLink">
+                      <span>View</span>
+                    </button>
+                    <ng-template #noLink><span class="na-text">N/A</span></ng-template>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>AOC Report</label>
+                  <div class="display-value">
+                    <button type="button" class="download-file-btn"
+                      (click)="openReport(assessment.aoc_report_url)"
+                      title="View AOC Report"
+                      *ngIf="assessment.aoc_report_url; else noLink">
+                      <span>View</span>
+                    </button>
+                    <ng-template #noLink><span class="na-text">N/A</span></ng-template>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>ROC Report</label>
+                  <div class="display-value">
+                    <button type="button" class="download-file-btn"
+                      (click)="openReport(assessment.roc_report_url)"
+                      title="View ROC Report"
+                      *ngIf="assessment.roc_report_url; else noLink">
+                      <span>View</span>
+                    </button>
+                    <ng-template #noLink><span class="na-text">N/A</span></ng-template>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Final Report</label>
+                  <div class="display-value">
+                    <button type="button" class="download-file-btn"
+                      (click)="openReport(assessment.final_report_url)"
+                      title="View Final Report"
+                      *ngIf="assessment.final_report_url; else noLink">
+                      <span>View</span>
+                    </button>
+                    <ng-template #noLink><span class="na-text">N/A</span></ng-template>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- No assessments fallback -->
+          <div class="no-data" *ngIf="!client.assessments || client.assessments.length === 0">
+            <p>No assessments available for this client.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: Certificate Details -->
+      <div class="popup-section">
+        <h3 class="section-title">Certificate Details</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Certificate Issue Date</label>
+            <div class="display-value">{{ formatDate(client.certificate_issue_date) }}</div>
+          </div>
+
+          <div class="form-group">
+            <label>Certificate Expiry Date</label>
+            <div class="display-value">{{ formatDate(client.certificate_expiry_date) }}</div>
+          </div>
+
+          <div class="form-group">
+            <label>Certificate Number / Unique ID</label>
+            <div class="display-value">{{ client.certificate_number || 'N/A' }}</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

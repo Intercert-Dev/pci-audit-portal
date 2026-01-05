@@ -176,7 +176,7 @@
 
                 <div class="form-group">
                   <label>Previous AOC Report</label>
-                  <div class="display-value">
+                
                     <button type="button" class="download-file-btn"
                       (click)="openReport(assessment.previous_aoc_report_url)"
                       title="View Previous AOC Report"
@@ -184,13 +184,12 @@
                       <span>View</span>
                     </button>
                     <ng-template #noLink><span class="na-text">N/A</span></ng-template>
-                  </div>
+          
                 </div>
 
                 <div class="form-group">
                   <label>Previous ROC Report</label>
-                  <div class="display-value">
-                    <button type="button" class="download-file-btn"
+                     <button type="button" class="download-file-btn"
                       (click)="openReport(assessment.previous_roc_report_url)"
                       title="View Previous ROC Report"
                       *ngIf="assessment.previous_roc_report_url; else noLink">
@@ -198,11 +197,11 @@
                     </button>
                     <ng-template #noLink><span class="na-text">N/A</span></ng-template>
                   </div>
-                </div>
+             
 
                 <div class="form-group">
                   <label>Previous Final Report</label>
-                  <div class="display-value">
+                 
                     <button type="button" class="download-file-btn"
                       (click)="openReport(assessment.previous_final_report_url)"
                       title="View Previous Final Report"
@@ -210,12 +209,12 @@
                       <span>View</span>
                     </button>
                     <ng-template #noLink><span class="na-text">N/A</span></ng-template>
-                  </div>
+                
                 </div>
 
                 <div class="form-group">
                   <label>AOC Report</label>
-                  <div class="display-value">
+                
                     <button type="button" class="download-file-btn"
                       (click)="openReport(assessment.aoc_report_url)"
                       title="View AOC Report"
@@ -223,12 +222,12 @@
                       <span>View</span>
                     </button>
                     <ng-template #noLink><span class="na-text">N/A</span></ng-template>
-                  </div>
+             
                 </div>
 
                 <div class="form-group">
                   <label>ROC Report</label>
-                  <div class="display-value">
+                
                     <button type="button" class="download-file-btn"
                       (click)="openReport(assessment.roc_report_url)"
                       title="View ROC Report"
@@ -236,12 +235,12 @@
                       <span>View</span>
                     </button>
                     <ng-template #noLink><span class="na-text">N/A</span></ng-template>
-                  </div>
+             
                 </div>
 
                 <div class="form-group">
                   <label>Final Report</label>
-                  <div class="display-value">
+              
                     <button type="button" class="download-file-btn"
                       (click)="openReport(assessment.final_report_url)"
                       title="View Final Report"
@@ -249,7 +248,7 @@
                       <span>View</span>
                     </button>
                     <ng-template #noLink><span class="na-text">N/A</span></ng-template>
-                  </div>
+           
                 </div>
 
               </div>

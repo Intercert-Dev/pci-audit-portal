@@ -52,9 +52,22 @@ interface AsvAuditPayload {
   styleUrls: ['./add-asv-audit.css']
 })
 export class AddAsvAudit implements OnInit {
+  
+  // Comprehensive IP and Domain Validation Patterns
+  private readonly ipv4Regex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+  private readonly ipv6Regex = /^(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$|^(?:[0-9a-fA-F]{1,4}:){1,7}:|^:(?:[0-9a-fA-F]{1,4}:){1,7}|^[0-9a-fA-F]{1,4}::(?:[0-9a-fA-F]{1,4}:){0,5}[0-9a-fA-F]{1,4}$|^(?:[0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}$/;
+  private readonly ipv4WithPortRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?::\d{1,5})?$/;
+  private readonly ipv6WithPortRegex = /^\[(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}\](?::\d{1,5})?$|^\[(?:[0-9a-fA-F]{1,4}:){1,7}:](?::\d{1,5})?$|^:(?::\d{1,5})?/;
+  
+  // Flexible Domain Regex - allows any valid domain format
+  private readonly domainRegex = /^(?:(?:https?|ftp):\/\/)?(?:www\.)?(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}(?::\d{1,5})?(?:\/\S*)?$/;
+  
+  // Simple domain pattern for basic validation (no protocol, no path)
+  private readonly simpleDomainRegex = /^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/;
+  
+  // Allow hostnames (for internal networks)
+  private readonly hostnameRegex = /^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
-  private readonly ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-  private readonly domainRegex = /^(?!:\/\/)([a-zA-Z0-9-_]+\.)+[a-zA-Z]{2,11}$/;
   legalEntitySearch = '';
   auditSearch = '';
 
@@ -197,31 +210,149 @@ export class AddAsvAudit implements OnInit {
     });
   }
 
+  /**
+   * Comprehensive validation for all types of IP addresses and domains
+   */
+  validateEntry(entry: string): { isValid: boolean; type: 'ipv4' | 'ipv6' | 'domain' | 'hostname' | 'invalid' } {
+    const cleanedEntry = entry.trim();
+    
+    // Check for IPv4
+    if (this.ipv4Regex.test(cleanedEntry)) {
+      return { isValid: true, type: 'ipv4' };
+    }
+    
+    // Check for IPv4 with port
+    if (this.ipv4WithPortRegex.test(cleanedEntry)) {
+      return { isValid: true, type: 'ipv4' };
+    }
+    
+    // Check for IPv6
+    if (this.ipv6Regex.test(cleanedEntry)) {
+      return { isValid: true, type: 'ipv6' };
+    }
+    
+    // Check for IPv6 with port
+    if (this.ipv6WithPortRegex.test(cleanedEntry)) {
+      return { isValid: true, type: 'ipv6' };
+    }
+    
+    // Check for domain with protocol and path (full URL)
+    if (this.domainRegex.test(cleanedEntry)) {
+      return { isValid: true, type: 'domain' };
+    }
+    
+    // Check for simple domain (no protocol)
+    if (this.simpleDomainRegex.test(cleanedEntry)) {
+      return { isValid: true, type: 'domain' };
+    }
+    
+    // Check for hostname (for internal networks)
+    if (this.hostnameRegex.test(cleanedEntry) && cleanedEntry.includes('.')) {
+      return { isValid: true, type: 'hostname' };
+    }
+    
+    // Check if it's just a single word hostname (for local/internal)
+    if (this.hostnameRegex.test(cleanedEntry)) {
+      return { isValid: true, type: 'hostname' };
+    }
+    
+    return { isValid: false, type: 'invalid' };
+  }
+
+  /**
+   * Get all valid entries with their types
+   */
   getValidEntries() {
-    if (!this.asvData.IPDetails) return { ips: 0, domains: 0, total: 0, invalidCount: 0 };
+    if (!this.asvData.IPDetails || !this.asvData.IPDetails.trim()) {
+      return { 
+        ips: 0, 
+        domains: 0, 
+        total: 0, 
+        invalidCount: 0, 
+        hasInvalid: false,
+        entries: []
+      };
+    }
 
-    // Split by comma or newline, then trim whitespace
-    const entries = this.asvData.IPDetails.split(/[,\n]/).map(e => e.trim()).filter(e => e !== '');
+    // Split by comma, space, newline, semicolon, or tab
+    const entries = this.asvData.IPDetails
+      .split(/[,\s\n;]+/)
+      .map(e => e.trim())
+      .filter(e => e !== '');
 
-    let ips = 0;
-    let domains = 0;
-
-    entries.forEach(entry => {
-      if (this.ipRegex.test(entry)) {
-        ips++;
-      } else if (this.domainRegex.test(entry)) {
-        domains++;
-      }
-    });
+    const results = entries.map(entry => this.validateEntry(entry));
+    
+    const ips = results.filter(r => r.type === 'ipv4' || r.type === 'ipv6').length;
+    const domains = results.filter(r => r.type === 'domain' || r.type === 'hostname').length;
+    const invalidCount = results.filter(r => r.type === 'invalid').length;
 
     return {
       ips,
       domains,
       total: ips + domains,
-      invalidCount: entries.length - (ips + domains),
-      hasInvalid: (entries.length - (ips + domains)) > 0
+      invalidCount,
+      hasInvalid: invalidCount > 0,
+      entries: results,
+      rawEntries: entries
     };
   }
+
+  /**
+   * Check if there are any invalid entries
+   */
+  hasInvalidEntries(): boolean {
+    return this.getValidEntries().hasInvalid;
+  }
+
+  /**
+   * Get all IP addresses (IPv4 and IPv6)
+   */
+  getValidIPs(): string[] {
+    if (!this.asvData.IPDetails) return [];
+    
+    const entries = this.asvData.IPDetails
+      .split(/[,\s\n;]+/)
+      .map(e => e.trim())
+      .filter(e => e !== '');
+    
+    return entries.filter(entry => {
+      const validation = this.validateEntry(entry);
+      return validation.type === 'ipv4' || validation.type === 'ipv6';
+    });
+  }
+
+  /**
+   * Get all domains and hostnames
+   */
+  getValidDomains(): string[] {
+    if (!this.asvData.IPDetails) return [];
+    
+    const entries = this.asvData.IPDetails
+      .split(/[,\s\n;]+/)
+      .map(e => e.trim())
+      .filter(e => e !== '');
+    
+    return entries.filter(entry => {
+      const validation = this.validateEntry(entry);
+      return validation.type === 'domain' || validation.type === 'hostname';
+    });
+  }
+
+  /**
+   * Get IP details array for API payload
+   */
+  getIpDetailsArray(): IpDetail[] {
+    const validIPs = this.getValidIPs();
+    return validIPs.map(ip => ({ ip }));
+  }
+
+  /**
+   * Get IP count from details (only IPs, not domains)
+   */
+  getIPCountFromDetails(): number {
+    return this.getValidIPs().length;
+  }
+
   // CLIENT SEARCH
   onLegalEntitySearch() {
     this.clientSearchSubject.next(this.legalEntitySearch);
@@ -286,31 +417,6 @@ export class AddAsvAudit implements OnInit {
 
     // Force UI update
     this.cdr.detectChanges();
-  }
-
-  getValidIPs(): string[] {
-    if (!this.asvData.IPDetails) return [];
-
-    return this.asvData.IPDetails
-      .split(/[\s,]+/) // split by comma, space, newline
-      .map(ip => ip.trim())
-      .filter(ip => this.ipRegex.test(ip));
-  }
-
-  getIpDetailsArray(): IpDetail[] {
-    const validIPs = this.getValidIPs();
-    return validIPs.map(ip => ({ ip }));
-  }
-
-  hasInvalidIPs(): boolean {
-    if (!this.asvData.IPDetails) return true;
-
-    const ips = this.asvData.IPDetails
-      .split(/[\s,]+/)
-      .map(ip => ip.trim())
-      .filter(ip => ip.length > 0);
-
-    return ips.some(ip => !this.ipRegex.test(ip));
   }
 
   // Filter audits by client ID
@@ -392,20 +498,28 @@ export class AddAsvAudit implements OnInit {
     this.cdr.detectChanges();
   }
 
-  getIPCountFromDetails(): number {
-    return this.getValidIPs().length;
-  }
-
   onSubmit(form: NgForm) {
     this.showErrors = true;
+
+    // Get validation results
+    const validation = this.getValidEntries();
+    
+    console.log('Validation results:', validation); // For debugging
 
     if (
       form.invalid ||
       !this.selectedClientId ||
       !this.selectedAuditId ||
-      this.hasInvalidIPs()
+      validation.hasInvalid ||
+      validation.total === 0
     ) {
-      this.toast.error('Please fill all required fields correctly.');
+      if (validation.hasInvalid) {
+        this.toast.error(`Please check your entries. Found ${validation.invalidCount} invalid entry(ies).`);
+      } else if (validation.total === 0) {
+        this.toast.error('Please enter at least one valid IP address or domain.');
+      } else {
+        this.toast.error('Please fill all required fields correctly.');
+      }
       return;
     }
 
@@ -420,16 +534,15 @@ export class AddAsvAudit implements OnInit {
     const payload: AsvAuditPayload = {
       client: this.selectedClientId,
       audit: this.selectedAuditId,
-      number_of_ip: ipCount, // Changed from numberOfIPs to number_of_ip
+      number_of_ip: ipCount,
       associated_organization: this.asvData.associatedOrganization,
       associated_application: this.asvData.associatedApplication,
-      ip_details: this.getIpDetailsArray(), // Changed from IPDetails to ip_details array
+      ip_details: this.getIpDetailsArray(),
       q1: "PENDING",
       q2: "PENDING",
       status: "PENDING"
     };
 
-   
     // Call the submit function
     this.submitAsvAudit(payload, form);
   }
@@ -524,9 +637,7 @@ export class AddAsvAudit implements OnInit {
     this.cdr.detectChanges();
   }
 
-
   resetAsvAuditForm(form: NgForm): void {
-
     this.asvData = {
       numberOfIPs: null,
       associatedOrganization: '',
@@ -553,4 +664,23 @@ export class AddAsvAudit implements OnInit {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  // Helper method to show what was detected
+  getDetectionMessage(): string {
+    const validation = this.getValidEntries();
+    if (validation.total === 0) return '';
+    
+    const ipTypes = validation.entries.filter(e => e.type === 'ipv4' || e.type === 'ipv6');
+    const ipv4Count = ipTypes.filter(e => e.type === 'ipv4').length;
+    const ipv6Count = ipTypes.filter(e => e.type === 'ipv6').length;
+    const domainCount = validation.entries.filter(e => e.type === 'domain').length;
+    const hostnameCount = validation.entries.filter(e => e.type === 'hostname').length;
+    
+    const parts = [];
+    if (ipv4Count > 0) parts.push(`${ipv4Count} IPv4`);
+    if (ipv6Count > 0) parts.push(`${ipv6Count} IPv6`);
+    if (domainCount > 0) parts.push(`${domainCount} Domain${domainCount > 1 ? 's' : ''}`);
+    if (hostnameCount > 0) parts.push(`${hostnameCount} Hostname${hostnameCount > 1 ? 's' : ''}`);
+    
+    return `Detected: ${parts.join(', ')}`;
+  }
 }

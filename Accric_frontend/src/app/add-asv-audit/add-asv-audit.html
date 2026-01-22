@@ -4,7 +4,7 @@
 
     <form #asvForm="ngForm" (ngSubmit)="onSubmit(asvForm)" class="asv-form" [class.loading]="isLoading">
 
-      <!-- SECTION 1 -->
+      <!-- SECTION 1 - Same as before -->
       <div class="form-section">
         <div class="form-row">
           <div class="form-group search-dropdown">
@@ -108,20 +108,30 @@
         <div class="form-group">
           <label for="IPDetails">IP & Domain Details <span class="required">*</span></label>
           <textarea id="IPDetails" name="IPDetails" [(ngModel)]="asvData.IPDetails" #IPDetails="ngModel"
-            placeholder="Enter IP addresses or Domains (e.g. 192.168.1.1 or example.com)" rows="3" required
-            [disabled]="isLoading"></textarea>
+            placeholder="Enter IP addresses or Domains (e.g. 192.168.1.1, example.com, 2001:0db8:85a3:0000:0000:8a2e:0370:7334, localhost)"
+            rows="5" required [disabled]="isLoading"></textarea>
 
           <div *ngIf="showErrors && IPDetails.invalid" class="error">
             <small>IP or Domain Details are required</small>
           </div>
 
           <div *ngIf="asvData.IPDetails && getValidEntries().hasInvalid" class="error">
-            <small>Some entries are not valid IPs or Domains. Please check your formatting.</small>
+            <small>Some entries are not valid. Please check your formatting.</small>
           </div>
 
           <div class="ip-info" *ngIf="getValidEntries().total > 0">
             <small style="color: green;">
-              Detected: {{ getValidEntries().ips }} IP(s) and {{ getValidEntries().domains }} Domain(s)
+              {{ getDetectionMessage() }}
+              <span *ngIf="getValidEntries().invalidCount > 0" style="color: red;">
+                ({{ getValidEntries().invalidCount }} invalid)
+              </span>
+            </small>
+          </div>
+          
+          <div class="format-hint">
+            <small style="color: #666;">
+              <strong>Accepted formats:</strong> IPv4 (192.168.1.1), IPv6 (2001:db8::1), Domains (example.com), 
+              URLs (https://www.example.com), Hostnames (localhost), IPs with ports (192.168.1.1:8080)
             </small>
           </div>
         </div>

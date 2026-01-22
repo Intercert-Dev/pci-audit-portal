@@ -158,7 +158,6 @@ export class AuditList implements OnInit {
     this.http.get<any>(this.apiUrl, { headers }).subscribe({
       next: (response) => {
         this.isLoading = false;
-        console.log("Audit list data ",response);
         
 
         if (response && Array.isArray(response)) {
